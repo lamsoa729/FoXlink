@@ -1,23 +1,8 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-# Testing
-# import pdb
-# import time, timeit
-# import line_profiler
-# Analysis
 import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-import h5py
-# import yaml
-# from math import *
-# Speed
-from numba import njit
-# Other importing
-from solver import Solver
-from FP_helpers import make_gen_source_mat, make_gen_force_mat, make_gen_torque_mat
-import FP_initial_conditions as IC
+from .solver import Solver
+from .FP_helpers import make_gen_source_mat, make_gen_force_mat, make_gen_torque_mat
+from .FP_initial_conditions import *
 
 
 """@package docstring

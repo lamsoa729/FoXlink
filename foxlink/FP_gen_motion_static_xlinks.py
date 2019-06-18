@@ -1,24 +1,7 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-# Testing
-# import time, timeit
-# import line_profiler
-# Analysis
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import h5py
-# import yaml
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
-# sys.path.append(os.path.join(os.path.dirname(__file__), '[PATH]'))
-
-from FP_gen_motion_solver import FPGenMotionSolver
-from FP_gen_orient_solver import FPGenOrientSolver
-from FP_static_solver import FPStaticSolver
+from .FP_gen_motion_solver import FPGenMotionSolver
+from .FP_gen_orient_solver import FPGenOrientSolver
+from .FP_static_solver import FPStaticSolver
 
 
 """@package docstring

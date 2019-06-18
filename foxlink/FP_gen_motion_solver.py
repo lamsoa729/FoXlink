@@ -1,22 +1,6 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-# Testing
-# import pdb
-# import time, timeit
-# import line_profiler
-# Analysis
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import h5py
-# import yaml
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
-from FP_gen_orient_solver import FPGenOrientSolver, reparameterize_rods
-from FP_rod_motion_solver import FPRodMotionSolver
+from .FP_gen_orient_solver import FPGenOrientSolver, reparameterize_rods
+from .FP_rod_motion_solver import FPRodMotionSolver
 
 
 """@package docstring

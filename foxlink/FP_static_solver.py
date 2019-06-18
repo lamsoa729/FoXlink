@@ -1,22 +1,6 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-# Testing
-# import pdb
-# import time, timeit
-# import line_profiler
-# Analysis
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import h5py
-# import yaml
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
-from solver import Solver
-import FP_initial_conditions as IC
+from .solver import Solver
+from .FP_initial_conditions import *
 
 
 """@package docstring
