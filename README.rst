@@ -39,3 +39,8 @@ This package was created with Cookiecutter_ and the `pyOpenSci/cookiecutter-pyop
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`pyOpenSci/cookiecutter-pyopensci`: https://github.com/pyOpenSci/cookiecutter-pyopensci
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+
+
+.. image:: https://api.codacy.com/project/badge/Grade/f72e009a2ce147a8b8c067fb24c0d6d4
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/app/lamsoa729/FoXlink?utm_source=github.com&utm_medium=referral&utm_content=lamsoa729/FoXlink&utm_campaign=Badge_Grade_Dashboard
