@@ -1,19 +1,10 @@
 #!/usr/bin/env python
 # In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
 # Basic
-import sys
-import os
 from os import path
 # Testing
-# import pdb
 import time
-import timeit
-# import line_profiler
-# Analysis
 import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-import pandas as pd
 import yaml
 import h5py
 # import pickle as pickle

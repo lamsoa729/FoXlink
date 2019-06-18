@@ -1,26 +1,6 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-import sys
-import os
 import argparse
-# Testing
-# import time,
-# import timeit
-# import line_profiler
-# Analysis
-import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-import h5py
 import yaml
-from FP_pass_ang_CN import FPPassiveAngCNSolver
-from FP_pass_para_CN import FPPassiveParaCNSolver
-from FP_gen_motion_static_xlinks import FPGenMotionStaticXlinks
-
-# from math import *
-# Speed
-# from numba import jit
 
 
 """@package docstring

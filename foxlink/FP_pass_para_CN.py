@@ -1,31 +1,9 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-import sys
-import os
-# Testing
-# import pdb
-import time
-import timeit
-# import line_profiler
-# Analysis
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import pandas as pd
-import yaml
-from scipy import sparse
-from scipy.sparse.linalg import inv
-from copy import deepcopy as dcp
-# from math import *
-# Speed
-from numba import jit
 # Other importing
-from FP_helpers import *
-from solver import Solver
-from FP_pass_para_solver import FPPassiveParaSolver
-from FP_pass_CN_solver import FPPassiveCNSolver
-from FP_initial_conditions import *
+from .solver import Solver
+from .FP_pass_para_solver import FPPassiveParaSolver
+from .FP_pass_CN_solver import FPPassiveCNSolver
+from .FP_initial_conditions import *
 
 
 """@package docstring
