@@ -37,7 +37,7 @@ def get_rod_drag_coeff(visc, L, d):
 
 
 def get_rod_mob_mat(visc, L, d, R_vec):
-    """!TODO: Docstring for get_rod_mob_mat.
+    """! Create and return 3x3 mobility matrix for rod
 
     @param visc: TODO
     @param L: TODO
@@ -60,7 +60,7 @@ class FPRodMotionSolver(Solver):
 
     """!Docstring for FPRodMotionSolver. """
 
-    def __init__(self, pfile=None, name="FP_rod_motion"):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
         Note: parameter file needs viscosity in order to run
 
@@ -69,7 +69,7 @@ class FPRodMotionSolver(Solver):
 
         """
         print("Init FPRodMotionSolver ->", end=" ")
-        Solver.__init__(self, pfile=pfile, name=name)
+        Solver.__init__(self, pfile=pfile, pdict=pdict)
 
     def RodStep(self, force=0, torque=0, R1_pos=None,
                 R2_pos=None, R1_vec=None, R2_vec=None):

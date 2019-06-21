@@ -18,25 +18,15 @@ class FPPassiveAngCNSolver(FPPassiveCNSolver, FPPassiveAngSolver):
     using the Crank-Nicholson method with 4 point laplacian.
     """
 
-    def __init__(self, pfile=None, name="FP_pass_ang_CN"):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
         @param name: name to store data under
 
         """
-        if name is None:
-            name = "FP_pass_ang_CN"
-        FPPassiveCNSolver.__init__(self, pfile, name)
-        self.src_mat = make_ang_source_mat(self.s1, self.s2, self.phio,
-                                           self._params['co'],
-                                           self._params['ks'],
-                                           self._params['ho'],
-                                           self._params["beta"])
-        self.sgrid += self.src_mat
-        # self.src_mat *= self._params["ko"]
-        # Initial condition
-        # print(self.src_mat)
+        print("Init FPPassiveAngCNSolver ->", end=" ")
+        FPPassiveCNSolver.__init__(self, pfile, pdict)
 
 
 ##########################################

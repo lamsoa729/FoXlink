@@ -23,16 +23,15 @@ class Solver(object):
 
     """!Docstring for Solver. """
 
-    def __init__(self, pfile=None, name='Solver'):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions
 
         @param pfile: parameter file for PDEs
 
         """
         print("Init Solver")
-        self._name = name
         self._pfile = pfile
-        self._params = None
+        self._params = pdict
         self.data_frame_made = False
         self.written = False
         # Initialize parameters from file
@@ -40,7 +39,7 @@ class Solver(object):
         self.makeSolutionGrid()
         self.setInitialCondition()
         # Create data frame
-        self._h5_data = h5py.File(Path("{}.h5".format(self._name)), 'w')
+        self._h5_data = h5py.File(Path("{}.h5".format(self.__name__)), 'w')
         # Add meta data to hdf5 file
         for k, v in self._params.items():
             self._h5_data.attrs[k] = v
@@ -55,7 +54,7 @@ class Solver(object):
         if self._pfile is not None:
             with open(self._pfile, 'r') as pf:
                 self._params = yaml.safe_load(pf)
-        else:
+        elif self_params is None:
             self._params = default_params
 
         # Integration parameters

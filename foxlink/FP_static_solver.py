@@ -15,14 +15,15 @@ class FPStaticSolver(Solver):
 
     """!Docstring for FPRodMotionSolver. """
 
-    def __init__(self, pfile=None, name="FP_static"):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
 
         @param pfile: TODO
         @param name: TODO
 
         """
-        Solver.__init__(self, pfile=pfile, name=name)
+        print("Init FPStaticSolver ->", end=" ")
+        Solver.__init__(self, pfile=pfile, pdict=pdict)
 
     def Step(self):
         """!Step static solver forward in time using Strang splitting

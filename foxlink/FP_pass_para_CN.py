@@ -27,7 +27,6 @@ class FPPassiveParaCNSolver(FPPassiveCNSolver, FPPassiveParaSolver):
 
         """
         FPPassiveCNSolver.__init__(self, pfile, name)
-        self._h5_data.attrs['solver_type'] = "FPPassiveParaCNSolver"
 
 
 ##########################################

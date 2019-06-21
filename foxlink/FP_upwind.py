@@ -38,7 +38,7 @@ class PDESolver(object):
 
     """!Docstring for PDESolver. """
 
-    def __init__(self, pfile=None):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions
 
         @param pfile: parameter file for PDEs

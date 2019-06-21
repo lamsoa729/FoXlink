@@ -20,14 +20,14 @@ class FPPassiveLFSolver(FPPassiveAngSolver):
     using the leap frog method with 4 point laplacian.
     """
 
-    def __init__(self, pfile=None):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
 
         """
         print("Init FPPassiveLFSolver ->", end=" ")
-        FPPassiveAngSolver.__init__(self, pfile)
+        FPPassiveAngSolver.__init__(self, pfile, pdict)
 
     def Step(self):
         """!Step solver using midpoint (leap frog) method.

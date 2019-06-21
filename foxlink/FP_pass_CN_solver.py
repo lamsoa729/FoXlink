@@ -21,16 +21,15 @@ class FPPassiveCNSolver(Solver):
     using the Crank-Nicholson method with 4 point laplacian.
     """
 
-    def __init__(self, pfile=None, name="FP_pass_CN"):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
         @param name: name to store data under
 
         """
-        Solver.__init__(self, pfile, name)
+        Solver.__init__(self, pfile, pdict)
         self.makeDiagMats()
-        self._h5_data.attrs['solver_type'] = "FP_pass_CN"
 
     def makeDiagMats(self):
         """!Make matrices to necessary to carry out explicit and implicit

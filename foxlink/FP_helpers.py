@@ -233,7 +233,7 @@ def make_solution_grid(lim1, lim2, ds):
     return sgrid, ns1, ns2, s1, s2
 
 
-def make_ang_source_mat(s1_arr, s2_arr, phi, co, ks, ho, beta):
+def make_ang_source_mat(s1_arr, s2_arr, phi, ko, co, ks, ho, beta):
     """!TODO: Docstring for make_source_mat.
     @param : TODO
     @return: TODO
@@ -247,7 +247,7 @@ def make_ang_source_mat(s1_arr, s2_arr, phi, co, ks, ho, beta):
     return sparse.csc_matrix(src)
 
 
-def make_para_source_mat(s1_arr, s2_arr, R_pos, co, ks, ho, beta):
+def make_para_source_mat(s1_arr, s2_arr, R_pos, ko, co, ks, ho, beta):
     """!TODO: Docstring for make_para_source_mat.
     @param : TODO
     @return: TODO
@@ -263,7 +263,7 @@ def make_para_source_mat(s1_arr, s2_arr, R_pos, co, ks, ho, beta):
         for j in range(s2_arr.size):
             bf = boltz_fact(s1_arr[i], s2_arr[j], r, a1, a2, 1., ks, ho, beta)
             if bf > 10e-8:
-                src[i, j] = co * bf
+                src[i, j] = ko * co * bf
     return sparse.csc_matrix(src)
 
 

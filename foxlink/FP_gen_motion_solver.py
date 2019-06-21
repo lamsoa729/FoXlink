@@ -15,15 +15,15 @@ class FPGenMotionSolver(FPGenOrientSolver, FPRodMotionSolver):
 
     """Docstring for FPGenMotionSolver. """
 
-    def __init__(self, pfile=None, name="FP_gen_motion"):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
 
         @param pfile: TODO
-        @param name: TODO
+        @param pdict: TODO
 
         """
         print("Init FPGenMotionSolver ->", end=" ")
-        FPGenOrientSolver.__init__(self, pfile=pfile, name=name)
+        FPGenOrientSolver.__init__(self, pfile=pfile, pdict=pdict)
 
 
 ##########################################

@@ -41,7 +41,7 @@ class FPGenOrientSolver(Solver):
 
     """!Docstring for FPRodMotionSolver. """
 
-    def __init__(self, pfile=None, name="FP_rod_motion"):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
 
         @param pfile: TODO
@@ -49,7 +49,7 @@ class FPGenOrientSolver(Solver):
 
         """
         print("Init FPGenOrientSolver ->", end=" ")
-        Solver.__init__(self, pfile=pfile, name=name)
+        Solver.__init__(self, pfile=pfile, pdict=pdict)
 
     def ParseParams(self):
         """! Parse parameters from file and add to member variables

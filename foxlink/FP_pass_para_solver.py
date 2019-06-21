@@ -18,13 +18,14 @@ class FPPassiveParaSolver(Solver):
     a parallel geometry.
     """
 
-    def __init__(self, pfile=None, name='FP_passive_para'):
+    def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
 
         """
-        Solver.__init__(self, pfile, name)
+        print("Init FPPassiveParaSolver ->", end=" ")
+        Solver.__init__(self, pfile, pdict)
 
     def ParseParams(self):
         """! Parse parameters from file and add to member variables
@@ -48,12 +49,13 @@ class FPPassiveParaSolver(Solver):
         @return: TODO
 
         """
-        self.src_mat = self._params['ko'] * make_para_source_mat(self.s1, self.s2,
-                                                                 self.R_pos,
-                                                                 self._params['co'],
-                                                                 self._params['ks'],
-                                                                 self._params['ho'],
-                                                                 self._params["beta"])
+        self.src_mat = make_para_source_mat(self.s1, self.s2,
+                                            self.R_pos,
+                                            self._params['ko'],
+                                            self._params['co'],
+                                            self._params['ks'],
+                                            self._params['ho'],
+                                            self._params["beta"])
 
     def Write(self):
         """!Write current step in algorithm into dataframe

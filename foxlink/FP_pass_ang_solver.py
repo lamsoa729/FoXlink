@@ -31,6 +31,19 @@ class FPPassiveAngSolver(Solver):
         Solver.ParseParams(self)
         self.phio = self._params["phio"]  # Angle between MTs
 
+    def calcSourceMatrix(self):
+        """TODO: Docstring for makeSourceMatrix.
+        @return: TODO
+
+        """
+        self.src_mat = make_ang_source_mat(self.s1, self.s2,
+                                           self.R_pos,
+                                           self._params['ko'],
+                                           self._params['co'],
+                                           self._params['ks'],
+                                           self._params['ho'],
+                                           self._params["beta"])
+
     def makeDataframe(self):
         """! Make data frame to read from later
         @return: TODO
