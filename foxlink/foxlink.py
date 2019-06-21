@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 import argparse
+import sys
 import yaml
+import importlib
+
+# Import all solvers
+from .FP_gen_motion_static_xlinks import FPGenMotionStaticXlinks
 
 
 """@package docstring
@@ -64,7 +69,8 @@ class FoXlink(object):
 
         """
         try:
-            solver_type = eval(self._params['solver_type'])
+            solver_type = getattr(sys.modules[__name__],
+                                  self._params['solver_type'])
         except KeyError:
             raise
         except ImportError:

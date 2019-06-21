@@ -71,7 +71,7 @@ class PDESolver(object):
         """
         if self._pfile is not None:
             with open(self._pfile, 'r') as pf:
-                self._params = yaml.load(pf)
+                self._params = yaml.safe_load(pf)
         else:
             self._params = default_params
         self.L1 = self._params["L1"]  # Length of microtubule 1
