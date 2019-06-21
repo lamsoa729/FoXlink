@@ -6,6 +6,9 @@ import importlib
 
 # Import all solvers
 from .FP_gen_motion_static_xlinks import FPGenMotionStaticXlinks
+from .FP_static_solver import FPStaticSolver
+from .FP_pass_para_CN import FPPassiveParaCNSolver
+from .FP_pass_ang_CN import FPPassiveAngCNSolver
 
 
 """@package docstring

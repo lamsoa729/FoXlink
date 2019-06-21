@@ -78,4 +78,3 @@ class FPPassiveLFSolver(FPPassiveAngSolver):
 if __name__ == "__main__":
     pdes = FPPassiveLFSolver(sys.argv[1])
     pdes.Run()
-    pdes.Save('FP_pass_LF.pickle')

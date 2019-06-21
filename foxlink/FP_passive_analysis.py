@@ -201,13 +201,13 @@ class FPPassiveAnalysis(object):
         L1 = self._params["L1"]
         L2 = self._params["L2"]
         maxL = max(L1, L2)
-        if self.sType == 'FP_pass_ang_CN':
+        if self.sType == 'FPPassiveAngSolver':
             phi_arr = np.asarray(self.phi_arr)
             max_x = np.amax(maxL * np.cos(.5 * phi_arr))
             max_y = np.amax(maxL * np.sin(.5 * phi_arr))
             min_x = -.1 * max_x
             min_y = -1.1 * max_y
-        elif self.sType == 'FP_pass_para_CN':
+        elif self.sType == 'FPPassiveParaSolver':
             x_arr = self.R_arr[:, 0]
             y_arr = self.R_arr[:, 1]
             max_x = np.amax(.5 * L1)
@@ -267,10 +267,11 @@ class FPPassiveAnalysis(object):
         if not self.init_flag:
             for ax in axarr.flatten():
                 ax.clear()
-            self.line1.remove()
-            del self.line1
-            self.line2.remove()
-            del self.line2
+            # TODO Check to make sure this didn't fuck things up
+            # self.line1.remove()
+            # del self.line1
+            # self.line2.remove()
+            # del self.line2
             for artist in fig.gca().lines + fig.gca().collections:
                 artist.remove()
                 del artist

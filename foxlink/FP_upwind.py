@@ -243,7 +243,6 @@ class PDESolver(object):
 
         """
         print(self.phi0.tolist())
-        pass
 
 
 ##########################################
