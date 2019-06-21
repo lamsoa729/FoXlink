@@ -35,7 +35,7 @@ class FPStaticSolver(Solver):
         """
         ko = self._params["ko"]
         dt = self.dt
-        self.sgrid = ((dt / ko - (.5 * dt**2)) *
+        self.sgrid = ((dt - (.5 * ko * dt**2)) *
                       self.src_mat + (1. - ko * dt) * self.sgrid)
 
 

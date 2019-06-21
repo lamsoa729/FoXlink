@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import sys
-import os
 from copy import deepcopy as dcp
 import numpy as np
 from scipy.integrate import dblquad
