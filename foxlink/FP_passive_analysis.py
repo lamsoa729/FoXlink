@@ -1,40 +1,25 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
 
-import matplotlib.lines as lines
-from FP_helpers import *
-from fp_graphs import *
 import sys
-import os
-# Testing
-# import pdb
 import time
-# import line_profiler
-# Analysis
 import numpy as np
-from scipy import sparse
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FFMpegWriter
+import matplotlib.lines as lines
 import matplotlib as mpl
-# import pandas as pd
-# import pickle as pickle
 import yaml
 import h5py
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
 
+from .FP_helpers import *
+from .fp_graphs import *
 
 """@package docstring
 File: FP_passive_analysis.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: File containing classes to analyze data, make movies, and create graphs from passive PDE runs
 """
-
-from matplotlib.animation import FFMpegWriter
 
 
 class FasterFFMpegWriter(FFMpegWriter):

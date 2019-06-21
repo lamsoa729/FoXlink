@@ -22,6 +22,8 @@ class FPGenMotionSolver(FPGenOrientSolver, FPRodMotionSolver):
         @param name: TODO
 
         """
+        print("Init FPGenMotionSolver ->", end=" ")
+        FPGenOrientSolver.__init__(self, pfile=pfile, name=name)
 
 
 ##########################################

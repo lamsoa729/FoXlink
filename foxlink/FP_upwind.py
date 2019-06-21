@@ -5,10 +5,7 @@ import sys
 import os
 # Testing
 import pdb
-# import time, timeit
-# import line_profiler
 # Analysis
-from math import *
 from copy import deepcopy as dcp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -154,7 +151,8 @@ class PDESolver(object):
                                                args=b_args)
                     # args=b_args, epsabs=0, epsrel=1e-8)
                     sparseT[i, j] = 1
-                    print(("{}, {} = {} p/m {}".format(i, j, LUT[i, j], error)))
+                    print(
+                        ("{}, {} = {} p/m {}".format(i, j, LUT[i, j], error)))
 
         return LUT, sparseT
 
@@ -183,8 +181,6 @@ class PDESolver(object):
         CFL = dt / self.ds
         s1 = self.s1
         s2 = self.s2
-        L1 = self.L1
-        L2 = self.L2
 
         r = self._params["r"]  # distance between rod centers
         a1 = self._params["a1"]  # dot product between u1 and r unit vectors

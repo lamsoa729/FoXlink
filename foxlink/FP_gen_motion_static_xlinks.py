@@ -8,7 +8,7 @@ from .FP_static_solver import FPStaticSolver
 File: FP_gen_motion_static_xlinks.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Solver class to calculate rod motion in a solution of crosslinks binding and unbinding.
 """
 
 
@@ -19,7 +19,7 @@ class FPGenMotionStaticXlinks(FPGenMotionSolver, FPStaticSolver):
     def __init__(self, pfile=None, name="FP_rod_motion"):
         """TODO: to be defined1. """
         print("Init FPGenMotionStaticXlinks ->", end=" ")
-        FPGenOrientSolver.__init__(self, pfile=pfile,
+        FPGenMotionSolver.__init__(self, pfile=pfile,
                                    name="FP_gen_motion_static_xlinks")
 
     def Step(self):

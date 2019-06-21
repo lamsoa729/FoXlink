@@ -1,49 +1,18 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
 import sys
-import os
-# Testing
-# import pdb
-# import time, timeit
-# import line_profiler
-# Analysis
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import pandas as pd
-import yaml
-from copy import deepcopy as dcp
-# from math import *
-# Speed
-from numba import jit
-# Other importing
-# sys.path.append(os.path.join(os.path.dirname(__file__), '[PATH]'))
-from FP_helpers import *
-from solver import Solver
-from FP_pass_ang_solver import FPPassiveAngSolver
+from .FP_helpers import laplace_5p, boltz_fact_ang
+from .solver import Solver
+from .FP_pass_ang_solver import FPPassiveAngSolver
 
 
 """@package docstring
-File:
+File: FP_pass_LF.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
-
-# @jit
-# def laplace_5p(i, j, sgrid, ds):
-#     """!Find the laplacian using the 4-point method
-#
-#     @param i: TODO
-#     @param j: TODO
-#     @param sol: TODO
-#     @return: TODO
-#
-#     """
-#     return (sgrid[i - 1, j] + sgrid[i + 1, j] + sgrid[i, j - 1] +
-#             sgrid[i, j + 1] - (4. * sgrid[i, j])) / (ds * ds)
+#  TODO: Speed up by using matrix math <21-06-19, ARL> #
 
 
 class FPPassiveLFSolver(FPPassiveAngSolver):
@@ -58,6 +27,7 @@ class FPPassiveLFSolver(FPPassiveAngSolver):
         @param pfile: parameter file path
 
         """
+        print("Init FPPassiveLFSolver ->", end=" ")
         FPPassiveAngSolver.__init__(self, pfile)
 
     def Step(self):
@@ -102,8 +72,6 @@ class FPPassiveLFSolver(FPPassiveAngSolver):
         # Shift grids, not sure if the reference will be passed correctly
         self.sgrid_arr[0] = self.sgrid_arr[1]
         self.sgrid_arr[1] = sgrid_n
-
-        #  TODO: Evolve location MTs with torque <14-03-19, ARL> #
 
 
 ##########################################

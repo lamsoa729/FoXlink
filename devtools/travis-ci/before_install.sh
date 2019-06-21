@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Temporarily change directory to $HOME to install software
 pushd .
 cd $HOME

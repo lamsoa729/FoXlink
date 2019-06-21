@@ -1,27 +1,21 @@
 #!/usr/bin/env python
 # In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
 # Basic
-from os import path
+# from os import path
 # Testing
+from pathlib import Path
 import time
 import numpy as np
 import yaml
 import h5py
-# import pickle as pickle
 from scipy import sparse
-# from FP_initial_conditions import *
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
-# sys.path.append(os.path.join(os.path.dirname(__file__), '[PATH]'))
 
 
 """@package docstring
-File:
+File: solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Base Solver class for FoXlink
 """
 
 
@@ -46,8 +40,8 @@ class Solver(object):
         self.makeSolutionGrid()
         self.setInitialCondition()
         # Create data frame
-        self._h5_data = h5py.File(path.join("{}.h5".format(self._name)), 'w')
-        # self._h5_data.attrs = self._params
+        self._h5_data = h5py.File(Path("{}.h5".format(self._name)), 'w')
+        # Add meta data to hdf5 file
         for k, v in self._params.items():
             self._h5_data.attrs[k] = v
         self.makeDataframe()
