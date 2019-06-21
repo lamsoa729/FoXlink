@@ -174,8 +174,8 @@ class Solver(object):
             self._xl_grp = self._h5_data.create_group('XL_data')
             self._mt_grp = self._h5_data.create_group('MT_data')
 
-            s1_dset = self._mt_grp.create_dataset('s1', data=self.s1)
-            s2_dset = self._mt_grp.create_dataset('s2', data=self.s2)
+            self._mt_grp.create_dataset('s1', data=self.s1)
+            self._mt_grp.create_dataset('s2', data=self.s2)
 
             self._xl_distr_dset = self._xl_grp.create_dataset(
                 'XL_distr',

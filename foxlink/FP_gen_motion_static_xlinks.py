@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from .FP_gen_motion_solver import FPGenMotionSolver
-from .FP_gen_orient_solver import FPGenOrientSolver
 from .FP_static_solver import FPStaticSolver
 
 

@@ -3,10 +3,10 @@ from .solver import Solver
 
 
 """@package docstring
-File:
+File: FP_pass_ang_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Class that solves the distribution of crosslinks in an angular system.
 """
 
 
@@ -47,7 +47,6 @@ class FPPassiveAngSolver(Solver):
         """
         i_step = Solver.Write(self)
         self._phi_dset[i_step] = self.phio
-        # self.df["xl_dens"] += [self.sgrid.tolist()]
 
 
 ##########################################

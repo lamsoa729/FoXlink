@@ -9,7 +9,7 @@ from numba import jit
 File: FP_helpers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description: Helper functions for FP solver
+Description: Helper functions for FP solver.
 """
 
 

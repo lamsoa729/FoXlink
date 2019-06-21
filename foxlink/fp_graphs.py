@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-import yaml
 
 
 """@package docstring

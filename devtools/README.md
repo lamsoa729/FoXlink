@@ -30,23 +30,23 @@ This directory contains OS agnostic helper scripts which don't fall in any of th
 
 
 ## How to contribute changes
-- Clone the repository if you have write access to the main repo, fork the repository if you are a collaborator.
-- Make a new branch with `git checkout -b {your branch name}`
-- Make changes and test your code
-- Ensure that the test environment dependencies (`conda-envs`) line up with the build and deploy dependencies (`conda-recipe/meta.yaml`)
-- Push the branch to the repo (either the main or your fork) with `git push -u origin {your branch name}`
+* Clone the repository if you have write access to the main repo, fork the repository if you are a collaborator.
+* Make a new branch with `git checkout -b {your branch name}`
+* Make changes and test your code
+* Ensure that the test environment dependencies (`conda-envs`) line up with the build and deploy dependencies (`conda-recipe/meta.yaml`)
+* Push the branch to the repo (either the main or your fork) with `git push -u origin {your branch name}`
   * Note that `origin` is the default name assigned to the remote, yours may be different
-- Make a PR on GitHub with your changes
-- We'll review the changes and get your code into the repo after lively discussion!
+* Make a PR on GitHub with your changes
+* We'll review the changes and get your code into the repo after lively discussion!
 
 
 ## Checklist for updates
-- [ ] Make sure there is an/are issue(s) opened for your specific update
-- [ ] Create the PR, referencing the issue
-- [ ] Debug the PR as needed until tests pass
-- [ ] Tag the final, debugged version 
-   *  `git tag -a X.Y.Z [latest pushed commit] && git push --follow-tags`
-- [ ] Get the PR merged in
+* [ ] Make sure there is an/are issue(s) opened for your specific update
+* [ ] Create the PR, referencing the issue
+* [ ] Debug the PR as needed until tests pass
+* [ ] Tag the final, debugged version 
+    *  `git tag -a X.Y.Z [latest pushed commit] && git push --follow-tags`
+* [ ] Get the PR merged in
 
 ## Versioneer Auto-version
 [Versioneer](https://github.com/warner/python-versioneer) will automatically infer what version 

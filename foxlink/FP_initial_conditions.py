@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 import numpy as np
 from scipy import sparse
-from .solver import Solver
 
 
 """@package docstring
-File:
+File: FP_initial_conditions.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Functions for initializing solver class solution grids
 """
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .FP_gen_orient_solver import FPGenOrientSolver, reparameterize_rods
+from .FP_gen_orient_solver import FPGenOrientSolver
 from .FP_rod_motion_solver import FPRodMotionSolver
 
 
@@ -7,7 +7,7 @@ from .FP_rod_motion_solver import FPRodMotionSolver
 File: FP_gen_motion_Solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Combination class of general orientation solver and rod motion solver
 """
 
 

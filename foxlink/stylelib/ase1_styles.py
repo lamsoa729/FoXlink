@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
 # Basic
-import sys
-import os
-import pdb
-# Analysis
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# from math import *
 
 '''
 Name: ase1_styles

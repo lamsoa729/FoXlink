@@ -2,16 +2,15 @@
 from numba import jit
 # Other importing
 from .FP_helpers import make_ang_source_mat
-from .solver import Solver
 from .FP_pass_ang_solver import FPPassiveAngSolver
 from .FP_pass_CN_solver import FPPassiveCNSolver
 
 
 """@package docstring
-File:
+File: FP_pass_ang_CN.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Class that solves the distribution of crosslinks in an angular system using the Crank-Nicolson method.
 """
 
 
@@ -37,7 +36,7 @@ class FPPassiveAngCNSolver(FPPassiveCNSolver, FPPassiveAngSolver):
                                            self._params['ho'],
                                            self._params["beta"])
         self.sgrid += self.src_mat
-        self.src_mat *= self._params["ko"]
+        # self.src_mat *= self._params["ko"]
         # Initial condition
         # print(self.src_mat)
 

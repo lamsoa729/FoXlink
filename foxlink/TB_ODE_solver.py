@@ -3,7 +3,6 @@ import sys
 from scipy.integrate import dblquad, odeint
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import h5py
 import yaml
 from numba import jit
@@ -64,10 +63,10 @@ def total_xlink_torque_ang(L1, L2, phi, co, ks, ho, beta):
     @return: TODO
 
     """
-    torque, err = dblquad(xlink_avg_torque_ang,
-                          -.5 * L1, .5 * L1,
-                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                          args=[phi, co, ks, ho, beta],)
+    torque, _ = dblquad(xlink_avg_torque_ang,
+                        -.5 * L1, .5 * L1,
+                        lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                        args=[phi, co, ks, ho, beta],)
     # epsabs=0, epsrel=1.e-8)
     print("Torque: {}, phi: {}".format(torque, phi))
     return torque
