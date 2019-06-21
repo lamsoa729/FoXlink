@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from numba import jit
-# Other importing
 from .FP_helpers import make_ang_source_mat
 from .FP_pass_ang_solver import FPPassiveAngSolver
 from .FP_pass_CN_solver import FPPassiveCNSolver

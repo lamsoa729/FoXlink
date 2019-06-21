@@ -3,10 +3,9 @@ import sys
 from scipy.integrate import dblquad, odeint
 import numpy as np
 import matplotlib.pyplot as plt
-import h5py
+# import h5py
 import yaml
 from numba import jit
-from .FP_helpers import spring_torque_ang
 
 
 """@package docstring

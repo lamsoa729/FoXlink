@@ -2,7 +2,6 @@
 import argparse
 import sys
 import yaml
-import importlib
 
 # Import all solvers
 from .FP_gen_motion_static_xlinks import FPGenMotionStaticXlinks

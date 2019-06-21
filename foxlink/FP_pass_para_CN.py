@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # Other importing
-from .solver import Solver
 from .FP_pass_para_solver import FPPassiveParaSolver
 from .FP_pass_CN_solver import FPPassiveCNSolver
 from .FP_initial_conditions import *
@@ -28,7 +27,7 @@ class FPPassiveParaCNSolver(FPPassiveCNSolver, FPPassiveParaSolver):
 
         """
         FPPassiveCNSolver.__init__(self, pfile, name)
-        self._h5_data.attrs['solver_type'] = "FP_pass_para_CN"
+        self._h5_data.attrs['solver_type'] = "FPPassiveParaCNSolver"
 
 
 ##########################################

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 """@package docstring
@@ -23,7 +22,6 @@ def graph_vs_time(ax, time, y, n=-1, color='b'):
     """
     s = ax.scatter(time[:n], y[:n], c=color)
     return s
-    # ax.set_xlim(left=0, right=time[-1])
 
 
 def graph_xl_dens(ax, psi, s1, s2, **kwargs):

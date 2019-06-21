@@ -1,24 +1,11 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
 import sys
 import os
-# Testing
-import pdb
-# Analysis
 from copy import deepcopy as dcp
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import pandas as pd
 from scipy.integrate import dblquad
 import yaml
-# from math import *
-# Speed
-from numba import jit
-from FP_helpers import *
-# Other importing
-# sys.path.append(os.path.join(os.path.dirname(__file__), '[PATH]'))
+from .FP_helpers import *
 
 
 """@package docstring
@@ -207,10 +194,10 @@ class PDESolver(object):
                     else:
                         b_fact = self.LUT[i, j]
                 else:
-                    b_fact, error = dblquad(boltz_fact, s1[i] - ds_h, s1[i] + ds_h,
-                                            lambda r2: s2[j] - ds_h,
-                                            lambda r2: s2[j] + ds_h,
-                                            args=b_args, epsabs=0, epsrel=1e-8)
+                    b_fact, _ = dblquad(boltz_fact, s1[i] - ds_h, s1[i] + ds_h,
+                                        lambda r2: s2[j] - ds_h,
+                                        lambda r2: s2[j] + ds_h,
+                                        args=b_args, epsabs=0, epsrel=1e-8)
 
                 # Calculate parallel force, then speed of head 1
                 fpar = (spring_force(s1[i] - ds_h, s2[j], *f_args) *

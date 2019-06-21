@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
 import matplotlib.lines as lines
-import matplotlib as mpl
-import yaml
 import h5py
 
 from .FP_helpers import *
@@ -368,8 +366,8 @@ class FPPassiveAnalysis(object):
         if self.init_flag:
             self.initSlice(fig, axarr, c)
             self.init_flag = False
-        d = graph_vs_time(axarr[1, 0], self.time, self.torque_arr, n)
-        e = graph_vs_time(axarr[1, 1], self.time, self.Nxl_arr, n)
+        graph_vs_time(axarr[1, 0], self.time, self.torque_arr, n)
+        graph_vs_time(axarr[1, 1], self.time, self.Nxl_arr, n)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return fig.gca().lines + fig.gca().collections

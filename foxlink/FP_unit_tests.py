@@ -1,24 +1,8 @@
 #!/usr/bin/env python
 # In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
 # Basic
-import sys
-import os
 # Testing
 import unittest
-# import pdb
-# import time, timeit
-# import line_profiler
-# Analysis
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import pandas as pd
-# import yaml
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
-# sys.path.append(os.path.join(os.path.dirname(__file__), '[PATH]'))
 from FP_helpers import *
 
 

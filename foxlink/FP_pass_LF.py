@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 from .FP_helpers import laplace_5p, boltz_fact_ang
-from .solver import Solver
 from .FP_pass_ang_solver import FPPassiveAngSolver
 
 
