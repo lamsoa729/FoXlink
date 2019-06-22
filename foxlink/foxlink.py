@@ -9,6 +9,8 @@ from .FP_gen_orient_static_xlinks import FPGenOrientStaticXlinks
 from .FP_static_solver import FPStaticSolver
 from .FP_pass_para_CN import FPPassiveParaCNSolver
 from .FP_pass_ang_CN import FPPassiveAngCNSolver
+from .FP_passive_analysis import FasterFFMpegWriter, makeAnimation, FPAnalysis
+from matplotlib.animation import FFMpegWriter
 
 
 """@package docstring
@@ -51,9 +53,6 @@ class FoXlink(object):
 
         """
         self._opts = opts
-        self._params = self.ParseParams()
-        self._solver_type = self.getSolverType()
-        self._solver = self.createSolver()
 
     def ParseParams(self):
         """!Parse parameter file from options.
@@ -86,7 +85,7 @@ class FoXlink(object):
 
         """
         try:
-            solver = self._solver_type(self._opts.file, name=self._opts.output)
+            solver = self._solver_type(pfile=self._opts.file)
         except BaseException:
             raise
         return solver
@@ -96,8 +95,24 @@ class FoXlink(object):
         @return: void
 
         """
+        self._params = self.ParseParams()
+        self._solver_type = self.getSolverType()
+        self._solver = self.createSolver()
         self._solver.Run()
         self._solver.Save()
+
+    def Analyze(self):
+        """!Analyze hdf5 file from foxlink solver run
+        @return: TODO
+
+        """
+        analysis = FPAnalysis(self._opts.file)
+        analysis.Analyze(True)
+        print("Started making movie")
+        Writer = FFMpegWriter
+        writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
+        makeAnimation(analysis, writer)
+        analysis.Save()
 
 
 def main():
@@ -107,7 +122,10 @@ def main():
     """
     opts = parse_args()
     FXlink = FoXlink(opts)
-    FXlink.Run()
+    if opts.analyze:
+        FXlink.Analyze()
+    else:
+        FXlink.Run()
 
 
 ##########################################

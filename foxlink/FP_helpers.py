@@ -2,7 +2,7 @@
 import numpy as np
 from scipy import sparse
 from math import exp, sqrt, cos, sin
-from numba import jit
+from numba import jit, njit
 
 
 """@package docstring
@@ -159,6 +159,8 @@ def boltz_fact(s1, s2, r, a1, a2, b, ks, ho, beta):
     return exp(alpha)
 
 
+# @njit
+@njit(parallel=True)
 def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
     """! Calculate the boltzmann factor for a given configuration
 
@@ -173,13 +175,12 @@ def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
     @return: return boltzmann factor multiplied associated binding concentration
 
     """
-    bf = np.exp(-.5 * ks * np.power((np.sqrt(r**2 +
-                                             np.power(s1, 2) +
-                                             np.power(s2, 2) -
-                                             2. * np.multiply(s1, s2) * b +
-                                             2. * r * (s2 * a2 - s1 * a1)) - ho),
-                                    2))
-
+    bf = np.exp(-.5 * ks * beta * np.power((np.sqrt(r**2 +
+                                                    np.power(s1, 2) +
+                                                    np.power(s2, 2) -
+                                                    2. * np.multiply(s1, s2) * b +
+                                                    2. * r * (s2 * a2 - s1 * a1)) - ho),
+                                           2))
     return bf
 
 

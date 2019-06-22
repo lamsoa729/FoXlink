@@ -36,8 +36,11 @@ class FPStaticSolver(Solver):
         """
         ko = self._params["ko"]
         dt = self.dt
+        # Strang splitting
         self.sgrid = ((dt - (.5 * ko * dt**2)) *
                       self.src_mat + (1. - ko * dt) * self.sgrid)
+        # No strang splitting
+        # self.sgrid = dt * self.src_mat + (1. - ko * dt) * self.sgrid
 
 
 ##########################################

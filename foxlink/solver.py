@@ -39,7 +39,8 @@ class Solver(object):
         self.makeSolutionGrid()
         self.setInitialCondition()
         # Create data frame
-        self._h5_data = h5py.File(Path("{}.h5".format(self.__name__)), 'w')
+        self._h5_data = h5py.File(
+            Path("{}.h5".format(self.__class__.__name__)), 'w')
         # Add meta data to hdf5 file
         for k, v in self._params.items():
             self._h5_data.attrs[k] = v
@@ -89,10 +90,12 @@ class Solver(object):
         """
         if 'initial_condition' in self._params:
             if self._params['initial_condition'] == 'equil':
-                self.sgrid += self.src_mat
+                self.sgrid += self.src_mat / self._params['ko']
+            elif self._params['initial_condition'] == 'empty':
+                pass
             else:
                 self.sgrid += eval(self._params['initial_condition'])
-                print(self.sgrid)
+            print(self.sgrid)
 
     def makeSolutionGrid(self):
         """!Make an array of solutions to solve the PDE
