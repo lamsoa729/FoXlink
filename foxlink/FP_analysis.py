@@ -13,7 +13,7 @@ from .FP_helpers import *
 from .fp_graphs import *
 
 """@package docstring
-File: FP_passive_analysis.py
+File: FP_analysis.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: File containing classes to analyze data, make movies, and create graphs from passive PDE runs

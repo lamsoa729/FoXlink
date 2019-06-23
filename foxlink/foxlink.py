@@ -9,7 +9,7 @@ from .FP_gen_orient_static_xlinks import FPGenOrientStaticXlinks
 from .FP_static_solver import FPStaticSolver
 from .FP_pass_para_CN import FPPassiveParaCNSolver
 from .FP_pass_ang_CN import FPPassiveAngCNSolver
-from .FP_passive_analysis import FasterFFMpegWriter, makeAnimation, FPAnalysis
+from .FP_analysis import FasterFFMpegWriter, makeAnimation, FPAnalysis
 from matplotlib.animation import FFMpegWriter
 
 
@@ -39,7 +39,7 @@ def parse_args():
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed.")  # TODO
     parser.add_argument("-m", "--movie", action="store_true", default=False,
-                        help="Make movie of systems of evolution.") 
+                        help="Make movie of systems of evolution.")
     opts = parser.parse_args()
     return opts
 
