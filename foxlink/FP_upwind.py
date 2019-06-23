@@ -5,6 +5,7 @@ import numpy as np
 from scipy.integrate import dblquad
 import yaml
 from .FP_helpers import *
+from .solver import Solver
 
 
 """@package docstring
@@ -14,27 +15,8 @@ Email: adam.lamson@colorado.edu
 Description: Solve Fokker-Planck equation
 """
 
-default_params = {
-    "r": 1,  # Distance between rod centers
-    "a1": 0,  # Dot product between u1 and r unit vectors
-    "a2": 0,  # Dot product between u2 and r unit vectors
-    "b": -1,  # Dot product between u1 and u2 unit vectors
-    "L1": 100,  # Length of microtubule 1
-    "L2": 100,  # Length of microtubule 2
-    "dt": 1,  # Time step
-    "nt": 2000,  # total time
-    "ds": 1,  # Segmentation size of microtubules
-    "ko": 1,  # Crosslinker turnover rate
-    "co": 1,  # Effective crosslinker concentration
-    "ks": 1,  # Crosslinker spring concentration
-    "ho": 1,  # Equilibrium length of crosslinkers
-    "vo": 1,  # Base velocity of crosslinker heads
-    "fs": 1,  # Stall force of crosslinker heads
-    "beta": 1,  # Inverse temperature
-}
 
-
-class PDESolver(object):
+class FPUpwindSolver(Solver):
 
     """!Docstring for PDESolver. """
 

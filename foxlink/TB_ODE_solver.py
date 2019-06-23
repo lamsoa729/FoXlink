@@ -2,14 +2,12 @@
 import sys
 from scipy.integrate import dblquad, odeint
 import numpy as np
-import matplotlib.pyplot as plt
-# import h5py
-import yaml
 from numba import jit
+from .solver import Solver
 
 
 """@package docstring
-File: TB_ODE_solver.py
+File: ODE_adiabatic_ang_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -67,7 +65,7 @@ def total_xlink_torque_ang(L1, L2, phi, co, ks, ho, beta):
                         lambda s2: -.5 * L2, lambda s2: .5 * L2,
                         args=[phi, co, ks, ho, beta],)
     # epsabs=0, epsrel=1.e-8)
-    print("Torque: {}, phi: {}".format(torque, phi))
+    # print("Torque: {}, phi: {}".format(torque, phi))
     return torque
 
 
@@ -93,58 +91,128 @@ def phidot(phi, t, params):
 
     @param phi: TODO
     @param t: TODO
-    @param params: TODO
+    @paramself._params: TODO
     @return: TODO
 
     """
-    L1, L2, mu, co, ks, ho, beta = params
+    L1, L2, mu, co, ks, ho, beta = self._params
     dphi = mu * total_xlink_torque_ang(L1, L2, phi, co, ks, ho, beta)
     return dphi
 
 
-def main(pfile=None):
-    """!TODO: Docstring for main.
+class ODEAdiabaticAngSolver(Solver):
 
-    @param pfile: TODO
-    @return: TODO
+    """!Docstring for ODEAdiabaticAngSolver. """
 
-    """
-    with open(pfile, 'r') as pf:
-        params = yaml.safe_load(pf)
-    print("parameter file:", pfile)
-    # Simulation variables
-    nt = params["nt"]
-    dt = params["dt"]
-    t = np.arange(0, nt, dt)
-    # Fixed variables
-    L1 = params["L1"]
-    L2 = params["L2"]
-    visc = params["viscosity"]
-    beta = params["beta"]
-    diameter = params["rod_diameter"]
-    co = params["co"]
-    ks = params["ks"]
-    ho = params["ho"]
-    # Initial variables
-    R1_vec = np.asarray(params['R1_vec'])
-    r1_vec = R1_vec / np.linalg.norm(R1_vec)
-    R2_vec = np.asarray(params['R2_vec'])
-    r2_vec = R2_vec / np.linalg.norm(R2_vec)
-    # Calculated variables
-    phio = np.arccos(np.dot(r1_vec, r2_vec))
-    mu1_rot = rod_rot_mobility(L1, diameter, visc)
-    mu2_rot = rod_rot_mobility(L2, diameter, visc)
-    # Get reduced mobility times 2 since the system experiences. Not sure if
-    # this is right.
-    mu_eff = 2. * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
+    def __init__(self, pfile=None, pdict=None):
+        """!TODO: to be defined1.
 
-    # Integration variables
-    int_params = [L1, L2, mu_eff, co, ks, ho, beta]
-    psoln = odeint(phidot, phio, t, args=(int_params,))
-    plt.plot(t, psoln[:, 0])
-    plt.show()
+        @param pfile: TODO
+        @param pdict: TODO
+
+        """
+        Solver.__init__(self)
+
+        self._pfile = pfile
+        self._params = pdict
+
+    def setInitialConditions(self):
+        """!Parse parameters for the run, calculating necessary variables not directly specified including phio and mobility matrices.
+        @return: TODO
+
+        """
+
+        L1 = self._params["L1"]
+        L2 = self._params["L2"]
+        visc = self._params["viscosity"]
+        beta = self._params["beta"]
+        diameter = self._params["rod_diameter"]
+        co = self._params["co"]
+        ks = self._params["ks"]
+        ho = self._params["ho"]
+        # Initial variables
+        R1_vec = np.asarray(params['R1_vec'])
+        r1_vec = R1_vec / np.linalg.norm(R1_vec)
+        R2_vec = np.asarray(params['R2_vec'])
+        r2_vec = R2_vec / np.linalg.norm(R2_vec)
+        # Calculated variables
+        self.phio = np.arccos(np.dot(r1_vec, r2_vec))
+        mu1_rot = rod_rot_mobility(L1, diameter, visc)
+        mu2_rot = rod_rot_mobility(L2, diameter, visc)
+        # Get reduced mobility times 2 since the system experiences. Not sure if
+        # this is right.
+        mu_eff = 2. * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
+        self.int_params = [L1, L2, mu_eff, co, ks, ho, beta]
+
+    def Run(self):
+        """!This uses odeint as its main run functions
+        @return: TODO
+
+        """
+        self.psoln = odeint(
+            phidot, self.phio, self.time, args=(
+                self.int_params,))
+        self.Write()
+
+    def Write(self):
+        """!TODO: Docstring for Write.
+        @return: TODO
+
+        """
+        # TODO write in psoln, maybe calculate solution grid
+        pass
+
+    def Save(self):
+        """!TODO: Docstring for Save.
+        @return: TODO
+
+        """
+        self._h5_data.flush()
+        self._h5_data.close()
+        pass
 
 
+# def main(pfile=None):
+#     """!TODO: Docstring for main.
+
+#     @param pfile: TODO
+#     @return: TODO
+
+#     """
+#     with open(pfile, 'r') as pf:
+#         self._params = yaml.safe_load(pf)
+#     print("parameter file:", pfile)
+#     # Simulation variables
+#     nt = self._params["nt"]
+#     dt = self._params["dt"]
+#     t = np.arange(0, nt, dt)
+#     # Fixed variables
+#     L1 = self._params["L1"]
+#     L2 = self._params["L2"]
+#     visc = self._params["viscosity"]
+#     beta = self._params["beta"]
+#     diameter = self._params["rod_diameter"]
+#     co = self._params["co"]
+#     ks = self._params["ks"]
+#     ho = self._params["ho"]
+#     # Initial variables
+#     R1_vec = np.asarray(params['R1_vec'])
+#     r1_vec = R1_vec / np.linalg.norm(R1_vec)
+#     R2_vec = np.asarray(params['R2_vec'])
+#     r2_vec = R2_vec / np.linalg.norm(R2_vec)
+#     # Calculated variables
+#     phio = np.arccos(np.dot(r1_vec, r2_vec))
+#     mu1_rot = rod_rot_mobility(L1, diameter, visc)
+#     mu2_rot = rod_rot_mobility(L2, diameter, visc)
+#     # Get reduced mobility times 2 since the system experiences. Not sure if
+#     # this is right.
+#     mu_eff = 2. * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
+
+#     # Integration variables
+#     int_params = [L1, L2, mu_eff, co, ks, ho, beta]
+#     psoln = odeint(phidot, phio, t, args=(int_params,))
+#     plt.plot(t, psoln[:, 0])
+#     plt.show()
 ##########################################
 if __name__ == "__main__":
     main(sys.argv[1])

@@ -6,7 +6,7 @@ import random
 
 from foxlink import foxlink
 
-
+# TODO Generate default parameter set for testing
 # @pytest.fixture
 # def generate_numbers():
 #     """Sample pytest fixture. Generates list of random integers.

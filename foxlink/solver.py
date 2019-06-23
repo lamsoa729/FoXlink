@@ -41,9 +41,6 @@ class Solver(object):
         # Create data frame
         self._h5_data = h5py.File(
             Path("{}.h5".format(self.__class__.__name__)), 'w')
-        # Add meta data to hdf5 file
-        for k, v in self._params.items():
-            self._h5_data.attrs[k] = v
         self.makeDataframe()
 
     def ParseParams(self):
@@ -55,7 +52,9 @@ class Solver(object):
         if self._pfile is not None:
             with open(self._pfile, 'r') as pf:
                 self._params = yaml.safe_load(pf)
-        elif self_params is None:
+        elif self._params is None:
+            print("Could not find parameter set.",
+                  "Using default params defined in solver.py")
             self._params = default_params
 
         # Integration parameters
@@ -161,15 +160,17 @@ class Solver(object):
         @return: Sum of changes of grid, Changes phi1 and phi0
 
         """
-        print("Step not made!")
+        print("Step not made!",
+              "Initialize Step method of {}.".format(
+                  self.__class__.__name__a))
 
     def makeDataframe(self):
         """! Make data frame to read from later
         @return: Dictionary pointing to data in dataframe
 
         """
-        # Enter params into hdf5 data file as attributes for later
         if not self.data_frame_made:
+            # Enter params into hdf5 data file as attributes for later
             for key, param in self._params.items():
                 self._h5_data.attrs[key] = param
             time = self.time[::self.nwrite]
@@ -245,6 +246,29 @@ class Solver(object):
         """
         self._h5_data.flush()
         self._h5_data.close()
+
+    default_params = {
+        "r": 1,  # Distance between rod centers
+        "a1": 0,  # Dot product between u1 and r unit vectors
+        "a2": 0,  # Dot product between u2 and r unit vectors
+        "b": -1,  # Dot product between u1 and u2 unit vectors
+        "R1_pos": [0, 0, 0],
+        "R2_pos": [0, 0, 0],
+        "R1_vec": [0, 1, 0],
+        "R2_vec": [0, 1, 0],
+        "L1": 100,  # Length of microtubule 1
+        "L2": 100,  # Length of microtubule 2
+        "dt": 1,  # Time step
+        "nt": 2000,  # total time
+        "ds": 1,  # Segmentation size of microtubules
+        "ko": 1,  # Crosslinker turnover rate
+        "co": 1,  # Effective crosslinker concentration
+        "ks": 1,  # Crosslinker spring concentration
+        "ho": 1,  # Equilibrium length of crosslinkers
+        "vo": 1,  # Base velocity of crosslinker heads
+        "fs": 1,  # Stall force of crosslinker heads
+        "beta": 1,  # Inverse temperature
+    }
 
 
 ##########################################
