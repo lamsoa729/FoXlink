@@ -140,6 +140,7 @@ class Solver(object):
         self.written = False
 
         t0 = time.time()
+        t_start = t0
         while self.t < self.nt:
             self.Step()
             self.t += self.dt
@@ -151,6 +152,8 @@ class Solver(object):
                 # Reset write function
                 self.written = False
                 t0 = time.time()
+        print(r" --- Total of {} steps in {:.4f} seconds ---".format(self._nsteps, 
+                    time.time()-t_start))
         return
 
     def Step(self):
