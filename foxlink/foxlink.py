@@ -35,9 +35,11 @@ def parse_args():
     parser.add_argument("-c", "--change_params", action="store_true", default=False,
                         help="Change parameter file if options differ file values.")  # TODO
     parser.add_argument("-a", "--analyze", action="store_true", default=False,
-                        help="Perform post-analysis on simulations once completed.")  # TODO
+                        help="Perform post-analysis on simulations once completed.")
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed.")  # TODO
+    parser.add_argument("-m", "--movie", action="store_true", default=False,
+                        help="Make movie of systems of evolution.") 
     opts = parser.parse_args()
     return opts
 
@@ -107,11 +109,13 @@ class FoXlink(object):
 
         """
         analysis = FPAnalysis(self._opts.file)
-        analysis.Analyze(True)
-        print("Started making movie")
-        Writer = FFMpegWriter
-        writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
-        makeAnimation(analysis, writer)
+        if self._opts.analyze:
+            analysis.Analyze(True)
+        if self._opts.movie:
+            print("Started making movie")
+            Writer = FFMpegWriter
+            writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
+            makeAnimation(analysis, writer)
         analysis.Save()
 
 
@@ -122,7 +126,7 @@ def main():
     """
     opts = parse_args()
     FXlink = FoXlink(opts)
-    if opts.analyze:
+    if opts.analyze or opts.movie:
         FXlink.Analyze()
     else:
         FXlink.Run()
