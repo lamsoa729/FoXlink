@@ -38,7 +38,7 @@ class FPPassiveCNSolver(Solver):
 
         """
         # Parameters for matrices
-        g_xl = self._params["gamma"]
+        g_xl = self._params["gamma_xl"]
         D = 1. / (self._params["beta"] * g_xl)
         ko = self._params["ko"]
         dt = self.dt

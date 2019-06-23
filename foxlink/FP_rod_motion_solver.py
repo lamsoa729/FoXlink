@@ -83,9 +83,8 @@ class FPRodMotionSolver(Solver):
         @return: void
 
         """
-        # TODO Implement stepping of rod
-        # Need viscocity of liquid, rod diameters, and rod lengths to find drag coefficients
-        # Calculate drag coefficients
+        # Calculate drag coefficients of rods:
+        #   Requires viscocity of liquid, rod diameters, and rod lengths
         visc = self._params["viscosity"]
         L1 = self._params["L1"]
         L2 = self._params["L2"]

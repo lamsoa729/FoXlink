@@ -151,8 +151,11 @@ class Solver(object):
                 # Reset write function
                 self.written = False
                 t0 = time.time()
-        print(r" --- Total of {} steps in {:.4f} seconds ---".format(self._nsteps, 
-                    time.time()-t_start))
+        tot_time = time.time() - t_start
+        print(r" --- Total of {} steps in {:.4f} seconds ---".format(self.nsteps,
+                                                                     tot_time))
+        self._h5_data.attrs['run_time'] = tot_time
+
         return
 
     def Step(self):

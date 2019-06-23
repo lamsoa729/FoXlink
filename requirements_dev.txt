@@ -8,7 +8,6 @@ codacy-coverage==1.3.11
 coverage==4.5.3
 cycler==0.10.0
 decorator==4.4.0
--e git+git@github.com:lamsoa729/FoXlink.git@4abf1c5c832b73842babaa42cb6e5611a15054cc#egg=foxlink
 h5py==2.9.0
 idna==2.8
 importlib-metadata==0.18

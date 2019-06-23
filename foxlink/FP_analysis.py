@@ -67,7 +67,7 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
             interval=50,
             blit=True)
     t0 = time.time()
-    anim.save('{}.mp4'.format(FPanal._filename), writer=writer)
+    anim.save('{}.mp4'.format(FPanal.sType), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
     # ani.save('test_movie.mp4', writer=writer)
