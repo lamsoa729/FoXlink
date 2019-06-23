@@ -1,16 +1,17 @@
 #!/usr/bin/env python
+from matplotlib.animation import FFMpegWriter
+from .FP_analysis import makeAnimation, FPAnalysis
+from .FP_pass_ang_CN import FPPassiveAngCNSolver
 import argparse
 import sys
 import yaml
 
 # Import all solvers
 from .FP_gen_motion_static_xlinks import FPGenMotionStaticXlinks
+from .FP_gen_mot_CN_solver import FPGenMotionPassCNSolver
 from .FP_gen_orient_static_xlinks import FPGenOrientStaticXlinks
 from .FP_static_solver import FPStaticSolver
 from .FP_pass_para_CN import FPPassiveParaCNSolver
-from .FP_pass_ang_CN import FPPassiveAngCNSolver
-from .FP_analysis import FasterFFMpegWriter, makeAnimation, FPAnalysis
-from matplotlib.animation import FFMpegWriter
 
 
 """@package docstring

@@ -1,24 +1,6 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-import sys
-import os
-# Testing
-# import pdb
-# import time, timeit
-# import line_profiler
-# Analysis
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# import h5py
-# import yaml
-# from math import *
-# Speed
-# from numba import jit
-# Other importing
-# sys.path.append(os.path.join(os.path.dirname(__file__), '[PATH]'))
-
+from .FP_gen_motion_solver import FPGenMotionSolver
+from .FP_pass_CN_solver import FPPassiveCNSolver
 
 """@package docstring
 File: FP_gen_mot_CN_solver.py
@@ -40,9 +22,23 @@ class FPGenMotionPassCNSolver (FPGenMotionSolver, FPPassiveCNSolver):
         @param name: TODO
 
         """
-        print("Init FPGenMotionSolver ->", end=" ")
+        print("Init FPGenMotionPassCNSolver ->", end=" ")
         FPGenMotionSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
+
+    def Step(self):
+        """Step forward in time with FPPassiveCN.Step and then use FPGenMotionSolver to step the change the position of rods.
+        @return: TODO
+
+        """
+        # Update xlink positions
+        FPPassiveCNSolver.Step(self)
+        # Calculate new forces and torque
+        self.calcForceMatrix()
+        self.calcTorqueMatrix()
+        # Update rod positions
+        self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
+            self.force, self.torque, self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
 
 
 ##########################################
