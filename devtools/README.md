@@ -15,19 +15,18 @@ Windows testing if you only plan to deploy on specific platforms. These are just
   * `before_install.sh`: Pip/Miniconda pre-package installation script for Travis 
 * `appveyor`: Windows based testing through [AppVeyor](https://www.appveyor.com/) (there are no files directly related to this)
 
-### Conda Environment:
+### Conda Environment
 
 This directory contains the files to setup the Conda environment for testing purposes
 
 * `conda-envs`: directory containing the YAML file(s) which fully describe Conda Environments, their dependencies, and those dependency provenance's
   * `test_env.yaml`: Simple test environment file with base dependencies. Channels are not specified here and therefore respect global Conda configuration
   
-### Additional Scripts:
+### Additional Scripts
 
 This directory contains OS agnostic helper scripts which don't fall in any of the previous categories
 * `scripts`
   * `create_conda_env.py`: Helper program for spinning up new conda environments based on a starter file with Python Version and Env. Name command-line options
-
 
 ## How to contribute changes
 * Clone the repository if you have write access to the main repo, fork the repository if you are a collaborator.
@@ -39,13 +38,12 @@ This directory contains OS agnostic helper scripts which don't fall in any of th
 * Make a PR on GitHub with your changes
 * We'll review the changes and get your code into the repo after lively discussion!
 
-
 ## Checklist for updates
 * [ ] Make sure there is an/are issue(s) opened for your specific update
 * [ ] Create the PR, referencing the issue
 * [ ] Debug the PR as needed until tests pass
 * [ ] Tag the final, debugged version 
-    *  `git tag -a X.Y.Z [latest pushed commit] && git push --follow-tags`
+  * `git tag -a X.Y.Z [latest pushed commit] && git push --follow-tags`
 * [ ] Get the PR merged in
 
 ## Versioneer Auto-version
