@@ -76,11 +76,18 @@ class Solver(object):
             self.dt = self._params["dt"]  # Time step
             self.nsteps = float(self.nt / self.dt)
             self._params["nsteps"] = self.nsteps
+
+        if "nwrite" not in self._params:
+            self.nwrite = int(self.twrite / self.dt)
+        elif "twrite" not in self._params:
+            self.twrite = float(self.nwrite * self.dt)
         # Make time array. Set extra space for initial condition
         self.time = np.linspace(0, self.nt, self.nsteps + 1).tolist()
         print("Time step: ", self.dt)
         print("Total time: ", self.nt)
         print("Number of steps: ", self.nsteps)
+        print("Write out every {} steps({}secs)".format(self.nwrite,
+                                                        self.twrite))
 
     def setInitialCondition(self):
         """!TODO: Docstring for setInitialCondition.
@@ -152,8 +159,8 @@ class Solver(object):
                 self.written = False
                 t0 = time.time()
         tot_time = time.time() - t_start
-        print(r" --- Total of {} steps in {:.4f} seconds ---".format(self.nsteps,
-                                                                     tot_time))
+        print(r" --- Total of {:d} steps in {:.4f} seconds ---".format(self.nsteps,
+                                                                       tot_time))
         self._h5_data.attrs['run_time'] = tot_time
 
         return
