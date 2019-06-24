@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
-import matplotlib.lines as lines
+from matplotlib.lines import Line2D
 import h5py
 
 from .FP_helpers import *
@@ -18,6 +18,26 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: File containing classes to analyze data, make movies, and create graphs from passive PDE runs
 """
+
+
+class LineDataUnits(Line2D):
+    def __init__(self, *args, **kwargs):
+        _lw_data = kwargs.pop("linewidth", 1)
+        super().__init__(*args, **kwargs)
+        self._lw_data = _lw_data
+
+    def _get_lw(self):
+        if self.axes is not None:
+            ppd = 72. / self.axes.figure.dpi
+            trans = self.axes.transData.transform
+            return ((trans((1, self._lw_data)) - trans((0, 0))) * ppd)[1]
+        else:
+            return 1
+
+    def _set_lw(self, lw):
+        self._lw_data = lw
+
+    _linewidth = property(_get_lw, _set_lw)
 
 
 class FasterFFMpegWriter(FFMpegWriter):
@@ -220,15 +240,11 @@ class FPAnalysis(object):
 
         """
         t0 = time.time()
+        lw = self._h5_data.attrs['rod_diameter']
         # Clean up if lines
         if not self.init_flag:
             for ax in axarr.flatten():
                 ax.clear()
-            # TODO Check to make sure this didn't fuck things up
-            # self.line1.remove()
-            # del self.line1
-            # self.line2.remove()
-            # del self.line2
             for artist in fig.gca().lines + fig.gca().collections:
                 artist.remove()
                 del artist
@@ -238,27 +254,27 @@ class FPAnalysis(object):
         L2 = self._params["L2"]
         if hasattr(self, 'phi_arr'):
             hphi = self.phi_arr[n] * .5
-            self.line1 = lines.Line2D((0, L1 * np.cos(hphi)),
-                                      (0, L1 * np.sin(hphi)),
-                                      linewidth=5, solid_capstyle='round',
-                                      color='tab:green', clip_on=False)
+            self.line1 = LineDataUnits((0, L1 * np.cos(hphi)),
+                                       (0, L1 * np.sin(hphi)),
+                                       linewidth=lw, solid_capstyle='round',
+                                       color='tab:green', clip_on=False)
             axarr[0, 0].add_line(self.line1)
-            self.line2 = lines.Line2D((0, L2 * np.cos(hphi)),
-                                      (0, -L2 * np.sin(hphi)),
-                                      linewidth=5, solid_capstyle='round',
-                                      color='tab:purple', clip_on=False)
+            self.line2 = LineDataUnits((0, L2 * np.cos(hphi)),
+                                       (0, -L2 * np.sin(hphi)),
+                                       linewidth=lw, solid_capstyle='round',
+                                       color='tab:purple', clip_on=False)
             axarr[0, 0].add_line(self.line2)
         elif hasattr(self, 'R_arr'):
             r = self.R_arr[n, :]
-            self.line1 = lines.Line2D((-.5 * L1, .5 * L1),
-                                      (0, 0),
-                                      linewidth=5, solid_capstyle='round',
-                                      color='tab:green', clip_on=False)
+            self.line1 = LineDataUnits((-.5 * L1, .5 * L1),
+                                       (0, 0),
+                                       linewidth=lw, solid_capstyle='round',
+                                       color='tab:green', clip_on=False)
             axarr[0, 0].add_line(self.line1)
-            self.line2 = lines.Line2D((-.5 * L1 + r[0], .5 * L1 + r[0]),
-                                      (r[1], r[1]),
-                                      linewidth=5, solid_capstyle='round',
-                                      color='tab:purple', clip_on=False)
+            self.line2 = LineDataUnits((-.5 * L1 + r[0], .5 * L1 + r[0]),
+                                       (r[1], r[1]),
+                                       linewidth=lw, solid_capstyle='round',
+                                       color='tab:purple', clip_on=False)
             axarr[0, 0].add_line(self.line2)
         else:
             # r = self.R_arr[n, :]
@@ -267,19 +283,19 @@ class FPAnalysis(object):
             u1 = self.R1_vec[n]
             u2 = self.R2_vec[n]
 
-            self.line1 = lines.Line2D((-.5 * L1 * u1[1] + r1[1],
-                                       .5 * L1 * u1[1] + r1[1]),
-                                      (-.5 * L1 * u1[2] + r1[2],
-                                       .5 * L1 * u1[2] + r1[2]),
-                                      linewidth=5, solid_capstyle='round',
-                                      color='tab:green', clip_on=False)
+            self.line1 = LineDataUnits((-.5 * L1 * u1[1] + r1[1],
+                                        .5 * L1 * u1[1] + r1[1]),
+                                       (-.5 * L1 * u1[2] + r1[2],
+                                        .5 * L1 * u1[2] + r1[2]),
+                                       linewidth=lw, solid_capstyle='round',
+                                       color='tab:green', clip_on=False)
             axarr[0, 0].add_line(self.line1)
-            self.line2 = lines.Line2D((-.5 * L2 * u2[1] + r2[1],
-                                       .5 * L2 * u2[1] + r2[1]),
-                                      (-.5 * L2 * u2[2] + r2[2],
-                                       .5 * L2 * u2[2] + r2[2]),
-                                      linewidth=5, solid_capstyle='round',
-                                      color='tab:purple', clip_on=False)
+            self.line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
+                                        .5 * L2 * u2[1] + r2[1]),
+                                       (-.5 * L2 * u2[2] + r2[2],
+                                        .5 * L2 * u2[2] + r2[2]),
+                                       linewidth=lw, solid_capstyle='round',
+                                       color='tab:purple', clip_on=False)
             axarr[0, 0].add_line(self.line2)
             r1 = self.R1_pos
             r2 = self.R2_pos
@@ -287,9 +303,9 @@ class FPAnalysis(object):
             u2 = self.R2_vec
 
             max_x = np.amax(.5 * L1 * u1[:, 1] + r1[:, 1])
-            max_x = max(max_x, np.amax(.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.1
+            max_x = max(max_x, np.amax(.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
             min_x = np.amin(-.5 * L1 * u1[:, 1] + r1[:, 1])
-            min_x = min(min_x, np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.1
+            min_x = min(min_x, np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
             # max_y = np.amax(.5 * L1 * u1[:, 2] + r1[:, 2])
             # max_y = max(max_y, np.amax(.5 * L2 * u2[:, 2] + r2[:, 2])) * 1.1
             # min_y = np.amin(-.5 * L1 * u1[:, 2] + r1[:, 2])

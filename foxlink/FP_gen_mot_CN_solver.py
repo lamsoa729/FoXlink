@@ -10,7 +10,7 @@ Description:
 """
 
 
-class FPGenMotionPassCNSolver (FPGenMotionSolver, FPPassiveCNSolver):
+class FPGenMotionPassCNSolver(FPGenMotionSolver, FPPassiveCNSolver):
 
     """A PDE solver that incorporates diffusion and rod motion solved by Crank-Nicolson method for crosslink diffusion and forward Euler method for rod motion."""
 
