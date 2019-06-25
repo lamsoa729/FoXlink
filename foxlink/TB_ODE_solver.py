@@ -169,7 +169,6 @@ class ODEAdiabaticAngSolver(Solver):
         """
         self._h5_data.flush()
         self._h5_data.close()
-        pass
 
 
 # def main(pfile=None):

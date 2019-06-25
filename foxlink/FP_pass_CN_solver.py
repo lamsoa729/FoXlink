@@ -4,7 +4,7 @@ from scipy import sparse
 from scipy.sparse.linalg import inv
 from copy import deepcopy as dcp
 # from FP_helpers import *
-from .solver import Solver
+from .FP_CN_solver import FPCNSolver
 
 
 """@package docstring
@@ -15,7 +15,7 @@ Description:
 """
 
 
-class FPPassiveCNSolver(Solver):
+class FPPassiveCNSolver(FPCNSolver):
 
     """!Solve the Fokker-Planck equation for passive crosslinkers using the
     using the Crank-Nicholson method with 4 point laplacian.
@@ -28,7 +28,8 @@ class FPPassiveCNSolver(Solver):
         @param name: name to store data under
 
         """
-        Solver.__init__(self, pfile, pdict)
+        print("Init FPPassiveCNSolver ->", end=" ")
+        FPCNSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def makeDiagMats(self):

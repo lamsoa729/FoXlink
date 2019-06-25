@@ -60,7 +60,6 @@ class Solver(object):
         # Integration parameters
         self.t = 0.
         self.ds = self._params["ds"]  # Segmentation size of microtubules
-        self.nwrite = self._params["nwrite"]
         if "nt" not in self._params:
             self.nsteps = self._params["nsteps"]
             self.dt = self._params["dt"]  # Time step
@@ -78,8 +77,10 @@ class Solver(object):
             self._params["nsteps"] = self.nsteps
 
         if "nwrite" not in self._params:
+            self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
         elif "twrite" not in self._params:
+            self.nwrite = self._params["nwrite"]
             self.twrite = float(self.nwrite * self.dt)
         # Make time array. Set extra space for initial condition
         self.time = np.linspace(0, self.nt, self.nsteps + 1).tolist()
