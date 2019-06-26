@@ -72,7 +72,7 @@ class FPPassiveCNSolver(FPCNSolver):
         # Actual initialization
         self.DsqrRight = sparse.dia_matrix((diagR_arr, offsets),
                                            shape=(self.ns1, self.ns2)).tocsc()
-        self.DsqrRightT = self.DsqrRight.T.tocsc()
+        self.DsqrRightT = self.DsqrRight.T
         DsqrLeft = sparse.dia_matrix((diagL_arr, offsets),
                                      shape=(self.ns1, self.ns2)).tocsc()
         self.DsqrLeftInv = inv(DsqrLeft)
@@ -86,8 +86,18 @@ class FPPassiveCNSolver(FPCNSolver):
 
         # Step 1: Add half the source term to current solution
         sgrid_bar = .5 * self.dt * self.src_mat + self.sgrid
-        # sgrid_bar = self.sgrid
+        # Steps 2 & 3: Apply crank-nicolson solver
+        sgrid_bar = self.stepCN(sgrid_bar)
+        # Step 4: Add the other half of the source term
+        self.sgrid = .5 * self.dt * self.src_mat + sgrid_bar
 
+    def stepCN(self, sgrid_bar):
+        """!Alternating implicit Crank-Nicolson algorithmkstep of code
+
+        @param sgrid_bar: TODO
+        @return: TODO
+
+        """
         # Step 2a: Explicit step along s2 direction
         sgrid_bar = sparse.csc_matrix.dot(sgrid_bar, self.DsqrRightT)
         # Step 2b: Implicit step along s1 direction
@@ -97,10 +107,7 @@ class FPPassiveCNSolver(FPCNSolver):
         sgrid_bar = sparse.csc_matrix.dot(self.DsqrRight, sgrid_bar)
         # Step 3b: Implicit step along s2 direction
         sgrid_bar = sparse.csc_matrix.dot(sgrid_bar, self.DsqrLeftInvT)
-
-        # Step 4: Add the other half of the source term
-        # self.sgrid = sgrid_bar
-        self.sgrid = .5 * self.dt * self.src_mat + sgrid_bar
+        return sgrid_bar
 
 
 ##########################################
