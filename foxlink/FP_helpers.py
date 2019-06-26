@@ -344,6 +344,22 @@ def make_gen_torque_mat(f_mat, s_arr, L, u):
     return t_mat
 
 
+def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
+    """!Calculate the velocity of motor heads for each point given the force at
+    that point and the direction of the microtuble that head is on.
+
+    @param f_mat: (nxnx3) matrix of forces components based on head positions
+    @param u_vec: unit vector of rod the motor head is on
+    @param fs: stall force of motor head
+    @param vo: unladen velocity of motor head
+    @return: velocity matrix of motor head
+
+    """
+    f_para_mat = np.einsum('ijk, k->ij', f_mat, u_vec)
+    vel_mat = vo / (1. + np.exp(-2. * (1. + 2. * (f_para_mat / fs))))
+    return vel_mat
+
+
 ##########################################
 if __name__ == "__main__":
     print("Not implemented yet")

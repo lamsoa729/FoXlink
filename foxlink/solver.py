@@ -9,6 +9,7 @@ import numpy as np
 import yaml
 import h5py
 from scipy import sparse
+from copy import deepcopy as dcp
 
 
 """@package docstring
@@ -55,13 +56,13 @@ class Solver(object):
         elif self._params is None:
             print("Could not find parameter set.",
                   "Using default params defined in solver.py")
-            self._params = default_params
+            self._params = dcp(Solver.default_params)
 
         # Integration parameters
         self.t = 0.
         self.ds = self._params["ds"]  # Segmentation size of microtubules
         if "nt" not in self._params:
-            self.nsteps = self._params["nsteps"]
+            self.nsteps = int(self._params["nsteps"])
             self.dt = self._params["dt"]  # Time step
             self.nt = self.nsteps * self.dt
             self._params["nt"] = self.nt
@@ -73,7 +74,14 @@ class Solver(object):
         elif "nsteps" not in self._params:
             self.nt = self._params["nt"]  # total time
             self.dt = self._params["dt"]  # Time step
-            self.nsteps = float(self.nt / self.dt)
+            self.nsteps = int(self.nt / self.dt)
+            self._params["nsteps"] = self.nsteps
+        else:
+            print("!!! Warning: step parameters over defined,",
+                  "using nt and nsteps to calculate step size.")
+            self.nt = self._params["nt"]  # total time
+            self.dt = self._params["dt"]  # Time step
+            self.nsteps = int(self.nt / self.dt)
             self._params["nsteps"] = self.nsteps
 
         if "nwrite" not in self._params:
@@ -82,6 +90,11 @@ class Solver(object):
         elif "twrite" not in self._params:
             self.nwrite = self._params["nwrite"]
             self.twrite = float(self.nwrite * self.dt)
+        else:
+            print("!!! Warning: Write parameters over defined,",
+                  "using twrite to calculate number of steps between write out.")
+            self.twrite = self._params["twrite"]
+            self.nwrite = int(self.twrite / self.dt)
         # Make time array. Set extra space for initial condition
         self.time = np.linspace(0, self.nt, self.nsteps + 1).tolist()
         print("Time step: ", self.dt)
@@ -224,16 +237,17 @@ class Solver(object):
         @return: TODO
 
         """
-        print("calcforceMatrix not implemented. Source matrix initialized with zeros.")
-        self.f_mat = sparse.csc_matrix((self.ns1, self.ns2, 3))
+        print("calcforceMatrix not implemented. Force matrix initialized with zeros.")
+        self.f_mat = np.zeros((self.ns1, self.ns2, 3))
+        # self.f_mat = sparse.csc_matrix((self.ns1, self.ns2, 3))
 
     def calcTorqueMatrix(self):
         """Virtual functions for calculating force matrix for a given configuration
         @return: TODO
 
         """
-        print("calcTorqueMatrix not implemented. Source matrix initialized with zeros.")
-        self.t_mat = sparse.csc_matrix((self.ns1, self.ns2, 3))
+        print("calcTorqueMatrix not implemented. Torque matrix initialized with zeros.")
+        self.t_mat = np.zeros((self.ns1, self.ns2, 3))
 
     def Write(self):
         """!Write current step in algorithm into data frame
@@ -259,26 +273,30 @@ class Solver(object):
         self._h5_data.close()
 
     default_params = {
-        "r": 1,  # Distance between rod centers
-        "a1": 0,  # Dot product between u1 and r unit vectors
-        "a2": 0,  # Dot product between u2 and r unit vectors
-        "b": -1,  # Dot product between u1 and u2 unit vectors
-        "R1_pos": [0, 0, 0],
-        "R2_pos": [0, 0, 0],
-        "R1_vec": [0, 1, 0],
-        "R2_vec": [0, 1, 0],
-        "L1": 100,  # Length of microtubule 1
-        "L2": 100,  # Length of microtubule 2
-        "dt": 1,  # Time step
-        "nt": 2000,  # total time
-        "ds": 1,  # Segmentation size of microtubules
-        "ko": 1,  # Crosslinker turnover rate
-        "co": 1,  # Effective crosslinker concentration
-        "ks": 1,  # Crosslinker spring concentration
-        "ho": 1,  # Equilibrium length of crosslinkers
-        "vo": 1,  # Base velocity of crosslinker heads
-        "fs": 1,  # Stall force of crosslinker heads
-        "beta": 1,  # Inverse temperature
+        "r": 1.,  # Distance between rod centers
+        "a1": 0.,  # Dot product between u1 and r unit vectors
+        "a2": 0.,  # Dot product between u2 and r unit vectors
+        "b": -1.,  # Dot product between u1 and u2 unit vectors
+        "R1_pos": [0., 0., 0.],
+        "R2_pos": [0., 0., 0.],
+        "R1_vec": [0., 1., 0.],
+        "R2_vec": [0., 1., 0.],
+        "L1": 100.,  # Length of microtubule 1
+        "L2": 100.,  # Length of microtubule 2
+        "dt": 1.,  # Time step
+        "nt": 2000.,  # total time
+        "nsteps": 2000,  # total time
+        "nwrite": 1,
+        "twrite": 1.,
+        "ds": 1.,  # Segmentation size of microtubules
+        "ko": 1.,  # Crosslinker turnover rate
+        "co": 1.,  # Effective crosslinker concentration
+        "ks": 1.,  # Crosslinker spring concentration
+        "ho": 1.,  # Equilibrium length of crosslinkers
+        "vo": 1.,  # Base velocity of crosslinker heads
+        "fs": 1.,  # Stall force of crosslinker heads
+        "beta": 1.,  # Inverse temperature
+
     }
 
 
