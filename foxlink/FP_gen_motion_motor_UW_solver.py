@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from .FP_gen_motion_motor_UW_solver import FPGenOrientMotorUWSolver
 from .FP_rod_motion_solver import FPRodMotionSolver
-from .FP_helpers import make_force_dep_velocity_mat
 
 
 """@package docstring

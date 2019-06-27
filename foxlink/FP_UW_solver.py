@@ -46,7 +46,7 @@ class FPUWSolver(Solver):
         # Create matrix using sparse matrices
         diag_arr = np.stack(diag, off_set_diag)
         off_sets = [0, -1]
-        self.diagGradUW = (1. / self.ds) * sparse.diag_matrix((diag_arr, off_set_diag),
+        self.diagGradUW = (1. / self.ds) * sparse.diag_matrix((diag_arr, off_sets),
                                                               shape=(self.ns1, self.ns2)).tocsc()
         self.diagGradUWT = self.diagGradUW.T
 

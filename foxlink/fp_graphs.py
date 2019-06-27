@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 from matplotlib.lines import Line2D
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 """@package docstring
@@ -86,10 +86,10 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                               (0, L1 * np.sin(hphi)),
                               linewidth=lw, solid_capstyle='round',
                               color='tab:green', clip_on=False)
-        LineDataUnits((0, L2 * np.cos(hphi)),
-                      (0, -L2 * np.sin(hphi)),
-                      linewidth=lw, solid_capstyle='round',
-                      color='tab:purple', clip_on=False)
+        line2 = LineDataUnits((0, L2 * np.cos(hphi)),
+                              (0, -L2 * np.sin(hphi)),
+                              linewidth=lw, solid_capstyle='round',
+                              color='tab:purple', clip_on=False)
         axarr[0].add_line(line1)
         axarr[0].add_line(line2)
     elif hasattr(FP_anal, 'R_arr'):
@@ -184,7 +184,6 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                       max_dens_val=FP_anal.max_dens_val)
     if FP_anal.init_flag:
         fig.colorbar(c, ax=axarr[1])
-        # fig.tight_layout()
         axarr[0].set_aspect(1.0)
         FP_anal.init_flag = False
     graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
@@ -202,8 +201,6 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
         FP_anal.time[n], FP_anal.dR_arr[n])])
     axarr[6].legend([r"$\phi$({:.2f}) = {:.1f} rad".format(
         FP_anal.time[n], FP_anal.phi_arr[n])])
-    #t1 = time.time()
-    #print("Graph ", n, "made in: ", t1 - t0)
     return fig.gca().lines + fig.gca().collections
 
 

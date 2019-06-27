@@ -39,8 +39,3 @@ class FPGenMotionPassCNSolver(FPGenMotionSolver, FPPassiveCNSolver):
         # Update rod positions and recalculate source matrices
         self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
             self.force, self.torque, self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")
