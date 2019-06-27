@@ -22,15 +22,15 @@ Description:
 
 class FPUWMotorSolver(FPUWSolver):
 
-    """!Solve the Fokker-Planck equation for passive crosslinkers using the
-    using the Crank-Nicholson method with 4 point laplacian.
+    """!Solve the Fokker-Planck equation using force-dependent velocity relation
+    and the upwind integration method.
     """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
-        @param name: name to store data under
+        @param pdict: parameter dictionary
 
         """
         print("Init FPUWMotorSolver ->", end=" ")
@@ -58,7 +58,7 @@ class FPUWMotorSolver(FPUWSolver):
                                              shape=(self.ns1, self.ns2)).tocsc()
         self.diagGradUWT = self.diagGradUW.T
 
-    def makeVelocityMat(self):
+    def makeVelocityMats(self):
         """!TODO: Docstring for makeVelocityMat.
         @return: TODO
 
@@ -84,20 +84,3 @@ class FPUWMotorSolver(FPUWSolver):
         sgrid_bar *= (1. - ko * self.dt * .5)
         # Step 4: Add the other half of the source
         self.sgrid = .5 * self.dt * self.src_mat + sgrid_bar
-
-
-def stepUW(self, sgrid_bar):
-    """!Step crosslink density forward in time using upwind method
-
-    @param sgrid_bar: TODO
-    @return: TODO
-
-    """
-    # Subract differentiated grid, FP has a negative advective terms
-    sgrid_bar -= FPUWSolver.stepUW(np.multiply(self.vel_mat, sgrid_bar))
-    return sgrid_bar
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

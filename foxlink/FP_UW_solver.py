@@ -58,6 +58,9 @@ class FPUWSolver(Solver):
 
         """
         #  TODO: TEST using pytest <26-06-19, ARL> #
-        # Step 1: Explicit step along s1 and s2 direction
-        return self.dt * (sparse.csc_matrix.dot(self.diagGradUW, sgrid_bar) +
-                          sparse.csc_matrix.dot(sgrid_bar, self.diagGradUWT))
+        # Explicit step along s1 and s2 direction with corresponding velocities
+        return self.dt * (
+            sparse.csc_matrix.dot(self.diagGradUW,
+                                  np.multiply(self.vel_mat1, self.sgrid_bar)) +
+            sparse.csc_matrix.dot(np.multiply(self.vel_mat2, sgrid_bar),
+                                  self.diagGradUWT)) + sgrid_bar
