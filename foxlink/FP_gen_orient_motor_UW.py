@@ -19,6 +19,15 @@ class FPGenOrientMotorUWSolver(FPUWMotorSolver, FPGenOrientSolver):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
+        ParseParams: FPGenOrientSolver
+        makeSourceMat: FPGenOrientSolver
+        makeForceMat: FPGenOrientSolver
+        makeTorueMat: FPGenOrientSolver
+        makeDiagMats: FPUWMotorSolver
+        Step: FPUWMotorSolver
+        RodStep: None
+
+
         @param pfile: parameter file path
         @param name: name to store data under
 
