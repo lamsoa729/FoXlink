@@ -33,6 +33,7 @@ class FPUWSolver(Solver):
         @return: TODO
 
         """
+
         # Main diagnol
         diag = np.ones(max(self.ns1, self.ns2))
         # Offset diagnol from previous position
@@ -45,8 +46,8 @@ class FPUWSolver(Solver):
         # Create matrix using sparse matrices
         diag_arr = np.stack(diag, off_set_diag)
         off_sets = [0, -1]
-        self.diagGradUW = sparse.diag_matrix((diag_arr, off_set_diag),
-                                             shape=(self.ns1, self.ns2)).tocsc()
+        self.diagGradUW = (1. / self.ds) * sparse.diag_matrix((diag_arr, off_set_diag),
+                                                              shape=(self.ns1, self.ns2)).tocsc()
         self.diagGradUWT = self.diagGradUW.T
 
     def stepUW(self, sgrid_bar):
@@ -57,8 +58,6 @@ class FPUWSolver(Solver):
 
         """
         #  TODO: TEST using pytest <26-06-19, ARL> #
-        # Step 1: Explicit step along s1 direction
-        sgrid_bar = sparse.csc_matrix.dot(self.diagGradUW, sgrid_bar)
-        # Step 2: Explicit step along s2 direction
-        sgrid_bar = sparse.csc_matrix.dot(sgrid_bar, self.diagGradUWT)
-        return sgrid_bar
+        # Step 1: Explicit step along s1 and s2 direction
+        return self.dt * (sparse.csc_matrix.dot(self.diagGradUW, sgrid_bar) +
+                          sparse.csc_matrix.dot(sgrid_bar, self.diagGradUWT))
