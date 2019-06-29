@@ -12,13 +12,16 @@ from .FP_gen_mot_CN_solver import FPGenMotionPassCNSolver
 from .FP_gen_orient_static_xlinks import FPGenOrientStaticXlinks
 from .FP_static_solver import FPStaticSolver
 from .FP_pass_para_CN import FPPassiveParaCNSolver
+from .FP_gen_orient_motor_UW import FPGenOrientMotorUWSolver
+from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
 
 
 """@package docstring
 File: foxlink.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Main control program for FoXlink PDE solver. Parses arguments using
+argsparse. Type foxlink -h for help and main actions.
 """
 
 
@@ -26,31 +29,29 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='foxlink.py')
     # Specialized optical trap arguments go here
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
-                        help="Print out more text from simulations.")  # TODO
-    parser.add_argument("-f", "--file", type=str, default="params.yaml",
-                        help="Parameter file used to run FoXlink solver.")
+                        help="Print out more text from simulations. NOT IMPLEMENTED YET!")  # TODO
+    parser.add_argument("-f", "--file", type=str, default="FP_params.yaml",
+                        help="Parameter file used to run FoXlink solver. Without any other arguments, this should be a yaml parameter file")
     parser.add_argument("-t", "--test", action='store_true',
-                        help="Run test protocol on FoXlink solver.")  # TODO
-    parser.add_argument("-o", "--output", type=str, default=None,
-                        help="Specify output file name for generated data.")  # TODO
+                        help="Run test protocol on FoXlink solver. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-c", "--change_params", action="store_true", default=False,
-                        help="Change parameter file if options differ file values.")  # TODO
+                        help="Change parameter file if options differ file values. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-a", "--analyze", action="store_true", default=False,
-                        help="Perform post-analysis on simulations once completed.")
+                        help="Perform post-analysis on simulations once completed. Necessary to make movies.")
     parser.add_argument("-g", "--graph", action="store_true", default=False,
-                        help="Graph data after simulation has run and been analyzed.")  # TODO
+                        help="Graph data after simulation has run and been analyzed. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-m", "--movie", action="store_true", default=False,
-                        help="Make movie of systems of evolution.")
+                        help="Make movie of systems of evolution. Will analyze files again")
     opts = parser.parse_args()
     return opts
 
 
 class FoXlink(object):
 
-    """!Control structure for FoXlink solver. """
+    """!Control structure classs for FoXlink PDE solver framework. """
 
     def __init__(self, opts):
-        """!Initialize FoXlink object with options
+        """!Initialize FoXlink object with command line options.
 
         @param opts: ArgumentParser command line options
 
@@ -60,7 +61,7 @@ class FoXlink(object):
     def ParseParams(self):
         """!Parse parameter file from options.
 
-        @return: dictionary of options
+        @return: dictionary of parameters and options
 
         """
         with open(self._opts.file, 'r') as pf:
@@ -105,8 +106,8 @@ class FoXlink(object):
         self._solver.Save()
 
     def Analyze(self):
-        """!Analyze hdf5 file from foxlink solver run
-        @return: TODO
+        """!Analyze hdf5 file from foxlink solver run and make movie if parameter is given.
+        @return: void
 
         """
         analysis = FPAnalysis(self._opts.file)

@@ -19,7 +19,7 @@ FoXlink
 
 
 
-FoXlink solves partial differential equations describing the binding kinetics and movement of crosslinking proteins on filamentous biopolymers.
+FoXlink is an easy to use and modify partial differential equations solving package that describes the binding kinetics and motion of crosslinking proteins on filamentous biopolymers.
 
 
 * Free software: BSD license
@@ -29,7 +29,23 @@ FoXlink solves partial differential equations describing the binding kinetics an
 Features
 --------
 
-* TODO
+* Control structure callable from command line once package is installed.
+* Object oriented design that allows for rapid prototyping of different system configurations and solving paradigms.
+* All output data is written in HDF5 format to reduce storage space requirements while allowing for easy viewing and post-analysis using HDFview and python libraries (e.g. h5py)
+
+
+Quickstart
+----------
+
+TODO
+
+Design layout
+-------------
+
+Foxlink revolves around mulit-inheritance  to quickly create and combine PDE solving algorithms. All solving algorithms and specifics inherit from a common base class *Solver*.
+
+.. code-block:: foxlink -f FP_params.yaml
+
 
 Credits
 -------

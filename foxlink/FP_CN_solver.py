@@ -5,7 +5,7 @@ from .solver import Solver
 File: FP_CN_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Abstract xlink algorithm class implementing Crank-Nicolson solving algorithm.
 """
 
 
@@ -19,7 +19,7 @@ class FPCNSolver(Solver):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
-        @param name: name to store data under
+        @param pdict: parameter dictionary if no parameter file path
 
         """
         print("Init FPCNSolver ->", end=" ")
@@ -27,15 +27,11 @@ class FPCNSolver(Solver):
         self.makeDiagMats()
 
     def makeDiagMats(self):
-        """!Make diagnal matrices for implicit solving
-        @return: TODO
+        """!Make diagnal matrices for implicit and explicit steps of CN
+        @return: void, modifies diagnol matricies
 
         """
         raise NotImplementedError(
-            "makeDiagMats have not been defined for {}. To use the CN subclass,  construction of these matrices is necessary.".format(
+            "makeDiagMats have not been defined for {}. To use the CN subclass, ",
+            "construction of these matrices is necessary.".format(
                 self.__class__.__name__))
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

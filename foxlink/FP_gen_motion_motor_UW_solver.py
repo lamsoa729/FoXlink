@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .FP_gen_motion_motor_UW_solver import FPGenOrientMotorUWSolver
+from .FP_gen_orient_motor_UW import FPGenOrientMotorUWSolver
 from .FP_rod_motion_solver import FPRodMotionSolver
 
 

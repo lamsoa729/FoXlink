@@ -130,10 +130,25 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
         u1 = FP_anal.R1_vec
         u2 = FP_anal.R2_vec
 
-        max_x = np.amax(.5 * L1 * u1[:, 1] + r1[:, 1])
-        max_x = max(max_x, np.amax(.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
-        min_x = np.amin(-.5 * L1 * u1[:, 1] + r1[:, 1])
-        min_x = min(min_x, np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
+        # Get all extreme positions of tips in the first dimension
+        x_ends = [np.amax(.5 * L1 * u1[:, 1] + r1[:, 1]),
+                  np.amin(.5 * L1 * u1[:, 1] + r1[:, 1]),
+                  np.amax(-.5 * L1 * u1[:, 1] + r1[:, 1]),
+                  np.amin(-.5 * L1 * u1[:, 1] + r1[:, 1]),
+                  np.amax(.5 * L2 * u2[:, 1] + r2[:, 1]),
+                  np.amin(.5 * L2 * u2[:, 1] + r2[:, 1]),
+                  np.amax(-.5 * L2 * u2[:, 1] + r2[:, 1]),
+                  np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])]
+
+        max_x = max(x_ends)
+        max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
+        min_x = min(x_ends)
+        min_x = min_x * 1.25 if min_x < 0 else .75 * min_x
+
+        # max_x = max(max_x, np.amax(.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
+        # min_x = min(np.amin(-.5 * L1 * u1[:, 1] + r1[:, 1]),
+
+        # min_x = min(min_x, np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
         max_y = max_x
         min_y = min_x
 

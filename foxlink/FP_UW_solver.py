@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from .solver import Solver
 from scipy import sparse
+import numpy as np
 
 
 """@package docstring
@@ -41,13 +42,13 @@ class FPUWSolver(Solver):
         # Neumann boundary conditions
         #   No flux from the start of rod. Nothing needs to be done
         #   No flux leaving from end of rod. Set last term of diagnol to zero.
-        diag[-1] = 0
+        # diag[-1] = 0
 
         # Create matrix using sparse matrices
-        diag_arr = np.stack(diag, off_set_diag)
+        diag_arr = np.stack((diag, off_set_diag))
         off_sets = [0, -1]
-        self.diagGradUW = (1. / self.ds) * sparse.diag_matrix((diag_arr, off_sets),
-                                                              shape=(self.ns1, self.ns2)).tocsc()
+        self.diagGradUW = (1. / self.ds) * sparse.dia_matrix((diag_arr, off_sets),
+                                                             shape=(self.ns1, self.ns2)).tocsc()
         self.diagGradUWT = self.diagGradUW.T
 
     def stepUW(self, sgrid_bar):
@@ -59,8 +60,8 @@ class FPUWSolver(Solver):
         """
         #  TODO: TEST using pytest <26-06-19, ARL> #
         # Explicit step along s1 and s2 direction with corresponding velocities
-        return self.dt * (
+        return -1. * self.dt * (
             sparse.csc_matrix.dot(self.diagGradUW,
-                                  np.multiply(self.vel_mat1, self.sgrid_bar)) +
+                                  np.multiply(self.vel_mat1, sgrid_bar)) +
             sparse.csc_matrix.dot(np.multiply(self.vel_mat2, sgrid_bar),
                                   self.diagGradUWT)) + sgrid_bar

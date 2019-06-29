@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-# Basic
-# from os import path
-# Testing
 from pathlib import Path
 import time
 import numpy as np
@@ -22,7 +19,35 @@ Description: Base Solver class for FoXlink
 
 class Solver(object):
 
-    """!Docstring for Solver. """
+    """!Abstract class for solver objects. All PDE algorithms are implemented
+    through these classes.
+
+        Common method functions for inherited solver classes:
+            Run = Iterate through time using the Step method
+            Step <- Abstract = Implement the specified algorithm at a times step
+            ParseParams = Parse parameters from file that is given
+            setInitialConditions = Set the initial stat of simulation
+            makeSolutionGrid = Create data structures that hold information about the position of xlinks and MTs.
+            calc<>Matrix(ces) <- Abstract = Calculate current data structures used to evolve system in time.
+            Write = At a specified time step add current solution to output file.
+            Save = Flush the remaining data in hdf5 file.
+        Foxlink uses inheritance to quickly create and combine PDE solving
+        algorithms. While solvers do not need to follow specific guidelines, it
+        is useful to categorize solvers into different types avoid inheritance
+        conflicts when using multi-inheritance. These include:
+            Orientation solver -> Defines MT orientations and associate parameters.
+                                  eg. Parallel (para),
+            Xlink algorithm solver -> What technique is used to solve the xlink
+                                      density equations. Can use multiple in one
+                                      system. eg. Upwind (UW), Crank-Nicolson(CN)
+            Xlink type solver -> What type of crosslinks are being modeled.
+                                 eg. Motor, Static, Passive
+            Rod algorithm solver -> What technique is used to solve the MT
+                                      position equations.
+                                      eg. Orient (no motions), Motion
+
+        Derivative class names are based on their solver type.
+    """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions
@@ -45,9 +70,10 @@ class Solver(object):
         self.makeDataframe()
 
     def ParseParams(self):
-        """!TODO: Docstring for ParseParams.
+        """! Method to extract and/or calculate parameter values necessary for
+        solving algorithms to run.
 
-        @return: TODO
+        @return: void, modifies self._params
 
         """
         if self._pfile is not None:
@@ -104,8 +130,11 @@ class Solver(object):
                                                         self.twrite))
 
     def setInitialCondition(self):
-        """!TODO: Docstring for setInitialCondition.
-        @return: TODO
+        """! Set the initial state for the solution grid.
+            If no 'initial_condition' parameter is set in the yaml file or
+            parameter dictionary. The solution grid will remain filled with zeros.
+
+        @return: void, modifies solution grid
 
         """
         if 'initial_condition' in self._params:
@@ -129,8 +158,8 @@ class Solver(object):
         self.ns1 = int(L1 / ds) + 2
         self.ns2 = int(L2 / ds) + 2
 
-        # TODO This maintains proper spacing but I should check this with
-        #      someone who understands methods better
+        # FIXME This maintains proper spacing but I should check this with
+        #       someone who understands methods better
         self._params["L1"] = ds * (self.ns1 - 2)
         self._params["L2"] = ds * (self.ns2 - 2)
 
@@ -151,7 +180,7 @@ class Solver(object):
         self.calcTorqueMatrix()
 
     def Run(self):
-        """!Run PDE solver with parameters in pfile
+        """!Run PDE solver with parameters in pfile through explicity interative time stepping.
         @return: void
 
         """
@@ -226,7 +255,7 @@ class Solver(object):
 
     def calcSourceMatrix(self):
         """Virtual functions for calculating source matrix
-        @return: TODO
+        @return: void, modifies self.src_mat
 
         """
         print("calcSourceMatrix not implemented. Source matrix initialized with zeros.")
@@ -234,7 +263,7 @@ class Solver(object):
 
     def calcForceMatrix(self):
         """Virtual functions for calculating force matrix for a given configuration
-        @return: TODO
+        @return: void, modifies self.f_mat
 
         """
         print("calcforceMatrix not implemented. Force matrix initialized with zeros.")
@@ -243,7 +272,7 @@ class Solver(object):
 
     def calcTorqueMatrix(self):
         """Virtual functions for calculating force matrix for a given configuration
-        @return: TODO
+        @return: void, modifies self.t_mat
 
         """
         print("calcTorqueMatrix not implemented. Torque matrix initialized with zeros.")
@@ -251,12 +280,11 @@ class Solver(object):
 
     def Write(self):
         """!Write current step in algorithm into data frame
-        @return: void
+        @return: index of current step
 
         """
         i_step = ((self.t / self.dt) / self.nwrite)
         if not self.written:
-            # self._xl_distr_dset[:, :, i_step] = self.sgrid.todense()
             self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
             self._force_dset[i_step] = self.force
