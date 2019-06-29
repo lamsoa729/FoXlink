@@ -22,7 +22,7 @@ class FPUWSolver(Solver):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         @param pfile: parameter file path
-        @param name: name to store data under
+        @param pdict: parameter dictionary if file is not given directly.
 
         """
         print("Init FPUWSolver ->", end=" ")
@@ -35,16 +35,22 @@ class FPUWSolver(Solver):
 
         """
 
-        # Main diagnol
+        # Main diagnol of differential matrix
         diag = np.ones(max(self.ns1, self.ns2))
-        # Offset diagnol from previous position
+        # Offset diagnol in lower triangle of differential matrix
         off_set_diag = -1. * np.ones(max(self.ns1, self.ns2))
-        # Neumann boundary conditions
-        #   No flux from the start of rod. Nothing needs to be done
-        #   No flux leaving from end of rod. Set last term of diagnol to zero.
-        # diag[-1] = 0
+        if "end_pause" in self._params:
+            if self._params["end_pause"]:
+                # Neumann boundary conditions
+                #   No flux from the start of rod. Nothing needs to be done
+                #   No flux leaving from end of rod. Set last term of main
+                #   diagnol to zero.
+                diag[-1] = 0
+            else:
+                # End flux term diffuses off the end of the rod
+                pass
 
-        # Create matrix using sparse matrices
+        # Create matrix using sparse numpy matrices
         diag_arr = np.stack((diag, off_set_diag))
         off_sets = [0, -1]
         self.diagGradUW = (1. / self.ds) * sparse.dia_matrix((diag_arr, off_sets),
@@ -52,10 +58,11 @@ class FPUWSolver(Solver):
         self.diagGradUWT = self.diagGradUW.T
 
     def stepUW(self, sgrid_bar):
-        """!Step crosslink density forward in time using upwind method
+        """!Step crosslink density forward in time using upwind method.
 
-        @param sgrid_bar: TODO
-        @return: TODO
+        @param sgrid_bar: Current solution to differential equations before
+                          upwind integration is applied
+        @return: Current solution after upwind method
 
         """
         #  TODO: TEST using pytest <26-06-19, ARL> #
