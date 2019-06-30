@@ -41,6 +41,7 @@ class FPUWSolver(Solver):
         off_set_diag = -1. * np.ones(max(self.ns1, self.ns2))
         if "end_pause" in self._params:
             if self._params["end_pause"]:
+                print("End_pausing")
                 # Neumann boundary conditions
                 #   No flux from the start of rod. Nothing needs to be done
                 #   No flux leaving from end of rod. Set last term of main

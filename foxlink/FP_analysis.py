@@ -27,6 +27,7 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
     """
     # from .stylelib.ase1_styles import ase1_runs_stl
     fig = plt.figure(constrained_layout=True, figsize=(15, 13))
+    # plt.subplots_adjust(top=.95)
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
@@ -47,10 +48,10 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
                             fig.add_subplot(gs[2, :6]),
                             fig.add_subplot(gs[2, 6:]),
                             ])
-        # TODO Change to updated format
-        # fig, axarr = plt.subplots(2, 2, figsize=(10, 8))
+        fig.suptitle(' ')
+        # FPanal.graphSlice(50, fig, axarr)
+        # plt.show()
         nframes = FPanal.time.size
-        # nframes = 50
         anim = FuncAnimation(
             fig,
             FPanal.graphSlice,

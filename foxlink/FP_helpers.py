@@ -184,7 +184,7 @@ def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
     return bf
 
 
-@jit
+@njit(parallel=True)
 def vhead(vo, fpar, fstall):
     """!Calculate the velocity of a motor head with a smooth
     force-velocity relation
@@ -195,21 +195,7 @@ def vhead(vo, fpar, fstall):
     @return: velocity of motor head
 
     """
-    return vo / (1. + exp(-2. * (1. + (2. * fpar / fstall))))
-
-
-@jit
-def laplace_5p(i, j, sgrid, ds):
-    """!Find the laplacian using the 4-point method
-
-    @param i: TODO
-    @param j: TODO
-    @param sol: TODO
-    @return: TODO
-
-    """
-    return (sgrid[i - 1, j] + sgrid[i + 1, j] + sgrid[i, j - 1] +
-            sgrid[i, j + 1] - (4. * sgrid[i, j])) / (ds * ds)
+    return vo / (1. + np.exp(-2. * (1. + (2. * fpar / fstall))))
 
 
 def make_solution_grid(lim1, lim2, ds):
@@ -281,7 +267,7 @@ def make_gen_source_mat(s1_arr, s2_arr, r, a1, a2, b, ko, co, ks, ho, beta):
     S2, S1 = np.meshgrid(s2_arr, s1_arr)
     src = ko * co * boltz_fact_mat(S1, S2, r, a1, a2, b, ks, ho, beta)
     # return sparse.csc_matrix(src)
-    return src
+    return src.round(30)
 
 
 def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
@@ -341,7 +327,7 @@ def make_gen_torque_mat(f_mat, s_arr, L, u):
     # Take the cross product of all the 3 vectors of f_mat with lvec
     # TODO Test to make sure this is right
     t_mat = np.cross(lvec, f_mat)
-    return t_mat
+    return t_mat.round(30)
 
 
 def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
@@ -356,6 +342,7 @@ def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
 
     """
     f_para_mat = np.einsum('ijk, k->ij', f_mat, u_vec)
+    vel_mat = vhead(vo, f_para_mat, fs)
     vel_mat = vo / (1. + np.exp(-2. * (1. + 2. * (f_para_mat / fs))))
     return vel_mat
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 from matplotlib.lines import Line2D
+from matplotlib.patches import Circle
 # import matplotlib.pyplot as plt
 
 
@@ -117,14 +118,20 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                                .5 * L1 * u1[2] + r1[2]),
                               linewidth=lw, solid_capstyle='round',
                               color='tab:green', clip_on=False)
+        tip1 = Circle((.5 * L1 * u1[1] + r1[1], .5 * L1 * u1[2] + r1[2]),
+                      .5 * lw, color='y')
         axarr[0].add_line(line1)
+        axarr[0].add_patch(tip1)
         line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
                                .5 * L2 * u2[1] + r2[1]),
                               (-.5 * L2 * u2[2] + r2[2],
                                .5 * L2 * u2[2] + r2[2]),
                               linewidth=lw, solid_capstyle='round',
                               color='tab:purple', clip_on=False)
+        tip2 = Circle((.5 * L2 * u2[1] + r2[1], .5 * L2 * u2[2] + r2[2]),
+                      .5 * lw, color='y')
         axarr[0].add_line(line2)
+        axarr[0].add_patch(tip2)
         r1 = FP_anal.R1_pos
         r2 = FP_anal.R2_pos
         u1 = FP_anal.R1_vec
