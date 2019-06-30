@@ -4,6 +4,7 @@ import sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
 # from matplotlib.lines import Line2D
@@ -60,7 +61,8 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
             interval=50,
             blit=True)
     t0 = time.time()
-    anim.save('{}.mp4'.format(FPanal.sType), writer=writer)
+
+    anim.save('{}.mp4'.format(Path.cwd().stem), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
