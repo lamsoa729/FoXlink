@@ -193,7 +193,8 @@ class Solver(object):
         while self.t < self.nt:
             self.Step()
             self.t += self.dt
-            self.sgrid.round(30)
+            # Get rid of subnormal numbers for speed
+            self.sgrid = self.sgrid.round(30)
             if (int(self.t / self.dt) % self.nwrite) == 0:
                 t1 = time.time()
                 print(r" {} steps in {:.4f} seconds, {:.1f}% complete".format(

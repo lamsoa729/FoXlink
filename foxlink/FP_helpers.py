@@ -313,7 +313,7 @@ def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1,
         # More vector broadcasting to give direction to force again
         f_mat = f_mat[:, :, None] * hvec[:, :, :]
 
-    return f_mat
+    return f_mat.round(30)
 
 
 def make_gen_torque_mat(f_mat, s_arr, L, u):
@@ -327,7 +327,7 @@ def make_gen_torque_mat(f_mat, s_arr, L, u):
     # Take the cross product of all the 3 vectors of f_mat with lvec
     # TODO Test to make sure this is right
     t_mat = np.cross(lvec, f_mat)
-    return t_mat.round(30)
+    return t_mat
 
 
 def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
@@ -343,7 +343,7 @@ def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
     """
     f_para_mat = np.einsum('ijk, k->ij', f_mat, u_vec)
     vel_mat = vhead(vo, f_para_mat, fs)
-    vel_mat = vo / (1. + np.exp(-2. * (1. + 2. * (f_para_mat / fs))))
+    # vel_mat = vo / (1. + np.exp(-2. * (1. + 2. * (f_para_mat / fs))))
     return vel_mat
 
 
