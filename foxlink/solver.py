@@ -290,7 +290,7 @@ class Solver(object):
             self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
             self._force_dset[i_step] = self.force
-            self._torque_dset[i_step] = self.torque1 + self.torque1
+            self._torque_dset[i_step] = self.torque2 - self.torque1
             self.written = True
         return i_step
 

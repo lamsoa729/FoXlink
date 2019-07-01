@@ -120,8 +120,8 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                               color='tab:green', clip_on=False)
         tip1 = Circle((.5 * L1 * u1[1] + r1[1], .5 * L1 * u1[2] + r1[2]),
                       .5 * lw, color='r', zorder=3)
-        axarr[0].add_line(line1)
         axarr[0].add_patch(tip1)
+        axarr[0].add_line(line1)
         line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
                                .5 * L2 * u2[1] + r2[1]),
                               (-.5 * L2 * u2[2] + r2[2],
@@ -162,15 +162,9 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
         min_x = min(x_ends + y_ends)
         min_x = min_x * 1.25 if min_x < 0 else .75 * min_x
 
+        # Make a square box always
         max_y = max_x
         min_y = min_x
-
-        # max_x = max(max_x, np.amax(.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
-        # min_x = min(np.amin(-.5 * L1 * u1[:, 1] + r1[:, 1]),
-
-        # min_x = min(min_x, np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
-        # max_y = max_x
-        # min_y = min_x
 
         axarr[0].set_xlim(min_x, max_x)
         axarr[0].set_ylim(min_y, max_y)
@@ -227,6 +221,7 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
     graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr, n)
     graph_vs_time(axarr[5], FP_anal.time, FP_anal.dR_arr, n)
     graph_vs_time(axarr[6], FP_anal.time, FP_anal.phi_arr, n)
+    axarr[0].legend(["MT$_1$", "MT$_2$", "Plus-end"], loc="upper right")
     axarr[2].legend(["N({:.2f}) = {:.1f}".format(
         FP_anal.time[n], FP_anal.Nxl_arr[n])])
     axarr[3].legend(["F({:.2f}) = {:.1f} Pn".format(
@@ -294,8 +289,8 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                               color='tab:green', clip_on=False)
         tip1 = Circle((.5 * L1 * u1[1] + r1[1], .5 * L1 * u1[2] + r1[2]),
                       .5 * lw, color='r', zorder=3)
-        axarr[0].add_line(line1)
         axarr[0].add_patch(tip1)
+        axarr[0].add_line(line1)
         line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
                                .5 * L2 * u2[1] + r2[1]),
                               (-.5 * L2 * u2[2] + r2[2],
@@ -365,15 +360,10 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
         axarr[1].set_aspect(1.0)
         fig.colorbar(c, ax=axarr[1])
         FP_anal.init_flag = False
-    axarr[0].text(.95, .95, "Time = {:.2f} sec".format(FP_anal.time[n]),
-                  horizontalalignment='right',
+    axarr[0].text(.05, .95, "Time = {:.2f} sec".format(FP_anal.time[n]),
+                  horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
-    # axarr[0].legend(["Time = {:.2f} sec".format(
+    axarr[0].legend(["MT$_1$", "MT$_2$", "Plus-end"], loc="upper right")
     # FP_anal.time[n])], facecolor='inherit')
     return fig.gca().lines + fig.gca().collections
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

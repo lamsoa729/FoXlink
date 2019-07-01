@@ -26,14 +26,10 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
     @return: TODO
 
     """
-    # from .stylelib.ase1_styles import ase1_runs_stl
     fig = plt.figure(constrained_layout=True, figsize=(15, 13))
-    # plt.subplots_adjust(top=.95)
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
-        # "lines.linewidth": 3,
-        # "lines.markersize": 10,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
         "font.size": 15
@@ -72,13 +68,9 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
     @return: TODO
 
     """
-    # from .stylelib.ase1_styles import ase1_runs_stl
-    # plt.subplots_adjust(top=.95)
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
-        # "lines.linewidth": 3,
-        # "lines.markersize": 10,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
         "font.size": 18

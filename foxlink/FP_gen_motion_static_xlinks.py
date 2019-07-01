@@ -22,7 +22,7 @@ class FPGenMotionStaticXlinks(FPGenMotionSolver, FPStaticSolver):
 
     def Step(self):
         """Step forward in time with FPStaticStep and then use FPGenMotionSolver to step the change the position of rods.
-        @return: TODO
+        @return: void, steps the sgrid, R1_pos, R1_vec, R2_pos, R2_vec. Calculates forces and torques.
 
         """
         # Update xlink positions
@@ -32,8 +32,3 @@ class FPGenMotionStaticXlinks(FPGenMotionSolver, FPStaticSolver):
         # Update rod positions
         self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
             self.force, self.torque, self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")
