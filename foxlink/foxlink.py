@@ -40,7 +40,7 @@ def parse_args():
                         help="Perform post-analysis on simulations once completed. Necessary to make movies.")
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed. NOT IMPLEMENTED YET!")  # TODO
-    parser.add_argument("-m", "--movie", type=str, default='all',
+    parser.add_argument("-m", "--movie", type=str, default='',
                         help="Make movie of systems of evolution. Will analyze files again.")
     opts = parser.parse_args()
     return opts

@@ -119,7 +119,7 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                               linewidth=lw, solid_capstyle='round',
                               color='tab:green', clip_on=False)
         tip1 = Circle((.5 * L1 * u1[1] + r1[1], .5 * L1 * u1[2] + r1[2]),
-                      .5 * lw, color='y')
+                      .5 * lw, color='r', zorder=3)
         axarr[0].add_line(line1)
         axarr[0].add_patch(tip1)
         line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
@@ -129,7 +129,7 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                               linewidth=lw, solid_capstyle='round',
                               color='tab:purple', clip_on=False)
         tip2 = Circle((.5 * L2 * u2[1] + r2[1], .5 * L2 * u2[2] + r2[2]),
-                      .5 * lw, color='y')
+                      .5 * lw, color='r', zorder=3)
         axarr[0].add_line(line2)
         axarr[0].add_patch(tip2)
         r1 = FP_anal.R1_pos
@@ -147,17 +147,30 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                   np.amax(-.5 * L2 * u2[:, 1] + r2[:, 1]),
                   np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])]
 
-        max_x = max(x_ends)
+        # Get all extreme positions of tips in the second dimension
+        y_ends = [np.amax(.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amin(.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amax(-.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amin(-.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amax(.5 * L2 * u2[:, 2] + r2[:, 2]),
+                  np.amin(.5 * L2 * u2[:, 2] + r2[:, 2]),
+                  np.amax(-.5 * L2 * u2[:, 2] + r2[:, 2]),
+                  np.amin(-.5 * L2 * u2[:, 2] + r2[:, 2])]
+
+        max_x = max(x_ends + y_ends)
         max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
-        min_x = min(x_ends)
+        min_x = min(x_ends + y_ends)
         min_x = min_x * 1.25 if min_x < 0 else .75 * min_x
+
+        max_y = max_x
+        min_y = min_x
 
         # max_x = max(max_x, np.amax(.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
         # min_x = min(np.amin(-.5 * L1 * u1[:, 1] + r1[:, 1]),
 
         # min_x = min(min_x, np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])) * 1.25
-        max_y = max_x
-        min_y = min_x
+        # max_y = max_x
+        # min_y = min_x
 
         axarr[0].set_xlim(min_x, max_x)
         axarr[0].set_ylim(min_y, max_y)
@@ -207,6 +220,7 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
     if FP_anal.init_flag:
         fig.colorbar(c, ax=axarr[1])
         axarr[0].set_aspect(1.0)
+        axarr[1].set_aspect(1.0)
         FP_anal.init_flag = False
     graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
     graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr, n)
@@ -279,7 +293,7 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                               linewidth=lw, solid_capstyle='round',
                               color='tab:green', clip_on=False)
         tip1 = Circle((.5 * L1 * u1[1] + r1[1], .5 * L1 * u1[2] + r1[2]),
-                      .5 * lw, color='y')
+                      .5 * lw, color='r', zorder=3)
         axarr[0].add_line(line1)
         axarr[0].add_patch(tip1)
         line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
@@ -289,7 +303,7 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                               linewidth=lw, solid_capstyle='round',
                               color='tab:purple', clip_on=False)
         tip2 = Circle((.5 * L2 * u2[1] + r2[1], .5 * L2 * u2[2] + r2[2]),
-                      .5 * lw, color='y')
+                      .5 * lw, color='r', zorder=3)
         axarr[0].add_line(line2)
         axarr[0].add_patch(tip2)
         r1 = FP_anal.R1_pos
@@ -307,13 +321,28 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                   np.amax(-.5 * L2 * u2[:, 1] + r2[:, 1]),
                   np.amin(-.5 * L2 * u2[:, 1] + r2[:, 1])]
 
-        max_x = max(x_ends)
+        # Get all extreme positions of tips in the second dimension
+        y_ends = [np.amax(.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amin(.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amax(-.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amin(-.5 * L1 * u1[:, 2] + r1[:, 2]),
+                  np.amax(.5 * L2 * u2[:, 2] + r2[:, 2]),
+                  np.amin(.5 * L2 * u2[:, 2] + r2[:, 2]),
+                  np.amax(-.5 * L2 * u2[:, 2] + r2[:, 2]),
+                  np.amin(-.5 * L2 * u2[:, 2] + r2[:, 2])]
+
+        max_x = max(x_ends + y_ends)
         max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
-        min_x = min(x_ends)
+        min_x = min(x_ends + y_ends)
         min_x = min_x * 1.25 if min_x < 0 else .75 * min_x
 
         max_y = max_x
         min_y = min_x
+
+        # max_y = max(y_ends)
+        # max_y = max_y * 1.25 if max_y > 0 else .75 * max_y
+        # min_y = min(y_ends)
+        # min_y = min_y * 1.25 if min_y < 0 else .75 * min_y
 
         axarr[0].set_xlim(min_x, max_x)
         axarr[0].set_ylim(min_y, max_y)
@@ -330,12 +359,18 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                       FP_anal.s1,
                       FP_anal.s2,
                       max_dens_val=FP_anal.max_dens_val)
+
     if FP_anal.init_flag:
-        fig.colorbar(c, ax=axarr[1])
         axarr[0].set_aspect(1.0)
+        axarr[1].set_aspect(1.0)
+        fig.colorbar(c, ax=axarr[1])
         FP_anal.init_flag = False
-    axarr[0].legend(["Time = {:.2f} sec".format(
-        FP_anal.time[n])], facecolor='inherit')
+    axarr[0].text(.95, .95, "Time = {:.2f} sec".format(FP_anal.time[n]),
+                  horizontalalignment='right',
+                  verticalalignment='bottom',
+                  transform=axarr[0].transAxes)
+    # axarr[0].legend(["Time = {:.2f} sec".format(
+    # FP_anal.time[n])], facecolor='inherit')
     return fig.gca().lines + fig.gca().collections
 
 

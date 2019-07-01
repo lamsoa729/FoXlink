@@ -71,7 +71,7 @@ class FPRodMotionSolver(Solver):
         print("Init FPRodMotionSolver ->", end=" ")
         Solver.__init__(self, pfile=pfile, pdict=pdict)
 
-    def RodStep(self, force=0, torque=0, R1_pos=None,
+    def RodStep(self, force=0, torque1=0, torque2=0, R1_pos=None,
                 R2_pos=None, R1_vec=None, R2_vec=None):
         """! Change the position of rods based on forces and torques exerted on rod
         @param force: Force vector of rod2 by rod1
@@ -89,7 +89,7 @@ class FPRodMotionSolver(Solver):
         L1 = self._params["L1"]
         L2 = self._params["L2"]
         d = self._params["rod_diameter"]
-        if force is not 0 and torque is not 0:
+        if force is not 0 and torque1 is not 0 and torque2 is not 0:
             # Get the mobility matrices and rotational drag coefficient
             mob_mat1, g_rot1 = get_rod_mob_mat(visc, L1, d, R1_vec)
             mob_mat2, g_rot2 = get_rod_mob_mat(visc, L2, d, R2_vec)
@@ -97,14 +97,13 @@ class FPRodMotionSolver(Solver):
         if force is not 0:
             R2_pos += self.dt * np.dot(mob_mat2, force)
             R1_pos -= self.dt * np.dot(mob_mat1, force)
-        if torque is not 0:
-            # R2_vec -= np.cross(R2_vec, torque) * self.dt / g_rot2
-            # R1_vec += np.cross(R1_vec, torque) * self.dt / g_rot1
-            R2_vec += np.cross(torque, R2_vec) * self.dt / g_rot2
-            R1_vec -= np.cross(torque, R1_vec) * self.dt / g_rot1
+        if torque1 is not 0:
+            R1_vec += np.cross(torque1, R1_vec) * self.dt / g_rot1
             # Renormalize orientation vectors
-            R2_vec /= np.linalg.norm(R2_vec)
             R1_vec /= np.linalg.norm(R1_vec)
+        if torque2 is not 0:
+            R2_vec += np.cross(torque2, R2_vec) * self.dt / g_rot2
+            R2_vec /= np.linalg.norm(R2_vec)
         # Recalculate source matrix after rods have moved
         self.calcSourceMatrix()
         return R1_pos, R2_pos, R1_vec, R2_vec
