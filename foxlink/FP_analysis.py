@@ -66,6 +66,42 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
+
+def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
+    """!Make animation of time slices
+    @return: TODO
+
+    """
+    # from .stylelib.ase1_styles import ase1_runs_stl
+    # plt.subplots_adjust(top=.95)
+    graph_stl = {
+        "axes.titlesize": 18,
+        "axes.labelsize": 15,
+        # "lines.linewidth": 3,
+        # "lines.markersize": 10,
+        "xtick.labelsize": 15,
+        "ytick.labelsize": 15,
+        "font.size": 15
+    }
+    with plt.style.context(graph_stl):
+        fig, axarr = plt.subplots(1, 2, figsize=(12, 5))
+        fig.suptitle(' ')
+        # FPanal.graphReducedSlice(50, fig, axarr)
+        # plt.show()
+        nframes = FPanal.time.size
+        anim = FuncAnimation(
+            fig,
+            FPanal.graphReducedSlice,
+            frames=np.arange(nframes),
+            fargs=(fig, axarr),
+            interval=50,
+            blit=True)
+    t0 = time.time()
+
+    anim.save('{}_min.mp4'.format(Path.cwd().stem), writer=writer)
+    t1 = time.time()
+    print("Movie saved in: ", t1 - t0)
+
 # FIXME: No longer works for FP_pass_CN solvers anymore. Need to re-write
 # that code now anyways.
 
@@ -158,6 +194,20 @@ class FPAnalysis(object):
         """
         t0 = time.time()
         gca_arts = fp_graph_all_data_2d(fig, axarr, n, self)
+        t1 = time.time()
+        print("Graph ", n, "made in: ", t1 - t0)
+        return gca_arts
+
+    def graphReducedSlice(self, n, fig, axarr):
+        """!Graph the solution Psi at a specific time
+
+        @param n: index of slice to graph
+        @return: void
+
+        """
+        t0 = time.time()
+        gca_arts = fp_graph_mts_xlink_distr_2d(fig, axarr, n, self)
+        fig.tight_layout()
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts

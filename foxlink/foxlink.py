@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from matplotlib.animation import FFMpegWriter
-from .FP_analysis import makeAnimation, FPAnalysis
+from .FP_analysis import makeAnimation, makeMinimalAnimation, FPAnalysis
 from .FP_pass_ang_CN import FPPassiveAngCNSolver
 import argparse
 import sys
@@ -40,8 +40,8 @@ def parse_args():
                         help="Perform post-analysis on simulations once completed. Necessary to make movies.")
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed. NOT IMPLEMENTED YET!")  # TODO
-    parser.add_argument("-m", "--movie", action="store_true", default=False,
-                        help="Make movie of systems of evolution. Will analyze files again")
+    parser.add_argument("-m", "--movie", type=str, default='all',
+                        help="Make movie of systems of evolution. Will analyze files again.")
     opts = parser.parse_args()
     return opts
 
@@ -117,7 +117,11 @@ class FoXlink(object):
             print("Started making movie")
             Writer = FFMpegWriter
             writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
-            makeAnimation(analysis, writer)
+            if self._opts.movie == 'all':
+                makeAnimation(analysis, writer)
+            elif self._opts.movie == 'min':
+                makeMinimalAnimation(analysis, writer)
+
         analysis.Save()
 
 
