@@ -3,13 +3,13 @@
 #dist: xenial
 language: python
 python:
-  - 3.6
-  - 3.5
-  - 3.4
+  - "3.6"
+  - "3.5"
+  - "3.4"
   #- 2.7
 
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+  #system_site_packages: true
 ## Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 #install: pip install -U tox-travis codecov
 install:
