@@ -41,7 +41,8 @@ script: pytest --cov=foxlink
 notifications:
     email: false
 ## Codecov after success
-after_success: codecov
+after_success: 
+  - python-codacy-coverage -r coverage.xml
 
 ## Assuming you have installed the travis-ci CLI tool, after you
 ## create the Github repo and add it to Travis, run the
