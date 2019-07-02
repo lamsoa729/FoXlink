@@ -1,27 +1,39 @@
 # Config file for automatic testing at travis-ci.org
-
-#dist: xenial
 language: python
-python:
-  - "3.6"
-  - "3.5"
-  - "3.4"
-  #- 2.7
+matrix:
+  include:
+    # Extra includes for OSX since python language is not available by default on OSX
+    - os: osx
+      language: generic
+      env: PYTHON_VER=3.6
+    - os: osx
+      language: generic
+      env: PYTHON_VER=3.7
 
-#virtualenv:
-  #system_site_packages: true
+
+    - os: linux
+      language: generic  # No need to set Python version since its conda
+      env: PYTHON_VER=3.6
+    - os: linux
+      language: generic
+      env: PYTHON_VER=3.7
+
+virtualenv:
+  system_site_packages: true
 ## Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 #install: pip install -U tox-travis codecov
 install:
   - pip install -U -r requirements_dev.txt
-  #- pip install .
+  - pip install .
 
 ## Command to run tests, e.g. python setup.py test
 #script: tox
 script: pytest --cov=foxlink
 
+notifications:
+    email: false
 ## Codecov after success
-#after_success: codecov
+after_success: codecov
 
 ## Assuming you have installed the travis-ci CLI tool, after you
 ## create the Github repo and add it to Travis, run the
