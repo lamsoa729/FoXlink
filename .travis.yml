@@ -2,27 +2,35 @@
 language: python
 matrix:
   include:
-    # Extra includes for OSX since python language is not available by default on OSX
-    - os: osx
-      language: python
-      env: PYTHON_VER=3.6
-    - os: osx
-      language: python
-      env: PYTHON_VER=3.7
+  - name: "Python 3.7.1 on Xenial Linux"
+    python: 3.7           # this works for Linux but is ignored on macOS or Windows
+    dist: xenial          # required for Python >= 3.7
+  - name: "Python 3.7.2 on macOS"
+    os: osx
+    osx_image: xcode10.2  # Python 3.7.2 running on macOS 10.14.3
+    language: shell       # 'language: python' is an error on Travis CI macOS
+  # Extra includes for OSX since python language is not available by default on OSX
+    #- os: osx
+    #  language: python
+    #  env: PYTHON_VER=3.6
+    #- os: osx
+    #  language: python
+    #  env: PYTHON_VER=3.7
 
 
-    - os: linux
-      language: python  # No need to set Python version since its conda
-      env: PYTHON_VER=3.6
-    - os: linux
-      language: python
-      env: PYTHON_VER=3.7
+    #- os: linux
+    #  language: python  # No need to set Python version since its conda
+    #  env: PYTHON_VER=3.6
+    #- os: linux
+    #  language: python
+    #  env: PYTHON_VER=3.7
 
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+  #system_site_packages: true
 ## Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 #install: pip install -U tox-travis codecov
 install:
+  - pip3 install --upgrade pip 
   - pip install -U -r requirements_dev.txt
   - pip install .
 
