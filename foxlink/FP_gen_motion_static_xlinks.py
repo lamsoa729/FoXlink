@@ -16,7 +16,7 @@ class FPGenMotionStaticXlinks(FPGenMotionSolver, FPStaticSolver):
     """Solver class to calculate rod motion in a solution of crosslinks binding and unbinding."""
 
     def __init__(self, pfile=None, pdict=None):
-        """TODO: to be defined1. """
+        """Initialize FPGenMotionStaticXlinks solver using FPGenMotionSolver"""
         print("Init FPGenMotionStaticXlinks ->", end=" ")
         FPGenMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
 

@@ -21,8 +21,3 @@ class FPGenOrientStaticXlinks(FPGenOrientSolver, FPStaticSolver):
         """Initialize class in a general orientation"""
         print("Init FPGenOrientStaticXlinks ->", end=" ")
         FPGenOrientSolver.__init__(self, pfile=pfile, pdict=pdict)
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")
