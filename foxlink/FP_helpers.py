@@ -14,22 +14,6 @@ Description: Helper functions for FP solver.
 
 
 @jit
-def spring_force_ang(s1, s2, phi, ks, ho):
-    """!Spring force that is generated on head 1 by head 2 or vice versa.
-    Whatch the negative sign
-
-    @param s1: TODO
-    @param s2: TODO
-    @param phi: TODO
-    @param ks: TODO
-    @param ho: TODO
-    @return: TODO
-
-    """
-    return -1. * ks * (sqrt(s1**2 + s2**2 - 2. * s1 * s2 * cos(phi)) - ho)
-
-
-@jit
 def spring_force_ang_parallel(s1, s2, phi, ks, ho):
     """!Spring force generated on head1 parallel to rod 1.
     This is not the same for the reverse case for force on head2 parallel to rod2.
@@ -179,7 +163,7 @@ def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
                                                     np.power(s1, 2) +
                                                     np.power(s2, 2) -
                                                     2. * np.multiply(s1, s2) * b +
-                                                    2. * r * (s2 * a2 - s1 * a1)) - ho),
+                                                    2. * r * (s2 * a2 - s1 * a1))) - ho,
                                            2))
     return bf
 
