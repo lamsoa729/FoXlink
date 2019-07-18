@@ -141,6 +141,7 @@ class FPGenOrientSolver(Solver):
         self._R2_pos_dset[i_step] = self.R2_pos
         self._R1_vec_dset[i_step] = self.R1_vec
         self._R2_vec_dset[i_step] = self.R2_vec
+        return i_step
 
 
 ##########################################
