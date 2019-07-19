@@ -69,9 +69,13 @@ class Solver(object):
             Path("{}.h5".format(self.__class__.__name__)), 'w')
         self.makeDataframe()
 
-    def ParseParams(self):
+    def ParseParams(self, skip=False):
         """! Method to extract and/or calculate parameter values necessary for
         solving algorithms to run.
+
+        @param skip: Load parameter file but skip rest of the parsing. Used
+                     when you need to load special parameters before making
+                     solution grid in subclasses.
 
         @return: void, modifies self._params
 
@@ -83,8 +87,11 @@ class Solver(object):
             print("Could not find parameter set.",
                   "Using default params defined in solver.py")
             self._params = dcp(Solver.default_params)
+        # Skip rest of parsing if flag is true
+        if skip:
+            return
 
-        # Integration parameters
+            # Integration parameters
         self.t = 0.
         self.ds = self._params["ds"]  # Segmentation size of microtubules
         if "nt" not in self._params:

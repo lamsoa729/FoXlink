@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-from .FP_gen_motion_solver import FPGenMotionSolver
+# from .FP_gen_motion_solver import FPGenMotionSolver
+from .FP_gen_orient_solver import FPGenOrientSolver
 
 """@package docstring
 File: FP_optical_trap_solver.py
@@ -13,7 +14,7 @@ import yaml
 import h5py
 
 
-class OpticalTrapGenMotionSolver(FPGenMotionSolver):
+class OpticalTrapGenOrientSolver(FPGenOrientSolver):
 
     """!Docstring for FPGenOpticalTrapMotionSolver. """
 
@@ -25,8 +26,9 @@ class OpticalTrapGenMotionSolver(FPGenMotionSolver):
 
         """
         print("Init FPGenOpticalTrapMotionSolver ->", end=" ")
-        FPGenMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
+        self.ParseParams(skip=True)
         self.OTParseParams()
+        FPGenOrientSolver.__init__(self, pfile=pfile, pdict=pdict)
 
     def OTParseParams(self):
         """!TODO: Docstring for ParseParams.
@@ -53,32 +55,12 @@ class OpticalTrapGenMotionSolver(FPGenMotionSolver):
         # if 'OT1_motion' in self._params:
         # if 'OT2_motion' in self._params:
 
-    def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
-                R1_pos=None, R2_pos=None, R1_vec=None, R2_vec=None):
-        """! Change the position of rods based on forces and torques exerted on rod
-        @param force: Force vector of rod2 by rod1
-        @param torque: Torque vector of rod2 by rod1
-        @param R1_pos: TODO
-        @param R2_pos: TODO
-        @param R1_vec: TODO
-        @param R2_vec: TODO
-        @return: void
-        @return: TODO
-
-        """
-        FPGenMotionSolver.RodStep(self,
-                                  force1 + self.ot1_force,
-                                  force2 + self.ot2_force,
-                                  torque1 + self.ot1_torque,
-                                  torque2 + self.ot2_torque,
-                                  R1_pos, R2_pos, R1_vec, R2_vec)
-
     def calcForceMatrix(self):
         """!Calculate the force for each crosslinker
         @return: TODO
 
         """
-        FPGenMotionSolver.calcForceMatrix(self)
+        FPGenOrientSolver.calcForceMatrix(self)
         # Add in force from optical traps
 
         # Parameters for calculations
@@ -97,7 +79,7 @@ class OpticalTrapGenMotionSolver(FPGenMotionSolver):
         @return: TODO
 
         """
-        FPGenMotionSolver.calcTorqueMatrix(self)
+        FPGenOrientSolver.calcTorqueMatrix(self)
         # Parameters for calculations
         ot_k = self._params['OT_ks']
         hL1 = .5 * self._params["L2"]
@@ -120,7 +102,7 @@ class OpticalTrapGenMotionSolver(FPGenMotionSolver):
 
         """
         if not self.data_frame_made:
-            FPGenMotionSolver.makeDataframe(self)
+            FPGenOrientSolver.makeDataframe(self)
         self._ot_force_dset = self._interaction_grp.create_dataset(
             'optical_trap_force_data',
             shape=(self._nframes + 1, 2, 3),
@@ -142,11 +124,11 @@ class OpticalTrapGenMotionSolver(FPGenMotionSolver):
 
         """
         if not self.written:
-            istep = FPGenMotionSolver.Write(self)
+            i_step = FPGenOrientSolver.Write(self)
         else:
-            istep = ((self.t / self.dt) / self.nwrite)
+            i_step = ((self.t / self.dt) / self.nwrite)
         self._ot_force_dset[i_step, 0] = self.ot1_force
         self._ot_force_dset[i_step, 1] = self.ot2_force
         self._ot_torque_dset[i_step, 0] = self.ot1_torque
         self._ot_torque_dset[i_step, 1] = self.ot2_torque
-        return istep
+        return i_step
