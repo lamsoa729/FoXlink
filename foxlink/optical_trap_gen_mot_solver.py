@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from .FP_gen_motion_solver import FPGenMotionSolver
 
 """@package docstring
 File: FP_optical_trap_solver.py
@@ -128,7 +129,7 @@ class OpticalTrapGenMotionSolver(FPGenMotionSolver):
                               ['frame', 'trap', 'coord']):
             dim.label = label
         self._ot_torque_dset = self._interaction_grp.create_dataset(
-            'optical_trap_torque_data'
+            'optical_trap_torque_data',
             shape=(self._nframes + 1, 2, 3),
             dtype=np.float32)
         for dim, label in zip(self._ot_torque_dset.dims,

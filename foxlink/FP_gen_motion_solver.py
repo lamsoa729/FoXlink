@@ -24,8 +24,3 @@ class FPGenMotionSolver(FPGenOrientSolver, FPRodMotionSolver):
         """
         print("Init FPGenMotionSolver ->", end=" ")
         FPGenOrientSolver.__init__(self, pfile=pfile, pdict=pdict)
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")
