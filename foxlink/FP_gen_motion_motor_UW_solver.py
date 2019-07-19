@@ -48,6 +48,7 @@ class FPGenMotionMotorUWSolver(FPRodMotionSolver, FPGenOrientMotorUWSolver):
         self.calcTorqueMatrix()
         # Update rod positions and recalculate source matrices
         self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
-            self.force, self.torque1, self.torque2, self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
+            self.force1, self.force1, self.torque1, self.torque2,
+            self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
         # Update
         self.calcVelocityMats()

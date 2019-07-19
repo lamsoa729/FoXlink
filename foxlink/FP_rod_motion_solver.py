@@ -71,8 +71,8 @@ class FPRodMotionSolver(Solver):
         print("Init FPRodMotionSolver ->", end=" ")
         Solver.__init__(self, pfile=pfile, pdict=pdict)
 
-    def RodStep(self, force=0, torque1=0, torque2=0, R1_pos=None,
-                R2_pos=None, R1_vec=None, R2_vec=None):
+    def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
+                R1_pos=None, R2_pos=None, R1_vec=None, R2_vec=None):
         """! Change the position of rods based on forces and torques exerted on rod
         @param force: Force vector of rod2 by rod1
         @param torque: Torque vector of rod2 by rod1
@@ -89,26 +89,25 @@ class FPRodMotionSolver(Solver):
         L1 = self._params["L1"]
         L2 = self._params["L2"]
         d = self._params["rod_diameter"]
-        if force is not 0 and torque1 is not 0 and torque2 is not 0:
+        if (force1 is not 0
+                or force2 is not 0
+                or torque1 is not 0
+                or torque2 is not 0):
             # Get the mobility matrices and rotational drag coefficient
             mob_mat1, g_rot1 = get_rod_mob_mat(visc, L1, d, R1_vec)
             mob_mat2, g_rot2 = get_rod_mob_mat(visc, L2, d, R2_vec)
         # Use forces and torques to evolve system using a Forward Euler scheme
-        if force is not 0:
-            R2_pos += self.dt * np.dot(mob_mat2, force)
-            R1_pos -= self.dt * np.dot(mob_mat1, force)
+        if force1 is not 0:
+            R1_pos += self.dt * np.dot(mob_mat1, force1)
+        if force2 is not 0:
+            R2_pos += self.dt * np.dot(mob_mat2, force2)
         if torque1 is not 0:
             R1_vec += np.cross(torque1, R1_vec) * self.dt / g_rot1
-            # Renormalize orientation vectors
-            R1_vec /= np.linalg.norm(R1_vec)
+            R1_vec /= np.linalg.norm(R1_vec)  # Renormalize just in case
         if torque2 is not 0:
             R2_vec += np.cross(torque2, R2_vec) * self.dt / g_rot2
-            R2_vec /= np.linalg.norm(R2_vec)
+            R2_vec /= np.linalg.norm(R2_vec)  # Renormalize just in case
+
         # Recalculate source matrix after rods have moved
         self.calcSourceMatrix()
         return R1_pos, R2_pos, R1_vec, R2_vec
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")
