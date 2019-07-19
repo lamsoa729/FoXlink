@@ -221,7 +221,7 @@ class Solver(object):
 
     def makeDataframe(self):
         """! Make data frame to read from later
-        @return: Dictionary pointing to data in dataframe
+        @return: void
 
         """
         if not self.data_frame_made:
@@ -247,12 +247,18 @@ class Solver(object):
                 'Interaction_data')
             self._force_dset = self._interaction_grp.create_dataset(
                 'force_data',
-                shape=(self._nframes + 1, 3),
+                shape=(self._nframes + 1, 2, 3),
                 dtype=np.float32)
+            for dim, label in zip(self._force_dset.dims,
+                                  ['frame', 'rod', 'coord']):
+                dim.label = label
             self._torque_dset = self._interaction_grp.create_dataset(
                 'torque_data',
-                shape=(self._nframes + 1, 3),
+                shape=(self._nframes + 1, 2, 3),
                 dtype=np.float32)
+            for dim, label in zip(self._torque_dset.dims,
+                                  ['frame', 'rod', 'coord']):
+                dim.label = label
             self.data_frame_made = True
 
     def calcSourceMatrix(self):
@@ -289,8 +295,10 @@ class Solver(object):
         if not self.written:
             self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
-            self._force_dset[i_step] = self.force
-            self._torque_dset[i_step] = self.torque2 - self.torque1
+            self._force_dset[i_step, 0] = self.force1
+            self._force_dset[i_step, 1] = self.force2
+            self._torque_dset[i_step, 0] = self.torque1
+            self._torque_dset[i_step, 1] = self.torque2
             self.written = True
         return i_step
 

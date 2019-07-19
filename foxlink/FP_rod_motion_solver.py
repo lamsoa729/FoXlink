@@ -80,7 +80,7 @@ class FPRodMotionSolver(Solver):
         @param R2_pos: TODO
         @param R1_vec: TODO
         @param R2_vec: TODO
-        @return: void
+        @return: new positions and orientations of rods
 
         """
         # Calculate drag coefficients of rods:
@@ -90,9 +90,9 @@ class FPRodMotionSolver(Solver):
         L2 = self._params["L2"]
         d = self._params["rod_diameter"]
         if (force1 is not 0
-                or force2 is not 0
-                or torque1 is not 0
-                or torque2 is not 0):
+                and force2 is not 0
+                and torque1 is not 0
+                and torque2 is not 0):
             # Get the mobility matrices and rotational drag coefficient
             mob_mat1, g_rot1 = get_rod_mob_mat(visc, L1, d, R1_vec)
             mob_mat2, g_rot2 = get_rod_mob_mat(visc, L2, d, R2_vec)

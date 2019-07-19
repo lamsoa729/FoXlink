@@ -21,11 +21,11 @@ class FPGenMotionMotorUWSolver(FPRodMotionSolver, FPGenOrientMotorUWSolver):
         ParseParams: FPGenOrientSolver
         calcSourceMat: FPGenOrientSolver
         calcForceMat: FPGenOrientSolver
-        calcTorueMat: FPGenOrientSolver
+        calcTorqueMat: FPGenOrientSolver
         calcVelocityMats: FPGenOrientMotorUWSolver
         makeDiagMats: FPUWMotorSolver
         stepUW: FPUWSolver
-        Step: FPUWMotorSolver
+        Step: self
         RodStep: FPGenMotionSolver
 
 

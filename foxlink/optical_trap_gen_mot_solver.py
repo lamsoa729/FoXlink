@@ -12,7 +12,7 @@ import yaml
 import h5py
 
 
-class FPGenOpticalTrapMotionSolver(FPGenMotionSolver):
+class OpticalTrapGenMotionSolver(FPGenMotionSolver):
 
     """!Docstring for FPGenOpticalTrapMotionSolver. """
 
@@ -25,14 +25,14 @@ class FPGenOpticalTrapMotionSolver(FPGenMotionSolver):
         """
         print("Init FPGenOpticalTrapMotionSolver ->", end=" ")
         FPGenMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
+        self.OTParseParams()
 
-    def ParseParams(self):
+    def OTParseParams(self):
         """!TODO: Docstring for ParseParams.
 
         @return: void, set position of optical traps and motion
 
         """
-        FPGenOrientSolver.ParseParams(self)
         if 'OT1_pos' in self._params:  # Set to defined location
             self.OT1_pos = np.asarray(self._params['OT1_pos'])
         else:  # Set optical trap 2 to minus end of rod1
@@ -52,12 +52,32 @@ class FPGenOpticalTrapMotionSolver(FPGenMotionSolver):
         # if 'OT1_motion' in self._params:
         # if 'OT2_motion' in self._params:
 
+    def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
+                R1_pos=None, R2_pos=None, R1_vec=None, R2_vec=None):
+        """! Change the position of rods based on forces and torques exerted on rod
+        @param force: Force vector of rod2 by rod1
+        @param torque: Torque vector of rod2 by rod1
+        @param R1_pos: TODO
+        @param R2_pos: TODO
+        @param R1_vec: TODO
+        @param R2_vec: TODO
+        @return: void
+        @return: TODO
+
+        """
+        FPGenMotionSolver.RodStep(self,
+                                  force1 + self.ot1_force,
+                                  force2 + self.ot2_force,
+                                  torque1 + self.ot1_torque,
+                                  torque2 + self.ot2_torque,
+                                  R1_pos, R2_pos, R1_vec, R2_vec)
+
     def calcForceMatrix(self):
         """!Calculate the force for each crosslinker
         @return: TODO
 
         """
-        FPGenMotionSolver.calcForceMatrix()
+        FPGenMotionSolver.calcForceMatrix(self)
         # Add in force from optical traps
 
         # Parameters for calculations
@@ -76,7 +96,7 @@ class FPGenOpticalTrapMotionSolver(FPGenMotionSolver):
         @return: TODO
 
         """
-        FPGenMotionSolver.calcTorqueMatrix()
+        FPGenMotionSolver.calcTorqueMatrix(self)
         # Parameters for calculations
         ot_k = self._params['OT_ks']
         hL1 = .5 * self._params["L2"]
@@ -85,14 +105,47 @@ class FPGenOpticalTrapMotionSolver(FPGenMotionSolver):
         self.ot1_torque = np.cross(-hL1 * self.R1_vec, self.ot1_force)
         self.ot2_torque = np.cross(-hL2 * self.R2_vec, self.ot2_force)
 
-    def makeDataframe(self):
+    def stepOT(self):
+        """!TODO: Docstring for stepOT.
+        @return: TODO
+
+        """
+        print("stepOT still needs to be implemented")
+        pass
+
+    def addOTDataframe(self):
         """! Make data frame to read from later
         @return: TODO
 
         """
+        if not self.data_frame_made:
+            FPGenMotionSolver.makeDataframe(self)
+        self._ot_force_dset = self._interaction_grp.create_dataset(
+            'optical_trap_force_data',
+            shape=(self._nframes + 1, 2, 3),
+            dtype=np.float32)
+        for dim, label in zip(self._ot_force_dset.dims,
+                              ['frame', 'trap', 'coord']):
+            dim.label = label
+        self._ot_torque_dset = self._interaction_grp.create_dataset(
+            'optical_trap_torque_data'
+            shape=(self._nframes + 1, 2, 3),
+            dtype=np.float32)
+        for dim, label in zip(self._ot_torque_dset.dims,
+                              ['frame', 'trap', 'coord']):
+            dim.label = label
 
     def Write(self):
         """!Write current step in algorithm into dataframe
         @return: TODO
 
         """
+        if not self.written:
+            istep = FPGenMotionSolver.Write(self)
+        else:
+            istep = ((self.t / self.dt) / self.nwrite)
+        self._ot_force_dset[i_step, 0] = self.ot1_force
+        self._ot_force_dset[i_step, 1] = self.ot2_force
+        self._ot_torque_dset[i_step, 0] = self.ot1_torque
+        self._ot_torque_dset[i_step, 1] = self.ot2_torque
+        return istep
