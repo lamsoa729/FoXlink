@@ -25,8 +25,3 @@ class FPGenOrientCNSolver(FPGenOrientSolver, FPPassiveCNSolver):
         print("Init FPGenOrientCNSolver ->", end=" ")
         FPGenOrientSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

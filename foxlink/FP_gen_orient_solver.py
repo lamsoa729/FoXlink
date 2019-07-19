@@ -51,11 +51,11 @@ class FPGenOrientSolver(Solver):
         print("Init FPGenOrientSolver ->", end=" ")
         Solver.__init__(self, pfile=pfile, pdict=pdict)
 
-    def ParseParams(self, skip=False):
+    def ParseParams(self):
         """! Parse parameters from file and add to member variables
         @return: void
         """
-        Solver.ParseParams(self, skip)
+        Solver.ParseParams(self)
         # Rod center position vectors of
         self.R1_pos = np.asarray(self._params['R1_pos'])
         self.R2_pos = np.asarray(self._params['R2_pos'])
@@ -143,8 +143,3 @@ class FPGenOrientSolver(Solver):
         self._R1_vec_dset[i_step] = self.R1_vec
         self._R2_vec_dset[i_step] = self.R2_vec
         return i_step
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

@@ -27,11 +27,11 @@ class FPPassiveParaSolver(Solver):
         print("Init FPPassiveParaSolver ->", end=" ")
         Solver.__init__(self, pfile, pdict)
 
-    def ParseParams(self, skip=False):
+    def ParseParams(self):
         """! Parse parameters from file and add to member variables
         @return: void
         """
-        Solver.ParseParams(self, skip)
+        Solver.ParseParams(self)
         # Separation vector of MT centers
         self.R_pos = self._params['R_pos']
 
@@ -64,8 +64,3 @@ class FPPassiveParaSolver(Solver):
         """
         i_step = Solver.Write(self)
         self._R_dset[i_step] = self.R_pos
-
-
-##########################################
-if __name__ == "__main__":
-    pass
