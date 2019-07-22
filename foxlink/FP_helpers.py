@@ -18,9 +18,9 @@ def vhead(vo, fpar, fstall):
     """!Calculate the velocity of a motor head with a smooth
     force-velocity relation
 
-    @param vo: TODO
-    @param fpar: TODO
-    @param fstall: TODO
+    @param vo: Unladen velocity of motor head
+    @param fpar: Force on motor head parallel to rod head is attached
+    @param fstall: Stall force of motor head
     @return: velocity of motor head
 
     """
@@ -35,12 +35,14 @@ def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
     @param u_vec: unit vector of rod the motor head is on
     @param fs: stall force of motor head
     @param vo: unladen velocity of motor head
-    @return: velocity matrix of motor head
+    @return: velocity matrix corresponding to position of motor head
 
     """
+    if fs is 0:
+        print("!!! Warning: motor stall force is zero. ",
+              "This may cause undefined behaviour.")
     f_para_mat = np.einsum('ijk, k->ij', f_mat, u_vec)
     vel_mat = vhead(vo, f_para_mat, fs)
-    # vel_mat = vo / (1. + np.exp(-2. * (1. + 2. * (f_para_mat / fs))))
     return vel_mat
 
 
@@ -108,25 +110,25 @@ def boltz_fact(s1, s2, r, a1, a2, b, ks, ho, beta):
 # @njit
 @njit(parallel=True)
 def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
-    """! Calculate the boltzmann factor for a given configuration
+    """! Calculate the boltzmann factor for a given configuration of rods
 
-    @param r: TODO
+    @param s1: Discretized position along rod 1
+    @param s2: Discretized position along rod 2
+    @param r: Center to center separation of rods
     @param a1: TODO
     @param a2: TODO
     @param b: TODO
-    @param co: TODO
     @param ks: TODO
     @param ho: TODO
     @param beta: TODO
-    @return: return boltzmann factor multiplied associated binding concentration
+    @return: boltzmann factor
 
     """
-    bf = np.exp(-.5 * ks * beta * np.power((np.sqrt(r**2 +
-                                                    np.power(s1, 2) +
-                                                    np.power(s2, 2) -
-                                                    2. * np.multiply(s1, s2) * b +
-                                                    2. * r * (s2 * a2 - s1 * a1))) - ho,
-                                           2))
+    bf = np.exp(-.5 * ks * beta *
+                np.power((np.sqrt(r**2 + np.power(s1, 2) + np.power(s2, 2) -
+                                  2. * np.multiply(s1, s2) * b +
+                                  2. * r * (s2 * a2 - s1 * a1))) - ho,
+                         2))
     return bf
 
 
@@ -137,8 +139,7 @@ def make_gen_source_mat(s1_arr, s2_arr, r, a1, a2, b, ko, co, ks, ho, beta):
     """
     S2, S1 = np.meshgrid(s2_arr, s1_arr)
     src = ko * co * boltz_fact_mat(S1, S2, r, a1, a2, b, ks, ho, beta)
-    # return sparse.csc_matrix(src)
-    return src.round(30)
+    return src.round(30)  # Get rid of un-norm numbers for speed up
 
 
 def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
@@ -160,8 +161,7 @@ def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
     return hvec
 
 
-def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1,
-                       u2, rvec, r, ks, ho):
+def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
     """! Creates a general force matrix for crosslinker attachment
     @param : TODO
     @return: TODO
@@ -199,6 +199,8 @@ def make_gen_torque_mat(f_mat, s_arr, L, u):
     # TODO Test to make sure this is right
     t_mat = np.cross(lvec, f_mat)
     return t_mat
+
+
 #######################################################################
 #                    Angular orientation functions                    #
 #######################################################################

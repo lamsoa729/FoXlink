@@ -44,7 +44,7 @@ class Solver(object):
                                  eg. Motor, Static, Passive
             Rod algorithm solver -> What technique is used to solve the MT
                                       position equations.
-                                      eg. Orient (no motions), Motion
+                                      eg. Orient (no motions), Motion, Optical Trap
 
         Derivative class names are based on their solver type.
     """
@@ -65,8 +65,8 @@ class Solver(object):
         self.makeSolutionGrid()
         self.setInitialCondition()
         # Create data frame
-        self._h5_data = h5py.File(
-            Path("{}.h5".format(self.__class__.__name__)), 'w')
+        self._h5_fpath = Path("{}.h5".format(self.__class__.__name__))
+        self._h5_data = h5py.File(self._h5_fpath, 'w')
         self.makeDataframe()
 
     def ParseParams(self):

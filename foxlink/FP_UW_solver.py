@@ -41,15 +41,15 @@ class FPUWSolver(Solver):
         off_set_diag = -1. * np.ones(max(self.ns1, self.ns2))
         if "end_pause" in self._params:
             if self._params["end_pause"]:
-                print("End_pausing")
+                print("End pausing")
                 # Neumann boundary conditions
                 #   No flux from the start of rod. Nothing needs to be done
                 #   No flux leaving from end of rod. Set last term of main
                 #   diagnol to zero.
                 diag[-1] = 0
             else:
+                print("No end pausing")
                 # End flux term diffuses off the end of the rod
-                pass
 
         # Create matrix using sparse numpy matrices
         diag_arr = np.stack((diag, off_set_diag))

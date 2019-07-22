@@ -34,11 +34,12 @@ Description:
 def test_force_dep_velocity_mat(force, u_vec, fs, vo, expected_v):
     """!TODO: Docstring for test_force_dep_velocity_mat.
 
-    @param f_mat: TODO
+    @param force: TODO
     @param u_vec: TODO
     @param fs: TODO
-    @param : TODO
-    @return: TODO
+    @param vo: TODO
+    @param expected_v: TODO
+    @return: void
 
     """
     f_mat = force * np.ones((6, 6, 3))
@@ -48,3 +49,7 @@ def test_force_dep_velocity_mat(force, u_vec, fs, vo, expected_v):
 
 # def vhead(vo, fpar, fstall):
 # def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
+# def make_gen_source_mat(s1_arr, s2_arr, r, a1, a2, b, ko, co, ks, ho, beta):
+# def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
+# def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
+# def make_gen_torque_mat(f_mat, s_arr, L, u):
