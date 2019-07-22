@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .FP_gen_orient_CN_solver import FPGenOrientCNSolver
+from .FP_gen_orient_solver import FPGenOrientSolver
 from .FP_CN_solver import FPCNSolver
 
 
@@ -11,7 +11,7 @@ Description:
 """
 
 
-class FPGenOrientMotorCNSolver(FPGenOrientCNSolver, FPCNSolver):
+class FPGenOrientMotorCNSolver(FPGenOrientSolver, FPCNSolver):
 
     """A PDE solver that incorporates crosslink motion through Crank-Nicolson integration method"""
 
@@ -22,7 +22,7 @@ class FPGenOrientMotorCNSolver(FPGenOrientCNSolver, FPCNSolver):
         @param pdict: TODO
 
         """
-        print("Init FPGenOrientCNSolver ->", end=" ")
+        print("Init FPGenOrientSolver ->", end=" ")
         FPGenOrientCNSolver.__init__(self, pfile, pdict)
 
     def makeDiagMats(self):

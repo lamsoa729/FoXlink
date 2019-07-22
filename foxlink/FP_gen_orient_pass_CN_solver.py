@@ -4,14 +4,14 @@ from .FP_pass_CN_solver import FPPassiveCNSolver
 
 
 """@package docstring
-File: FP_gen_orient_CN_solver.py
+File: FP_gen_orient_pass_CN_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPGenOrientCNSolver(FPGenOrientSolver, FPPassiveCNSolver):
+class FPGenOrientPassCNSolver(FPGenOrientSolver, FPPassiveCNSolver):
 
     """A PDE solver that incorporates crosslink motion through Crank-Nicolson integration method"""
 

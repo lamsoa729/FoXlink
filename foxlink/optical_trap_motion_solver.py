@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-from .FP_rod_motion_solver import FPRodMotionSolver
+from .rod_motion_solver import RodMotionSolver
 
 """@package docstring
-File: FP_optical_trap_solver.py
+File: optical_trap_motion_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -13,7 +13,7 @@ import yaml
 import h5py
 
 
-class OpticalTrapMotionSolver(FPRodMotionSolver):
+class OpticalTrapMotionSolver(RodMotionSolver):
 
     """!Docstring for FPGenOpticalTrapMotionSolver. """
 

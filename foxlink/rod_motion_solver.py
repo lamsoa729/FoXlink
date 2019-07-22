@@ -5,7 +5,7 @@ from .solver import Solver
 
 
 """@package docstring
-File: FP_rod_motion_solver.py
+File: rod_motion_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -19,7 +19,9 @@ def get_rod_drag_coeff(visc, L, d):
     Hartmut Löwen
     Phys. Rev. E 50, 1232 – Published 1 August 1994
 
-    @param arg1: TODO
+    @param visc: TODO
+    @param L: TODO
+    @param d: TODO
     @return: TODO
 
     """
@@ -56,7 +58,7 @@ def get_rod_mob_mat(visc, L, d, R_vec):
     return mob_mat, g_rot
 
 
-class FPRodMotionSolver(Solver):
+class RodMotionSolver(Solver):
 
     """!Docstring for FPRodMotionSolver. """
 

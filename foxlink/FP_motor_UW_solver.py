@@ -1,25 +1,16 @@
 #!/usr/bin/env python
 
-
-"""@package docstring
-File: FP_UW_motor_solver.py
-Author: Adam Lamson
-Email: adam.lamson@colorado.edu
-Description:
-"""
-
 from .FP_UW_solver import FPUWSolver
 
-
 """@package docstring
-File: FP_UW_solver.py
+File: FP_motor_UW_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPUWMotorSolver(FPUWSolver):
+class FPMotorUWSolver(FPUWSolver):
 
     """!Solve the Fokker-Planck equation using force-dependent velocity relation
     and the upwind integration method.

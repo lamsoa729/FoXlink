@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from .FP_gen_motion_solver import FPGenMotionSolver
-from .FP_static_solver import FPStaticSolver
+from .FP_static_xlinks_solver import FPStaticXlinksSolver
 
 
 """@package docstring
@@ -11,7 +11,7 @@ Description: Solver class to calculate rod motion in a solution of crosslinks bi
 """
 
 
-class FPGenMotionStaticXlinks(FPGenMotionSolver, FPStaticSolver):
+class FPGenMotionStaticXlinksSolver(FPGenMotionSolver, FPStaticXlinksSolver):
 
     """Solver class to calculate rod motion in a solution of crosslinks binding and unbinding."""
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .FP_UW_motor_solver import FPUWMotorSolver
+from .FP_motor_UW_solver import FPMotorUWSolver
 from .FP_gen_orient_solver import FPGenOrientSolver
 from .FP_helpers import make_force_dep_velocity_mat
 
@@ -12,7 +12,7 @@ Description:
 """
 
 
-class FPGenOrientMotorUWSolver(FPUWMotorSolver, FPGenOrientSolver):
+class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
 
     """!    """
 

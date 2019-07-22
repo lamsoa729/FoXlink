@@ -6,7 +6,7 @@ from .FP_initial_conditions import *
 
 
 """@package docstring
-File: FP_static_solver.py
+File: FP_gen_orient_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:

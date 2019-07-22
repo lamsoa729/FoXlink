@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from .FP_gen_orient_solver import FPGenOrientSolver
-from .FP_rod_motion_solver import FPRodMotionSolver
+from .rod_motion_solver import RodMotionSolver
 
 
 """@package docstring
@@ -11,7 +11,7 @@ Description: Combination class of general orientation solver and rod motion solv
 """
 
 
-class FPGenMotionSolver(FPGenOrientSolver, FPRodMotionSolver):
+class FPGenMotionSolver(FPGenOrientSolver, RodMotionSolver):
 
     """Docstring for FPGenMotionSolver. """
 

@@ -3,7 +3,7 @@ from .FP_gen_motion_solver import FPGenMotionSolver
 from .FP_pass_CN_solver import FPPassiveCNSolver
 
 """@package docstring
-File: FP_gen_mot_CN_solver.py
+File: FP_gen_motion_pass_CN_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:

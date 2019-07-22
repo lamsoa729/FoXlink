@@ -1,17 +1,17 @@
 #!/usr/bin/env python
-from .FP_gen_orient_motor_UW import FPGenOrientMotorUWSolver
-from .FP_rod_motion_solver import FPRodMotionSolver
+from .FP_gen_orient_motor_UW_solver import FPGenOrientMotorUWSolver
+from .rod_motion_solver import RodMotionSolver
 
 
 """@package docstring
-File: FP_gen_orient_motor_UW.py
+File: FP_gen_motion_motor_UW.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPGenMotionMotorUWSolver(FPRodMotionSolver, FPGenOrientMotorUWSolver):
+class FPGenMotionMotorUWSolver(RodMotionSolver, FPGenOrientMotorUWSolver):
 
     """!    """
 

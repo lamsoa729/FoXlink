@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .optical_trap_gen_mot_solver import OpticalTrapMotionSolver
+from .optical_trap_motion_solver import OpticalTrapMotionSolver
 from .FP_gen_motion_motor_UW_solver import FPGenOrientMotorUWSolver
 
 

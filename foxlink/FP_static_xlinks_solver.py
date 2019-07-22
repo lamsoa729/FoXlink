@@ -4,16 +4,16 @@ from .FP_initial_conditions import *
 
 
 """@package docstring
-File: FP_static_solver.py
+File: FP_static_xlinks_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPStaticSolver(Solver):
+class FPStaticXlinksSolver(Solver):
 
-    """!Docstring for FPRodMotionSolver. """
+    """! Class to solve the evolution of static xlinks bind and unbinding from solution."""
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
