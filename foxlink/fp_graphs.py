@@ -123,9 +123,12 @@ def graph_2d_rod_diagram(ax, FP_anal, n=-1):
         ax.add_patch(tip1)
         ax.add_line(line1)
         if FP_anal.OT1_pos is not None:
-            ot1 = Circle((FP_anal.OT1_pos[n, 0], FP_anal.OT1_pos[n, 1]),
+            ot1 = Circle((FP_anal.OT1_pos[n, 1], FP_anal.OT1_pos[n, 2]),
                          3 * lw, color='y', alpha=.5)
+            mtip1 = Circle((-.5 * L1 * u1[1] + r1[1], -.5 * L1 * u1[2] + r1[2]),
+                           lw, color='b', zorder=4)
             ax.add_patch(ot1)
+            ax.add_patch(mtip1)
 
         line2 = LineDataUnits((-.5 * L2 * u2[1] + r2[1],
                                0.5 * L2 * u2[1] + r2[1]),
@@ -138,9 +141,12 @@ def graph_2d_rod_diagram(ax, FP_anal, n=-1):
         ax.add_line(line2)
         ax.add_patch(tip2)
         if FP_anal.OT2_pos is not None:
-            ot2 = Circle((FP_anal.OT2_pos[n, 0], FP_anal.OT2_pos[n, 1]),
+            ot2 = Circle((FP_anal.OT2_pos[n, 1], FP_anal.OT2_pos[n, 2]),
                          3 * lw, color='y', alpha=.5)
+            mtip2 = Circle((-.5 * L2 * u2[1] + r2[1], -.5 * L2 * u2[2] + r2[2]),
+                           lw, color='b', zorder=4)
             ax.add_patch(ot2)
+            ax.add_patch(mtip2)
 
         # Get all extreme positions of tips in the first dimension
         x_ends = [np.amax(0.5 * L1 * u1_arr[:, 1] + r1_arr[:, 1]),
@@ -177,7 +183,7 @@ def graph_2d_rod_diagram(ax, FP_anal, n=-1):
         ax.set_ylabel(r'y (nm)')
         labels = ["MT$_1$", "MT$_2$", "Plus-end"]
         if FP_anal.OT1_pos is not None or FP_anal.OT2_pos is not None:
-            labels += ["Optical trap"]
+            labels += ["Optical trap", "Bead"]
         ax.legend(labels, loc="upper right")
 
 

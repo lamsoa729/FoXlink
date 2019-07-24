@@ -23,7 +23,7 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         calcVelocityMats: FPGenOrientMotorUWSolver
         makeDiagMats: FPUWMotorSolver
         stepUW: FPUWSolver
-        Step: FPUWMotorSolver
+        Step: FPGenMotionMotorUWSolver
         RodStep: OpticalTrapMotionSolver
         Write: self
         makeDataframe: self
