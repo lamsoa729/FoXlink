@@ -138,8 +138,11 @@ class FPGenOrientSolver(Solver):
 
         """
         i_step = Solver.Write(self)
+        self.GenOrientWrite(self, i_step)
+        return i_step
+
+    def GenOrientWrite(self, i_step):
         self._R1_pos_dset[i_step] = self.R1_pos
         self._R2_pos_dset[i_step] = self.R2_pos
         self._R1_vec_dset[i_step] = self.R1_vec
         self._R2_vec_dset[i_step] = self.R2_vec
-        return i_step

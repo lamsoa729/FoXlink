@@ -126,14 +126,21 @@ class OpticalTrapMotionSolver(RodMotionSolver):
                               ['frame', 'trap', 'coord']):
             dim.label = label
 
+        self._ot_grp = self._h5_data.create_group('OT_data')
+        self._ot_grp.create_dataset('OT1_pos', shape=(self._nframes + 1, 3))
+        self._ot_grp.create_dataset('OT2_pos', shape=(self._nframes + 1, 3))
+
     def Write(self):
         """!Write current step in algorithm into dataframe
         @return: TODO
 
         """
         i_step = FPRodMotionSolver.Write(self)
+        self.OTWrite(i_step)
+        return i_step
+
+    def OTWrite(self, i_step):
         self._ot_force_dset[i_step, 0] = self.ot1_force
         self._ot_force_dset[i_step, 1] = self.ot2_force
         self._ot_torque_dset[i_step, 0] = self.ot1_torque
         self._ot_torque_dset[i_step, 1] = self.ot2_torque
-        return i_step

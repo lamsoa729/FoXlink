@@ -66,3 +66,8 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         """
         FPGenOrientMotorUWSolver.makeDataframe(self)
         self.addOTDataframe()
+
+    def Write(self):
+        i_step = FPGenOrientMotorUWSolver(self)
+        self.OTWrite(i_step)
+        return i_step

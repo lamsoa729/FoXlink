@@ -275,7 +275,6 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
         axarr[0].add_line(line1)
         axarr[0].add_line(line2)
     else:
-        # r = self.R_arr[n, :]
         r1 = FP_anal.R1_pos[n]
         r2 = FP_anal.R2_pos[n]
         u1 = FP_anal.R1_vec[n]
@@ -305,6 +304,7 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
         r2 = FP_anal.R2_pos
         u1 = FP_anal.R1_vec
         u2 = FP_anal.R2_vec
+        # if FP_anal._h5_data['/
 
         # Get all extreme positions of tips in the first dimension
         x_ends = [np.amax(.5 * L1 * u1[:, 1] + r1[:, 1]),
@@ -334,11 +334,6 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
         max_y = max_x
         min_y = min_x
 
-        # max_y = max(y_ends)
-        # max_y = max_y * 1.25 if max_y > 0 else .75 * max_y
-        # min_y = min(y_ends)
-        # min_y = min_y * 1.25 if min_y < 0 else .75 * min_y
-
         axarr[0].set_xlim(min_x, max_x)
         axarr[0].set_ylim(min_y, max_y)
         axarr[0].set_xlabel(r'x (nm)')
@@ -364,6 +359,7 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                   horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
+
     axarr[0].legend(["MT$_1$", "MT$_2$", "Plus-end"], loc="upper right")
     # FP_anal.time[n])], facecolor='inherit')
     return fig.gca().lines + fig.gca().collections
