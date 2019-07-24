@@ -67,12 +67,12 @@ class OpticalTrapMotionSolver(RodMotionSolver):
 
         """
         self.calcOTInteractions(R1_pos, R2_pos, R1_vec, R2_vec)
-        return FPRodMotionSolver.RodStep(self,
-                                         force1 + self.ot1_force,
-                                         force2 + self.ot2_force,
-                                         torque1 + self.ot1_torque,
-                                         torque2 + self.ot2_torque,
-                                         R1_pos, R2_pos, R1_vec, R2_vec)
+        return RodMotionSolver.RodStep(self,
+                                       force1 + self.ot1_force,
+                                       force2 + self.ot2_force,
+                                       torque1 + self.ot1_torque,
+                                       torque2 + self.ot2_torque,
+                                       R1_pos, R2_pos, R1_vec, R2_vec)
 
     def calcOTInteractions(self, R1_pos, R2_pos, R1_vec, R2_vec):
         """!TODO: Docstring for calcOTInteractions.
@@ -110,7 +110,7 @@ class OpticalTrapMotionSolver(RodMotionSolver):
 
         """
         if not self.data_frame_made:
-            FPGenOrientSolver.makeDataframe(self)
+            RodMotionSolver.makeDataframe(self)
         self._ot_force_dset = self._interaction_grp.create_dataset(
             'optical_trap_force_data',
             shape=(self._nframes + 1, 2, 3),

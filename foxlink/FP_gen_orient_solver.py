@@ -138,7 +138,7 @@ class FPGenOrientSolver(Solver):
 
         """
         i_step = Solver.Write(self)
-        self.GenOrientWrite(self, i_step)
+        self.GenOrientWrite(i_step)
         return i_step
 
     def GenOrientWrite(self, i_step):

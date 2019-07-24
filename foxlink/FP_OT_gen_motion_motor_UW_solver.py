@@ -33,8 +33,6 @@ class FPOpticalTrapGenMotionMotorUWSolver(
 
         """
         print("Init FPOpticalTrapGenMotionMotorUWSolver ->", end=" ")
-        self._pfile = pfile
-        self._params = pdict
         FPGenOrientMotorUWSolver.__init__(self, pfile, pdict)
         self.OTParseParams()
         self.calcOTInteractions(self.R1_pos,
@@ -68,6 +66,6 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         self.addOTDataframe()
 
     def Write(self):
-        i_step = FPGenOrientMotorUWSolver(self)
+        i_step = FPGenOrientMotorUWSolver.Write(self)
         self.OTWrite(i_step)
         return i_step
