@@ -25,12 +25,13 @@ argsparse. Type foxlink -h for help and main actions.
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(prog='foxlink.py')
+    parser = argparse.ArgumentParser(prog='foxlink.py',
+                                     formatter_class=argparse.RawTextHelpFormatter)
     # Specialized optical trap arguments go here
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
                         help="Print out more text from simulations. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-f", "--file", type=str, default="FP_params.yaml",
-                        help="Parameter file used to run FoXlink solver. Without any other arguments, this should be a yaml parameter file")
+                        help="Parameter file used to run FoXlink solver. This should be a yaml parameter file if running a simulation. If analyzing a file, this should be an HDF5 file.")
     parser.add_argument("-t", "--test", action='store_true',
                         help="Run test protocol on FoXlink solver. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-c", "--change_params", action="store_true", default=False,
@@ -40,7 +41,10 @@ def parse_args():
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-m", "--movie", type=str, default='',
-                        help="Make movie of systems of evolution. Will analyze files again.")
+                        help=("Make movie of systems of evolution. Options: 'all' or 'min'.\n"
+                              "\tall = Make movie with all the data \n"
+                              "\tmin = Make movie with just diagram of rods and crosslink data.\n"
+                              "(Will analyze files again.)"))
     opts = parser.parse_args()
     return opts
 

@@ -124,6 +124,13 @@ class FPAnalysis(object):
             self.R1_vec = self._h5_data['/MT_data/R1_vec']
             self.R2_vec = self._h5_data['/MT_data/R2_vec']
 
+        if '/OT_data' in self._h5_data:
+            self.OT1_pos = self._h5_data['/OT_data/OT1_pos']
+            self.OT2_pos = self._h5_data['/OT_data/OT2_pos']
+        else:
+            self.OT1_pos = None
+            self.OT2_pos = None
+
         self.xl_distr = self._h5_data['/XL_data/XL_distr']
         self.init_flag = True
         # self.makexl_densArrs()
@@ -159,11 +166,10 @@ class FPAnalysis(object):
 
         """
         t0 = time.time()
-        self.torque_arr = np.asarray(
-            self._h5_data['/Interaction_data/torque_data'])
-        self.torque_arr = np.linalg.norm(self.torque_arr, axis=1)
+        self.torque_arr = self._h5_data['/Interaction_data/torque_data']
+        self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
         self.force_arr = self._h5_data['/Interaction_data/force_data']
-        self.force_arr = np.linalg.norm(self.force_arr, axis=1)
+        self.force_arr = np.linalg.norm(self.force_arr, axis=2)
         self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
                                      axis=1)
         self.phi_arr = np.arccos(

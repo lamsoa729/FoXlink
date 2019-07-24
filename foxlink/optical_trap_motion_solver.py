@@ -37,14 +37,16 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         if 'OT1_pos' in self._params:  # Set to defined location
             self.OT1_pos = np.asarray(self._params['OT1_pos'])
         else:  # Set optical trap 2 to minus end of rod1
-            hL1 = .5 * self._params["L2"]
+            hL1 = .5 * self._params["L1"]
             self.OT1_pos = self.R1_pos - (hL1 * self.R1_vec)
+        print("Initial OT1 pos = ", self.OT1_pos)
 
         if 'OT2_pos' in self._params:  # Set to defined location
             self.OT2_pos = np.asarray(self._params['OT2_pos'])
         else:  # Set optical trap 2 to minus end of rod2
             hL2 = .5 * self._params["L2"]
             self.OT2_pos = self.R2_pos - (hL2 * self.R2_vec)
+        print("Initial OT2 pos = ", self.OT2_pos)
 
         if 'OT_ks' not in self._params:
             raise KeyError('OT_k must be defined for optical trap runs')
@@ -85,7 +87,7 @@ class OpticalTrapMotionSolver(RodMotionSolver):
 
         """
         ot_k = self._params['OT_ks']
-        hL1 = .5 * self._params["L2"]
+        hL1 = .5 * self._params["L1"]
         hL2 = .5 * self._params["L2"]
         # Get position of minus ends
         rod1_minus_pos = R1_pos - (hL1 * R1_vec)
@@ -102,7 +104,6 @@ class OpticalTrapMotionSolver(RodMotionSolver):
 
         """
         print("stepOT still needs to be implemented")
-        pass
 
     def addOTDataframe(self):
         """! Make data frame to read from later
@@ -127,8 +128,10 @@ class OpticalTrapMotionSolver(RodMotionSolver):
             dim.label = label
 
         self._ot_grp = self._h5_data.create_group('OT_data')
-        self._ot_grp.create_dataset('OT1_pos', shape=(self._nframes + 1, 3))
-        self._ot_grp.create_dataset('OT2_pos', shape=(self._nframes + 1, 3))
+        self._ot1_pos_dset = self._ot_grp.create_dataset(
+            'OT1_pos', shape=(self._nframes + 1, 3))
+        self._ot2_pos_dset = self._ot_grp.create_dataset(
+            'OT2_pos', shape=(self._nframes + 1, 3))
 
     def Write(self):
         """!Write current step in algorithm into dataframe
@@ -144,3 +147,5 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         self._ot_force_dset[i_step, 1] = self.ot2_force
         self._ot_torque_dset[i_step, 0] = self.ot1_torque
         self._ot_torque_dset[i_step, 1] = self.ot2_torque
+        self._ot1_pos_dset[i_step] = self.OT1_pos
+        self._ot2_pos_dset[i_step] = self.OT2_pos

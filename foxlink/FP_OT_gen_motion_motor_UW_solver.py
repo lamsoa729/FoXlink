@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from .optical_trap_motion_solver import OpticalTrapMotionSolver
-from .FP_gen_motion_motor_UW_solver import FPGenOrientMotorUWSolver
+from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
 
 
 """@package docstring
@@ -12,7 +12,7 @@ Description:
 
 
 class FPOpticalTrapGenMotionMotorUWSolver(
-        OpticalTrapMotionSolver, FPGenOrientMotorUWSolver):
+        OpticalTrapMotionSolver, FPGenMotionMotorUWSolver):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
@@ -33,39 +33,39 @@ class FPOpticalTrapGenMotionMotorUWSolver(
 
         """
         print("Init FPOpticalTrapGenMotionMotorUWSolver ->", end=" ")
-        FPGenOrientMotorUWSolver.__init__(self, pfile, pdict)
+        FPGenMotionMotorUWSolver.__init__(self, pfile, pdict)
         self.OTParseParams()
         self.calcOTInteractions(self.R1_pos,
                                 self.R2_pos,
                                 self.R1_vec,
                                 self.R2_vec)
 
-    def Step(self):
-        """!Step both motor heads and rods in time
-        @return: TODO
+    # def Step(self):
+    #     """!Step both motor heads and rods in time
+    #     @return: TODO
 
-        """
-        # Update xlink positions
-        FPGenOrientMotorUWSolver.Step(self)
-        # Calculate new forces and torque
-        self.calcForceMatrix()
-        self.calcTorqueMatrix()
-        # Update rod positions and recalculate source matrices
-        self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
-            self.force1, self.force1, self.torque1, self.torque2,
-            self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
-        # Update
-        self.calcVelocityMats()
+    #     """
+    #     # Update xlink positions
+    #     FPGenOrientMotorUWSolver.Step(self)
+    #     # Calculate new forces and torque
+    #     self.calcForceMatrix()
+    #     self.calcTorqueMatrix()
+    #     # Update rod positions and recalculate source matrices
+    #     self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
+    #         self.force1, self.force2, self.torque1, self.torque2,
+    #         self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
+    #     # Update
+    #     self.calcVelocityMats()
 
     def makeDataframe(self):
         """! Make data frame with optical trap objects
         @return: TODO
 
         """
-        FPGenOrientMotorUWSolver.makeDataframe(self)
+        FPGenMotionMotorUWSolver.makeDataframe(self)
         self.addOTDataframe()
 
     def Write(self):
-        i_step = FPGenOrientMotorUWSolver.Write(self)
+        i_step = FPGenMotionMotorUWSolver.Write(self)
         self.OTWrite(i_step)
         return i_step
