@@ -108,7 +108,7 @@ def boltz_fact(s1, s2, r, a1, a2, b, ks, ho, beta):
 
 
 # @njit
-@njit(parallel=True)
+# @njit(parallel=True)
 def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
     """! Calculate the boltzmann factor for a given configuration of rods
 
