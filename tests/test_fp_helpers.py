@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import pytest
 import numpy as np
-from foxlink.FP_helpers import make_force_dep_velocity_mat
+from math import exp
+from foxlink.FP_helpers import make_force_dep_velocity_mat, boltz_fact_mat
 
 
 """@package docstring
@@ -48,8 +49,27 @@ def test_force_dep_velocity_mat(force, u_vec, fs, vo, expected_v):
     assert np.isclose(expected_vel_mat, calculated_vel_mat, atol=1e-6).all()
 
 # def vhead(vo, fpar, fstall):
-# def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
-# def make_gen_source_mat(s1_arr, s2_arr, r, a1, a2, b, ko, co, ks, ho, beta):
-# def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
-# def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
-# def make_gen_torque_mat(f_mat, s_arr, L, u):
+
+
+@pytest.mark.parametrize("s1, s2, r, a1, a2, b, ks, ho, beta, expected_val", [
+    (0., 0., 0., 0., 0., -1., 1., 0., 1., 1),  # No separation
+    (0., 0., 1., 0., 0., -1., 1., 1., 1., 1),  # Separation ith same rest length
+    (0., 0., 3., 0., 0., -1., 1., 1., 1., exp(-2.)),
+    (0., 0., 2., 0., 0., -1., 2., 1., 1., exp(-1.)),
+    (1., 2., 4., 0., 0., -1., .2, 0., 1., exp(-2.5)),
+    (1., 0., 1., -1., 0., 0., 2., 0., 1., exp(-4)),
+    (1., 0., 1., 0., 1., 0., 2., 0., 1., exp(-2)),
+])
+def test_boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta, expected_val):
+    one_mat = np.ones((6, 6))
+    S1 = s1 * one_mat
+    S2 = s2 * one_mat
+
+    expected_bf_mat = expected_val * one_mat
+    calculated_bf_mat = boltz_fact_mat(S1, S2, r, a1, a2, b, ks, ho, beta)
+    assert np.isclose(expected_bf_mat, calculated_bf_mat, atol=1e-8).all()
+
+    # def make_gen_source_mat(s1_arr, s2_arr, r, a1, a2, b, ko, co, ks, ho, beta):
+    # def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
+    # def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
+    # def make_gen_torque_mat(f_mat, s_arr, L, u):

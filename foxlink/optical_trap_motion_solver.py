@@ -9,8 +9,6 @@ Description:
 """
 
 import numpy as np
-import yaml
-import h5py
 
 
 class OpticalTrapMotionSolver(RodMotionSolver):

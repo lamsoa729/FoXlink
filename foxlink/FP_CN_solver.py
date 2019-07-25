@@ -32,6 +32,6 @@ class FPCNSolver(Solver):
 
         """
         raise NotImplementedError(
-            "makeDiagMats have not been defined for {}. To use the CN subclass, ",
+            "makeDiagMats have not been defined for {}. To use the CN subclass, "
             "construction of these matrices is necessary.".format(
                 self.__class__.__name__))

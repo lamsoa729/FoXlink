@@ -188,7 +188,6 @@ def graph_2d_rod_diagram(ax, FP_anal, n=-1):
 
 
 def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
-    params = FP_anal._params
     # Clean up if lines
     if not FP_anal.init_flag:
         for ax in axarr.flatten():
@@ -274,8 +273,6 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
 
 
 def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
-
-    params = FP_anal._params
     # Clean up if lines
     if not FP_anal.init_flag:
         for ax in axarr.flatten():
