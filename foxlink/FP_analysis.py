@@ -58,7 +58,7 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}.mp4'.format(Path.cwd().stem), writer=writer)
+    anim.save('{}.mp4'.format(Path.cwd().name), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
@@ -94,7 +94,7 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_min.mp4'.format(Path.cwd().stem), writer=writer)
+    anim.save('{}_min.mp4'.format(Path.cwd().name), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 

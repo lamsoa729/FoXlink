@@ -233,8 +233,8 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
     axarr[6].set_xlabel(r'Time (sec)')
     axarr[6].set_ylabel('Angle between MT \n orientation vectors (rad)')
     axarr[6].set_xlim(left=0, right=FP_anal.time[-1])
-    axarr[6].set_ylim(np.amin(FP_anal.phi_arr),
-                      np.amax(FP_anal.phi_arr))
+    axarr[6].set_ylim(np.nanmin(FP_anal.phi_arr),
+                      np.nanmax(FP_anal.phi_arr))
 
     # Make density plot
     c = graph_xl_dens(axarr[1],
@@ -248,10 +248,15 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
         axarr[1].set_aspect(1.0)
         FP_anal.init_flag = False
     graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
-    graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 0], n)
-    graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 1], n)
-    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 0], n)
-    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 1], n)
+    graph_vs_time(axarr[3], FP_anal.time,
+                  FP_anal.force_arr[:, 0], n, color='tab:green')
+    graph_vs_time(axarr[3], FP_anal.time,
+                  FP_anal.force_arr[:, 1], n, color='tab:purple')
+    graph_vs_time(axarr[4], FP_anal.time,
+                  FP_anal.torque_arr[:, 0], n, color='tab:green')
+    graph_vs_time(axarr[4], FP_anal.time,
+                  FP_anal.torque_arr[:, 1], n, color='tab:purple')
+
     graph_vs_time(axarr[5], FP_anal.time, FP_anal.dR_arr, n)
     graph_vs_time(axarr[6], FP_anal.time, FP_anal.phi_arr, n)
     # Legend information
