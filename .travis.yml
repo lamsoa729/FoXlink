@@ -36,7 +36,7 @@ install:
 
 ## Command to run tests, e.g. python setup.py test
 #script: tox
-script: pytest --cov=foxlink --cov-report=xml
+script: pytest --cov --cov-report=xml
 
 notifications:
     email: false
