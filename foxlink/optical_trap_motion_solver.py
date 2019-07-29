@@ -51,8 +51,28 @@ class OpticalTrapMotionSolver(RodMotionSolver):
             raise KeyError('OT_k must be defined for optical trap runs')
 
         # TODO add motion to optical traps
-        # if 'OT1_motion' in self._params:
-        # if 'OT2_motion' in self._params:
+        self.OT1_mot = None
+        self.OT2_mot = None
+        if 'OT1_motion' in self._params:
+            self.OT1_mot = self.initOTMotion(self._params['OT1_motion'], 1)
+        if 'OT2_motion' in self._params:
+            self.OT2_mot = self.initOTMotion(self._params['OT2_motion'], 2)
+            # if 'OT2_motion' in self._params:
+
+    def initOTMotion(self, ot_mot_dict, ot_num):
+        """!TODO: Docstring for initOTMotion.
+
+        @param ot_mot_dict: TODO
+        @param ot_num: TODO
+        @return: TODO
+
+        """
+        name = ot_mot_dict['name']
+        params = ot_mot_dict['params']
+        if name is 'OpticalTrapOscillator':
+            return OpticalTrapOscillator(params)
+        else:
+            raise NameError("{} is not an optical trap type.".format(name))
 
     def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
                 R1_pos=None, R2_pos=None, R1_vec=None, R2_vec=None):
@@ -67,6 +87,7 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @return: TODO
 
         """
+        self.stepOT()
         self.calcOTInteractions(R1_pos, R2_pos, R1_vec, R2_vec)
         return RodMotionSolver.RodStep(self,
                                        force1 + self.ot1_force,
@@ -98,11 +119,14 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         self.ot2_torque = np.cross(-hL2 * R2_vec, self.ot2_force)
 
     def stepOT(self):
-        """!TODO: Docstring for stepOT.
-        @return: TODO
+        """!Move optical traps based on current time step
+        @return: void, change position of optical traps if optical trap type exists
 
         """
-        print("stepOT still needs to be implemented")
+        if self.OT1_mot is not None:
+            self.OT1_pos = self.OT1_mot.moveOpticalTrap(self, self.OT1_pos)
+        if self.OT2_mot is not None:
+            self.OT2_pos = self.OT2_mot.moveOpticalTrap(self, self.OT2_pos)
 
     def addOTDataframe(self):
         """! Make data frame to read from later
