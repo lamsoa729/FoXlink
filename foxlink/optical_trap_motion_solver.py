@@ -54,12 +54,14 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         self.OT1_mot = None
         self.OT2_mot = None
         if 'OT1_motion' in self._params:
-            self.OT1_mot = self.initOTMotion(self._params['OT1_motion'], 1)
+            self.OT1_mot = self.initOTMotion(
+                self._params['OT1_motion'], 1, self.OT1_pos)
         if 'OT2_motion' in self._params:
-            self.OT2_mot = self.initOTMotion(self._params['OT2_motion'], 2)
+            self.OT2_mot = self.initOTMotion(
+                self._params['OT2_motion'], 2, self.OT2_pos)
             # if 'OT2_motion' in self._params:
 
-    def initOTMotion(self, ot_mot_dict, ot_num):
+    def initOTMotion(self, ot_mot_dict, ot_num, ot_pos):
         """!TODO: Docstring for initOTMotion.
 
         @param ot_mot_dict: TODO
@@ -67,12 +69,11 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @return: TODO
 
         """
-        name = ot_mot_dict['name']
-        params = ot_mot_dict['params']
-        if name is 'OpticalTrapOscillator':
-            return OpticalTrapOscillator(params)
+        ot_type = ot_mot_dict['type']
+        if ot_type == 'OpticalTrapOscillator':
+            return OpticalTrapOscillator(ot_mot_dict, ot_num, ot_pos)
         else:
-            raise NameError("{} is not an optical trap type.".format(name))
+            raise NameError("{} is not an optical trap type.".format(ot_type))
 
     def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
                 R1_pos=None, R2_pos=None, R1_vec=None, R2_vec=None):

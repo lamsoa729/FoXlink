@@ -43,7 +43,7 @@ class OpticalTrapOscillator(OpticalTrapType):
 
     """!Trap that oscillates around a fix positioned"""
 
-    def __init__(self, pos, params, ot_num):
+    def __init__(self, params, ot_num, pos):
         """!Initialize oscillating trap with direction, frequency, phase,
         and amplitude.
         """
@@ -57,9 +57,10 @@ class OpticalTrapOscillator(OpticalTrapType):
     def moveOpticalTrap(self, slvr, pos):
         """!Move trap to position based on time of simulation
 
-        @param slvr: TODO
-        @param pos: TODO
-        @return: TODO
+        @param slvr: Solver object where most parameters will come from
+        @param pos: current position of optical trap
+        @param ot_num: index of the optical trap (optional)
+        @return: the new position of the optical trap
 
         """
         return self.init_pos + (self.osc_ax * self.amp *

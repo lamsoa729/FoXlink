@@ -230,8 +230,9 @@ class Solver(object):
         """
         if not self.data_frame_made:
             # Enter params into hdf5 data file as attributes for later
-            for key, param in self._params.items():
-                self._h5_data.attrs[key] = param
+            # for key, param in self._params.items():
+                # self._h5_data.attrs[key] = param
+            self._h5_data.attrs['params'] = yaml.dump(self._params)
             time = self.time[::self.nwrite]
             self._nframes = len(time)
             self._time_dset = self._h5_data.create_dataset('time', data=time,
