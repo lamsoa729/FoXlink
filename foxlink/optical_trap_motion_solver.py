@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from .rod_motion_solver import RodMotionSolver
+from .optical_trap_types import *
 
 """@package docstring
 File: optical_trap_motion_solver.py

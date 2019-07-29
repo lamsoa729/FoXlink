@@ -13,11 +13,6 @@ Description:
 """
 
 
-# @pytest.fixture()
-# def fp_gen_motion_solver():
-# return FPGenMotionSolver()
-
-
 def test_gen_motion_solver_inheritance():
     """!TODO: Docstring for test_gen_motion_solver.
     @return: void
