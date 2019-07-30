@@ -9,6 +9,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.animation import FFMpegWriter
 # from matplotlib.lines import Line2D
 import h5py
+import yaml
 
 from .FP_helpers import *
 from .fp_graphs import *
@@ -112,7 +113,7 @@ class FPAnalysis(object):
         self.time = self._h5_data["time"]
         self.s1 = self._h5_data['MT_data']["s1"]
         self.s2 = self._h5_data['MT_data']["s2"]
-        self.sType = self._h5_data.attrs['solver_type']
+        self.sType = self._params['solver_type']
         # What kind of motion of microtubules
         if 'phio' in self._params:
             self.phi_arr = self._h5_data['MT_data']["phi"]
@@ -148,7 +149,8 @@ class FPAnalysis(object):
 
         """
         self._h5_data = h5py.File(filename, 'r+')
-        self._params = self._h5_data.attrs
+        self._params = yaml.safe_load(self._h5_data.attrs['params'])
+        print(self._params)
 
     def Save(self):
         """!Create a pickle file of solution
