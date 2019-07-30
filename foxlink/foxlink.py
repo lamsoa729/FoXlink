@@ -13,6 +13,7 @@ from .FP_gen_orient_static_xlinks_solver import FPGenOrientStaticXlinksSolver
 from .FP_gen_orient_motor_UW_solver import FPGenOrientMotorUWSolver
 from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
 from .FP_OT_gen_motion_motor_UW_solver import FPOpticalTrapGenMotionMotorUWSolver
+from .FP_OT_gen_motion_static_xlinks_solver import FPOpticalTrapGenMotionStaticXlinksSolver
 
 
 """@package docstring

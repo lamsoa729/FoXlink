@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-from .optical_trap_motion_solver import OpticalTrapMotionSolver
-from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
-
 
 """@package docstring
-File: FP_OT_gen_motion_motor_UW_solver.py
+File: FP_OT_gen_motion_static_xlinks_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
+from .optical_trap_motion_solver import OpticalTrapMotionSolver
+from .FP_gen_motion_motor_UW_solver import FPGenMotionStaticXlinksSolver
 
-class FPOpticalTrapGenMotionMotorUWSolver(
-        OpticalTrapMotionSolver, FPGenMotionMotorUWSolver):
+
+class FPOpticalTrapGenMotionStaticXlinksSolver(
+        OpticalTrapMotionSolver, FPGenMotionStaticXlinksSolver):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
@@ -20,10 +20,7 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         calcSourceMat: FPGenOrientSolver
         calcForceMat: FPGenOrientSolver
         calcTorqueMat: FPGenOrientSolver
-        calcVelocityMats: FPGenOrientMotorUWSolver
-        makeDiagMats: FPUWMotorSolver
-        stepUW: FPUWSolver
-        Step: FPGenMotionMotorUWSolver
+        Step: FPGenMotionStaticXlinksSolver
         RodStep: OpticalTrapMotionSolver
         Write: self
         makeDataframe: self
@@ -32,8 +29,8 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         @param pdict: dictionary of parameters
 
         """
-        print("Init FPOpticalTrapGenMotionMotorUWSolver ->", end=" ")
-        FPGenMotionMotorUWSolver.__init__(self, pfile, pdict)
+        print("Init FPOpticalTrapGenMotionStaticXlinksSolver ->", end=" ")
+        FPGenMotionStaticXlinksSolver.__init__(self, pfile, pdict)
         self.OTParseParams()
         self.calcOTInteractions(self.R1_pos,
                                 self.R2_pos,
@@ -45,10 +42,10 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         @return: void, Create dataframe for output with optical trap data
 
         """
-        FPGenMotionMotorUWSolver.makeDataframe(self)
+        FPGenMotionStaticXlinksSolver.makeDataframe(self)
         self.addOTDataframe()
 
     def Write(self):
-        i_step = FPGenMotionMotorUWSolver.Write(self)
+        i_step = FPGenMotionStaticXlinksSolver.Write(self)
         self.OTWrite(i_step)
         return i_step
