@@ -149,7 +149,10 @@ class FPAnalysis(object):
 
         """
         self._h5_data = h5py.File(filename, 'r+')
-        self._params = yaml.safe_load(self._h5_data.attrs['params'])
+        if 'params' in self._h5_data.attrs:
+            self._params = yaml.safe_load(self._h5_data.attrs['params'])
+        else:
+            self._params = self._h5_data.attrs
         print(self._params)
 
     def Save(self):
