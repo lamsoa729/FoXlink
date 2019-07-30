@@ -61,7 +61,8 @@ class OpticalTrapMotionSolver(RodMotionSolver):
                 self._params['OT2_motion'], 2, self.OT2_pos)
             # if 'OT2_motion' in self._params:
 
-    def initOTMotion(self, ot_mot_dict, ot_num, ot_pos):
+    @staticmethod
+    def initOTMotion(ot_mot_dict, ot_num, ot_pos):
         """!TODO: Docstring for initOTMotion.
 
         @param ot_mot_dict: TODO
