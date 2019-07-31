@@ -26,7 +26,7 @@ class FPGenMotionStaticXlinksSolver(FPGenMotionSolver, FPStaticXlinksSolver):
 
         """
         # Update xlink positions
-        FPStaticSolver.Step(self)
+        FPStaticXlinksSolver.Step(self)
         self.calcForceMatrix()
         self.calcTorqueMatrix()
         # Update rod positions

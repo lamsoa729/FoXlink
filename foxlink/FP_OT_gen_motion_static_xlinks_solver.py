@@ -8,7 +8,7 @@ Description:
 """
 
 from .optical_trap_motion_solver import OpticalTrapMotionSolver
-from .FP_gen_motion_motor_UW_solver import FPGenMotionStaticXlinksSolver
+from .FP_gen_motion_static_xlinks_solver import FPGenMotionStaticXlinksSolver
 
 
 class FPOpticalTrapGenMotionStaticXlinksSolver(
