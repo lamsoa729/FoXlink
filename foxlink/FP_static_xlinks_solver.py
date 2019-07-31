@@ -41,8 +41,3 @@ class FPStaticXlinksSolver(Solver):
                       self.src_mat + (1. - ko * dt) * self.sgrid)
         # No strang splitting
         # self.sgrid = dt * self.src_mat + (1. - ko * dt) * self.sgrid
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

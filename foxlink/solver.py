@@ -145,10 +145,10 @@ class Solver(object):
             if self._params['initial_condition'] == 'equil':
                 self.sgrid += self.src_mat / self._params['ko']
             elif self._params['initial_condition'] == 'empty':
-                pass
+                return
             else:
                 self.sgrid += eval(self._params['initial_condition'])
-            print(self.sgrid)
+            print("Initial distribution =", self.sgrid)
 
     def makeSolutionGrid(self):
         """!Make an array of solutions to solve the PDE
@@ -170,7 +170,7 @@ class Solver(object):
         # Discrete rod locations, extra spots left for boundary conditions
         self.s1, step1 = np.linspace(
             0, ds * (self.ns1 - 1), self.ns1, retstep=True)
-        self.s1 -= L1 * .5
+        self.s1 -= (L1 * .5)
         self.s2, step2 = np.linspace(
             0, ds * (self.ns2 - 1), self.ns2, retstep=True)
         self.s2 -= (L2 * .5)

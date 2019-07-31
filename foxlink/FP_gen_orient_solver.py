@@ -59,12 +59,17 @@ class FPGenOrientSolver(Solver):
         # Rod center position vectors of
         self.R1_pos = np.asarray(self._params['R1_pos'])
         self.R2_pos = np.asarray(self._params['R2_pos'])
+        print("R1_pos = ", self.R1_pos)
+        print("R2_pos = ", self.R2_pos)
         # Rod orientation vectors
         self.R1_vec = np.asarray(self._params['R1_vec'])
         self.R2_vec = np.asarray(self._params['R2_vec'])
         # Make sure to renormalize
         self.R1_vec /= np.linalg.norm(self.R1_vec)
         self.R2_vec /= np.linalg.norm(self.R2_vec)
+
+        print("R1_vec = ", self.R1_vec)
+        print("R2_vec = ", self.R2_vec)
 
     def calcSourceMatrix(self):
         """Calculate source matrix for general orientations
@@ -108,9 +113,9 @@ class FPGenOrientSolver(Solver):
         """
         # Create torque density matrix
         self.t_mat1 = make_gen_torque_mat(
-            -1. * self.f_mat, self.s1, self._params["L1"], self.R1_vec)
+            -1. * self.f_mat, self.s1, self.R1_vec)
         self.t_mat2 = make_gen_torque_mat(
-            self.f_mat, self.s2, self._params["L2"], self.R2_vec)
+            self.f_mat, self.s2, self.R2_vec)
         # Integrate torque density from all xlinks on rods
         self.torque1 = self.t_mat1.sum(axis=(0, 1)) * self.ds * self.ds
         self.torque2 = self.t_mat2.sum(axis=(0, 1)) * self.ds * self.ds

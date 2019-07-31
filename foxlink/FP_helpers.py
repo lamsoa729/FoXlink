@@ -187,7 +187,7 @@ def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
     return f_mat.round(30)
 
 
-def make_gen_torque_mat(f_mat, s_arr, L, u):
+def make_gen_torque_mat(f_mat, s_arr, u):
     """! Creates a general torque matrix for crosslinker attachment.
     Requires that you calculate force matrix first.
     @param : TODO
