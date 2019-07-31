@@ -113,7 +113,7 @@ class FPGenOrientSolver(Solver):
         """
         # Create torque density matrix
         self.t_mat1 = make_gen_torque_mat(
-            -1. * self.f_mat, self.s1, self.R1_vec)
+            -1. * np.swapaxes(self.f_mat, 0, 1), self.s1, self.R1_vec)
         self.t_mat2 = make_gen_torque_mat(
             self.f_mat, self.s2, self.R2_vec)
         # Integrate torque density from all xlinks on rods
