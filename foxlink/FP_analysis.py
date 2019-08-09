@@ -102,7 +102,7 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
 
 class FPAnalysis(object):
 
-    """!Analyze passive Fokker-Planck equation code"""
+    """!Analyze Fokker-Planck equation code"""
 
     def __init__(self, filename="FP_passive.h5"):
         """! Initialize analysis code by loading in pickle file and setting up
