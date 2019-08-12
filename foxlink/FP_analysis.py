@@ -175,19 +175,79 @@ class FPAnalysis(object):
         self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
+        # Analyze distance between rod center at each time step
         self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
                                      axis=1)
+        # Analyze angle between rods at teach time step
         self.phi_arr = np.arccos(
             np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
 
+        # Analyze number of crosslinkers at each timestep
         self.Nxl_arr = (np.sum(self.xl_distr, axis=(0, 1)) *
                         (float(self._params["ds"])**2))
+
+        if '/OT_data' in self._h5_data:
+            self.OTanalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
 
         t2 = time.time()
         print(("Save time: {}".format(t2 - t1)))
+
+    def OTanalysis(self):
+        """!Analyze data for optically trapped rods, especially if they
+        are oscillating traps
+        @return: void, Adds optical trap post-analysis to code
+
+        """
+        # Make post processing for optical trap data
+        # TODO Calculate overlap of rods
+        # Get start time by finding when the oscillations first pass mean value
+        st = self.FindStartTime(overlap_arr, reps=2)
+        # TODO Get horizontal separation of MT centers
+        # fft_sep_arr = np.fft.rfft(sep_arr[st:])
+        # TODO Get overlap array
+        # fft_overlap_arr = np.fft.rfft(overlap_arr[st:])
+        # TODO Get horizontal force on MTs
+        # fft_force_arr = np.fft.rfft(force_arr[st:])
+        # TODO Get trap separation
+        # TODO Calculate reology components if traps are oscillating
+
+    @staticmethod
+    def FindStartTime(arr, reps=1):
+        """! A function to find when simulations reaches a steady state with
+        respect to array, arr.
+
+        @param arr: Array to find steady state in
+        @param reps: repetitions of recursion
+        @return: st Start time, the index of time array when the simulation
+        first reaches a the steady state average
+
+        """
+        # Test to make sure correct parameters types were given to function
+        if not isinstance(arr, np.ndarray):
+            raise TypeError(" Array arr must be numpy.ndarray type ")
+        if reps > 0:
+            st = self.FindStartTime(arr - arr.mean(), reps - 1)
+        else:
+            # Get array of sign values, ie. sign with respect to mean
+            sign_arr = np.sign(arr)
+            # Create array of differences from one index to the next
+            diff_arr = np.diff(sign_arr)
+            # Find the non-zero differences and record the indices
+            index_arr = np.where(diff_arr)[0]  # always produces a tuple
+            if index_arr.size == 0:  # System was in steady state all along
+                st = 0
+            else:
+                st = index_arr[0]
+        return st
+
+
+########################
+#  Graphing functions  #
+########################
+
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time

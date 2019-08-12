@@ -50,7 +50,6 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         if 'OT_ks' not in self._params:
             raise KeyError('OT_k must be defined for optical trap runs')
 
-        # TODO add motion to optical traps
         self.OT1_mot = None
         self.OT2_mot = None
         if 'OT1_motion' in self._params:
