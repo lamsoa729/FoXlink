@@ -175,19 +175,43 @@ class FPAnalysis(object):
         self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
+
+        self.MT_post_grp = self._h5_data['/MT_data/'].create_group('Post')
+        self.XL_post_grp = self._h5_data['/XL_data/'].create_group('Post')
         # Analyze distance between rod center at each time step
         self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
                                      axis=1)
+        self.MT_sep_dset = self.MT_post_grp.create_dataset(
+            'center_separation', data=dR_arr, dtype=np.float32)
         # Analyze angle between rods at teach time step
         self.phi_arr = np.arccos(
             np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
+        self.MT_phi_dset = self.MT_post_grp.create_dataset(
+            'angle_between', data=phi_arr, dtype=np.float32)
 
         # Analyze number of crosslinkers at each timestep
         self.Nxl_arr = (np.sum(self.xl_distr, axis=(0, 1)) *
                         (float(self._params["ds"])**2))
+        self.Nxl_dset = self.XL_post_grp.create_dataset(
+            'xlink_number', data=Nxl_arr, dtype=np.float32)
+
+        # Calculate rod overlap
+
+        L1 = self._params['L1']
+        L2 = self._params['L2']
+        # Minus-end(bead) separations
+        self.overlap = self.calcOverlap(self.R1_pos,
+                                        self.R2_pos,
+                                        self.R1_vec,
+                                        self.R2_vec,
+                                        self._params['L1'],
+                                        self._params['L2'])
+
+        self.MT_overlap_dset = self.MT_post_grp.create_dataset(
+            'overlap', data=overlap, dtype=np.float32)
 
         if '/OT_data' in self._h5_data:
-            self.OTanalysis()
+            self.OTAnalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
@@ -195,17 +219,17 @@ class FPAnalysis(object):
         t2 = time.time()
         print(("Save time: {}".format(t2 - t1)))
 
-    def OTanalysis(self):
+    def OTAnalysis(self):
         """!Analyze data for optically trapped rods, especially if they
         are oscillating traps
         @return: void, Adds optical trap post-analysis to code
 
         """
         # Make post processing for optical trap data
-        # TODO Calculate overlap of rods
         # Get start time by finding when the oscillations first pass mean value
         st = self.FindStartTime(overlap_arr, reps=2)
-        # TODO Get horizontal separation of MT centers
+        # TODO Get horizontal separation of optical traps
+        ot_sep_arr = np.linalg.norm(self.OT2_pos - self.OT1_pos, axis=1)
         # fft_sep_arr = np.fft.rfft(sep_arr[st:])
         # TODO Get overlap array
         # fft_overlap_arr = np.fft.rfft(overlap_arr[st:])
@@ -213,6 +237,32 @@ class FPAnalysis(object):
         # fft_force_arr = np.fft.rfft(force_arr[st:])
         # TODO Get trap separation
         # TODO Calculate reology components if traps are oscillating
+
+###########################
+#  Calculation functions  #
+###########################
+    def calcOverlap(R1_pos, R2_pos, R1_vec, R2_vec, L1, L2):
+        """!Calculate the overlap of two antiparalle rods based on the location
+        of their minus ends. You can also negate the vector of one of the rods
+        if they are parallel instead of antiparallel.
+
+        @param R1_pos: TODO
+        @param R2_pos: TODO
+        @param R1_vec: TODO
+        @param R2_vec: TODO
+        @param L1: TODO
+        @param L2: TODO
+        @return: Overlap of two rods as a function of time
+
+        """
+        minus1_pos = R1_pos - .5 * L1 * R1_vec
+        minus2_pos = R2_pos - .5 * L2 * R2_vec
+        # Distance between beads
+        d = np.subtract(minus1_pos, minus2_pos)
+        dmag = np.linalg.norm(d, axis=1)
+        # Projection of one rod onto another
+        proj = abs(np.dot(R1_vec, R2_vec, axis=1))
+        return proj * (L1 + L2) - dmag
 
     @staticmethod
     def FindStartTime(arr, reps=1):
