@@ -120,10 +120,10 @@ class FPAnalysis(object):
         elif 'ro' in self._params:
             self.R_arr = np.asarray(self._h5_data['MT_data']["R_pos"])
         else:
-            self.R1_pos = self._h5_data['/MT_data/R1_pos']
-            self.R2_pos = self._h5_data['/MT_data/R2_pos']
-            self.R1_vec = self._h5_data['/MT_data/R1_vec']
-            self.R2_vec = self._h5_data['/MT_data/R2_vec']
+            self.R1_pos = np.asarray(self._h5_data['/MT_data/R1_pos'])
+            self.R2_pos = np.asarray(self._h5_data['/MT_data/R2_pos'])
+            self.R1_vec = np.asarray(self._h5_data['/MT_data/R1_vec'])
+            self.R2_vec = np.asarray(self._h5_data['/MT_data/R2_vec'])
 
         if '/OT_data' in self._h5_data:
             self.OT1_pos = self._h5_data['/OT_data/OT1_pos']
@@ -176,24 +176,27 @@ class FPAnalysis(object):
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
-        self.MT_post_grp = self._h5_data['/MT_data/'].create_group('Post')
-        self.XL_post_grp = self._h5_data['/XL_data/'].create_group('Post')
+        # TODO Add check if post-processing data exists and whether or not
+        # it should be overwritten
+
+        # self.MT_post_grp = self._h5_data['/MT_data/'].create_group('Post')
+        # self.XL_post_grp = self._h5_data['/XL_data/'].create_group('Post')
         # Analyze distance between rod center at each time step
         self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
                                      axis=1)
-        self.MT_sep_dset = self.MT_post_grp.create_dataset(
-            'center_separation', data=dR_arr, dtype=np.float32)
+        # self.MT_sep_dset = self.MT_post_grp.create_dataset(
+        # 'center_separation', data=self.dR_arr, dtype=np.float32)
         # Analyze angle between rods at teach time step
         self.phi_arr = np.arccos(
             np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
-        self.MT_phi_dset = self.MT_post_grp.create_dataset(
-            'angle_between', data=phi_arr, dtype=np.float32)
+        # self.MT_phi_dset = self.MT_post_grp.create_dataset(
+        # 'angle_between', data=self.phi_arr, dtype=np.float32)
 
         # Analyze number of crosslinkers at each timestep
         self.Nxl_arr = (np.sum(self.xl_distr, axis=(0, 1)) *
                         (float(self._params["ds"])**2))
-        self.Nxl_dset = self.XL_post_grp.create_dataset(
-            'xlink_number', data=Nxl_arr, dtype=np.float32)
+        # self.Nxl_dset = self.XL_post_grp.create_dataset(
+        # 'xlink_number', data=self.Nxl_arr, dtype=np.float32)
 
         # Calculate rod overlap
 
@@ -207,8 +210,8 @@ class FPAnalysis(object):
                                         self._params['L1'],
                                         self._params['L2'])
 
-        self.MT_overlap_dset = self.MT_post_grp.create_dataset(
-            'overlap', data=overlap, dtype=np.float32)
+        # self.MT_overlap_dset = self.MT_post_grp.create_dataset(
+        # 'overlap', data=overlap, dtype=np.float32)
 
         if '/OT_data' in self._h5_data:
             self.OTAnalysis()
@@ -222,7 +225,7 @@ class FPAnalysis(object):
     def OTAnalysis(self):
         """!Analyze data for optically trapped rods, especially if they
         are oscillating traps
-        @return: void, Adds optical trap post-analysis to code
+        @return: void, Adds optical trap post-analysis to hdf5 file
 
         """
         # Make post processing for optical trap data
@@ -241,6 +244,7 @@ class FPAnalysis(object):
 ###########################
 #  Calculation functions  #
 ###########################
+    @staticmethod
     def calcOverlap(R1_pos, R2_pos, R1_vec, R2_vec, L1, L2):
         """!Calculate the overlap of two antiparalle rods based on the location
         of their minus ends. You can also negate the vector of one of the rods
@@ -261,7 +265,7 @@ class FPAnalysis(object):
         d = np.subtract(minus1_pos, minus2_pos)
         dmag = np.linalg.norm(d, axis=1)
         # Projection of one rod onto another
-        proj = abs(np.dot(R1_vec, R2_vec, axis=1))
+        proj = abs(np.einsum('ij,ij->i', R1_vec, R2_vec))
         return proj * (L1 + L2) - dmag
 
     @staticmethod

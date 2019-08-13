@@ -102,9 +102,10 @@ class FPGenOrientSolver(Solver):
                                         self.R1_vec, self.R2_vec,
                                         rvec, r, self._params['ks'],
                                         self._params['ho'])
+        self.f_mat_dens = np.multiply(self.sgrid, self.f_mat)
         # Integrate force density from all xlinks on rods
-        self.force1 = -1. * self.f_mat.sum(axis=(0, 1)) * self.ds * self.ds
-        self.force2 = self.f_mat.sum(axis=(0, 1)) * self.ds * self.ds
+        self.force2 = (self.f_mat_dens).sum(axis=(0, 1)) * (self.ds ** 2)
+        self.force1 = -1. * self.force2
 
     def calcTorqueMatrix(self):
         """! Calculate the torque provided by each point
@@ -113,9 +114,9 @@ class FPGenOrientSolver(Solver):
         """
         # Create torque density matrix
         self.t_mat1 = make_gen_torque_mat(
-            -1. * np.swapaxes(self.f_mat, 0, 1), self.s1, self.R1_vec)
+            -1. * np.swapaxes(self.f_mat_dens, 0, 1), self.s1, self.R1_vec)
         self.t_mat2 = make_gen_torque_mat(
-            self.f_mat, self.s2, self.R2_vec)
+            self.f_mat_dens, self.s2, self.R2_vec)
         # Integrate torque density from all xlinks on rods
         self.torque1 = self.t_mat1.sum(axis=(0, 1)) * self.ds * self.ds
         self.torque2 = self.t_mat2.sum(axis=(0, 1)) * self.ds * self.ds

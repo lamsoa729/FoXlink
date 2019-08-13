@@ -170,8 +170,7 @@ def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
     hvec = make_gen_stretch_mat(s1_arr, s2_arr, u1, u2, rvec, r)
     if ho == 0:
         # Weight force matrix by density of crosslinkers
-        f_mat = -ks * sgrid
-        f_mat = f_mat[:, :, None] * hvec[:, :, :]
+        f_mat = -k * hvec
     else:
         # Get stretch matrix magnitude
         h = np.linalg.norm(hvec, axis=2)
@@ -180,7 +179,7 @@ def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
         f_mat = -ks * (1. - np.divide(ho_mat, h, out=np.zeros_like(ho_mat),
                                       where=h != 0))
         # Weight force matrix by density of crosslinkers
-        f_mat *= sgrid
+        # f_mat *= sgrid
         # More vector broadcasting to give direction to force again
         f_mat = f_mat[:, :, None] * hvec[:, :, :]
 

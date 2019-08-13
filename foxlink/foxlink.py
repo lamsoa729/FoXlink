@@ -7,11 +7,14 @@ import sys
 import yaml
 
 # Import all solvers
-from .FP_gen_motion_static_xlinks_solver import FPGenMotionStaticXlinksSolver
-from .FP_gen_motion_pass_CN_solver import FPGenMotionPassCNSolver
+# Orient
 from .FP_gen_orient_static_xlinks_solver import FPGenOrientStaticXlinksSolver
 from .FP_gen_orient_motor_UW_solver import FPGenOrientMotorUWSolver
+# Free motion solvers
+from .FP_gen_motion_static_xlinks_solver import FPGenMotionStaticXlinksSolver
+from .FP_gen_motion_pass_CN_solver import FPGenMotionPassCNSolver
 from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
+# Optical trap solvers
 from .FP_OT_gen_motion_motor_UW_solver import FPOpticalTrapGenMotionMotorUWSolver
 from .FP_OT_gen_motion_static_xlinks_solver import FPOpticalTrapGenMotionStaticXlinksSolver
 

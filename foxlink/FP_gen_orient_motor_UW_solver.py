@@ -2,6 +2,7 @@
 from .FP_motor_UW_solver import FPMotorUWSolver
 from .FP_gen_orient_solver import FPGenOrientSolver
 from .FP_helpers import make_force_dep_velocity_mat
+import numpy as np
 
 
 """@package docstring
@@ -47,8 +48,9 @@ class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
         fs = self._params['fs']
         # Velocity of heads on the first rod. Negative because force matrix is
         # the force that the second head experiences.
+        f_mat1 = -1. * np.swapaxes(self.f_mat, 0, 1)
         self.vel_mat1 = make_force_dep_velocity_mat(
-            -1. * self.f_mat, self.R1_vec, fs, vo)
+            f_mat1, self.R1_vec, fs, vo)
         # Velocity of the heads on the second rod
         self.vel_mat2 = make_force_dep_velocity_mat(
             self.f_mat, self.R2_vec, fs, vo)
