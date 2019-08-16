@@ -13,7 +13,7 @@ Description: Helper functions for FP solver.
 """
 
 
-@njit(parallel=True)
+@jit
 def vhead(vo, fpar, fstall):
     """!Calculate the velocity of a motor head with a smooth
     force-velocity relation
@@ -31,7 +31,7 @@ def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
     """!Calculate the velocity of motor heads for each point given the force at
     that point and the direction of the microtuble that head is on.
 
-    @param f_mat: (nxnx3) matrix of forces components based on head positions
+    @param f_mat: (nxnx3) matrix of force components based on head positions
     @param u_vec: unit vector of rod the motor head is on
     @param fs: stall force of motor head
     @param vo: unladen velocity of motor head

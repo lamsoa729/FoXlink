@@ -86,9 +86,9 @@ class FPGenOrientSolver(Solver):
                                            self._params["beta"])
 
     def calcForceMatrix(self):
-        """!Calculate the force for each crosslinker
+        """!Calculate the force from each crosslinker
 
-        @return: TODO
+        @return: void, changes f_mat, f_mat_dens, force2, force1
 
         """
         # Create unit direction vector from center of rod1 to center of rod2
@@ -102,7 +102,7 @@ class FPGenOrientSolver(Solver):
                                         self.R1_vec, self.R2_vec,
                                         rvec, r, self._params['ks'],
                                         self._params['ho'])
-        self.f_mat_dens = np.multiply(self.sgrid, self.f_mat)
+        self.f_mat_dens = self.sgrid[:, :, None] * self.f_mat[:, :, :]
         # Integrate force density from all xlinks on rods
         self.force2 = (self.f_mat_dens).sum(axis=(0, 1)) * (self.ds ** 2)
         self.force1 = -1. * self.force2

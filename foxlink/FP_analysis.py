@@ -213,8 +213,8 @@ class FPAnalysis(object):
         # self.MT_overlap_dset = self.MT_post_grp.create_dataset(
         # 'overlap', data=overlap, dtype=np.float32)
 
-        if '/OT_data' in self._h5_data:
-            self.OTAnalysis()
+        # if '/OT_data' in self._h5_data:
+        #     self.OTAnalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))

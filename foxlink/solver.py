@@ -181,7 +181,6 @@ class Solver(object):
         self.sgrid = np.zeros((self.ns1, self.ns2))
         self.calcSourceMatrix()
         self.calcForceMatrix()
-        print("force mat: ", self.f_mat.sum())
         self.calcTorqueMatrix()
 
     def Run(self):
