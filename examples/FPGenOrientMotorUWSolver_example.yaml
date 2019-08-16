@@ -1,0 +1,35 @@
+# System parameters
+beta: .243309002 # Inverse temperature
+viscosity: 0.00089 # Using nucleoplasm pN/nm^2
+
+# Microtubule parameters
+L1: 500. # Length of microtubule 1
+L2: 500. # Length of microtubule 2
+R1_pos: [0., 0., 0.]
+R2_pos: [0., 0., 32.]
+R1_vec: [0., 1., 0.]
+R2_vec: [0., -1., 0.]
+rod_diameter: 25 # nm
+
+# Integration parameters
+dt: .0001 # Crosslinker turnover rate (sec^-1)
+#nsteps: 1000 # Total number of steps, used if dt is not defined
+nt: 1  # total time (sec)
+ds: 1.0 # Segmentation size of microtubules (nm
+# Boundary conditions
+
+# Crosslinker parameters
+ko: 10. # Crosslinker turnover rate (sec^-1)
+co: .015625 # Effective crosslinker concentration
+ks: .33 # Crosslinker spring concentration (pN*s/nm)
+ho: 52. # Equilibrium length of kinesin5
+#ho: 0. # Equilibrium length of crosslinkers
+#gamma: .000617 # Friction coefficient of crosslinkers (pN*s/nm)
+vo: 200. # Base velocity of crosslinker heads (nm/sec)
+fs: 10. # Stall force of crosslinker heads (pN)
+
+# Misc
+nwrite: 100
+initial_condition: 'equil'
+end_pause: False
+solver_type: "FPGenOrientMotorUWSolver"

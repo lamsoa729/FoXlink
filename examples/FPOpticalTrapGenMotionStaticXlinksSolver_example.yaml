@@ -1,0 +1,49 @@
+# System parameters
+beta: .243309002 # Inverse temperature
+viscosity: 0.00089 # Using nucleoplasm pN/nm^2
+
+# Microtubule parameters
+L1: 500. # Length of microtubule 1
+L2: 500. # Length of microtubule 2
+R1_pos: [0., -125., 0.] # Center of MT1
+R2_pos: [0., 125., 0.] # Center of MT2
+R1_vec: [0., 1., 0.5] # Orientation of MT1
+R2_vec: [0., -1., 0.5] # Orientation of MT2
+rod_diameter: 25 # nm
+
+# Integration parameters
+dt: .005 # Crosslinker turnover rate (sec^-1)
+#nsteps: 1000 # Total number of steps, used if dt is not defined
+nt: 50  # total time (sec)
+ds: 1.0 # Segmentation size of microtubules (nm
+# Boundary conditions
+
+# Crosslinker parameters
+ko: 28. # Crosslinker turnover rate (sec^-1)
+co: .015625 # Effective crosslinker concentration
+ks: .33 # Crosslinker spring constant (pN/nm)
+ho: 32. # Equilibrium length of PRC1
+#gamma: .000617 # Friction coefficient of crosslinkers (pN*s/nm)
+vo: 500. # Base velocity of crosslinker heads (nm/sec)
+fs: 1. # Stall force of crosslinker heads (pN)
+
+# Optical trap parameters
+OT_ks: .1 # spring constant of optical traps (pN/nm)
+#OT1_motion:
+    #type: OpticalTrapOscillator
+    #frequency: 100.0
+    #amplitude: 50.0
+    #phase: 0
+    #direction: [0., 1., 0.]
+#OT2_motion:
+    #type: OpticalTrapOscillator
+    #frequency: 100.0
+    #amplitude: 50.0
+    #phase: 0
+    #direction: [0., -1., 0.]
+
+# Misc
+nwrite: 100
+initial_condition: 'empty'
+end_pause: False
+solver_type: "FPOpticalTrapGenMotionStaticXlinksSolver"
