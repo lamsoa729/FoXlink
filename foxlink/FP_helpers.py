@@ -161,7 +161,7 @@ def make_gen_stretch_mat(s1, s2, u1, u2, rvec, r,):
     return hvec
 
 
-def make_gen_force_mat(sgrid, s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
+def make_gen_force_mat(s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
     """! Creates a general force matrix for crosslinker attachment
     @param : TODO
     @return: TODO

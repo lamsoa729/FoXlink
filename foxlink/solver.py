@@ -180,8 +180,16 @@ class Solver(object):
         # self.sgrid = sparse.csc_matrix((self.ns1, self.ns2))
         self.sgrid = np.zeros((self.ns1, self.ns2))
         self.calcSourceMatrix()
+        self.calcInteractions()
+
+    def calcInteractions(self):
+        """!TODO: Docstring for CalcInteractions.
+        @return: TODO
+
+        """
         self.calcForceMatrix()
         self.calcTorqueMatrix()
+        self.cleared = False
 
     def Run(self):
         """!Run PDE solver with parameters in pfile through explicity interative time stepping.
@@ -207,6 +215,8 @@ class Solver(object):
                 # Reset write function
                 self.written = False
                 t0 = time.time()
+            # Clear interactions for next step
+            self.clearInteractions()
         tot_time = time.time() - t_start
         print(r" --- Total of {:d} steps in {:.4f} seconds ---".format(self.nsteps,
                                                                        tot_time))
@@ -291,6 +301,17 @@ class Solver(object):
         print("calcTorqueMatrix not implemented. Torque matrix initialized with zeros.")
         self.t_mat = np.zeros((self.ns1, self.ns2, 3))
 
+    def clearInteractions(self):
+        """!TODO: Docstring for clearInteractions.
+        @return: TODO
+
+        """
+        self.force1 = 0
+        self.force2 = 0
+        self.torque1 = 0
+        self.torque2 = 0
+        self.cleared = True
+
     def Write(self):
         """!Write current step in algorithm into data frame
         @return: index of current step
@@ -300,6 +321,8 @@ class Solver(object):
         if not self.written:
             self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
+            if self.cleared:
+                self.calcInteractions()
             self._force_dset[i_step, 0] = self.force1
             self._force_dset[i_step, 1] = self.force2
             self._torque_dset[i_step, 0] = self.torque1

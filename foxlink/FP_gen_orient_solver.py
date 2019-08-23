@@ -98,7 +98,7 @@ class FPGenOrientSolver(Solver):
             rvec /= r
 
         # Make force density matrix from xlink distributions and stretch
-        self.f_mat = make_gen_force_mat(self.sgrid, self.s1, self.s2,
+        self.f_mat = make_gen_force_mat(self.s1, self.s2,
                                         self.R1_vec, self.R2_vec,
                                         rvec, r, self._params['ks'],
                                         self._params['ho'])
