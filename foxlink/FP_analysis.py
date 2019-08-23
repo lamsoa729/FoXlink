@@ -83,8 +83,6 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
         axarr = np.asarray([fig.add_subplot(gs[0, 0]),
                             fig.add_subplot(gs[0, 1]), ])
         fig.suptitle(' ')
-        # FPanal.graphReducedSlice(50, fig, axarr)
-        # plt.show()
         nframes = FPanal.time.size
         anim = FuncAnimation(
             fig,
@@ -96,6 +94,44 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
     t0 = time.time()
 
     anim.save('{}_min.mp4'.format(Path.cwd().name), writer=writer)
+    t1 = time.time()
+    print("Movie saved in: ", t1 - t0)
+
+
+def makeOrientAnimation(FPanal, writer=FFMpegWriter):
+    """!Make animation of time slices
+    @return: TODO
+
+    """
+    fig = plt.figure(constrained_layout=True, figsize=(15, 9))
+    graph_stl = {
+        "axes.titlesize": 18,
+        "axes.labelsize": 15,
+        "xtick.labelsize": 15,
+        "ytick.labelsize": 15,
+        "font.size": 15
+    }
+    with plt.style.context(graph_stl):
+        plt.style.use(graph_stl)
+        gs = fig.add_gridspec(2, 12)
+        axarr = np.asarray([fig.add_subplot(gs[0, :4]),
+                            fig.add_subplot(gs[0, 4:8]),
+                            fig.add_subplot(gs[0, 8:]),
+                            fig.add_subplot(gs[1, :6]),
+                            fig.add_subplot(gs[1, 6:]),
+                            ])
+        fig.suptitle(' ')
+        nframes = FPanal.time.size
+        anim = FuncAnimation(
+            fig,
+            FPanal.graphOrientSlice,
+            frames=np.arange(nframes),
+            fargs=(fig, axarr),
+            interval=50,
+            blit=True)
+    t0 = time.time()
+
+    anim.save('{}_orient.mp4'.format(Path.cwd().name), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
@@ -302,7 +338,6 @@ class FPAnalysis(object):
 #  Graphing functions  #
 ########################
 
-
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
@@ -329,6 +364,19 @@ class FPAnalysis(object):
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
+    def graphOrientSlice(self, n, fig, axarr):
+        """!Graph the solution Psi at a specific time
+
+        @param n: index of slice to graph
+        @return: void
+
+        """
+        t0 = time.time()
+        gca_arts = fp_graph_stationary_runs_2d(fig, axarr, n, self)
+        t1 = time.time()
+        print("Graph ", n, "made in: ", t1 - t0)
+        return gca_arts
+
 
 ##########################################
 if __name__ == "__main__":
@@ -339,9 +387,7 @@ if __name__ == "__main__":
     print("Started making movie")
 
     # Movie maker
-    # Writer = FasterFFMpegWriter
     Writer = FFMpegWriter
-    # print(Writer)
     writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
 
     makeAnimation(FPP_analysis, writer)

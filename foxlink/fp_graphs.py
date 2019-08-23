@@ -247,15 +247,14 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
         axarr[1].set_aspect(1.0)
         FP_anal.init_flag = False
     graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
-    graph_vs_time(axarr[3], FP_anal.time,
-                  FP_anal.force_arr[:, 0], n, color='tab:green')
-    graph_vs_time(axarr[3], FP_anal.time,
-                  FP_anal.force_arr[:, 1], n, color='tab:purple')
-    graph_vs_time(axarr[4], FP_anal.time,
-                  FP_anal.torque_arr[:, 0], n, color='tab:green')
-    graph_vs_time(axarr[4], FP_anal.time,
-                  FP_anal.torque_arr[:, 1], n, color='tab:purple')
-
+    graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 0], n,
+                  color='tab:green')
+    graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 1], n,
+                  color='tab:purple')
+    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 0], n,
+                  color='tab:green')
+    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 1],
+                  n, color='tab:purple')
     graph_vs_time(axarr[5], FP_anal.time, FP_anal.dR_arr, n)
     graph_vs_time(axarr[6], FP_anal.time, FP_anal.phi_arr, n)
     # Legend information
@@ -306,4 +305,68 @@ def fp_graph_mts_xlink_distr_2d(fig, axarr, n, FP_anal):
                   transform=axarr[0].transAxes)
 
     # FP_anal.time[n])], facecolor='inherit')
+    return fig.gca().lines + fig.gca().collections
+
+
+def fp_graph_stationary_runs_2d(fig, axarr, n, FP_anal):
+    # Clean up if lines
+    if not FP_anal.init_flag:
+        for ax in axarr.flatten():
+            ax.clear()
+        for artist in fig.gca().lines + fig.gca().collections:
+            artist.remove()
+            del artist
+
+    # Draw rods
+    graph_2d_rod_diagram(axarr[0], FP_anal, n)
+
+    # Make density plot
+    c = graph_xl_dens(axarr[1],
+                      FP_anal.xl_distr[:, :, n],
+                      FP_anal.s1,
+                      FP_anal.s2,
+                      max_dens_val=FP_anal.max_dens_val)
+    axarr[1].set_xlabel(
+        'Head distance from \n center of MT$_1$ $s_1$ (nm)')
+    axarr[1].set_ylabel(
+        'Head distance from \n center of MT$_2$ $s_2$ (nm)')
+
+    axarr[2].set_xlabel(r'Time (sec)')
+    axarr[2].set_ylabel(r'Crosslinker number')
+    axarr[2].set_xlim(left=0, right=FP_anal.time[-1])
+    axarr[2].set_ylim(np.amin(FP_anal.Nxl_arr),
+                      np.amax(FP_anal.Nxl_arr))
+
+    axarr[3].set_xlabel(r'Time (sec)')
+    axarr[3].set_ylabel(r'Total crosslinker force (pN)')
+    axarr[3].set_xlim(left=0, right=FP_anal.time[-1])
+    axarr[3].set_ylim(np.amin(FP_anal.force_arr),
+                      np.amax(FP_anal.force_arr))
+
+    axarr[4].set_xlabel(r'Time (sec)')
+    axarr[4].set_ylabel(r'Total crosslinker torque (pN*nm)')
+    axarr[4].set_xlim(left=0, right=FP_anal.time[-1])
+    axarr[4].set_ylim(np.amin(FP_anal.torque_arr),
+                      np.amax(FP_anal.torque_arr))
+
+    if FP_anal.init_flag:
+        axarr[0].set_aspect(1.0)
+        axarr[1].set_aspect(1.0)
+        fig.colorbar(c, ax=axarr[1])
+        FP_anal.init_flag = False
+    # axarr[0].text(.05, .95, "Time = {:.2f} sec".format(FP_anal.time[n]),
+        # horizontalalignment='left',
+        # verticalalignment='bottom',
+        # transform=axarr[0].transAxes)
+
+    graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
+    graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 0], n,
+                  color='tab:green')
+    graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 1], n,
+                  color='tab:purple')
+    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 0], n,
+                  color='tab:green')
+    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 1], n,
+                  color='tab:purple')
+
     return fig.gca().lines + fig.gca().collections
