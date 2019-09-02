@@ -3,9 +3,6 @@ import sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
-from matplotlib.animation import FuncAnimation
-from matplotlib.animation import FFMpegWriter
 # from matplotlib.lines import Line2D
 import h5py
 import yaml
@@ -25,7 +22,7 @@ class FPAnalysis(object):
 
     """!Analyze Fokker-Planck equation code"""
 
-    def __init__(self, filename="FP_passive.h5"):
+    def __init__(self, filename="Solver.h5"):
         """! Initialize analysis code by loading in pickle file and setting up
         params.
         """
@@ -35,12 +32,17 @@ class FPAnalysis(object):
         self.s1 = self._h5_data['MT_data']["s1"]
         self.s2 = self._h5_data['MT_data']["s2"]
         self.sType = self._params['solver_type']
+
+        ############################################
+        #  Get parameters from running simulation  #
+        ############################################
+
         # What kind of motion of microtubules
-        if 'phio' in self._params:
+        if 'phio' in self._params:  # Ang motion
             self.phi_arr = self._h5_data['MT_data']["phi"]
-        elif 'ro' in self._params:
+        elif 'ro' in self._params:  # Para motion
             self.R_arr = np.asarray(self._h5_data['MT_data']["R_pos"])
-        else:
+        else:  # General motion
             self.R1_pos = np.asarray(self._h5_data['/MT_data/R1_pos'])
             self.R2_pos = np.asarray(self._h5_data['/MT_data/R2_pos'])
             self.R1_vec = np.asarray(self._h5_data['/MT_data/R1_vec'])
@@ -62,6 +64,12 @@ class FPAnalysis(object):
         # Max concentration of crosslinkers
         self.max_dens_val = np.amax(self.xl_distr)
         print('Max density: ', self.max_dens_val)
+
+        # Get forces and torques
+        self.torque_arr = self._h5_data['/Interaction_data/torque_data']
+        self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
+        self.force_arr = self._h5_data['/Interaction_data/force_data']
+        self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
     def Load(self, filename):
         """!Load in data from hdf5 file
@@ -92,10 +100,6 @@ class FPAnalysis(object):
 
         """
         t0 = time.time()
-        self.torque_arr = self._h5_data['/Interaction_data/torque_data']
-        self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
-        self.force_arr = self._h5_data['/Interaction_data/force_data']
-        self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
         # TODO Add check if post-processing/analysis data exists and
         # whether or not it should be overwritten.
@@ -105,6 +109,7 @@ class FPAnalysis(object):
         self.XLMomentAnalysis(XL_analysis_grp)
 
         self.MT_analysis_grp = self.analysis_grp.create_group('MT_analysis')
+        self.RodGeometryAnalysis(MT_analysis_grp)
 
         if '/OT_data' in self._h5_data:
             # self.OTAnalysis()
@@ -112,27 +117,8 @@ class FPAnalysis(object):
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
 
-        t2 = time.time()
-        print(("Save time: {}".format(t2 - t1)))
-
-    def OTAnalysis(self):
-        """!Analyze data for optically trapped rods, especially if they
-        are oscillating traps
-        @return: void, Adds optical trap post-analysis to hdf5 file
-
-        """
-        # Make post processing for optical trap data
-        # Get start time by finding when the oscillations first pass mean value
-        st = self.FindStartTime(overlap_arr, reps=2)
-        # TODO Get horizontal separation of optical traps
-        ot_sep_arr = np.linalg.norm(self.OT2_pos - self.OT1_pos, axis=1)
-        # fft_sep_arr = np.fft.rfft(sep_arr[st:])
-        # TODO Get overlap array
-        # fft_overlap_arr = np.fft.rfft(overlap_arr[st:])
-        # TODO Get horizontal force on MTs
-        # fft_force_arr = np.fft.rfft(force_arr[st:])
-        # TODO Get trap separation
-        # TODO Calculate reology components if traps are oscillating
+        # t2 = time.time()
+        # print(("Save time: {}".format(t2 - t1)))
 
     def XLMomentAnalysis(self, XL_analysis_grp):
         """!TODO: Docstring for MomentAnalysis.
@@ -140,24 +126,30 @@ class FPAnalysis(object):
 
         """
         ds = float(self._params["ds"])
-        ds2 = ds * ds
+        ds_sqr = ds * ds
+        s1 = self.s1
+        s2 = self.s2
         # Zeroth moment (number of crosslinkers)
-        self.Nxl_arr = np.sum(self.xl_distr, axis=(0, 1)) * ds2
-        self.Nxl_dset = XL_analysis_grp.create_dataset(
+        self.Nxl_arr = np.sum(self.xl_distr, axis=(0, 1)) * ds_sqr
+        self.zero_mom_dset = XL_analysis_grp.create_dataset(
             'zeroth_moment', data=self.Nxl_arr, dtype=np.float32)
+
         # First moments
-        P1 = np.einsum('ijn,i->n', self.xl_distr, self.s1) * ds2
-        P2 = np.einsum('ijn,j->n', self.xl_distr, self.s2) * ds2
+        self.P1 = np.einsum('ijn,i->n', self.xl_distr, s1) * ds_sqr
+        self.P2 = np.einsum('ijn,j->n', self.xl_distr, s2) * ds_sqr
         self.first_mom_dset = XL_analysis_grp.create_dataset(
             'first_moments', data=np.stack((P1, P2), axis=-1), dtype=np.float32)
+        self.first_mom_dset.attrs['columns'] = ['s1 moment', 's2 moment']
 
         # Second moments calculations
-        u11 = np.einsum('ijn,i,j->n', self.xl_distr, self.s1, self.s2) * ds2
-        u20 = np.einsum('ijn,i->n', self.xl_distr, self.s1 * self.s1) * ds2
-        u02 = np.einsum('ijn,j->n', self.xl_distr, self.s2 * self.s2) * ds2
+        self.u11 = np.einsum('ijn,i,j->n', self.xl_distr, s1, s2) * ds_sqr
+        self.u20 = np.einsum('ijn,i->n', self.xl_distr, s1 * s1) * ds_sqr
+        self.u02 = np.einsum('ijn,j->n', self.xl_distr, s2 * s2) * ds_sqr
         self.second_mom_dset = XL_analysis_grp.create_dataset(
             'second_moments', data=np.stack((u11, u20, u02), axis=-1),
             dtype=np.float32)
+        self.second_mom_dset.attrs['columns'] = ['s1*s2 moment', 's1^2 moment',
+                                                 's2^2 moment']
 
     def RodGeometryAnalysis(self, MT_analysis_grp):
         """!Analyze and store data relating to the configuration of the rods
@@ -190,7 +182,26 @@ class FPAnalysis(object):
                                         self._params['L2'])
 
         self.MT_overlap_dset = MT_analysis_grp.create_dataset(
-            'overlap', data=overlap, dtype=np.float32)
+            'overlap', data=self.overlap, dtype=np.float32)
+
+    def OTAnalysis(self):
+        """!Analyze data for optically trapped rods, especially if they
+        are oscillating traps
+        @return: void, Adds optical trap post-analysis to hdf5 file
+
+        """
+        # Make post processing for optical trap data
+        # Get start time by finding when the oscillations first pass mean value
+        st = self.FindStartTime(overlap_arr, reps=2)
+        # TODO Get horizontal separation of optical traps
+        ot_sep_arr = np.linalg.norm(self.OT2_pos - self.OT1_pos, axis=1)
+        # fft_sep_arr = np.fft.rfft(sep_arr[st:])
+        # TODO Get overlap array
+        # fft_overlap_arr = np.fft.rfft(overlap_arr[st:])
+        # TODO Get horizontal force on MTs
+        # fft_force_arr = np.fft.rfft(force_arr[st:])
+        # TODO Get trap separation
+        # TODO Calculate reology components if traps are oscillating
 ###########################
 #  Calculation functions  #
 ###########################
