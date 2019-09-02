@@ -17,6 +17,8 @@ from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
 # Optical trap solvers
 from .FP_OT_gen_motion_motor_UW_solver import FPOpticalTrapGenMotionMotorUWSolver
 from .FP_OT_gen_motion_static_xlinks_solver import FPOpticalTrapGenMotionStaticXlinksSolver
+# Defined motion
+from .FP_gen_def_motion_motor_UW_solver import FPGenDefMotionMotorUWSolver
 
 
 """@package docstring

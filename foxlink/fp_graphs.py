@@ -370,3 +370,7 @@ def fp_graph_stationary_runs_2d(fig, axarr, n, FP_anal):
                   color='tab:purple')
 
     return fig.gca().lines + fig.gca().collections
+
+######################################
+#  Crosslinker distribution moments  #
+######################################

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import sys
 import time
 import numpy as np
@@ -20,120 +19,6 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: File containing classes to analyze data, make movies, and create graphs from passive PDE runs
 """
-
-
-def makeAnimation(FPanal, writer=FFMpegWriter):
-    """!Make animation of time slices
-    @return: TODO
-
-    """
-    fig = plt.figure(constrained_layout=True, figsize=(15, 13))
-    graph_stl = {
-        "axes.titlesize": 18,
-        "axes.labelsize": 15,
-        "xtick.labelsize": 15,
-        "ytick.labelsize": 15,
-        "font.size": 15
-    }
-    with plt.style.context(graph_stl):
-        plt.style.use(graph_stl)
-        gs = fig.add_gridspec(3, 12)
-        axarr = np.asarray([fig.add_subplot(gs[0, :4]),
-                            fig.add_subplot(gs[0, 4:8]),
-                            fig.add_subplot(gs[0, 8:]),
-                            fig.add_subplot(gs[1, :6]),
-                            fig.add_subplot(gs[1, 6:]),
-                            fig.add_subplot(gs[2, :6]),
-                            fig.add_subplot(gs[2, 6:]),
-                            ])
-        fig.suptitle(' ')
-        # FPanal.graphSlice(50, fig, axarr)
-        # plt.show()
-        nframes = FPanal.time.size
-        anim = FuncAnimation(
-            fig,
-            FPanal.graphSlice,
-            frames=np.arange(nframes),
-            fargs=(fig, axarr),
-            interval=50,
-            blit=True)
-    t0 = time.time()
-
-    anim.save('{}.mp4'.format(Path.cwd().name), writer=writer)
-    t1 = time.time()
-    print("Movie saved in: ", t1 - t0)
-
-
-def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
-    """!Make animation of time slices
-    @return: TODO
-
-    """
-    graph_stl = {
-        "axes.titlesize": 18,
-        "axes.labelsize": 15,
-        "xtick.labelsize": 15,
-        "ytick.labelsize": 15,
-        "font.size": 18
-    }
-    with plt.style.context(graph_stl):
-        plt.style.use(graph_stl)
-        fig = plt.figure(figsize=(10, 5), constrained_layout=True)
-        gs = fig.add_gridspec(1, 2)
-        axarr = np.asarray([fig.add_subplot(gs[0, 0]),
-                            fig.add_subplot(gs[0, 1]), ])
-        fig.suptitle(' ')
-        nframes = FPanal.time.size
-        anim = FuncAnimation(
-            fig,
-            FPanal.graphReducedSlice,
-            frames=np.arange(nframes),
-            fargs=(fig, axarr),
-            interval=50,
-            blit=True)
-    t0 = time.time()
-
-    anim.save('{}_min.mp4'.format(Path.cwd().name), writer=writer)
-    t1 = time.time()
-    print("Movie saved in: ", t1 - t0)
-
-
-def makeOrientAnimation(FPanal, writer=FFMpegWriter):
-    """!Make animation of time slices
-    @return: TODO
-
-    """
-    fig = plt.figure(constrained_layout=True, figsize=(15, 9))
-    graph_stl = {
-        "axes.titlesize": 18,
-        "axes.labelsize": 15,
-        "xtick.labelsize": 15,
-        "ytick.labelsize": 15,
-        "font.size": 15
-    }
-    with plt.style.context(graph_stl):
-        plt.style.use(graph_stl)
-        gs = fig.add_gridspec(2, 12)
-        axarr = np.asarray([fig.add_subplot(gs[0, :4]),
-                            fig.add_subplot(gs[0, 4:8]),
-                            fig.add_subplot(gs[0, 8:]),
-                            fig.add_subplot(gs[1, :6]),
-                            fig.add_subplot(gs[1, 6:]),
-                            ])
-        fig.suptitle(' ')
-        nframes = FPanal.time.size
-        anim = FuncAnimation(
-            fig,
-            FPanal.graphOrientSlice,
-            frames=np.arange(nframes),
-            fargs=(fig, axarr),
-            interval=50,
-            blit=True)
-    t0 = time.time()
-
-    anim.save('{}_orient.mp4'.format(Path.cwd().name), writer=writer)
-    t1 = time.time()
-    print("Movie saved in: ", t1 - t0)
 
 
 class FPAnalysis(object):
@@ -212,45 +97,17 @@ class FPAnalysis(object):
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
-        # TODO Add check if post-processing data exists and whether or not
-        # it should be overwritten
+        # TODO Add check if post-processing/analysis data exists and
+        # whether or not it should be overwritten.
+        self.analysis_grp = self._h5_data.create_group('Analysis')
 
-        # self.MT_post_grp = self._h5_data['/MT_data/'].create_group('Post')
-        # self.XL_post_grp = self._h5_data['/XL_data/'].create_group('Post')
-        # Analyze distance between rod center at each time step
-        self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
-                                     axis=1)
-        # self.MT_sep_dset = self.MT_post_grp.create_dataset(
-        # 'center_separation', data=self.dR_arr, dtype=np.float32)
-        # Analyze angle between rods at teach time step
-        self.phi_arr = np.arccos(
-            np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
-        # self.MT_phi_dset = self.MT_post_grp.create_dataset(
-        # 'angle_between', data=self.phi_arr, dtype=np.float32)
+        self.XL_analysis_grp = self.analysis_grp.create_group('XL_analysis')
+        self.XLMomentAnalysis(XL_analysis_grp)
 
-        # Analyze number of crosslinkers at each timestep
-        self.Nxl_arr = (np.sum(self.xl_distr, axis=(0, 1)) *
-                        (float(self._params["ds"])**2))
-        # self.Nxl_dset = self.XL_post_grp.create_dataset(
-        # 'xlink_number', data=self.Nxl_arr, dtype=np.float32)
+        self.MT_analysis_grp = self.analysis_grp.create_group('MT_analysis')
 
-        # Calculate rod overlap
-
-        L1 = self._params['L1']
-        L2 = self._params['L2']
-        # Minus-end(bead) separations
-        self.overlap = self.calcOverlap(self.R1_pos,
-                                        self.R2_pos,
-                                        self.R1_vec,
-                                        self.R2_vec,
-                                        self._params['L1'],
-                                        self._params['L2'])
-
-        # self.MT_overlap_dset = self.MT_post_grp.create_dataset(
-        # 'overlap', data=overlap, dtype=np.float32)
-
-        # if '/OT_data' in self._h5_data:
-        #     self.OTAnalysis()
+        if '/OT_data' in self._h5_data:
+            # self.OTAnalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
@@ -277,9 +134,67 @@ class FPAnalysis(object):
         # TODO Get trap separation
         # TODO Calculate reology components if traps are oscillating
 
+    def XLMomentAnalysis(self, XL_analysis_grp):
+        """!TODO: Docstring for MomentAnalysis.
+        @return: TODO
+
+        """
+        ds = float(self._params["ds"])
+        ds2 = ds * ds
+        # Zeroth moment (number of crosslinkers)
+        self.Nxl_arr = np.sum(self.xl_distr, axis=(0, 1)) * ds2
+        self.Nxl_dset = XL_analysis_grp.create_dataset(
+            'zeroth_moment', data=self.Nxl_arr, dtype=np.float32)
+        # First moments
+        P1 = np.einsum('ijn,i->n', self.xl_distr, self.s1) * ds2
+        P2 = np.einsum('ijn,j->n', self.xl_distr, self.s2) * ds2
+        self.first_mom_dset = XL_analysis_grp.create_dataset(
+            'first_moments', data=np.stack((P1, P2), axis=-1), dtype=np.float32)
+
+        # Second moments calculations
+        u11 = np.einsum('ijn,i,j->n', self.xl_distr, self.s1, self.s2) * ds2
+        u20 = np.einsum('ijn,i->n', self.xl_distr, self.s1 * self.s1) * ds2
+        u02 = np.einsum('ijn,j->n', self.xl_distr, self.s2 * self.s2) * ds2
+        self.second_mom_dset = XL_analysis_grp.create_dataset(
+            'second_moments', data=np.stack((u11, u20, u02), axis=-1),
+            dtype=np.float32)
+
+    def RodGeometryAnalysis(self, MT_analysis_grp):
+        """!Analyze and store data relating to the configuration of the rods
+
+        @param MT_analysis_grp: TODO
+        @return: TODO
+
+        """
+        pass
+        # Analyze distance between rod center at each time step
+        self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
+                                     axis=1)
+        self.MT_sep_dset = MT_analysis_grp.create_dataset(
+            'center_separation', data=self.dR_arr, dtype=np.float32)
+        # Analyze angle between rods at teach time step
+        self.phi_arr = np.arccos(
+            np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
+        self.MT_phi_dset = MT_analysis_grp.create_dataset(
+            'angle_between', data=self.phi_arr, dtype=np.float32)
+
+        # Calculate rod overlap
+        L1 = self._params['L1']
+        L2 = self._params['L2']
+        # Minus-end(bead) separations
+        self.overlap = self.calcOverlap(self.R1_pos,
+                                        self.R2_pos,
+                                        self.R1_vec,
+                                        self.R2_vec,
+                                        self._params['L1'],
+                                        self._params['L2'])
+
+        self.MT_overlap_dset = MT_analysis_grp.create_dataset(
+            'overlap', data=overlap, dtype=np.float32)
 ###########################
 #  Calculation functions  #
 ###########################
+
     @staticmethod
     def calcOverlap(R1_pos, R2_pos, R1_vec, R2_vec, L1, L2):
         """!Calculate the overlap of two antiparalle rods based on the location
@@ -338,6 +253,7 @@ class FPAnalysis(object):
 #  Graphing functions  #
 ########################
 
+
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
@@ -379,16 +295,15 @@ class FPAnalysis(object):
 
 
 ##########################################
-if __name__ == "__main__":
+# if __name__ == "__main__":
+    # FPP_analysis = FPAnalysis(sys.argv[1])
+    # # FPP_analysis.Analyze()
+    # FP_analysis.Analyze(True)
+    # print("Started making movie")
 
-    FPP_analysis = FPAnalysis(sys.argv[1])
-    # FPP_analysis.Analyze()
-    FP_analysis.Analyze(True)
-    print("Started making movie")
+    # # Movie maker
+    # Writer = FFMpegWriter
+    # writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
 
-    # Movie maker
-    Writer = FFMpegWriter
-    writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
-
-    makeAnimation(FPP_analysis, writer)
-    FPP_analysis.Save()
+    # makeAnimation(FPP_analysis, writer)
+    # FPP_analysis.Save()

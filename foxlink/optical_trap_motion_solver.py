@@ -24,7 +24,7 @@ class OpticalTrapMotionSolver(RodMotionSolver):
 
         """
         print("Init OpticalTrapMotionSolver ->", end=" ")
-        FPRodMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
+        RodMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
         self.OTParseParams()
 
     def OTParseParams(self):
@@ -84,7 +84,6 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @param R2_pos: TODO
         @param R1_vec: TODO
         @param R2_vec: TODO
-        @return: void
         @return: TODO
 
         """
