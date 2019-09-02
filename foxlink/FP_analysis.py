@@ -145,7 +145,7 @@ class FPAnalysis(object):
         else:
             return parent.create_group(grp_name)
 
-    def XLMomentAnalysis(self, XL_analysis_grp):
+    def XLMomentAnalysis(self, XL_analysis_grp, analysis_type='analyze'):
         """!TODO: Docstring for MomentAnalysis.
         @return: TODO
 
@@ -154,27 +154,59 @@ class FPAnalysis(object):
         ds_sqr = ds * ds
         s1 = self.s1
         s2 = self.s2
+
         # Zeroth moment (number of crosslinkers)
-        self.Nxl_arr = np.sum(self.xl_distr, axis=(0, 1)) * ds_sqr
-        self.zero_mom_dset = XL_analysis_grp.create_dataset(
-            'zeroth_moment', data=self.Nxl_arr, dtype=np.float32)
+        if 'zeroth_moment' not in XL_analysis_grp:
+            if analysis_type != 'load':
+                self.Nxl_arr = np.sum(self.xl_distr, axis=(0, 1)) * ds_sqr
+                self.zero_mom_dset = XL_analysis_grp.create_dataset(
+                    'zeroth_moment', data=self.Nxl_arr, dtype=np.float32)
+            else:
+                print('--- The zeroth moment not analyzed or stored. ---')
+        else:
+            self.zero_mom_dset = XL_analysis_grp['zeroth_momemnt']
+            self.Nxl_arr = np.asarray(self.zero_mom_dset)
 
         # First moments
-        self.P1 = np.einsum('ijn,i->n', self.xl_distr, s1) * ds_sqr
-        self.P2 = np.einsum('ijn,j->n', self.xl_distr, s2) * ds_sqr
-        self.first_mom_dset = XL_analysis_grp.create_dataset(
-            'first_moments', data=np.stack((P1, P2), axis=-1), dtype=np.float32)
-        self.first_mom_dset.attrs['columns'] = ['s1 moment', 's2 moment']
+        if 'first_moments' not in XL_analysis_grp:
+            if analysis_type != 'load':
+                self.P1 = np.einsum('ijn,i->n', self.xl_distr, s1) * ds_sqr
+                self.P2 = np.einsum('ijn,j->n', self.xl_distr, s2) * ds_sqr
+                self.first_mom_dset = XL_analysis_grp.create_dataset(
+                    'first_moments', data=np.stack((self.P1, self.P2), axis=-1),
+                    dtype=np.float32)
+                self.first_mom_dset.attrs['columns'] = ['s1 moment',
+                                                        's2 moment']
+            else:
+                print('--- The first moments not analyzed or stored. ---')
+        else:
+            self.first_mom_dset = XL_analysis_grp['first_moments']
+            self.P1 = np.asarray(self.first_mom_dset)[:, 0]
+            self.P2 = np.asarray(self.first_mom_dset)[:, 1]
 
         # Second moments calculations
-        self.u11 = np.einsum('ijn,i,j->n', self.xl_distr, s1, s2) * ds_sqr
-        self.u20 = np.einsum('ijn,i->n', self.xl_distr, s1 * s1) * ds_sqr
-        self.u02 = np.einsum('ijn,j->n', self.xl_distr, s2 * s2) * ds_sqr
-        self.second_mom_dset = XL_analysis_grp.create_dataset(
-            'second_moments', data=np.stack((u11, u20, u02), axis=-1),
-            dtype=np.float32)
-        self.second_mom_dset.attrs['columns'] = ['s1*s2 moment', 's1^2 moment',
-                                                 's2^2 moment']
+        if 'second_moments' not in XL_analysis_grp:
+            if analysis_type != 'load':
+                self.u11 = np.einsum(
+                    'ijn,i,j->n', self.xl_distr, s1, s2) * ds_sqr
+                self.u20 = np.einsum(
+                    'ijn,i->n', self.xl_distr, s1 * s1) * ds_sqr
+                self.u02 = np.einsum(
+                    'ijn,j->n', self.xl_distr, s2 * s2) * ds_sqr
+                self.second_mom_dset = XL_analysis_grp.create_dataset(
+                    'second_moments',
+                    data=np.stack((self.u11, self.u20, self.u02), axis=-1),
+                    dtype=np.float32)
+                self.second_mom_dset.attrs['columns'] = ['s1*s2 moment',
+                                                         's1^2 moment',
+                                                         's2^2 moment']
+            else:
+                print('--- The second moments not analyzed or stored. ---')
+        else:
+            self.second_mom_dset = XL_analysis_grp['second_moments']
+            self.u11 = np.asarray(self.second_mom_dset)[:, 0]
+            self.u20 = np.asarray(self.second_mom_dset)[:, 1]
+            self.u02 = np.asarray(self.second_mom_dset)[:, 2]
 
     def RodGeometryAnalysis(self, MT_analysis_grp):
         """!Analyze and store data relating to the configuration of the rods
@@ -287,6 +319,7 @@ class FPAnalysis(object):
 ########################
 #  Graphing functions  #
 ########################
+
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
