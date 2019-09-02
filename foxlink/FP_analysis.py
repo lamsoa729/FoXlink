@@ -22,16 +22,16 @@ class FPAnalysis(object):
 
     """!Analyze Fokker-Planck equation code"""
 
-    def __init__(self, filename="Solver.h5"):
-        """! Initialize analysis code by loading in pickle file and setting up
+    def __init__(self, filename="Solver.h5", analysis_type='load'):
+        """! Initialize analysis code by loading in hdf5 file and setting up
         params.
         """
         self._filename = filename
-        self.Load(filename)
+        self.Load(analysis_type)
         self.time = self._h5_data["time"]
-        self.s1 = self._h5_data['MT_data']["s1"]
-        self.s2 = self._h5_data['MT_data']["s2"]
-        self.sType = self._params['solver_type']
+        self.s1 = self._h5_data['/MT_data/s1']
+        self.s2 = self._h5_data['/MT_data/s2']
+        self.sType = self._params['/solver_type']
 
         ############################################
         #  Get parameters from running simulation  #
@@ -39,9 +39,9 @@ class FPAnalysis(object):
 
         # What kind of motion of microtubules
         if 'phio' in self._params:  # Ang motion
-            self.phi_arr = self._h5_data['MT_data']["phi"]
+            self.phi_arr = self._h5_data['MT_data/phi']
         elif 'ro' in self._params:  # Para motion
-            self.R_arr = np.asarray(self._h5_data['MT_data']["R_pos"])
+            self.R_arr = np.asarray(self._h5_data['MT_data/R_pos'])
         else:  # General motion
             self.R1_pos = np.asarray(self._h5_data['/MT_data/R1_pos'])
             self.R2_pos = np.asarray(self._h5_data['/MT_data/R2_pos'])
@@ -71,18 +71,20 @@ class FPAnalysis(object):
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
-    def Load(self, filename):
-        """!Load in data from hdf5 file
-        @param filename: Name of hdf5 file to load
-        @return: dictionary of xl_dens
+    def Load(self, analysis_type='load'):
+        """!Load in data from hdf5 file and grab analysis files if they exist.
+        @param analysis_type: load, analyze, overwrite. The extent of the
+                              analysis that should be carried out.
+        @return: void, stores hdf5 file, parameters, and data arrays to self.
 
         """
-        self._h5_data = h5py.File(filename, 'r+')
+        self._h5_data = h5py.File(self._filename, 'r+')
         if 'params' in self._h5_data.attrs:
             self._params = yaml.safe_load(self._h5_data.attrs['params'])
         else:
             self._params = self._h5_data.attrs
         print(self._params)
+        self.Analyze(analysis_type)
 
     def Save(self):
         """!Create a pickle file of solution
@@ -92,24 +94,34 @@ class FPAnalysis(object):
         self._h5_data.flush()
         self._h5_data.close()
 
-    def Analyze(self, overwrite=False):
-        """!TODO: Docstring for Analyze.
+    def Analyze(self, analysis_type='analyze'):
+        """!Read in analysis or analyze data according to type of solver hdf5
+        file came from and what analysis_type was specified.
 
-        @param overwrite: TODO
-        @return: TODO
+        @param analysis_type: load, analyze, overwrite. The extent of the
+                              analysis that should be carried out.
+        @return: void
 
         """
+        if 'Analysis' not in self._h5_data:
+            if analysis_type == 'load':
+                print('-- {} has not been analyzed. --'.format(self._filename))
+                return
+            else:
+                self.analysis_grp = self._h5_data.create_group('Analysis')
+        elif analysis_type == 'overwrite':  # Delete old analysis and try again
+            del self._h5_data['Analysis']
+            self.analysis_grp = self._h5_data.create_group('Analysis')
+
         t0 = time.time()
 
-        # TODO Add check if post-processing/analysis data exists and
-        # whether or not it should be overwritten.
-        self.analysis_grp = self._h5_data.create_group('Analysis')
+        self.XL_analysis_grp = self.touchGroup(self.analysis_grp,
+                                               'XL_analysis')
+        self.XLMomentAnalysis(self.XL_analysis_grp)
 
-        self.XL_analysis_grp = self.analysis_grp.create_group('XL_analysis')
-        self.XLMomentAnalysis(XL_analysis_grp)
-
-        self.MT_analysis_grp = self.analysis_grp.create_group('MT_analysis')
-        self.RodGeometryAnalysis(MT_analysis_grp)
+        self.MT_analysis_grp = self.touchGroup(self.analysis_grp,
+                                               'MT_analysis')
+        self.RodGeometryAnalysis(self.MT_analysis_grp)
 
         if '/OT_data' in self._h5_data:
             # self.OTAnalysis()
@@ -119,6 +131,19 @@ class FPAnalysis(object):
 
         # t2 = time.time()
         # print(("Save time: {}".format(t2 - t1)))
+    def touchGroup(self, parent, grp_name):
+        """!See if a data set is there and if it is return it.
+            Otherwise, generate it.
+
+        @param parent: TODO
+        @param grp_name: TODO
+        @return: The group reference
+
+        """
+        if grp_name in parent:
+            return parent[grp_name]
+        else:
+            return parent.create_group(grp_name)
 
     def XLMomentAnalysis(self, XL_analysis_grp):
         """!TODO: Docstring for MomentAnalysis.
@@ -158,7 +183,6 @@ class FPAnalysis(object):
         @return: TODO
 
         """
-        pass
         # Analyze distance between rod center at each time step
         self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
                                      axis=1)
@@ -263,7 +287,6 @@ class FPAnalysis(object):
 ########################
 #  Graphing functions  #
 ########################
-
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
