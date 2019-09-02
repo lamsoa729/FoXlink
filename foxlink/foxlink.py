@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from matplotlib.animation import FFMpegWriter
-from .FP_analysis import makeAnimation, makeMinimalAnimation, makeOrientAnimation, FPAnalysis
+from .animation_funcs import makeAnimation, makeMinimalAnimation, makeOrientAnimation, FPAnalysis
 # from .FP_pass_ang_CN import FPPassiveAngCNSolver
 import argparse
 import sys
