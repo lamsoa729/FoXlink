@@ -44,15 +44,21 @@ def parse_args():
                         help="Run test protocol on FoXlink solver. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-c", "--change_params", action="store_true", default=False,
                         help="Change parameter file if options differ file values. NOT IMPLEMENTED YET!")  # TODO
-    parser.add_argument("-a", "--analyze", action="store_true", default=False,
-                        help="Perform post-analysis on simulations once completed. Necessary to make movies.")
+    parser.add_argument("-a", "--analysis", type=str, default='',
+                        help=("Perform post-processing analysis on simulations once completed."
+                              "Necessary to make movies. Options: 'load', 'analyze', 'overwrite'.\n"
+                              "\tload = Only add read data that has already been analyzed. \n"
+                              "\tanalyze = Load data and analyze for values not previously analyzed. \n"
+                              "\toverwrite = Re-analyze all values regardless of previous analysis \n")
+                        )
+
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-m", "--movie", type=str, default='',
                         help=("Make movie of systems of evolution. Options: 'all' or 'min'.\n"
                               "\tall = Make movie with all the data \n"
                               "\tmin = Make movie with just diagram of rods and crosslink data.\n"
-                              "(Will analyze files again.)"))
+                              "(Will try to load and analyze files if data is not there.)"))
     opts = parser.parse_args()
     return opts
 
@@ -121,13 +127,18 @@ class FoXlink(object):
         @return: void
 
         """
-        analysis = FPAnalysis(self._opts.file)
-        if self._opts.analyze:
-            analysis.Analyze(True)
+        # analysis = FPAnalysis(self._opts.file)
+        if self._opts.analysis:
+            analysis = FPAnalysis(self._opts.file, self._opts.analysis)
+        else:
+            analysis = FPAnalysis(self._opts.file, 'analyze')
+
         if self._opts.movie:
             print("Started making movie")
             Writer = FFMpegWriter
-            writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
+            writer = Writer(
+                fps=25, metadata=dict(
+                    artist='Me'), bitrate=1800)
             if self._opts.movie == 'all':
                 makeAnimation(analysis, writer)
             elif self._opts.movie == 'min':
@@ -145,7 +156,7 @@ def main():
     """
     opts = parse_args()
     FXlink = FoXlink(opts)
-    if opts.analyze or opts.movie:
+    if opts.analysis or opts.movie:
         FXlink.Analyze()
     else:
         FXlink.Run()

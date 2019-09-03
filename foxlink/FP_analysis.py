@@ -18,6 +18,21 @@ Description: File containing classes to analyze data, make movies, and create gr
 """
 
 
+def touchGroup(parent, grp_name):
+    """!See if a data set is there and if it is return it.
+        Otherwise, generate it.
+
+    @param parent: Parent group of group to be checked and/or created
+    @param grp_name: Name of group to be checked and/or createad
+    @return: The group reference
+
+    """
+    if grp_name in parent:
+        return parent[grp_name]
+    else:
+        return parent.create_group(grp_name)
+
+
 class FPAnalysis(object):
 
     """!Analyze Fokker-Planck equation code"""
@@ -28,10 +43,11 @@ class FPAnalysis(object):
         """
         self._filename = filename
         self.Load(analysis_type)
-        self.time = self._h5_data["time"]
-        self.s1 = self._h5_data['/MT_data/s1']
-        self.s2 = self._h5_data['/MT_data/s2']
-        self.sType = self._params['/solver_type']
+
+        self.time = np.asarray(self._h5_data["time"])
+        self.s1 = np.asarray(self._h5_data['/MT_data/s1'])
+        self.s2 = np.asarray(self._h5_data['/MT_data/s2'])
+        self.sType = self._params['solver_type']
 
         ############################################
         #  Get parameters from running simulation  #
@@ -71,6 +87,8 @@ class FPAnalysis(object):
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
+        self.Analyze(analysis_type)
+
     def Load(self, analysis_type='load'):
         """!Load in data from hdf5 file and grab analysis files if they exist.
         @param analysis_type: load, analyze, overwrite. The extent of the
@@ -84,7 +102,6 @@ class FPAnalysis(object):
         else:
             self._params = self._h5_data.attrs
         print(self._params)
-        self.Analyze(analysis_type)
 
     def Save(self):
         """!Create a pickle file of solution
@@ -93,6 +110,10 @@ class FPAnalysis(object):
         """
         self._h5_data.flush()
         self._h5_data.close()
+
+    ########################
+    #  Analysis functions  #
+    ########################
 
     def Analyze(self, analysis_type='analyze'):
         """!Read in analysis or analyze data according to type of solver hdf5
@@ -109,41 +130,29 @@ class FPAnalysis(object):
                 return
             else:
                 self.analysis_grp = self._h5_data.create_group('Analysis')
+                print(self.analysis_grp)
         elif analysis_type == 'overwrite':  # Delete old analysis and try again
             del self._h5_data['Analysis']
             self.analysis_grp = self._h5_data.create_group('Analysis')
+        else:
+            self.analysis_grp = self._h5_data['Analysis']
 
         t0 = time.time()
 
-        self.XL_analysis_grp = self.touchGroup(self.analysis_grp,
-                                               'XL_analysis')
+        self.XL_analysis_grp = touchGroup(self.analysis_grp, 'XL_analysis')
         self.XLMomentAnalysis(self.XL_analysis_grp)
 
-        self.MT_analysis_grp = self.touchGroup(self.analysis_grp,
-                                               'MT_analysis')
+        self.MT_analysis_grp = touchGroup(self.analysis_grp, 'MT_analysis')
         self.RodGeometryAnalysis(self.MT_analysis_grp)
 
-        if '/OT_data' in self._h5_data:
-            # self.OTAnalysis()
+        # if '/OT_data' in self._h5_data:
+        # self.OTAnalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
 
         # t2 = time.time()
         # print(("Save time: {}".format(t2 - t1)))
-    def touchGroup(self, parent, grp_name):
-        """!See if a data set is there and if it is return it.
-            Otherwise, generate it.
-
-        @param parent: TODO
-        @param grp_name: TODO
-        @return: The group reference
-
-        """
-        if grp_name in parent:
-            return parent[grp_name]
-        else:
-            return parent.create_group(grp_name)
 
     def XLMomentAnalysis(self, XL_analysis_grp, analysis_type='analyze'):
         """!TODO: Docstring for MomentAnalysis.
@@ -164,7 +173,7 @@ class FPAnalysis(object):
             else:
                 print('--- The zeroth moment not analyzed or stored. ---')
         else:
-            self.zero_mom_dset = XL_analysis_grp['zeroth_momemnt']
+            self.zero_mom_dset = XL_analysis_grp['zeroth_moment']
             self.Nxl_arr = np.asarray(self.zero_mom_dset)
 
         # First moments
@@ -230,12 +239,9 @@ class FPAnalysis(object):
         L1 = self._params['L1']
         L2 = self._params['L2']
         # Minus-end(bead) separations
-        self.overlap = self.calcOverlap(self.R1_pos,
-                                        self.R2_pos,
-                                        self.R1_vec,
-                                        self.R2_vec,
-                                        self._params['L1'],
-                                        self._params['L2'])
+        self.overlap = self.calcOverlap(self.R1_pos, self.R2_pos,
+                                        self.R1_vec, self.R2_vec,
+                                        self._params['L1'], self._params['L2'])
 
         self.MT_overlap_dset = MT_analysis_grp.create_dataset(
             'overlap', data=self.overlap, dtype=np.float32)
@@ -258,10 +264,10 @@ class FPAnalysis(object):
         # fft_force_arr = np.fft.rfft(force_arr[st:])
         # TODO Get trap separation
         # TODO Calculate reology components if traps are oscillating
-###########################
-#  Calculation functions  #
-###########################
 
+    ###########################
+    #  Calculation functions  #
+    ###########################
     @staticmethod
     def calcOverlap(R1_pos, R2_pos, R1_vec, R2_vec, L1, L2):
         """!Calculate the overlap of two antiparalle rods based on the location
@@ -319,7 +325,6 @@ class FPAnalysis(object):
 ########################
 #  Graphing functions  #
 ########################
-
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time

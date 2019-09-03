@@ -255,21 +255,21 @@ class Solver(object):
 
             self._xl_distr_dset = self._xl_grp.create_dataset(
                 'XL_distr',
-                shape=(self.ns1, self.ns2, self._nframes + 1),
+                shape=(self.ns1, self.ns2, self._nframes),
                 dtype=np.float32)
 
             self._interaction_grp = self._h5_data.create_group(
                 'Interaction_data')
             self._force_dset = self._interaction_grp.create_dataset(
                 'force_data',
-                shape=(self._nframes + 1, 2, 3),
+                shape=(self._nframes, 2, 3),
                 dtype=np.float32)
             for dim, label in zip(self._force_dset.dims,
                                   ['frame', 'rod', 'coord']):
                 dim.label = label
             self._torque_dset = self._interaction_grp.create_dataset(
                 'torque_data',
-                shape=(self._nframes + 1, 2, 3),
+                shape=(self._nframes, 2, 3),
                 dtype=np.float32)
             for dim, label in zip(self._torque_dset.dims,
                                   ['frame', 'rod', 'coord']):
