@@ -31,5 +31,5 @@ fs: 10. # Stall force of crosslinker heads (pN)
 # Misc
 nwrite: 100
 initial_condition: 'equil'
-end_pause: True
+end_pause: False
 solver_type: "FPGenOrientMotorUWSolver"
