@@ -19,7 +19,7 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
     @return: TODO
 
     """
-    fig = plt.figure(constrained_layout=True, figsize=(15, 13))
+    fig = plt.figure(constrained_layout=True, figsize=(15, 15))
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
@@ -29,14 +29,16 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
-        gs = fig.add_gridspec(3, 12)
-        axarr = np.asarray([fig.add_subplot(gs[0, :4]),
-                            fig.add_subplot(gs[0, 4:8]),
-                            fig.add_subplot(gs[0, 8:]),
-                            fig.add_subplot(gs[1, :6]),
-                            fig.add_subplot(gs[1, 6:]),
-                            fig.add_subplot(gs[2, :6]),
-                            fig.add_subplot(gs[2, 6:]),
+        gs = fig.add_gridspec(3, 3)
+        axarr = np.asarray([fig.add_subplot(gs[0, 0]),
+                            fig.add_subplot(gs[0, 1]),
+                            fig.add_subplot(gs[0, 2]),
+                            fig.add_subplot(gs[1, 0]),
+                            fig.add_subplot(gs[1, 1]),
+                            fig.add_subplot(gs[1, 2]),
+                            fig.add_subplot(gs[2, 0]),
+                            fig.add_subplot(gs[2, 1]),
+                            fig.add_subplot(gs[2, 2]),
                             ])
         fig.suptitle(' ')
         # FPanal.graphSlice(50, fig, axarr)

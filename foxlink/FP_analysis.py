@@ -130,7 +130,6 @@ class FPAnalysis(object):
                 return
             else:
                 self.analysis_grp = self._h5_data.create_group('Analysis')
-                print(self.analysis_grp)
         elif analysis_type == 'overwrite':  # Delete old analysis and try again
             del self._h5_data['Analysis']
             self.analysis_grp = self._h5_data.create_group('Analysis')

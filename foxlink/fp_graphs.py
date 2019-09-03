@@ -196,9 +196,6 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
             artist.remove()
             del artist
 
-    # Draw rods
-    graph_2d_rod_diagram(axarr[0], FP_anal, n)
-
     # Init axis labels and ranges
     axarr[1].set_xlabel(
         'Head distance from \n center of MT$_1$ $s_1$ (nm)')
@@ -224,18 +221,33 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                       np.amax(FP_anal.torque_arr))
 
     axarr[5].set_xlabel(r'Time (sec)')
-    axarr[5].set_ylabel('Distance between MTs \n centers of mass (nm)')
+    axarr[5].set_ylabel(r'First moments (nm)')
     axarr[5].set_xlim(left=0, right=FP_anal.time[-1])
-    axarr[5].set_ylim(np.amin(FP_anal.dR_arr),
-                      np.amax(FP_anal.dR_arr))
+    axarr[5].set_ylim(min(np.amin(FP_anal.P1), np.amin(FP_anal.P2)),
+                      max(np.amax(FP_anal.P1), np.amax(FP_anal.P2)))
 
     axarr[6].set_xlabel(r'Time (sec)')
-    axarr[6].set_ylabel('Angle between MT \n orientation vectors (rad)')
+    axarr[6].set_ylabel('Distance between MTs \n centers of mass (nm)')
     axarr[6].set_xlim(left=0, right=FP_anal.time[-1])
-    axarr[6].set_ylim(np.nanmin(FP_anal.phi_arr),
+    axarr[6].set_ylim(np.amin(FP_anal.dR_arr),
+                      np.amax(FP_anal.dR_arr))
+
+    axarr[7].set_xlabel(r'Time (sec)')
+    axarr[7].set_ylabel('Angle between MT \n orientation vectors (rad)')
+    axarr[7].set_xlim(left=0, right=FP_anal.time[-1])
+    axarr[7].set_ylim(np.nanmin(FP_anal.phi_arr),
                       np.nanmax(FP_anal.phi_arr))
 
-    # Make density plot
+    axarr[8].set_xlabel(r'Time (sec)')
+    axarr[8].set_ylabel(r'Second moments (nm$^2$)')
+    axarr[8].set_xlim(left=0, right=FP_anal.time[-1])
+    axarr[8].set_ylim(np.amin(FP_anal.u11),
+                      np.amax(FP_anal.u20))
+
+    # Draw rods
+    graph_2d_rod_diagram(axarr[0], FP_anal, n)
+
+    # Make crosslinker density plot
     c = graph_xl_dens(axarr[1],
                       FP_anal.xl_distr[:, :, n],
                       FP_anal.s1,
@@ -246,27 +258,41 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
         axarr[0].set_aspect(1.0)
         axarr[1].set_aspect(1.0)
         FP_anal.init_flag = False
+
+    # Graph zeroth moment aka number of crosslinkers
     graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
+    # Graph forces
     graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 0], n,
                   color='tab:green')
     graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 1], n,
                   color='tab:purple')
+    # Graph torques
     graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 0], n,
                   color='tab:green')
-    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 1],
-                  n, color='tab:purple')
-    graph_vs_time(axarr[5], FP_anal.time, FP_anal.dR_arr, n)
-    graph_vs_time(axarr[6], FP_anal.time, FP_anal.phi_arr, n)
+    graph_vs_time(axarr[4], FP_anal.time, FP_anal.torque_arr[:, 1], n,
+                  color='tab:purple')
+    # Graph first moments of crosslink distribution
+    graph_vs_time(axarr[5], FP_anal.time, FP_anal.P1, n,
+                  color='tab:green')
+    graph_vs_time(axarr[5], FP_anal.time, FP_anal.P2, n,
+                  color='tab:purple')
+    # Graph rod center separations
+    graph_vs_time(axarr[6], FP_anal.time, FP_anal.dR_arr, n)
+    # Graph angle between rod orientations
+    graph_vs_time(axarr[7], FP_anal.time, FP_anal.phi_arr, n)
+    # Graph second moments of crosslinker distribution
+    graph_vs_time(axarr[8], FP_anal.time, FP_anal.u11, n,
+                  color='b')
+    graph_vs_time(axarr[8], FP_anal.time, FP_anal.phi_arr, n,
+                  color='tab:green')
+    graph_vs_time(axarr[8], FP_anal.time, FP_anal.phi_arr, n,
+                  color='tab:purple')
     # Legend information
     axarr[2].legend(["N({:.2f}) = {:.1f}".format(
         FP_anal.time[n], FP_anal.Nxl_arr[n])])
-    # axarr[3].legend(["F({:.2f}) = {:.1f} Pn".format(
-    #     FP_anal.time[n], FP_anal.force_arr[n])])
-    # axarr[4].legend(
-    #     [r'$\tau$({:.2f}) = {:.1f} Pn*nm'.format(FP_anal.time[n], FP_anal.torque_arr[n])])
-    axarr[5].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(
+    axarr[6].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(
         FP_anal.time[n], FP_anal.dR_arr[n])])
-    axarr[6].legend([r"$\phi$({:.2f}) = {:.1f} rad".format(
+    axarr[7].legend([r"$\phi$({:.2f}) = {:.1f} rad".format(
         FP_anal.time[n], FP_anal.phi_arr[n])])
     return fig.gca().lines + fig.gca().collections
 
