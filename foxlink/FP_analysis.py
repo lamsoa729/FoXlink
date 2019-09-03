@@ -382,6 +382,19 @@ class FPAnalysis(object):
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
+    def graphMomentSlice(self, n, fig, axarr):
+        """!Graph the solution Psi at a specific time
+
+        @param n: index of slice to graph
+        @return: void
+
+        """
+        t0 = time.time()
+        gca_arts = fp_graph_moment_data_2d(fig, axarr, n, self)
+        t1 = time.time()
+        print("Graph ", n, "made in: ", t1 - t0)
+        return gca_arts
+
 
 ##########################################
 # if __name__ == "__main__":

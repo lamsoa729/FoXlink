@@ -128,3 +128,44 @@ def makeOrientAnimation(FPanal, writer=FFMpegWriter):
     anim.save('{}_orient.mp4'.format(Path.cwd().name), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
+
+
+def makeMomentAnimation(FPanal, writer=FFMpegWriter):
+    """!Make animation of moments with respect to time slices with MT geometries
+    and crosslinker distributions.
+    @return: void
+
+    """
+    fig = plt.figure(constrained_layout=True, figsize=(12, 15))
+    graph_stl = {
+        "axes.titlesize": 16,
+        "axes.labelsize": 13,
+        "xtick.labelsize": 13,
+        "ytick.labelsize": 13,
+        "font.size": 13
+    }
+    with plt.style.context(graph_stl):
+        plt.style.use(graph_stl)
+        gs = fig.add_gridspec(10, 2)
+        axarr = np.asarray([fig.add_subplot(gs[0:4, 0]),
+                            fig.add_subplot(gs[0:4, 1]),
+                            fig.add_subplot(gs[4:6, 0]),
+                            fig.add_subplot(gs[6:8, 0]),
+                            fig.add_subplot(gs[8:, 0]),
+                            fig.add_subplot(gs[4:7, 1]),
+                            fig.add_subplot(gs[7:, 1]),
+                            ])
+        fig.suptitle(' ')
+        nframes = FPanal.time.size
+        anim = FuncAnimation(
+            fig,
+            FPanal.graphMomentSlice,
+            frames=np.arange(nframes),
+            fargs=(fig, axarr),
+            interval=50,
+            blit=True)
+    t0 = time.time()
+
+    anim.save('{}_moment.mp4'.format(Path.cwd().name), writer=writer)
+    t1 = time.time()
+    print("Movie saved in: ", t1 - t0)

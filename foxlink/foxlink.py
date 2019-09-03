@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from matplotlib.animation import FFMpegWriter
 from .animation_funcs import (makeAnimation, makeMinimalAnimation,
-                              makeOrientAnimation)
+                              makeOrientAnimation, makeMomentAnimation)
 from .FP_analysis import FPAnalysis
 # from .FP_pass_ang_CN import FPPassiveAngCNSolver
 import argparse
@@ -145,7 +145,8 @@ class FoXlink(object):
                 makeMinimalAnimation(analysis, writer)
             elif self._opts.movie == 'orient':
                 makeOrientAnimation(analysis, writer)
-
+            elif self._opts.movie == 'moment':
+                makeMomentAnimation(analysis, writer)
         analysis.Save()
 
 
