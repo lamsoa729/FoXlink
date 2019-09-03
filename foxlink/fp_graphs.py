@@ -379,9 +379,9 @@ def fp_graph_moment_data_2d(fig, axarr, n, FP_anal):
                       FP_anal.s2,
                       max_dens_val=FP_anal.max_dens_val)
     if FP_anal.init_flag:
-        fig.colorbar(c, ax=axarr[1])
         axarr[0].set_aspect(1.0)
         axarr[1].set_aspect(1.0)
+        fig.colorbar(c, ax=axarr[1])
         FP_anal.init_flag = False
 
     # Graph zeroth moment aka number of crosslinkers
