@@ -216,7 +216,7 @@ class FPAnalysis(object):
             self.u20 = np.asarray(self.second_mom_dset)[:, 1]
             self.u02 = np.asarray(self.second_mom_dset)[:, 2]
 
-    def RodGeometryAnalysis(self, MT_analysis_grp):
+    def RodGeometryAnalysis(self, MT_analysis_grp, analysis_type='analyze'):
         """!Analyze and store data relating to the configuration of the rods
 
         @param MT_analysis_grp: TODO
@@ -224,26 +224,44 @@ class FPAnalysis(object):
 
         """
         # Analyze distance between rod center at each time step
-        self.dR_arr = np.linalg.norm(np.subtract(self.R2_pos, self.R1_pos),
-                                     axis=1)
-        self.MT_sep_dset = MT_analysis_grp.create_dataset(
-            'center_separation', data=self.dR_arr, dtype=np.float32)
+        if 'center_separation' not in MT_analysis_grp:
+            if analysis_type != 'load':
+                self.dR_arr = np.linalg.norm(
+                    np.subtract(self.R2_pos, self.R1_pos), axis=1)
+                self.MT_sep_dset = MT_analysis_grp.create_dataset(
+                    'center_separation', data=self.dR_arr, dtype=np.float32)
+            else:
+                print('--- The rod center separation not analyzed or stored. ---')
+        else:
+            self.MT_sep_dset = MT_analysis_grp['center_separation']
+            self.dR_arr = np.asarray(self.MT_sep_dset)
         # Analyze angle between rods at teach time step
-        self.phi_arr = np.arccos(
-            np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
-        self.MT_phi_dset = MT_analysis_grp.create_dataset(
-            'angle_between', data=self.phi_arr, dtype=np.float32)
+        if 'angle_between' not in MT_analysis_grp:
+            if analysis_type != 'load':
+                self.phi_arr = np.arccos(
+                    np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
+                self.MT_phi_dset = MT_analysis_grp.create_dataset(
+                    'angle_between', data=self.phi_arr, dtype=np.float32)
+            else:
+                print('--- The angle between rods not analyzed or stored. ---')
+        else:
+            self.MT_phi_dset = MT_analysis_grp['angle_between']
+            self.phi_arr = np.asarray(self.MT_phi_dset)
 
-        # Calculate rod overlap
-        L1 = self._params['L1']
-        L2 = self._params['L2']
         # Minus-end(bead) separations
-        self.overlap = self.calcOverlap(self.R1_pos, self.R2_pos,
-                                        self.R1_vec, self.R2_vec,
-                                        self._params['L1'], self._params['L2'])
-
-        self.MT_overlap_dset = MT_analysis_grp.create_dataset(
-            'overlap', data=self.overlap, dtype=np.float32)
+        if 'overlap' not in MT_analysis_grp:
+            if analysis_type != 'load':
+                self.overlap_arr = self.calcOverlap(self.R1_pos, self.R2_pos,
+                                                    self.R1_vec, self.R2_vec,
+                                                    self._params['L1'],
+                                                    self._params['L2'])
+                self.MT_overlap_dset = MT_analysis_grp.create_dataset(
+                    'overlap', data=self.overlap_arr, dtype=np.float32)
+            else:
+                print('--- The rod overlap not analyzed or stored. ---')
+        else:
+            self.MT_overlap_dset = MT_analysis_grp['overlap']
+            self.overlap_arr = np.asarray(self.MT_phi_dset)
 
     def OTAnalysis(self):
         """!Analyze data for optically trapped rods, especially if they
