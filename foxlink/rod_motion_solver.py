@@ -19,10 +19,10 @@ def get_rod_drag_coeff(visc, L, d):
     Hartmut Löwen
     Phys. Rev. E 50, 1232 – Published 1 August 1994
 
-    @param visc: TODO
-    @param L: TODO
-    @param d: TODO
-    @return: TODO
+    @param visc: Viscosity of fluid
+    @param L: Length of rod
+    @param d: Diameter of rod
+    @return: parallel, perpendicular, and rotational drag coefficients
 
     """
     l = L / d
@@ -41,11 +41,11 @@ def get_rod_drag_coeff(visc, L, d):
 def get_rod_mob_mat(visc, L, d, R_vec):
     """! Create and return 3x3 mobility matrix for rod
 
-    @param visc: TODO
-    @param L: TODO
-    @param d: TODO
-    @param R_vec: TODO
-    @return: TODO
+    @param visc: Viscosity of fluid
+    @param L: Length of rod
+    @param d: Diameter of rod
+    @param R_vec: Orientation of rod
+    @return: Mobility matrix, rotaional drag coefficient
 
     """
     # Calculate the diagnol elements of linear drag tensor and

@@ -30,7 +30,7 @@ class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
 
 
         @param pfile: parameter file path
-        @param name: name to store data under
+        @param pdict: parameter dictionary
 
         """
         print("Init FPGenOrientMotorUWSolver ->", end=" ")
@@ -41,16 +41,15 @@ class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
 
     def calcVelocityMats(self):
         """!Calculate the motor head velocities as a function of position on each rod.
-        @return: TODO
+        @return: void, calculates velocity matrices self.vel_mat1, self.vel_mat2
 
         """
         vo = self._params['vo']
         fs = self._params['fs']
-        # Velocity of heads on the first rod. Negative because force matrix is
-        # the force that the second head experiences.
-        f_mat1 = -1. * np.swapaxes(self.f_mat, 0, 1)
+        # Velocity of heads on the first rod. Negative because force matrix
+        # represents the force that the second heads experiences.
         self.vel_mat1 = make_force_dep_velocity_mat(
-            f_mat1, self.R1_vec, fs, vo)
+            -1. * self.f_mat, self.R1_vec, fs, vo)
         # Velocity of the heads on the second rod
         self.vel_mat2 = make_force_dep_velocity_mat(
             self.f_mat, self.R2_vec, fs, vo)

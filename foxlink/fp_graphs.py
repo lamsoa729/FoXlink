@@ -258,9 +258,9 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                       FP_anal.s2,
                       max_dens_val=FP_anal.max_dens_val)
     if FP_anal.init_flag:
-        fig.colorbar(c, ax=axarr[1])
         axarr[0].set_aspect(1.0)
         axarr[1].set_aspect(1.0)
+        fig.colorbar(c, ax=axarr[1])
         FP_anal.init_flag = False
 
     # Graph zeroth moment aka number of crosslinkers
@@ -299,10 +299,10 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
                                                      FP_anal.force_arr[n, 0]),
                      "F$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
                                                      FP_anal.force_arr[n, 1])])
-    axarr[4].legend(["$\tau_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                        FP_anal.torque_arr[n, 0]),
-                     "$\tau_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                        FP_anal.torque_arr[n, 1])])
+    axarr[4].legend(["$T_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                     FP_anal.torque_arr[n, 0]),
+                     "$T_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                     FP_anal.torque_arr[n, 1])])
     axarr[5].legend(["P$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
                                                      FP_anal.P1[n]),
                      "P$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
@@ -515,10 +515,6 @@ def fp_graph_stationary_runs_2d(fig, axarr, n, FP_anal):
         axarr[1].set_aspect(1.0)
         fig.colorbar(c, ax=axarr[1])
         FP_anal.init_flag = False
-    # axarr[0].text(.05, .95, "Time = {:.2f} sec".format(FP_anal.time[n]),
-        # horizontalalignment='left',
-        # verticalalignment='bottom',
-        # transform=axarr[0].transAxes)
 
     graph_vs_time(axarr[2], FP_anal.time, FP_anal.Nxl_arr, n)
     graph_vs_time(axarr[3], FP_anal.time, FP_anal.force_arr[:, 0], n,
