@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .solver import Solver
+from .FP_solver import FokkerPlanckSolver
 
 """@package docstring
 File: FP_CN_solver.py
@@ -9,7 +9,7 @@ Description: Abstract xlink algorithm class implementing Crank-Nicolson solving 
 """
 
 
-class FPCNSolver(Solver):
+class FPCNSolver(FokkerPlanckSolver):
 
     """!Solve the Fokker-Planck equation for passive crosslinkers using the
     using the Crank-Nicholson method with 4 point laplacian.
@@ -23,7 +23,7 @@ class FPCNSolver(Solver):
 
         """
         print("Init FPCNSolver ->", end=" ")
-        Solver.__init__(self, pfile, pdict)
+        FokkerPlanckSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def makeDiagMats(self):

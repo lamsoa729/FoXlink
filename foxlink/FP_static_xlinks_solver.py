@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .solver import Solver
+from .FP_solver import FokkerPlanckSolver
 from .FP_initial_conditions import *
 
 
@@ -11,7 +11,7 @@ Description:
 """
 
 
-class FPStaticXlinksSolver(Solver):
+class FPStaticXlinksSolver(FokkerPlanckSolver):
 
     """! Class to solve the evolution of static xlinks bind and unbinding from solution."""
 
@@ -23,7 +23,7 @@ class FPStaticXlinksSolver(Solver):
 
         """
         print("Init FPStaticSolver ->", end=" ")
-        Solver.__init__(self, pfile=pfile, pdict=pdict)
+        FokkerPlanckSolver.__init__(self, pfile=pfile, pdict=pdict)
 
     def Step(self):
         """!Step static solver forward in time using Strang splitting

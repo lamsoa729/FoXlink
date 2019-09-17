@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
-from .solver import Solver
+from .FP_solver import FokkerPlanckSolver
 from .FP_helpers import make_gen_source_mat, make_gen_force_mat, make_gen_torque_mat
 from .FP_initial_conditions import *
 
@@ -37,9 +37,9 @@ def reparameterize_rods(R1_pos, R2_pos, R1_vec, R2_vec):
     return r, a1, a2, b
 
 
-class FPGenOrientSolver(Solver):
+class FPGenOrientSolver(FokkerPlanckSolver):
 
-    """!Docstring for FPRodMotionSolver. """
+    """!Docstring for FPGenOrientSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
@@ -49,13 +49,13 @@ class FPGenOrientSolver(Solver):
 
         """
         print("Init FPGenOrientSolver ->", end=" ")
-        Solver.__init__(self, pfile=pfile, pdict=pdict)
+        FokkerPlanckSolver.__init__(self, pfile=pfile, pdict=pdict)
 
     def ParseParams(self):
         """! Parse parameters from file and add to member variables
         @return: void
         """
-        Solver.ParseParams(self)
+        FokkerPlanckSolver.ParseParams(self)
         # Rod center position vectors of
         self.R1_pos = np.asarray(self._params['R1_pos'])
         self.R2_pos = np.asarray(self._params['R2_pos'])
@@ -126,15 +126,15 @@ class FPGenOrientSolver(Solver):
         @return: TODO
 
         """
-        Solver.makeDataframe(self)
+        FokkerPlanckSolver.makeDataframe(self)
         # Track position and orientations of MTs
-        self._R1_pos_dset = self._mt_grp.create_dataset(
+        self._R1_pos_dset = self._rod_grp.create_dataset(
             'R1_pos', shape=(self._nframes, 3))
-        self._R2_pos_dset = self._mt_grp.create_dataset(
+        self._R2_pos_dset = self._rod_grp.create_dataset(
             'R2_pos', shape=(self._nframes, 3))
-        self._R1_vec_dset = self._mt_grp.create_dataset(
+        self._R1_vec_dset = self._rod_grp.create_dataset(
             'R1_vec', shape=(self._nframes, 3))
-        self._R2_vec_dset = self._mt_grp.create_dataset(
+        self._R2_vec_dset = self._rod_grp.create_dataset(
             'R2_vec', shape=(self._nframes, 3))
         # Track interactions (forces and torques) between MTs by crosslinkers
 
@@ -143,7 +143,7 @@ class FPGenOrientSolver(Solver):
         @return: TODO
 
         """
-        i_step = Solver.Write(self)
+        i_step = FokkerPlanckSolver.Write(self)
         self.GenOrientWrite(i_step)
         return i_step
 

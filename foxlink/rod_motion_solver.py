@@ -67,10 +67,10 @@ class RodMotionSolver(Solver):
         Note: parameter file needs viscosity in order to run
 
         @param pfile: TODO
-        @param name: TODO
+        @param pdict: TODO
 
         """
-        print("Init FPRodMotionSolver ->", end=" ")
+        print("Init RodMotionSolver ->", end=" ")
         Solver.__init__(self, pfile=pfile, pdict=pdict)
 
     def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,

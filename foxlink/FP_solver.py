@@ -7,6 +7,7 @@ import yaml
 import h5py
 from scipy import sparse
 from copy import deepcopy as dcp
+from .solver import Solver
 
 
 """@package docstring
@@ -231,30 +232,43 @@ class FokkerPlanckSolver(Solver):
             self._rod_grp.create_dataset('s1', data=self.s1)
             self._rod_grp.create_dataset('s2', data=self.s2)
 
-            # TODO Needs to be implemented by particular solver
-            # self._xl_distr_dset = self._xl_grp.create_dataset(
-            #     'XL_distr',
-            #     shape=(self.ns1, self.ns2, self._nframes),
-            #     dtype=np.float32)
-
             self._interaction_grp = self._h5_data.create_group(
                 'Interaction_data')
-            self._force_dset = self._interaction_grp.create_dataset(
-                'force_data',
-                shape=(self._nframes, 2, 3),
-                dtype=np.float32)
-            for dim, label in zip(self._force_dset.dims,
-                                  ['frame', 'rod', 'coord']):
-                dim.label = label
-            self._torque_dset = self._interaction_grp.create_dataset(
-                'torque_data',
-                shape=(self._nframes, 2, 3),
-                dtype=np.float32)
-            for dim, label in zip(self._torque_dset.dims,
-                                  ['frame', 'rod', 'coord']):
-                dim.label = label
+
+            self.makeXLDataSet()
+            self.makeInteractionDataSet()
             Solver.makeDataframe(self)
             self.data_frame_made = True
+
+    def makeXLDataSet(self):
+        """!Make specific data set for crosslinking proteins
+        @return: void
+
+        """
+        self._xl_distr_dset = self._xl_grp.create_dataset(
+            'XL_distr',
+            shape=(self.ns1, self.ns2, self._nframes),
+            dtype=np.float32)
+
+    def makeInteractionDataSet(self):
+        """!Make specific data set for interaction data
+        @return: TODO
+
+        """
+        self._force_dset = self._interaction_grp.create_dataset(
+            'force_data',
+            shape=(self._nframes, 2, 3),
+            dtype=np.float32)
+        for dim, label in zip(self._force_dset.dims,
+                              ['frame', 'rod', 'coord']):
+            dim.label = label
+        self._torque_dset = self._interaction_grp.create_dataset(
+            'torque_data',
+            shape=(self._nframes, 2, 3),
+            dtype=np.float32)
+        for dim, label in zip(self._torque_dset.dims,
+                              ['frame', 'rod', 'coord']):
+            dim.label = label
 
     def calcSourceMatrix(self):
         """Virtual functions for calculating source matrix
@@ -299,7 +313,7 @@ class FokkerPlanckSolver(Solver):
         """
         i_step = ((self.t / self.dt) / self.nwrite)
         if not self.written:
-            # self._xl_distr_dset[:, :, i_step] = self.sgrid
+            self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
             if self.cleared:
                 self.calcInteractions()
