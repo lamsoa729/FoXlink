@@ -27,7 +27,7 @@ class FokkerPlanckSolver(Solver):
             Step <- Abstract = Implement the specified algorithm at a times step
             ParseParams = Parse parameters from file that is given
             setInitialConditions = Set the initial stat of simulation
-            makeSolutionGrid = Create data structures that hold information about the position of xlinks and MTs.
+            makeSolutionGrid = Create data structures that hold information about the position of xlinks and rods.
             calc<>Matrix(ces) <- Abstract = Calculate current data structures used to evolve system in time.
             Write = At a specified time step add current solution to output file.
             Save = Flush the remaining data in hdf5 file.
@@ -35,14 +35,14 @@ class FokkerPlanckSolver(Solver):
         algorithms. While solvers do not need to follow specific guidelines, it
         is useful to categorize solvers into different types avoid inheritance
         conflicts when using multi-inheritance. These include:
-            Orientation solver -> Defines MT orientations and associate parameters.
+            Orientation solver -> Defines rods orientations and associate parameters.
                                   eg. Parallel (para),
             Xlink algorithm solver -> What technique is used to solve the xlink
                                       density equations. Can use multiple in one
                                       system. eg. Upwind (UW), Crank-Nicolson(CN)
             Xlink type solver -> What type of crosslinks are being modeled.
                                  eg. Motor, Static, Passive
-            Rod algorithm solver -> What technique is used to solve the MT
+            Rod algorithm solver -> What technique is used to solve the rods
                                       position equations.
                                       eg. Orient (no motions), Motion, Optical Trap
 
@@ -109,7 +109,7 @@ class FokkerPlanckSolver(Solver):
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
         # Make time array. Set extra space for initial condition
-        self.time = np.linspace(0, self.nt, self.nsteps + 1).tolist()
+        self._nframes = len(self.time[::self.nwrite])
         print("Time step: ", self.dt)
         print("Total time: ", self.nt)
         print("Number of steps: ", self.nsteps)
@@ -217,25 +217,25 @@ class FokkerPlanckSolver(Solver):
                   self.__class__.__name__a))
 
     def makeDataframe(self):
-        """! Make data frame to read from later
+        """! Make output data frame
         @return: void
 
         """
         if not self.data_frame_made:
             time = self.time[::self.nwrite]
-            self._nframes = len(time)
             self._time_dset = self._h5_data.create_dataset('time', data=time,
                                                            dtype=np.float32)
             self._xl_grp = self._h5_data.create_group('XL_data')
-            self._mt_grp = self._h5_data.create_group('MT_data')
+            self._rod_grp = self._h5_data.create_group('rod_data')
 
-            self._mt_grp.create_dataset('s1', data=self.s1)
-            self._mt_grp.create_dataset('s2', data=self.s2)
+            self._rod_grp.create_dataset('s1', data=self.s1)
+            self._rod_grp.create_dataset('s2', data=self.s2)
 
-            self._xl_distr_dset = self._xl_grp.create_dataset(
-                'XL_distr',
-                shape=(self.ns1, self.ns2, self._nframes),
-                dtype=np.float32)
+            # TODO Needs to be implemented by particular solver
+            # self._xl_distr_dset = self._xl_grp.create_dataset(
+            #     'XL_distr',
+            #     shape=(self.ns1, self.ns2, self._nframes),
+            #     dtype=np.float32)
 
             self._interaction_grp = self._h5_data.create_group(
                 'Interaction_data')
@@ -254,6 +254,7 @@ class FokkerPlanckSolver(Solver):
                                   ['frame', 'rod', 'coord']):
                 dim.label = label
             Solver.makeDataframe(self)
+            self.data_frame_made = True
 
     def calcSourceMatrix(self):
         """Virtual functions for calculating source matrix
@@ -298,7 +299,7 @@ class FokkerPlanckSolver(Solver):
         """
         i_step = ((self.t / self.dt) / self.nwrite)
         if not self.written:
-            self._xl_distr_dset[:, :, i_step] = self.sgrid
+            # self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
             if self.cleared:
                 self.calcInteractions()

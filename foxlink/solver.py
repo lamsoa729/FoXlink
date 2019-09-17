@@ -36,14 +36,14 @@ class Solver(object):
         algorithms. While solvers do not need to follow specific guidelines, it
         is useful to categorize solvers into different types avoid inheritance
         conflicts when using multi-inheritance. These include:
-            Orientation solver -> Defines MT orientations and associate parameters.
+            Orientation solver -> Defines rods orientations and associate parameters.
                                   eg. Parallel (para),
             Xlink algorithm solver -> What technique is used to solve the xlink
                                       density equations. Can use multiple in one
                                       system. eg. Upwind (UW), Crank-Nicolson(CN)
             Xlink type solver -> What type of crosslinks are being modeled.
                                  eg. Motor, Static, Passive
-            Rod algorithm solver -> What technique is used to solve the MT
+            Rod algorithm solver -> What technique is used to solve the rods
                                       position equations.
                                       eg. Orient (no motions), Motion, Optical Trap
 
@@ -104,9 +104,7 @@ class Solver(object):
 
         """
         # Enter params into hdf5 data file as attributes for later
-        if not self.data_frame_made:
-            self._h5_data.attrs['params'] = yaml.dump(self._params)
-            self.data_frame_made = True
+        self._h5_data.attrs['params'] = yaml.dump(self._params)
 
     #####################
     #  Virtual methods  #
