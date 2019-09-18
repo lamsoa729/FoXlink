@@ -110,7 +110,7 @@ class Solver(object):
     #  Virtual methods  #
     #####################
 
-    def setInitialCondition(self):
+    def setInitialConditions(self):
         """! Set the initial state for the solution.
 
         @return: void, modifies solution grid

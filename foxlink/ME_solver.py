@@ -27,3 +27,37 @@ class MomentExpansionSolver(Solver):
         """
         print("Init MomentExpansionSolver -> ")
         Solver.__init__(self, pfile, pdict)
+
+    def setInitialConditions(self):
+        """!Set the initial conditions for the system of ODEs
+        @return: TODO
+
+        """
+        pass
+
+    def ParseParams(self):
+        """!Collect parameters from yaml file or dictionary
+        @return: TODO
+
+        """
+        pass
+
+    def makeDataframe(self):
+        """!Create data frame to be written out
+        @return: TODO
+
+        """
+
+    def Run(self):
+        """!Run algorithm to solve system of ODEs
+        @return: TODO
+
+        """
+        pass
+
+    def Write(self):
+        """!Write out data
+        @return: TODO
+
+        """
+        pass

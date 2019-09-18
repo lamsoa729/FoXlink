@@ -117,7 +117,7 @@ class FokkerPlanckSolver(Solver):
         print("Write out every {} steps({}secs)".format(self.nwrite,
                                                         self.twrite))
 
-    def setInitialCondition(self):
+    def setInitialConditions(self):
         """! Set the initial state for the solution grid.
             If no 'initial_condition' parameter is set in the yaml file or
             parameter dictionary. The solution grid will remain filled with zeros.
