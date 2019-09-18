@@ -3,6 +3,7 @@ import pytest
 from foxlink.FP_gen_motion_solver import FPGenMotionSolver
 from foxlink.FP_gen_orient_solver import FPGenOrientSolver
 from foxlink.rod_motion_solver import RodMotionSolver
+from foxlink.FP_solver import FokkerPlanckSolver
 from foxlink.solver import Solver
 
 """@package docstring
@@ -19,10 +20,10 @@ def test_gen_motion_solver_inheritance():
 
     """
     assert FPGenMotionSolver.ParseParams is FPGenOrientSolver.ParseParams
-    assert FPGenMotionSolver.makeSolutionGrid is Solver.makeSolutionGrid
-    assert FPGenMotionSolver.setInitialCondition is Solver.setInitialCondition
-    assert FPGenMotionSolver.Run is Solver.Run
-    assert FPGenMotionSolver.Step is Solver.Step
+    assert FPGenMotionSolver.makeSolutionGrid is FokkerPlanckSolver.makeSolutionGrid
+    assert FPGenMotionSolver.setInitialCondition is FokkerPlanckSolver.setInitialCondition
+    assert FPGenMotionSolver.Run is FokkerPlanckSolver.Run
+    assert FPGenMotionSolver.Step is FokkerPlanckSolver.Step
     assert FPGenMotionSolver.makeDataframe is FPGenOrientSolver.makeDataframe
     assert FPGenMotionSolver.calcForceMatrix is FPGenOrientSolver.calcForceMatrix
     assert FPGenMotionSolver.calcTorqueMatrix is FPGenOrientSolver.calcTorqueMatrix

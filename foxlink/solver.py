@@ -118,7 +118,7 @@ class Solver(object):
         """
         raise NotImplementedError(
             "Implement setInitialConditions method for {}.".format(
-                self.__class__.__name_))
+                self.__class__.__name__))
 
     def Run(self):
         """!Run PDE solver with parameters in pfile through explicity interative time stepping.
@@ -126,7 +126,7 @@ class Solver(object):
 
         """
         raise NotImplementedError(
-            "Implement Run method for {}".format(self.__class__.__name_))
+            "Implement Run method for {}".format(self.__class__.__name__))
 
     def Step(self):
         """!Step solver method one unit in time
@@ -134,7 +134,7 @@ class Solver(object):
 
         """
         raise NotImplementedError("Implement Step method for {}.".format(
-            self.__class__.__name_))
+            self.__class__.__name__))
 
     def Write(self):
         """!Write current step in algorithm into data frame
@@ -143,7 +143,7 @@ class Solver(object):
         """
         raise NotImplementedError(
             "Implement Write method for {}.".format(
-                self.__class__.__name_))
+                self.__class__.__name__))
 
     default_params = {
         "r": 1.,  # Distance between rod centers
