@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 from scipy.integrate import dblquad, odeint
 import numpy as np
 from numba import jit
@@ -169,49 +168,3 @@ class ODEAdiabaticAngSolver(Solver):
         """
         self._h5_data.flush()
         self._h5_data.close()
-
-
-# def main(pfile=None):
-#     """!TODO: Docstring for main.
-
-#     @param pfile: TODO
-#     @return: TODO
-
-#     """
-#     with open(pfile, 'r') as pf:
-#         self._params = yaml.safe_load(pf)
-#     print("parameter file:", pfile)
-#     # Simulation variables
-#     nt = self._params["nt"]
-#     dt = self._params["dt"]
-#     t = np.arange(0, nt, dt)
-#     # Fixed variables
-#     L1 = self._params["L1"]
-#     L2 = self._params["L2"]
-#     visc = self._params["viscosity"]
-#     beta = self._params["beta"]
-#     diameter = self._params["rod_diameter"]
-#     co = self._params["co"]
-#     ks = self._params["ks"]
-#     ho = self._params["ho"]
-#     # Initial variables
-#     R1_vec = np.asarray(params['R1_vec'])
-#     r1_vec = R1_vec / np.linalg.norm(R1_vec)
-#     R2_vec = np.asarray(params['R2_vec'])
-#     r2_vec = R2_vec / np.linalg.norm(R2_vec)
-#     # Calculated variables
-#     phio = np.arccos(np.dot(r1_vec, r2_vec))
-#     mu1_rot = rod_rot_mobility(L1, diameter, visc)
-#     mu2_rot = rod_rot_mobility(L2, diameter, visc)
-#     # Get reduced mobility times 2 since the system experiences. Not sure if
-#     # this is right.
-#     mu_eff = 2. * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
-
-#     # Integration variables
-#     int_params = [L1, L2, mu_eff, co, ks, ho, beta]
-#     psoln = odeint(phidot, phio, t, args=(int_params,))
-#     plt.plot(t, psoln[:, 0])
-#     plt.show()
-##########################################
-if __name__ == "__main__":
-    main(sys.argv[1])
