@@ -72,6 +72,22 @@ def avg_force_zrl(r12, u1, u2, rho, P1, P2, ks):
     return -k * (r12 * rho + P2 * u2 - P1 * u1)
 
 
+def dr_dt_zrl(F, u, gpara, gperp):
+    """!Get the evolution of a rods postion given a force, orientation of rod,
+    and drag coefficients.
+
+    @param F: TODO
+    @param u: TODO
+    @param gpara: TODO
+    @param gperp: TODO
+    @return: TODO
+
+    """
+    mpara = 1. / gpara
+    mperp = 1. / gperp
+    return ((mpara - mperp) * np.dot(F, u) * u) + (mperp * F)
+
+
 def du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
@@ -88,13 +104,11 @@ def du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1):
     @param ks: motor spring constant
     @param grot1: Rotational drag coefficient of rod1
     @return: Time-derivative of rod1's orientation vector
-
-
     """
     return (k * grot1) * ((r12 - a1) * P1 + (u2 - (b * u1)) * mu11)
 
 
-def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot1):
+def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot2):
     """!Calculate the time-derivative of rod2's orientation vector with respect
     to the current state of the crosslinked rod system when motor have
     zero rest length.
@@ -108,10 +122,8 @@ def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot1):
     @param a1: Dot product of r12 and u1
     @param b: Dot product of u1 and u2
     @param ks: Motor spring constant
-    @param grot1: Rotational drag coefficient of rod1
-    @return: Time-derivative of rod1's orientation vector
-
-
+    @param grot2: Rotational drag coefficient of rod2
+    @return: Time-derivative of rod2's orientation vector
     """
     return (-k * grot2) * ((r12 - a2) * P2 + (u1 - (b * u2)) * mu11)
 
@@ -179,7 +191,7 @@ def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
             ((ko + kappa) * P1) + (kappa * b * P2))
 
 
-def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta):
+def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     """!Calculate the time-derivative of the first moment(s2) of zero rest
     length crosslinkers bound to rods.
 
@@ -323,30 +335,68 @@ def evolver_zero_rest_length(r1, r2, u1, u2,  # Vectors
                              rho, P1, P2, mu11, mu02, mu20,  # Moments
                              gpara1, gperp1, grot1,  # Friction coefficients
                              gpara2, gperp2, grot2,
-                             ks, fs, ko, co, vo, beta, L1, L2):  # Other constants
-    """!TODO: Docstring for no_rest_length_evolver.
+                             vo, fs, ko, c, ks, beta, L1, L2):  # Other constants
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
 
-    @param r1: TODO
-    @param r2: TODO
-    @param u1: TODO
-    @param u2: TODO
-    @param gpara1: TODO
-    @param gperp1: TODO
-    @param grot1: TODO
-    @param gpara2: TODO
-    @param gperp2: TODO
-    @param grot2: TODO
-    @param k: TODO
-    @param fs: TODO
-    @param ko: TODO
-    @param co: TODO
-    @param vo: TODO
-    @param beta: TODO
-    @return: TODO
+    @param r1: Center of mass postion of rod1
+    @param r2: Center of mass position of rod2
+    @param u1: Orientation unit vector of rod1
+    @param u2: Orientation unit vector of rod2
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param mu11: Second motor moment of s1 and s2
+    @param mu20: Second motor moment of s1
+    @param mu02: Second motor moment of s2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
     """
-    # Get average force
+    # Define useful parameters for functions
+    r12 = r2 - r1
+    rsqr = np.dot(r12, r12)
+    a1 = np.dot(r12, u1)
+    a2 = np.dot(r12, u2)
+    b = np.dot(u1, u2)
+    # Get average force of crosslinkers on rod2
+    F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    # Evolution of rod positions
+    dr1 = dr_dt_zrl(-1. * F12, u1, gpara1, gperp1)
+    dr2 = dr_dt_zrl(F12, u2, gpara2, gperp2)
+    # Evolution of orientation vectors
+    du1 = du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
+    du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
+    # Evolution of zeroth moment
+    drho = drho_dt_zrl(rho, P1, P2,
+                       rsqr, a1, a2, b,
+                       vo, fs, ko, c, ks, beta, L1, L2)
+    # Evoultion of first moments
+    dP1 = dP1_dt_zrl(rho, P1, P2,
+                     rsqr, a1, a2, b,
+                     vo, fs, ko, c, ks, beta, L1, L2)
+    dP2 = dP2_dt_zrl(rho, P1, P2,
+                     rsqr, a1, a2, b,
+                     vo, fs, ko, c, ks, beta, L1, L2)
+    # Evolution of second moments
+    dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+                         a1, a2, b, vo, fs, ko, c, ks, beta)
+    dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+                         a1, a2, b, vo, fs, ko, c, ks, beta)
+    dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+                         a1, a2, b, vo, fs, ko, c, ks, beta):
+    sol_arr = dr1.tolist() + dr2.tolist() + du1.tolist() + du2.tolist()
+    mom_arr = [drho, dP1, dP2, dmu11, dmu20, dmu02]
 
-    pass
+    return np.append(sol_arr, mom_arr)
 
 
 class MomentExpansionSolver(Solver):
