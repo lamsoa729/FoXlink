@@ -14,22 +14,46 @@ Description:
 
 @jit
 def boltz_fact_zrl(s1, s2, rsqr, a1, a2, b, ks, beta):
-    """!TODO: Docstring for boltz_fact_zrl.
+    """!Boltzmann factor for a zero rest length crosslinking motor bound to two rods
 
-    @param s1: TODO
-    @param s2: TODO
-    @param rsqr: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param ks: TODO
-    @param beta: TODO
-    @return: TODO
+    @param s1: Position of a bound motor end on rod1 relative to the rods center
+    @param s2: Position of a bound motor end on rod1 relative to the rods center
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param ks: Motor spring constant
+    @param c: Effective concentration of motors in solution
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @return: Computed Boltzmann factor
 
     """
     return np.exp(-.5 * beta * ks * (rsqr + s1**2 + s2**2 -
                                      (2. * s1 * s2 * b) +
                                      2. * (s2 * a2 - s1 * a1)))
+
+
+@jit
+def weighted_boltz_fact_zrl(s1, s2, pow1, pow2, rsqr, a1, a2, b, ks, beta):
+    """!Boltzmann factor for a zero rest length crosslinking motor bound to two
+    rods multiplied by s1 and s2 raised to specified powers
+
+    @param s1: Position of a bound motor end on rod1 relative to the rods center
+    @param s2: Position of a bound motor end on rod1 relative to the rods center
+    @param pow1: Power of s1 to weight Boltzmann factor by
+    @param pow2: Power of s2 to weight Boltzmann factor by
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param ks: Motor spring constant
+    @param c: Effective concentration of motors in solution
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @return: TODO
+
+    """
+    return (np.power(s1, pow1) * np.power(s2, pow2) *
+            np.exp(-.5 * beta * ks * (rsqr + s1**2 + s2**2 -
+                                      (2. * s1 * s2 * b) +
+                                      2. * (s2 * a2 - s1 * a1))))
 
 
 def avg_force_zrl(r12, u1, u2, rho, P1, P2, ks):
@@ -73,7 +97,7 @@ def du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1):
 def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot1):
     """!Calculate the time-derivative of rod2's orientation vector with respect
     to the current state of the crosslinked rod system when motor have
-    zero rest length
+    zero rest length.
 
     @param r12: Vector from rod1's center of mass to rod2's center of mass
     @param u1: Orientation unit vector of rod1
@@ -93,8 +117,8 @@ def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot1):
 
 
 def drho_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
-    """!Calculate the time-derivative of the zeroth moment of the zero rest length crosslinkers
-    bound to the rods
+    """!Calculate the time-derivative of the zeroth moment of the zero rest
+    length crosslinkers bound to rods.
 
     @param rho: Zeroth motor moment
     @param P1: First motor moment of s1
@@ -116,134 +140,183 @@ def drho_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     # Partition function
     q, e = c * dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
                        lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[rsqr, a1, a2, b, ks, beta],)
+                       args=[rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * k / fs
-
     return ((ko * q) + ((vo + kappa * a1) * rho) -
             ((ko + kappa) * P1) + (kappa * b * P2))
 
 
-def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta):
-    """!TODO: Docstring for dP1_dt_zrl.
+def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+    """!Calculate the time-derivative of the first moment(s1) of the zero rest
+    length crosslinkers bound to rods.
 
-    @param rho: TODO
-    @param P1: TODO
-    @param P2: TODO
-    @param rsqr: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param vo: TODO
-    @param fs: TODO
-    @param ko: TODO
-    @param c: TODO
-    @param ks: TODO
-    @param beta: TODO
-    @return: TODO
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param b: Dot product of u1 and u2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time derivative of the first(s1) moment of motors
 
     """
-    pass
+    # Partition function
+    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                       args=[1, 0, rsqr, a1, a2, b, ks, beta],)
+    # Characteristic walking rate
+    kappa = vo * k / fs
+    return ((ko * q) + ((vo + kappa * a1) * rho) -
+            ((ko + kappa) * P1) + (kappa * b * P2))
 
 
 def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta):
-    """!TODO: Docstring for dP1_dt_zrl.
+    """!Calculate the time-derivative of the first moment(s2) of zero rest
+    length crosslinkers bound to rods.
 
-    @param rho: TODO
-    @param P1: TODO
-    @param P2: TODO
-    @param rsqr: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param vo: TODO
-    @param fs: TODO
-    @param ko: TODO
-    @param c: TODO
-    @param k: TODO
-    @param beta: TODO
-    @return: TODO
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param b: Dot product of u1 and u2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time derivative of the first(s2) moment of motors
 
     """
-    pass
+    # Partition function
+    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                       args=[0, 1, rsqr, a1, a2, b, ks, beta])
+    # Characteristic walking rate
+    kappa = vo * ks / fs
+    return ((ko * q) + ((vo - kappa * a2) * rho) -
+            ((ko + kappa) * P2) + (kappa * b * P1))
 
 
 def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                  a1, a2, b, vo, fs, ko, c, ks, beta):
-    """!TODO: Docstring for dmu11_dt_zrl.
+    """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
+    length crosslinkers bound to rods.
 
-    @param rho: TODO
-    @param P1: TODO
-    @param P2: TODO
-    @param mu11: TODO
-    @param mu20: TODO
-    @param mu02: TODO
-    @param rsqr: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param vo: TODO
-    @param fs: TODO
-    @param ko: TODO
-    @param c: TODO
-    @param k: TODO
-    @param beta: TODO
-    @return: TODO
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param mu11: Second motor moment of s1 and s2
+    @param mu20: Second motor moment of s1
+    @param mu02: Second motor moment of s2
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM (r12)
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param b: Dot product of u1 and u2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time derivative of the second(s1,s2) moment of motors
 
     """
-    pass
+    # Partition function
+    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                       args=[1, 1, rsqr, a1, a2, b, ks, beta])
+    # Characteristic walking rate
+    kappa = vo * ks / fs
+    return ((ko * q) + ((vo - kappa * a2) * P1) - ((vo + kappa * a1) * P2) -
+            ((ko + 2. * kappa) * mu11) + (kappa * b * (mu20 + mu02)))
 
 
 def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                  a1, a2, b, vo, fs, ko, c, ks, beta):
-    """!TODO: Docstring for dmu11_dt_zrl.
+    """!Calculate the time-derivative of the second moment(s1^2) of zero rest
+    length crosslinkers bound to rods.
 
-    @param rho: TODO
-    @param P1: TODO
-    @param P2: TODO
-    @param mu11: TODO
-    @param mu20: TODO
-    @param mu02: TODO
-    @param rsqr: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param vo: TODO
-    @param fs: TODO
-    @param ko: TODO
-    @param c: TODO
-    @param k: TODO
-    @param beta: TODO
-    @return: TODO
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param mu11: Second motor moment of s1 and s2
+    @param mu20: Second motor moment of s1
+    @param mu02: Second motor moment of s2
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM (r12)
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param b: Dot product of u1 and u2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time derivative of the second(s1^2) moment of motors
 
     """
-    pass
+    # Partition function
+    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                       args=[2, 0, rsqr, a1, a2, b, ks, beta])
+    # Characteristic walking rate
+    kappa = vo * ks / fs
+    return ((ko * q) + (2. * (vo + kappa * a1) * P1) +
+            (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu20))
 
 
 def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                  a1, a2, b, vo, fs, ko, c, ks, beta):
-    """!TODO: Docstring for dmu11_dt_zrl.
+    """!Calculate the time-derivative of the second moment(s2^2) of zero rest
+    length crosslinkers bound to rods.
 
-    @param rho: TODO
-    @param P1: TODO
-    @param P2: TODO
-    @param mu11: TODO
-    @param mu20: TODO
-    @param mu02: TODO
-    @param rsqr: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param vo: TODO
-    @param fs: TODO
-    @param ko: TODO
-    @param c: TODO
-    @param k: TODO
-    @param beta: TODO
-    @return: TODO
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param mu11: Second motor moment of s1 and s2
+    @param mu20: Second motor moment of s1
+    @param mu02: Second motor moment of s2
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM (r12)
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param b: Dot product of u1 and u2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time derivative of the second(s2^2) moment of motors
 
     """
-    pass
+    # Partition function
+    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                       args=[0, 2, rsqr, a1, a2, b, ks, beta])
+    # Characteristic walking rate
+    kappa = vo * ks / fs
+    return ((ko * q) + (2. * (vo - kappa * a2) * P2) +
+            (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu02))
 
 
 def evolver_zero_rest_length(r1, r2, u1, u2,  # Vectors
@@ -270,7 +343,6 @@ def evolver_zero_rest_length(r1, r2, u1, u2,  # Vectors
     @param vo: TODO
     @param beta: TODO
     @return: TODO
-
     """
     # Get average force
 
@@ -279,7 +351,7 @@ def evolver_zero_rest_length(r1, r2, u1, u2,  # Vectors
 
 class MomentExpansionSolver(Solver):
 
-    """!Solve the evolution of two rods by expanding the Fokker-Planck equation
+    """!Solve the evolution of two rods by expanding the Fokker - Planck equation
         in a series of moments of motor end positions on rods.
     """
 
@@ -288,7 +360,6 @@ class MomentExpansionSolver(Solver):
 
         @param pfile: TODO
         @param pdict: TODO
-
         """
         print("Init MomentExpansionSolver -> ")
         Solver.__init__(self, pfile, pdict)
@@ -296,27 +367,23 @@ class MomentExpansionSolver(Solver):
     def setInitialConditions(self):
         """!Set the initial conditions for the system of ODEs
         @return: TODO
-
         """
         pass
 
     def ParseParams(self):
         """!Collect parameters from yaml file or dictionary
         @return: TODO
-
         """
         pass
 
     def makeDataframe(self):
         """!Create data frame to be written out
         @return: TODO
-
         """
 
     def Run(self):
         """!Run algorithm to solve system of ODEs
         @return: TODO
-
         """
         pass
 
