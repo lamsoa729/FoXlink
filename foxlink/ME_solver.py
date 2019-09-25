@@ -17,7 +17,7 @@ def convert_sol_to_geom(sol):
     return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
 
 
-def choose_ODE_solver(sol, t, vo, fs, ko, c, ks, beta, L1, L2, d, visc):
+def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1, L2, d, visc):
     """!Create a closure for ode solver
 
     @param sol: Array of time-dependent variables in the ODE
@@ -117,13 +117,24 @@ class MomentExpansionSolver(Solver):
         self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite))
         self._nframes = self.t_eval.size
 
+        self.ode_solver = choose_ODE_solver(self._params['vo'],
+                                            self._params['fs'],
+                                            self._params['ko'],
+                                            self._params['c'],
+                                            self._params['ks'],
+                                            self._params['beta'],
+                                            self._params['L1'],
+                                            self._params['L2'],
+                                            self._params['rod_diameter'],
+                                            self._params['viscosity'])
+
     def setInitialConditions(self):
         """!Set the initial conditions for the system of ODEs
         @return: TODO
         """
-        self.sol = np.zeros(18)
+        self.sol_init = np.zeros(18)
         # Set all geometric variables
-        self.sol[:13] = np.concatenate(
+        self.sol_init[:13] = np.concatenate(
             (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))
         # TODO Allow for different initial conditions of moments besides zero
 
@@ -138,12 +149,8 @@ class MomentExpansionSolver(Solver):
             self._xl_grp = self._h5_data.create_group('XL_data')
             self._rod_grp = self._h5_data.create_group('rod_data')
 
-            self._interaction_grp = self._h5_data.create_group(
-                'Interaction_data')
-
-            self.makeXLMomentDataSet()
-            self.makeRodDataSet()
-
+            # self._interaction_grp = self._h5_data.create_group(
+            # 'Interaction_data')
             Solver.makeDataframe(self)
             self.data_frame_made = True
 
@@ -153,13 +160,13 @@ class MomentExpansionSolver(Solver):
 
         """
         self._R1_pos_dset = self._rod_grp.create_dataset(
-            'R1_pos', shape=(self._nframes, 3))
+            'R1_pos', data=self.sol.y[:, :3])
         self._R2_pos_dset = self._rod_grp.create_dataset(
-            'R2_pos', shape=(self._nframes, 3))
+            'R2_pos', data=self.sol.y[:, 3:6])
         self._R1_vec_dset = self._rod_grp.create_dataset(
-            'R1_vec', shape=(self._nframes, 3))
+            'R1_vec', data=self.sol.y[:, 6:9])
         self._R2_vec_dset = self._rod_grp.create_dataset(
-            'R2_vec', shape=(self._nframes, 3))
+            'R2_vec', data=self.sol.y[:, 9:12])
 
     def makeXLMomentDataSet(self):
         """!Initialize dataframe with empty crosslinker moment data
@@ -167,13 +174,13 @@ class MomentExpansionSolver(Solver):
 
         """
         self._rho_dset = self._xl_grp.create_dataset('zeroth_moment',
-                                                     shape=(self._nframes),
+                                                     data=self.sol.y[:, 12],
                                                      dtype=np.float32)
         self._P_dset = self._xl_grp.create_dataset('first_moments',
-                                                   shape=(self._nframes, 2),
+                                                   data=self.sol.y[:, 13:15],
                                                    dtype=np.float32)
         self._mu_dset = self._xl_grp.create_dataset('second_moments',
-                                                    shape=(self._nframes, 3),
+                                                    data=self.sol.y[:, 15:],
                                                     dtype=np.float32)
 
     def Run(self):
@@ -181,6 +188,9 @@ class MomentExpansionSolver(Solver):
         @return: TODO
         """
 
+        self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init,
+                             t_eval=self.t_eval)
+        self.Write()
         self.Save()
 
     def Write(self):
@@ -188,4 +198,5 @@ class MomentExpansionSolver(Solver):
         @return: TODO
 
         """
-        pass
+        self.makeXLMomentDataSet()
+        self.makeRodDataSet()
