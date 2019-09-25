@@ -409,7 +409,7 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
                          a1, a2, b, vo, fs, ko, c, ks, beta)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta):
-    sol_arr = dr1.tolist() + dr2.tolist() + du1.tolist() + du2.tolist()
-    mom_arr = [drho, dP1, dP2, dmu11, dmu20, dmu02]
+    sol_arr = np.concatenate(
+        (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
 
     return np.append(sol_arr, mom_arr)

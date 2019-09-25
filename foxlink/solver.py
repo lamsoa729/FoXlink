@@ -63,7 +63,7 @@ class Solver(object):
         self.written = False
         # Initialize parameters from file
         self.ParseParams()
-        self.setInitialCondition()
+        self.setInitialConditions()
         # self.setBoundaryConditions()
 
         # Create data frame
