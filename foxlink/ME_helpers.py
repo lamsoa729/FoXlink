@@ -76,7 +76,7 @@ def avg_force_zrl(r12, u1, u2, rho, P1, P2, ks):
     return: Vector of force from rod1 on rod2
 
     """
-    return -k * (r12 * rho + P2 * u2 - P1 * u1)
+    return -ks * (r12 * rho + P2 * u2 - P1 * u1)
 
 
 def dr_dt_zrl(F, u, gpara, gperp):
@@ -112,10 +112,10 @@ def du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1):
     @param grot1: Rotational drag coefficient of rod1
     @return: Time-derivative of rod1's orientation vector
     """
-    return (k * grot1) * ((r12 - a1) * P1 + (u2 - (b * u1)) * mu11)
+    return (ks * grot1) * ((r12 - a1) * P1 + (u2 - (b * u1)) * mu11)
 
 
-def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot2):
+def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2):
     """!Calculate the time-derivative of rod2's orientation vector with respect
     to the current state of the crosslinked rod system when motor have
     zero rest length.
@@ -132,7 +132,7 @@ def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, k, grot2):
     @param grot2: Rotational drag coefficient of rod2
     @return: Time-derivative of rod2's orientation vector
     """
-    return (-k * grot2) * ((r12 - a2) * P2 + (u1 - (b * u2)) * mu11)
+    return (-ks * grot2) * ((r12 - a2) * P2 + (u1 - (b * u2)) * mu11)
 
 ################################
 #  Moment evolution functions  #
@@ -162,12 +162,12 @@ def drho_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
 
     """
     # Partition function
-    q, e = c * dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
-                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[rsqr, a1, a2, b, ks, beta])
+    q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
-    kappa = vo * k / fs
-    return ((ko * q) + ((vo + kappa * a1) * rho) -
+    kappa = vo * ks / fs
+    return ((ko * c * q) + ((vo + kappa * a1) * rho) -
             ((ko + kappa) * P1) + (kappa * b * P2))
 
 
@@ -194,12 +194,12 @@ def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
 
     """
     # Partition function
-    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[1, 0, rsqr, a1, a2, b, ks, beta],)
+    q, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[1, 0, rsqr, a1, a2, b, ks, beta],)
     # Characteristic walking rate
-    kappa = vo * k / fs
-    return ((ko * q) + ((vo + kappa * a1) * rho) -
+    kappa = vo * ks / fs
+    return ((ko * c * q) + ((vo + kappa * a1) * rho) -
             ((ko + kappa) * P1) + (kappa * b * P2))
 
 
@@ -226,17 +226,17 @@ def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
 
     """
     # Partition function
-    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[0, 1, rsqr, a1, a2, b, ks, beta])
+    q, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[0, 1, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
-    return ((ko * q) + ((vo - kappa * a2) * rho) -
+    return ((ko * c * q) + ((vo - kappa * a2) * rho) -
             ((ko + kappa) * P2) + (kappa * b * P1))
 
 
 def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
     length crosslinkers bound to rods.
 
@@ -262,17 +262,17 @@ def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
     """
     # Partition function
-    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[1, 1, rsqr, a1, a2, b, ks, beta])
+    q, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[1, 1, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
-    return ((ko * q) + ((vo - kappa * a2) * P1) - ((vo + kappa * a1) * P2) -
+    return ((ko * c * q) + ((vo - kappa * a2) * P1) - ((vo + kappa * a1) * P2) -
             ((ko + 2. * kappa) * mu11) + (kappa * b * (mu20 + mu02)))
 
 
 def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -298,17 +298,17 @@ def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
     """
     # Partition function
-    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[2, 0, rsqr, a1, a2, b, ks, beta])
+    q, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[2, 0, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
-    return ((ko * q) + (2. * (vo + kappa * a1) * P1) +
+    return ((ko * c * q) + (2. * (vo + kappa * a1) * P1) +
             (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu20))
 
 
 def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     """!Calculate the time-derivative of the second moment(s2^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -334,12 +334,12 @@ def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
     """
     # Partition function
-    q, e = c * dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                       args=[0, 2, rsqr, a1, a2, b, ks, beta])
+    q, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[0, 2, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
-    return ((ko * q) + (2. * (vo - kappa * a2) * P2) +
+    return ((ko * c * q) + (2. * (vo - kappa * a2) * P2) +
             (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu02))
 
 
@@ -404,12 +404,11 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
                      vo, fs, ko, c, ks, beta, L1, L2)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta):
-    sol_arr = np.concatenate(
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+    # __import__('pdb').set_trace()
+    return np.concatenate(
         (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
-
-    return np.append(sol_arr, mom_arr)

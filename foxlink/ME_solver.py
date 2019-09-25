@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-from solver.py import Solver
-from scipy.integrate import solve_ivp, dblquad
-from .ME_helpers import evolver_zrl
-from rod_motion_solver import get_rod_drag_coeff
+from scipy.integrate import solve_ivp
+import time
 import numpy as np
+from .ME_helpers import evolver_zrl
+from .rod_motion_solver import get_rod_drag_coeff
+from .solver import Solver
 
 """@package docstring
 File: ME_solver.py
@@ -39,7 +40,7 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1, L2, d, visc):
     gpara1, gperp1, grot1 = get_rod_drag_coeff(visc, L1, d)
     gpara2, gperp2, grot2 = get_rod_drag_coeff(visc, L2, d)
 
-    def evolver_zrl_closure(sol, t):
+    def evolver_zrl_closure(t, sol):
         """!Define the function of an ODE solver with certain constant
         parameters.
 
@@ -115,12 +116,13 @@ class MomentExpansionSolver(Solver):
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
         self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite))
+        print(self.t_eval)
         self._nframes = self.t_eval.size
 
         self.ode_solver = choose_ODE_solver(self._params['vo'],
                                             self._params['fs'],
                                             self._params['ko'],
-                                            self._params['c'],
+                                            self._params['co'],
                                             self._params['ks'],
                                             self._params['beta'],
                                             self._params['L1'],
@@ -134,7 +136,7 @@ class MomentExpansionSolver(Solver):
         """
         self.sol_init = np.zeros(18)
         # Set all geometric variables
-        self.sol_init[:13] = np.concatenate(
+        self.sol_init[:12] = np.concatenate(
             (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))
         # TODO Allow for different initial conditions of moments besides zero
 
@@ -160,13 +162,13 @@ class MomentExpansionSolver(Solver):
 
         """
         self._R1_pos_dset = self._rod_grp.create_dataset(
-            'R1_pos', data=self.sol.y[:, :3])
+            'R1_pos', data=self.sol.y[:3, :].T)
         self._R2_pos_dset = self._rod_grp.create_dataset(
-            'R2_pos', data=self.sol.y[:, 3:6])
+            'R2_pos', data=self.sol.y[3:6, :].T)
         self._R1_vec_dset = self._rod_grp.create_dataset(
-            'R1_vec', data=self.sol.y[:, 6:9])
+            'R1_vec', data=self.sol.y[6:9, :].T)
         self._R2_vec_dset = self._rod_grp.create_dataset(
-            'R2_vec', data=self.sol.y[:, 9:12])
+            'R2_vec', data=self.sol.y[9:12, :].T)
 
     def makeXLMomentDataSet(self):
         """!Initialize dataframe with empty crosslinker moment data
@@ -174,13 +176,13 @@ class MomentExpansionSolver(Solver):
 
         """
         self._rho_dset = self._xl_grp.create_dataset('zeroth_moment',
-                                                     data=self.sol.y[:, 12],
+                                                     data=self.sol.y[12, :].T,
                                                      dtype=np.float32)
         self._P_dset = self._xl_grp.create_dataset('first_moments',
-                                                   data=self.sol.y[:, 13:15],
+                                                   data=self.sol.y[13:15, :].T,
                                                    dtype=np.float32)
         self._mu_dset = self._xl_grp.create_dataset('second_moments',
-                                                    data=self.sol.y[:, 15:],
+                                                    data=self.sol.y[15:, :].T,
                                                     dtype=np.float32)
 
     def Run(self):
@@ -188,10 +190,12 @@ class MomentExpansionSolver(Solver):
         @return: TODO
         """
 
-        self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init,
-                             t_eval=self.t_eval)
+        t0 = time.time()
+        self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init)
+        __import__('pdb').set_trace()
+        print(
+            r" --- Total simulation time  {:.4f} seconds ---".format(time.time() - t0))
         self.Write()
-        self.Save()
 
     def Write(self):
         """!Write out data
