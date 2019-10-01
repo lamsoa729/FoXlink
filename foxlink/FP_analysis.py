@@ -45,8 +45,8 @@ class FPAnalysis(object):
         self.Load(analysis_type)
 
         self.time = np.asarray(self._h5_data["time"])
-        self.s1 = np.asarray(self._h5_data['/MT_data/s1'])
-        self.s2 = np.asarray(self._h5_data['/MT_data/s2'])
+        self.s1 = np.asarray(self._h5_data['/rod_data/s1'])
+        self.s2 = np.asarray(self._h5_data['/rod_data/s2'])
         self.sType = self._params['solver_type']
 
         ############################################
@@ -55,14 +55,14 @@ class FPAnalysis(object):
 
         # What kind of motion of microtubules
         if 'phio' in self._params:  # Ang motion
-            self.phi_arr = self._h5_data['MT_data/phi']
+            self.phi_arr = self._h5_data['rod_data/phi']
         elif 'ro' in self._params:  # Para motion
-            self.R_arr = np.asarray(self._h5_data['MT_data/R_pos'])
+            self.R_arr = np.asarray(self._h5_data['rod_data/R_pos'])
         else:  # General motion
-            self.R1_pos = np.asarray(self._h5_data['/MT_data/R1_pos'])
-            self.R2_pos = np.asarray(self._h5_data['/MT_data/R2_pos'])
-            self.R1_vec = np.asarray(self._h5_data['/MT_data/R1_vec'])
-            self.R2_vec = np.asarray(self._h5_data['/MT_data/R2_vec'])
+            self.R1_pos = np.asarray(self._h5_data['/rod_data/R1_pos'])
+            self.R2_pos = np.asarray(self._h5_data['/rod_data/R2_pos'])
+            self.R1_vec = np.asarray(self._h5_data['/rod_data/R1_vec'])
+            self.R2_vec = np.asarray(self._h5_data['/rod_data/R2_vec'])
 
         if '/OT_data' in self._h5_data:
             self.OT1_pos = self._h5_data['/OT_data/OT1_pos']

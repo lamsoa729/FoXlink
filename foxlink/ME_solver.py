@@ -49,6 +49,10 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1, L2, d, visc):
         @return: TODO
 
         """
+        if not np.all(np.isfinite(sol)):
+            raise RuntimeError(
+                'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+
         r1, r2, u1, u2 = convert_sol_to_geom(sol)
         return evolver_zrl(r1, r2, u1, u2,  # Vectors
                            sol[12], sol[13], sol[14],  # Moments
@@ -72,7 +76,7 @@ class MomentExpansionSolver(Solver):
         @param pfile: TODO
         @param pdict: TODO
         """
-        print("Init MomentExpansionSolver -> ")
+        print("Init MomentExpansionSolver -> ", end=" ")
         Solver.__init__(self, pfile, pdict)
 
     def ParseParams(self):
@@ -138,6 +142,8 @@ class MomentExpansionSolver(Solver):
         # Set all geometric variables
         self.sol_init[:12] = np.concatenate(
             (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))
+        print("=== Initial conditions ===")
+        print(self.sol_init)
         # TODO Allow for different initial conditions of moments besides zero
 
     def makeDataframe(self):
@@ -191,8 +197,9 @@ class MomentExpansionSolver(Solver):
         """
 
         t0 = time.time()
-        self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init)
-        __import__('pdb').set_trace()
+        self.sol = solve_ivp(self.ode_solver,
+                             [0, self.nt], self.sol_init,
+                             method='LSODA')
         print(
             r" --- Total simulation time  {:.4f} seconds ---".format(time.time() - t0))
         self.Write()

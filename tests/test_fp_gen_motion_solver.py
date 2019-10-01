@@ -21,7 +21,7 @@ def test_gen_motion_solver_inheritance():
     """
     assert FPGenMotionSolver.ParseParams is FPGenOrientSolver.ParseParams
     assert FPGenMotionSolver.makeSolutionGrid is FokkerPlanckSolver.makeSolutionGrid
-    assert FPGenMotionSolver.setInitialCondition is FokkerPlanckSolver.setInitialCondition
+    assert FPGenMotionSolver.setInitialConditions is FokkerPlanckSolver.setInitialConditions
     assert FPGenMotionSolver.Run is FokkerPlanckSolver.Run
     assert FPGenMotionSolver.Step is FokkerPlanckSolver.Step
     assert FPGenMotionSolver.makeDataframe is FPGenOrientSolver.makeDataframe

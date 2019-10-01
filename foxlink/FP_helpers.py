@@ -170,7 +170,7 @@ def make_gen_force_mat(s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
     hvec = make_gen_stretch_mat(s1_arr, s2_arr, u1, u2, rvec, r)
     if ho == 0:
         # Weight force matrix by density of crosslinkers
-        f_mat = -k * hvec
+        f_mat = -ks * hvec
     else:
         # Get stretch matrix magnitude
         h = np.linalg.norm(hvec, axis=2)

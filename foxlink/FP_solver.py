@@ -110,6 +110,7 @@ class FokkerPlanckSolver(Solver):
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
         # Make time array. Set extra space for initial condition
+        self.time = np.linspace(0, self.nt, self.nsteps + 1)
         self._nframes = len(self.time[::self.nwrite])
         print("Time step: ", self.dt)
         print("Total time: ", self.nt)
@@ -125,6 +126,7 @@ class FokkerPlanckSolver(Solver):
         @return: void, modifies solution grid
 
         """
+        self.makeSolutionGrid()
         if 'initial_condition' in self._params:
             if self._params['initial_condition'] == 'equil':
                 self.sgrid += self.src_mat / self._params['ko']
