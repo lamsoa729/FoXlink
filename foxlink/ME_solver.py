@@ -62,8 +62,8 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
         gpara2, gperp2, grot2 = get_rod_drag_coeff(visc, L2, d)
 
         def evolver_zrl_closure(t, sol):
-            """!Define the function of an ODE solver with certain constant
-            parameters.
+            """!Define the function of an ODE solver with zero length
+            crosslinking proteins and moving rods.
 
             @param t: Time array
             @param sol: Solution array
@@ -89,7 +89,7 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
 
         def evolver_zrl_stat_closure(t, sol):
             """!Define the function of an ODE solver with zero rest length
-            crosslinking protiens and stationary rods certain constant parameters.
+            crosslinking protiens and stationary rods.
 
             @param t: Time array
             @param sol: Solution array

@@ -40,19 +40,29 @@ class FPAnalysis(object):
     def __init__(self, filename="Solver.h5", analysis_type='load'):
         """! Initialize analysis code by loading in hdf5 file and setting up
         params.
+
+        @param filename: Name of file to be analyzed
+        @param analysis_type: What kind of analysis ot run on data file
         """
         self._filename = filename
         self.Load(analysis_type)
 
+        self.sType = self._params['solver_type']
+
+        self.collectDataArrays()
+
+        self.init_flag = True
+
+        self.Analyze(analysis_type)
+
+    def collectDataArrays(self):
+        """!Store data arrays in member variables
+        @return: void, modifies member variables
+
+        """
         self.time = np.asarray(self._h5_data["time"])
         self.s1 = np.asarray(self._h5_data['/rod_data/s1'])
         self.s2 = np.asarray(self._h5_data['/rod_data/s2'])
-        self.sType = self._params['solver_type']
-
-        ############################################
-        #  Get parameters from running simulation  #
-        ############################################
-
         # What kind of motion of microtubules
         if 'phio' in self._params:  # Ang motion
             self.phi_arr = self._h5_data['rod_data/phi']
@@ -72,7 +82,6 @@ class FPAnalysis(object):
             self.OT2_pos = None
 
         self.xl_distr = self._h5_data['/XL_data/XL_distr']
-        self.init_flag = True
         # self.makexl_densArrs()
         self.Nxl_arr = []  # Array of crosslinker number vs time
         self.torque_arr = []  # Array of torque by crosslinker vs time
@@ -86,8 +95,6 @@ class FPAnalysis(object):
         self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
         self.force_arr = self._h5_data['/Interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
-
-        self.Analyze(analysis_type)
 
     def Load(self, analysis_type='load'):
         """!Load in data from hdf5 file and grab analysis files if they exist.
@@ -342,6 +349,7 @@ class FPAnalysis(object):
 ########################
 #  Graphing functions  #
 ########################
+
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
