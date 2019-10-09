@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from scipy.integrate import solve_ivp
+from scipy.integrate import solve_ivp, dblquad
 import time
 import numpy as np
-from .ME_helpers import evolver_zrl
+from .ME_helpers import (evolver_zrl, evolver_zrl_stat,
+                         boltz_fact_zrl, weighted_boltz_fact_zrl)
 from .rod_motion_solver import get_rod_drag_coeff
 from .solver import Solver
 
@@ -14,7 +15,11 @@ Description:
 """
 
 
-def sol_print_out(r1, r2, u1, u2, sol):
+def convert_sol_to_geom(sol):
+    return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
+
+
+def sol_print_out(sol):
     """!Print out current solution to solver
 
     @param r1: Center of mass postion of rod1
@@ -25,17 +30,49 @@ def sol_print_out(r1, r2, u1, u2, sol):
     @return: void
 
     """
+    r1, r2, u1, u2 = convert_sol_to_geom(sol)
     print ("Step-> r1:", r1, ", r2:", r2, ", u1:", u1, ", u2:", u2)
     print ("       rho:{}, P1:{}, P2:{}, mu11:{}, mu20:{}, mu02:{}".format(
         sol[12], sol[13], sol[14],
         sol[15], sol[16], sol[17]))
 
 
-def convert_sol_to_geom(sol):
-    return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
+def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
+    """!TODO: Docstring for prep_zrl_stat_evolver.
+
+    @param arg1: TODO
+    @return: TODO
+
+    """
+    r1, r2, u1, u2 = convert_sol_to_geom(sol)
+    r12 = r2 - r1
+    rsqr = np.dot(r12, r12)
+    a1 = np.dot(r12, u1)
+    a2 = np.dot(r12, u2)
+    b = np.dot(u1, u2)
+    # TODO computer source terms
+    q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
+                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                   args=[rsqr, a1, a2, b, ks, beta])
+    q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                     args=[1, 0, rsqr, a1, a2, b, ks, beta],)
+    q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                     args=[0, 1, rsqr, a1, a2, b, ks, beta])
+    q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                     args=[1, 1, rsqr, a1, a2, b, ks, beta])
+    q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                     args=[2, 0, rsqr, a1, a2, b, ks, beta])
+    q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                     args=[0, 2, rsqr, a1, a2, b, ks, beta])
+    return rsqr, a1, a2, b, q, q10, q01, q11, q20, q02
 
 
-def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
+def choose_ODE_solver(sol, vo, fs, ko, c, ks, beta, L1,
                       L2, d, visc, ODE_type='zrl'):
     """!Create a closure for ode solver
 
@@ -75,7 +112,7 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
             r1, r2, u1, u2 = convert_sol_to_geom(sol)
-            sol_print_out(r1, r2, u1, u2, sol)
+            sol_print_out(sol)
             return evolver_zrl(r1, r2, u1, u2,  # Vectors
                                sol[12], sol[13], sol[14],  # Moments
                                sol[15], sol[16], sol[17],
@@ -85,7 +122,9 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
         return evolver_zrl_closure
 
     elif ODE_type == 'zrl_stat':
-        r1, r2, u1, u2 = convert_sol_to_geom(sol)
+        # Compute geometric terms
+        rsqr, a1, a2, b, q, q10, q01, q11, q20, q02 = prep_zrl_stat_evolver(
+            sol, ks, beta, L1, L2)
 
         def evolver_zrl_stat_closure(t, sol):
             """!Define the function of an ODE solver with zero rest length
@@ -96,9 +135,10 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
             @return: Function to ODE zrl stat
 
             """
-            return evolver_zrl_stat(r1, r2, u1, u2,  # Vectors
-                                    sol[12], sol[13], sol[14],  # Moments
+            sol_print_out(sol)
+            return evolver_zrl_stat(sol[12], sol[13], sol[14],  # Moments
                                     sol[15], sol[16], sol[17],
+                                    rsqr, a1, a2, b, q, q10, q01, q11, q20, q02,  # Pre-computed values
                                     vo, fs, ko, c, ks, beta, L1, L2)  # Other parameters
         return evolver_zrl_stat_closure
 
@@ -165,29 +205,19 @@ class MomentExpansionSolver(Solver):
         print(self.t_eval)
         self._nframes = self.t_eval.size
 
+        # Set integration method for solver
         if 'method' in self._params:
             self.method = self._params['method']
         else:
             self.method = 'LSODA'
             self._params['method'] = self.method
 
-        if 'ODE' in self._params:
+        # Specify the ODE type
+        if 'ODE_type' in self._params:
             self.ODE_type = self._params['ODE_type']
         else:
             self.ODE_type = 'zrl'
             self._params['ODE_type'] = self.ODE_type
-
-        self.ode_solver = choose_ODE_solver(self._params['vo'],
-                                            self._params['fs'],
-                                            self._params['ko'],
-                                            self._params['co'],
-                                            self._params['ks'],
-                                            self._params['beta'],
-                                            self._params['L1'],
-                                            self._params['L2'],
-                                            self._params['rod_diameter'],
-                                            self._params['viscosity'],
-                                            self.ODE_type)
 
     def setInitialConditions(self):
         """!Set the initial conditions for the system of ODEs
@@ -200,6 +230,20 @@ class MomentExpansionSolver(Solver):
         print("=== Initial conditions ===")
         print(self.sol_init)
         # TODO Allow for different initial conditions of moments besides zero
+
+        # Set solver once you set initial conditions
+        self.ode_solver = choose_ODE_solver(self.sol_init,
+                                            self._params['vo'],
+                                            self._params['fs'],
+                                            self._params['ko'],
+                                            self._params['co'],
+                                            self._params['ks'],
+                                            self._params['beta'],
+                                            self._params['L1'],
+                                            self._params['L2'],
+                                            self._params['rod_diameter'],
+                                            self._params['viscosity'],
+                                            self.ODE_type)
 
     def makeDataframe(self):
         """!Create data frame to be written out
@@ -254,8 +298,10 @@ class MomentExpansionSolver(Solver):
         t0 = time.time()
         self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init,
                              t_eval=self.t_eval, method=self.method)
+        self.cpu_time = time.time() - t0
         print(
-            r" --- Total simulation time {:.4f} seconds ---".format(time.time() - t0))
+            r" --- Total simulation time {:.4f} seconds ---".format(self.cpu_time))
+
         self.Write()
 
     def Write(self):
@@ -265,3 +311,5 @@ class MomentExpansionSolver(Solver):
         """
         self.makeXLMomentDataSet()
         self.makeRodDataSet()
+        # Store how long the simulation took
+        self._h5_data.attrs['cpu_time'] = self.cpu_time

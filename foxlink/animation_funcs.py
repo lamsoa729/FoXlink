@@ -177,7 +177,7 @@ def makeMomentExpansionAnimation(MEanal, writer=FFMpegWriter):
     @return: void
 
     """
-    fig = plt.figure(constrained_layout=True, figsize=(12, 15))
+    fig = plt.figure(constrained_layout=True, figsize=(12, 8))
     graph_stl = {
         "axes.titlesize": 16,
         "axes.labelsize": 13,

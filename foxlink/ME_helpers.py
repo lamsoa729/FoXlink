@@ -59,7 +59,7 @@ def weighted_boltz_fact_zrl(s1, s2, pow1, pow2, rsqr, a1, a2, b, ks, beta):
                                       2. * (s2 * a2 - s1 * a1))))
 
 ##################################
-#  Geometry evolution functions  #
+#  Geometric evolution functions  #
 ##################################
 
 
@@ -143,7 +143,7 @@ def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2):
 ################################
 
 
-def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q=None):
     """!Calculate the time-derivative of the zeroth moment of the zero rest
     length crosslinkers bound to rods.
 
@@ -159,42 +159,20 @@ def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     @param beta: 1/(Boltzmann's constant * Temperature)
     @param L1: Length of rod1
     @param L2: Length of rod2
+    @param q: Binding source term (i.e. partition function)
     @return: Time derivative of the zeroth moment of motors
 
     """
     # Partition function
-    q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
-                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                   args=[rsqr, a1, a2, b, ks, beta])
-    # Characteristic walking rate for boundary conditions
-    # kappa = vo * ks / fs
+    if q is None:
+        q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
+                       lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                       args=[rsqr, a1, a2, b, ks, beta])
     return ko * (c * q - rho)
 
-# def drho_dt(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
-    # """!Calculate the time-derivative of the zeroth moment of the zero rest
-    # length crosslinkers bound to rods.
 
-    # @param rho: Zeroth motor moment
-    # @param P1: First motor moment of s1
-    # @param P2: First motor moment of s2
-    # @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
-    # @param a1: Dot product of u1 and r12
-    # @param a2: Dot product of u2 and r12
-    # @param b: Dot product of u1 and u2
-    # @param vo: Velocity of motor when no force is applied
-    # @param fs: Stall force of motor ends
-    # @param ko: Turnover rate of motors
-    # @param ks: Motor spring constant
-    # @param c: Effective concentration of motors in solution
-    # @param beta: 1/(Boltzmann's constant * Temperature)
-    # @param L1: Length of rod1
-    # @param L2: Length of rod2
-    # @return: Time derivative of the zeroth moment of motors
-
-    # """
-
-
-def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo,
+               fs, ko, c, ks, beta, L1, L2, q10=None):
     """!Calculate the time-derivative of the first moment(s1) of the zero rest
     length crosslinkers bound to rods.
 
@@ -213,20 +191,23 @@ def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     @param beta: 1/(Boltzmann's constant * Temperature)
     @param L1: Length of rod1
     @param L2: Length of rod2
+    @param q10: Binding source term of first moment
     @return: Time derivative of the first(s1) moment of motors
 
     """
     # Partition function
-    q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[1, 0, rsqr, a1, a2, b, ks, beta],)
+    if q10 is None:
+        q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                         lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                         args=[1, 0, rsqr, a1, a2, b, ks, beta],)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q10) + ((vo + kappa * a1) * rho) - ((ko + kappa) * P1)
             + (kappa * b * P2))
 
 
-def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo,
+               fs, ko, c, ks, beta, L1, L2, q01=None):
     """!Calculate the time-derivative of the first moment(s2) of zero rest
     length crosslinkers bound to rods.
 
@@ -249,9 +230,10 @@ def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
 
     """
     # Partition function
-    q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[0, 1, rsqr, a1, a2, b, ks, beta])
+    if q01 is None:
+        q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                         lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                         args=[0, 1, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q01) + ((vo - kappa * a2) * rho) - ((ko + kappa) * P2)
@@ -259,7 +241,7 @@ def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
 
 
 def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11=None):
     """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
     length crosslinkers bound to rods.
 
@@ -285,9 +267,10 @@ def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
     """
     # Partition function
-    q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[1, 1, rsqr, a1, a2, b, ks, beta])
+    if q11 is None:
+        q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                         lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                         args=[1, 1, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q11) + ((vo - kappa * a2) * P1) - ((vo + kappa * a1) * P2)
@@ -295,7 +278,7 @@ def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
 
 def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20=None):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -321,9 +304,10 @@ def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
     """
     # Partition function
-    q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[2, 0, rsqr, a1, a2, b, ks, beta])
+    if q20 is None:
+        q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                         lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                         args=[2, 0, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q20) + (2. * (vo + kappa * a1) * P1)
@@ -331,7 +315,7 @@ def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
 
 def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02=None):
     """!Calculate the time-derivative of the second moment(s2^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -357,9 +341,10 @@ def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
     """
     # Partition function
-    q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[0, 2, rsqr, a1, a2, b, ks, beta])
+    if q02 is None:
+        q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+                         lambda s2: -.5 * L2, lambda s2: .5 * L2,
+                         args=[0, 2, rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q02) + (2. * (vo - kappa * a2) * P2) +
@@ -447,23 +432,23 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     return dsol
 
 
-def evolver_zrl_stat(r1, r2, u1, u2,  # Vectors
-                     rho, P1, P2, mu11, mu20, mu02,  # Moments
+def evolver_zrl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
+                     rsqr, a1, a2, b, q, q10, q01, q11, q20, q02,  # Pre-computed values
                      vo, fs, ko, c, ks, beta, L1, L2):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
 
-    @param r1: Center of mass postion of rod1
-    @param r2: Center of mass position of rod2
-    @param u1: Orientation unit vector of rod1
-    @param u2: Orientation unit vector of rod2
     @param rho: Zeroth motor moment
     @param P1: First motor moment of s1
     @param P2: First motor moment of s2
     @param mu11: Second motor moment of s1 and s2
     @param mu20: Second motor moment of s1
     @param mu02: Second motor moment of s2
+    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM (r12)
+    @param a1: Dot product of u1 and r12
+    @param a2: Dot product of u2 and r12
+    @param b: Dot product of u1 and u2
     @param vo: Velocity of motor when no force is applied
     @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
@@ -476,32 +461,26 @@ def evolver_zrl_stat(r1, r2, u1, u2,  # Vectors
              array
     """
     # Define useful parameters for functions
-    r12 = r2 - r1
-    rsqr = np.dot(r12, r12)
-    a1 = np.dot(r12, u1)
-    a2 = np.dot(r12, u2)
-    b = np.dot(u1, u2)
-    # Rods do not change
     rod_change_arr = np.zeros(12)
     # Get average force of crosslinkers on rod2
-    F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    # F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of zeroth moment
     drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
-                       vo, fs, ko, c, ks, beta, L1, L2)
+                       vo, fs, ko, c, ks, beta, L1, L2, q)
     # Evoultion of first moments
     dP1 = dP1_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2)
+                     vo, fs, ko, c, ks, beta, L1, L2, q10)
     dP2 = dP2_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2)
+                     vo, fs, ko, c, ks, beta, L1, L2, q01)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02)
     dsol = np.concatenate(
         (rod_change_arr, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
