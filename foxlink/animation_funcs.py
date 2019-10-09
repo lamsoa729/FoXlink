@@ -169,3 +169,44 @@ def makeMomentAnimation(FPanal, writer=FFMpegWriter):
     anim.save('{}_moment.mp4'.format(Path.cwd().name), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
+
+
+def makeMomentExpansionAnimation(MEanal, writer=FFMpegWriter):
+    """!Make animation of moments with respect to time slices with MT geometries
+    and crosslinker distributions.
+    @return: void
+
+    """
+    fig = plt.figure(constrained_layout=True, figsize=(12, 15))
+    graph_stl = {
+        "axes.titlesize": 16,
+        "axes.labelsize": 13,
+        "xtick.labelsize": 13,
+        "ytick.labelsize": 13,
+        "font.size": 13
+    }
+    with plt.style.context(graph_stl):
+        plt.style.use(graph_stl)
+        gs = fig.add_gridspec(2, 3)
+        axarr = np.asarray([fig.add_subplot(gs[0, 0]),
+                            fig.add_subplot(gs[0, 1]),
+                            fig.add_subplot(gs[0, 2]),
+                            fig.add_subplot(gs[1, 0]),
+                            fig.add_subplot(gs[1, 1]),
+                            fig.add_subplot(gs[1, 2]),
+                            ])
+        fig.suptitle(' ')
+        nframes = MEanal.time.size
+        print(nframes)
+        anim = FuncAnimation(
+            fig,
+            MEanal.graphSlice,
+            frames=np.arange(nframes),
+            fargs=(fig, axarr),
+            interval=50,
+            blit=True)
+    t0 = time.time()
+
+    anim.save('{}_ME.mp4'.format(Path.cwd().name), writer=writer)
+    t1 = time.time()
+    print("Movie saved in: ", t1 - t0)

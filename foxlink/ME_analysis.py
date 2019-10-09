@@ -7,9 +7,8 @@ import matplotlib.pyplot as plt
 import h5py
 import yaml
 
-from .ME_helpers import *
-from .FP_analysis import FPAnalysis, touchGroup,
-from .fp_graphs import *  # TODO change to graph functions
+from .FP_analysis import FPAnalysis, touchGroup
+from .fp_graphs import me_graph_all_data_2d  # TODO change to graph functions
 
 """@package docstring
 File: ME_analysis.py
@@ -55,7 +54,14 @@ class MEAnalysis(FPAnalysis):
 
         self.rho = self._h5_data['/XL_data/zeroth_moment']
         self.P_n = self._h5_data['/XL_data/first_moments']
+        # TODO get rid of these eventually
+        self.P1 = self.P_n[:, 0]
+        self.P2 = self.P_n[:, 1]
+
         self.mu_nn = self._h5_data['/XL_data/second_moments']
+        self.u11 = self.mu_nn[:, 0]
+        self.u20 = self.mu_nn[:, 1]
+        self.u02 = self.mu_nn[:, 2]
 
     ########################
     #  Analysis functions  #
@@ -108,7 +114,7 @@ class MEAnalysis(FPAnalysis):
 
         """
         t0 = time.time()
-        gca_arts = fp_graph_all_data_2d(fig, axarr, n, self)
+        gca_arts = me_graph_all_data_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts

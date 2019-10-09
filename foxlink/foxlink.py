@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 from matplotlib.animation import FFMpegWriter
 from .animation_funcs import (makeAnimation, makeMinimalAnimation,
-                              makeOrientAnimation, makeMomentAnimation)
+                              makeOrientAnimation, makeMomentAnimation,
+                              makeMomentExpansionAnimation)
 from .FP_analysis import FPAnalysis
+from .ME_analysis import MEAnalysis
 # from .FP_pass_ang_CN import FPPassiveAngCNSolver
 import argparse
 import sys
@@ -21,6 +23,7 @@ from .FP_OT_gen_motion_motor_UW_solver import FPOpticalTrapGenMotionMotorUWSolve
 from .FP_OT_gen_motion_static_xlinks_solver import FPOpticalTrapGenMotionStaticXlinksSolver
 # Defined motion
 from .FP_gen_def_motion_motor_UW_solver import FPGenDefMotionMotorUWSolver
+# Moment expansion solvers
 from .ME_solver import MomentExpansionSolver
 
 
@@ -50,7 +53,8 @@ def parse_args():
                               "Necessary to make movies. Options: 'load', 'analyze', 'overwrite'.\n"
                               "\tload = Only add read data that has already been analyzed. \n"
                               "\tanalyze = Load data and analyze for values not previously analyzed. \n"
-                              "\toverwrite = Re-analyze all values regardless of previous analysis \n")
+                              "\toverwrite = Re-analyze all values regardless of previous analysis \n"
+                              "\tME = Analyze moment expansion \n")
                         )
 
     parser.add_argument("-g", "--graph", action="store_true", default=False,
@@ -132,7 +136,10 @@ class FoXlink(object):
         """
         # analysis = FPAnalysis(self._opts.file)
         if self._opts.analysis:
-            analysis = FPAnalysis(self._opts.file, self._opts.analysis)
+            if self._opts.analysis == "ME":
+                analysis = MEAnalysis(self._opts.file, 'overwrite')
+            else:
+                analysis = FPAnalysis(self._opts.file, self._opts.analysis)
         else:
             analysis = FPAnalysis(self._opts.file, 'analyze')
 
@@ -142,7 +149,9 @@ class FoXlink(object):
             writer = Writer(
                 fps=25, metadata=dict(
                     artist='Me'), bitrate=1800)
-            if self._opts.movie == 'all':
+            if self._opts.analysis == "ME":
+                makeMomentExpansionAnimation(analysis, writer)
+            elif self._opts.movie == 'all':
                 makeAnimation(analysis, writer)
             elif self._opts.movie == 'min':
                 makeMinimalAnimation(analysis, writer)
