@@ -168,7 +168,7 @@ def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
                    args=[rsqr, a1, a2, b, ks, beta])
     # Characteristic walking rate for boundary conditions
     # kappa = vo * ks / fs
-    return ko * (c * q + rho)
+    return ko * (c * q - rho)
 
 # def drho_dt(rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2):
     # """!Calculate the time-derivative of the zeroth moment of the zero rest
@@ -389,6 +389,12 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     @param mu11: Second motor moment of s1 and s2
     @param mu20: Second motor moment of s1
     @param mu02: Second motor moment of s2
+    @param gpara1: Parallel drag coefficient of rod1
+    @param gperp1: Perpendicular drag coefficient of rod1
+    @param grot1: Rotational drag coefficient of rod1
+    @param gpara2: Parallel drag coefficient of rod1
+    @param gperp2: Perpendicular drag coefficient of rod1
+    @param grot2: Rotational drag coefficient of rod1
     @param vo: Velocity of motor when no force is applied
     @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
@@ -433,6 +439,71 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
     dsol = np.concatenate(
         (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
+    # Check to make sure all values are finite
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError(
+            'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
+
+    return dsol
+
+
+def evolver_zrl_stat(r1, r2, u1, u2,  # Vectors
+                     rho, P1, P2, mu11, mu20, mu02,  # Moments
+                     vo, fs, ko, c, ks, beta, L1, L2):  # Other constants
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
+
+    @param r1: Center of mass postion of rod1
+    @param r2: Center of mass position of rod2
+    @param u1: Orientation unit vector of rod1
+    @param u2: Orientation unit vector of rod2
+    @param rho: Zeroth motor moment
+    @param P1: First motor moment of s1
+    @param P2: First motor moment of s2
+    @param mu11: Second motor moment of s1 and s2
+    @param mu20: Second motor moment of s1
+    @param mu02: Second motor moment of s2
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L1: Length of rod1
+    @param L2: Length of rod2
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    # Define useful parameters for functions
+    r12 = r2 - r1
+    rsqr = np.dot(r12, r12)
+    a1 = np.dot(r12, u1)
+    a2 = np.dot(r12, u2)
+    b = np.dot(u1, u2)
+    # Rods do not change
+    rod_change_arr = np.zeros(12)
+    # Get average force of crosslinkers on rod2
+    F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    # Evolution of zeroth moment
+    drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
+                       vo, fs, ko, c, ks, beta, L1, L2)
+    # Evoultion of first moments
+    dP1 = dP1_dt_zrl(rho, P1, P2,
+                     rsqr, a1, a2, b,
+                     vo, fs, ko, c, ks, beta, L1, L2)
+    dP2 = dP2_dt_zrl(rho, P1, P2,
+                     rsqr, a1, a2, b,
+                     vo, fs, ko, c, ks, beta, L1, L2)
+    # Evolution of second moments
+    dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+    dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+    dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+    dsol = np.concatenate(
+        (rod_change_arr, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(

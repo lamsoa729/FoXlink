@@ -14,11 +14,29 @@ Description:
 """
 
 
+def sol_print_out(r1, r2, u1, u2, sol):
+    """!Print out current solution to solver
+
+    @param r1: Center of mass postion of rod1
+    @param r2: Center of mass position of rod2
+    @param u1: Orientation unit vector of rod1
+    @param u2: Orientation unit vector of rod2
+    @param sol: Full solution array of ODE
+    @return: void
+
+    """
+    print ("Step-> r1:", r1, ", r2:", r2, ", u1:", u1, ", u2:", u2)
+    print ("       rho:{}, P1:{}, P2:{}, mu11:{}, mu20:{}, mu02:{}".format(
+        sol[12], sol[13], sol[14],
+        sol[15], sol[16], sol[17]))
+
+
 def convert_sol_to_geom(sol):
     return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
 
 
-def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1, L2, d, visc):
+def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1,
+                      L2, d, visc, ODE_type='zrl'):
     """!Create a closure for ode solver
 
     @param sol: Array of time-dependent variables in the ODE
@@ -33,36 +51,59 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1, L2, d, visc):
     @param L2: Length of rod2
     @param d: Diameter of rods
     @param visc: Viscocity of surrounding fluid
+    @param ODE_type: Which ODE to use (zrl, zrl_stat)
     @return: evolver function for ODE of interest
 
     """
-    # Get drag coefficients
-    gpara1, gperp1, grot1 = get_rod_drag_coeff(visc, L1, d)
-    gpara2, gperp2, grot2 = get_rod_drag_coeff(visc, L2, d)
 
-    def evolver_zrl_closure(t, sol):
-        """!Define the function of an ODE solver with certain constant
-        parameters.
+    if ODE_type == 'zrl':
+        # Get drag coefficients
+        gpara1, gperp1, grot1 = get_rod_drag_coeff(visc, L1, d)
+        gpara2, gperp2, grot2 = get_rod_drag_coeff(visc, L2, d)
 
-        @param sol: TODO
-        @param t: TODO
-        @return: TODO
+        def evolver_zrl_closure(t, sol):
+            """!Define the function of an ODE solver with certain constant
+            parameters.
 
-        """
-        if not np.all(np.isfinite(sol)):
-            raise RuntimeError(
-                'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+            @param t: Time array
+            @param sol: Solution array
+            @return: Function to ODE zrl
 
+            """
+            if not np.all(np.isfinite(sol)):
+                raise RuntimeError(
+                    'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+
+            r1, r2, u1, u2 = convert_sol_to_geom(sol)
+            sol_print_out(r1, r2, u1, u2, sol)
+            return evolver_zrl(r1, r2, u1, u2,  # Vectors
+                               sol[12], sol[13], sol[14],  # Moments
+                               sol[15], sol[16], sol[17],
+                               gpara1, gperp1, grot1,  # Friction coefficients
+                               gpara2, gperp2, grot2,
+                               vo, fs, ko, c, ks, beta, L1, L2)  # Other parameters
+        return evolver_zrl_closure
+
+    elif ODE_type == 'zrl_stat':
         r1, r2, u1, u2 = convert_sol_to_geom(sol)
-        print (r1, r2, u1, u2)
-        return evolver_zrl(r1, r2, u1, u2,  # Vectors
-                           sol[12], sol[13], sol[14],  # Moments
-                           sol[15], sol[16], sol[17],
-                           gpara1, gperp1, grot1,  # Friction coefficients
-                           gpara2, gperp2, grot2,
-                           vo, fs, ko, c, ks, beta, L1, L2)  # Other parameters
 
-    return evolver_zrl_closure
+        def evolver_zrl_stat_closure(t, sol):
+            """!Define the function of an ODE solver with zero rest length
+            crosslinking protiens and stationary rods certain constant parameters.
+
+            @param t: Time array
+            @param sol: Solution array
+            @return: Function to ODE zrl stat
+
+            """
+            return evolver_zrl_stat(r1, r2, u1, u2,  # Vectors
+                                    sol[12], sol[13], sol[14],  # Moments
+                                    sol[15], sol[16], sol[17],
+                                    vo, fs, ko, c, ks, beta, L1, L2)  # Other parameters
+        return evolver_zrl_stat_closure
+
+    else:
+        raise IOError('{} not a defined ODE equation for foxlink.')
 
 
 class MomentExpansionSolver(Solver):
@@ -130,6 +171,12 @@ class MomentExpansionSolver(Solver):
             self.method = 'LSODA'
             self._params['method'] = self.method
 
+        if 'ODE' in self._params:
+            self.ODE_type = self._params['ODE_type']
+        else:
+            self.ODE_type = 'zrl'
+            self._params['ODE_type'] = self.ODE_type
+
         self.ode_solver = choose_ODE_solver(self._params['vo'],
                                             self._params['fs'],
                                             self._params['ko'],
@@ -139,7 +186,8 @@ class MomentExpansionSolver(Solver):
                                             self._params['L1'],
                                             self._params['L2'],
                                             self._params['rod_diameter'],
-                                            self._params['viscosity'])
+                                            self._params['viscosity'],
+                                            self.ODE_type)
 
     def setInitialConditions(self):
         """!Set the initial conditions for the system of ODEs
@@ -204,11 +252,10 @@ class MomentExpansionSolver(Solver):
         """
 
         t0 = time.time()
-        self.sol = solve_ivp(self.ode_solver,
-                             [0, self.nt], self.sol_init,
-                             method=self.method)
+        self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init,
+                             t_eval=self.t_eval, method=self.method)
         print(
-            r" --- Total simulation time  {:.4f} seconds ---".format(time.time() - t0))
+            r" --- Total simulation time {:.4f} seconds ---".format(time.time() - t0))
         self.Write()
 
     def Write(self):
