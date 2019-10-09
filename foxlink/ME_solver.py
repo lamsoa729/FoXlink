@@ -54,6 +54,7 @@ def choose_ODE_solver(vo, fs, ko, c, ks, beta, L1, L2, d, visc):
                 'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
         r1, r2, u1, u2 = convert_sol_to_geom(sol)
+        print (r1, r2, u1, u2)
         return evolver_zrl(r1, r2, u1, u2,  # Vectors
                            sol[12], sol[13], sol[14],  # Moments
                            sol[15], sol[16], sol[17],
@@ -122,6 +123,12 @@ class MomentExpansionSolver(Solver):
         self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite))
         print(self.t_eval)
         self._nframes = self.t_eval.size
+
+        if 'method' in self._params:
+            self.method = self._params['method']
+        else:
+            self.method = 'LSODA'
+            self._params['method'] = self.method
 
         self.ode_solver = choose_ODE_solver(self._params['vo'],
                                             self._params['fs'],
@@ -199,7 +206,7 @@ class MomentExpansionSolver(Solver):
         t0 = time.time()
         self.sol = solve_ivp(self.ode_solver,
                              [0, self.nt], self.sol_init,
-                             method='LSODA')
+                             method=self.method)
         print(
             r" --- Total simulation time  {:.4f} seconds ---".format(time.time() - t0))
         self.Write()

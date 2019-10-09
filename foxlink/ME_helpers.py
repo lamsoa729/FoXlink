@@ -85,11 +85,11 @@ def dr_dt_zrl(F, u, gpara, gperp):
     """!Get the evolution of a rods postion given a force, orientation of rod,
     and drag coefficients.
 
-    @param F: TODO
-    @param u: TODO
-    @param gpara: TODO
-    @param gperp: TODO
-    @return: TODO
+    @param F: Average force exerted on rod
+    @param u: Orientation vector of rod
+    @param gpara: Parallel friction coefficient of rod
+    @param gperp: Perpendicular friction coefficient of rod
+    @return: Time-derivative of the rod motion
 
     """
     mpara = 1. / gpara
@@ -431,7 +431,6 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
-    # __import__('pdb').set_trace()
     dsol = np.concatenate(
         (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
