@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from scipy.integrate import solve_ivp, dblquad
+from scipy.special import erf
 import numpy as np
 from numba import jit
 
@@ -57,6 +58,66 @@ def weighted_boltz_fact_zrl(s1, s2, pow1, pow2, rsqr, a1, a2, b, ks, beta):
             np.exp(-.5 * beta * ks * (rsqr + s1**2 + s2**2 -
                                       (2. * s1 * s2 * b) +
                                       2. * (s2 * a2 - s1 * a1))))
+
+############################################
+#  Semi-anti derivatives for source terms  #
+############################################
+
+
+sqrt_pi = np.sqrt(np.pi)
+
+
+@jit
+def semi_anti_deriv_boltz_0(L, s1, sigma, A):
+    """!Fast calculation of the s2 integral of the source term for the zeroth
+    moment.
+
+    @param L: minus or plus end of bound
+    @param s1: location along the first rod
+    @param sigma: sqrt(2 kBT/crosslinker spring constant)
+    @param A: a2 - b s1
+    @return: One term in the anti-derivative of the boltzman factor integrated over s2
+
+    """
+    inv_sig = 1. / sigma
+    return (.5 * sqrt_pi * inv_sig) * erf((L + s1) * inv_sig)
+
+
+@jit
+def semi_anti_deriv_boltz_1(L, s1, sigma, A):
+    """!Fast calculation of the s2 integral of the source term for the first
+    moment.
+
+    @param L: minus or plus end of bound
+    @param s1: location along the first rod
+    @param sigma: sqrt(2 kBT/crosslinker spring constant)
+    @param A: a2 - b s1
+    @return: One term in the anti-derivative of the boltzman factor integrated over s2
+
+    """
+    # inv_sig = 1. / sigma
+    B = (L + A) / sigma
+    return (-.5 * sigma) * (sigma * np.exp(-1. * B * B) +
+                            (A * sqrt_pi) * erf(B))
+
+
+@jit
+def semi_anti_deriv_boltz_2(L, s1, sigma, A):
+    """!Fast calculation of the s2 integral of the source term for the second
+    moment.
+
+    @param L: minus or plus end of bound
+    @param s1: location along the first rod
+    @param sigma: sqrt(2 kBT/crosslinker spring constant)
+    @param A: a2 - b*s1
+    @return: One term in the anti-derivative of the boltzman factor integrated over s2
+
+    """
+    # inv_sig = 1. / sigma
+    B = (L + A) / sigma
+    return (.25 * sigma) * (2. * sigma * (A - s2) * np.exp(-1. * B * B) +
+                            ((2. * A * A + sigma * sigma) * sqrt_pi) * erf(B))
+
 
 ##################################
 #  Geometric evolution functions  #
