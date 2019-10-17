@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from scipy.integrate import solve_ivp, dblquad
+from scipy.integrate import solve_ivp, quad, dblquad
 from scipy.special import erf
 import numpy as np
 from numba import jit
@@ -80,7 +80,7 @@ def semi_anti_deriv_boltz_0(L, s1, sigma, A):
 
     """
     inv_sig = 1. / sigma
-    return (.5 * sqrt_pi * inv_sig) * erf((L + s1) * inv_sig)
+    return (.5 * sqrt_pi * inv_sig) * erf((L + A) * inv_sig)
 
 
 @jit
@@ -115,10 +115,91 @@ def semi_anti_deriv_boltz_2(L, s1, sigma, A):
     """
     # inv_sig = 1. / sigma
     B = (L + A) / sigma
-    return (.25 * sigma) * (2. * sigma * (A - s2) * np.exp(-1. * B * B) +
+    return (.25 * sigma) * (2. * sigma * (A - L) * np.exp(-1. * B * B) +
                             ((2. * A * A + sigma * sigma) * sqrt_pi) * erf(B))
 
 
+@jit
+def fast_zrl_src_integrand_k0(s1, L2, a1, a2, b, sigma, k=0):
+    """!TODO: Docstring for fast_zrl_src_integrand_k0.
+
+    @param s1: TODO
+    @param L2: TODO
+    @param a1: TODO
+    @param a2: TODO
+    @param b: TODO
+    @param sigma: TODO
+    @param l: TODO
+    @return: TODO
+
+    """
+    A = a2 - b * s1
+    pre_fact = np.power(s1, k) * np.exp(-1. *
+                                        (s1 * (s1 - a1) - A * A) / (sigma * sigma))
+    I_m = semi_anti_deriv_boltz_0(-.5 * L2, s1, sigma, A)
+    I_p = semi_anti_deriv_boltz_0(.5 * L2, s1, sigma, A)
+    return pre_fact * (I_p - I_m)
+
+
+@jit
+def fast_zrl_src_integrand_k1(s1, L2, a1, a2, b, sigma, k=0):
+    """!TODO: Docstring for fast_zrl_src_integrand_k0.
+
+    @param s1: TODO
+    @param L2: TODO
+    @param a1: TODO
+    @param a2: TODO
+    @param b: TODO
+    @param sigma: TODO
+    @param l: TODO
+    @return: TODO
+
+    """
+    A = a2 - b * s1
+    pre_fact = np.power(s1, k) * np.exp(-1. *
+                                        (s1 * (s1 - a1) - A * A) / (sigma * sigma))
+    I_m = semi_anti_deriv_boltz_1(-.5 * L2, s1, sigma, A)
+    I_p = semi_anti_deriv_boltz_1(.5 * L2, s1, sigma, A)
+    return pre_fact * (I_p - I_m)
+
+
+@jit
+def fast_zrl_src_integrand_k2(s1, L2, a1, a2, b, sigma, k=0):
+    """!TODO: Docstring for fast_zrl_src_integrand_k0.
+
+    @param s1: TODO
+    @param L2: TODO
+    @param a1: TODO
+    @param a2: TODO
+    @param b: TODO
+    @param sigma: TODO
+    @param l: TODO
+    @return: TODO
+
+    """
+    A = a2 - b * s1
+    pre_fact = np.power(s1, k) * np.exp(-1. *
+                                        (s1 * (s1 - a1) - A * A) / (sigma * sigma))
+    I_m = semi_anti_deriv_boltz_1(-.5 * L2, s1, sigma, A)
+    I_p = semi_anti_deriv_boltz_1(.5 * L2, s1, sigma, A)
+    return pre_fact * (I_p - I_m)
+
+
+def fast_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0):
+    if l == 0:
+        integrand = fast_src_integrand_k0
+    elif l == 1:
+        integrand = fast_src_integrand_k1
+    elif l == 2:
+        integrand = fast_src_integrand_k2
+    else:
+        raise RuntimeError(
+            "{}-order derivatives have not been implemented for fast source solver.".format(l))
+
+    sigma = np.sqrt(2. / (ks * beta))
+    Q, e = quad()
+
+    pass
 ##################################
 #  Geometric evolution functions  #
 ##################################
@@ -406,6 +487,8 @@ def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
         q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
                          args=[0, 2, rsqr, a1, a2, b, ks, beta])
+    elif q02 == 'fast':
+        q02 = fast_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=2)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q02) + (2. * (vo - kappa * a2) * P2) +
