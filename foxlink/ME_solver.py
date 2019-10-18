@@ -112,13 +112,13 @@ def choose_ODE_solver(sol, vo, fs, ko, c, ks, beta, L1,
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
             r1, r2, u1, u2 = convert_sol_to_geom(sol)
-            sol_print_out(sol)
+            # sol_print_out(sol)
             return evolver_zrl(r1, r2, u1, u2,  # Vectors
                                sol[12], sol[13], sol[14],  # Moments
                                sol[15], sol[16], sol[17],
                                gpara1, gperp1, grot1,  # Friction coefficients
                                gpara2, gperp2, grot2,
-                               vo, fs, ko, c, ks, beta, L1, L2)  # Other parameters
+                               vo, fs, ko, c, ks, beta, L1, L2, fast='fast')  # Other parameters
         return evolver_zrl_closure
 
     elif ODE_type == 'zrl_stat':

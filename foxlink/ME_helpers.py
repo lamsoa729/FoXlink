@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from scipy.integrate import solve_ivp, quad, dblquad
-from scipy.special import erf
+# from scipy.special import erf
+from math import erf, pow, exp, log
 import numpy as np
-from numba import jit
+from numba import jit, njit
 
 """@package docstring
 File: ME_helpers.py
@@ -59,15 +60,14 @@ def weighted_boltz_fact_zrl(s1, s2, pow1, pow2, rsqr, a1, a2, b, ks, beta):
                                       (2. * s1 * s2 * b) +
                                       2. * (s2 * a2 - s1 * a1))))
 
+
 ############################################
 #  Semi-anti derivatives for source terms  #
 ############################################
+sqrt_pi = np.sqrt(np.pi)  # Reduce the number of sqrts you need to do
 
 
-sqrt_pi = np.sqrt(np.pi)
-
-
-@jit
+@njit
 def semi_anti_deriv_boltz_0(L, s1, sigma, A):
     """!Fast calculation of the s2 integral of the source term for the zeroth
     moment.
@@ -79,11 +79,10 @@ def semi_anti_deriv_boltz_0(L, s1, sigma, A):
     @return: One term in the anti-derivative of the boltzman factor integrated over s2
 
     """
-    inv_sig = 1. / sigma
-    return (.5 * sqrt_pi * inv_sig) * erf((L + A) * inv_sig)
+    return (.5 * sqrt_pi * sigma) * erf((L + A) / sigma)
 
 
-@jit
+@njit
 def semi_anti_deriv_boltz_1(L, s1, sigma, A):
     """!Fast calculation of the s2 integral of the source term for the first
     moment.
@@ -95,13 +94,12 @@ def semi_anti_deriv_boltz_1(L, s1, sigma, A):
     @return: One term in the anti-derivative of the boltzman factor integrated over s2
 
     """
-    # inv_sig = 1. / sigma
     B = (L + A) / sigma
     return (-.5 * sigma) * (sigma * np.exp(-1. * B * B) +
-                            (A * sqrt_pi) * erf(B))
+                            (A * sqrt_pi * erf(B)))
 
 
-@jit
+@njit
 def semi_anti_deriv_boltz_2(L, s1, sigma, A):
     """!Fast calculation of the s2 integral of the source term for the second
     moment.
@@ -116,11 +114,11 @@ def semi_anti_deriv_boltz_2(L, s1, sigma, A):
     # inv_sig = 1. / sigma
     B = (L + A) / sigma
     return (.25 * sigma) * (2. * sigma * (A - L) * np.exp(-1. * B * B) +
-                            ((2. * A * A + sigma * sigma) * sqrt_pi) * erf(B))
+                            (((2. * A * A) + (sigma * sigma)) * sqrt_pi) * erf(B))
 
 
-@jit
-def fast_zrl_src_integrand_k0(s1, L2, a1, a2, b, sigma, k=0):
+@njit
+def fast_zrl_src_integrand_k0(s1, L2, a1, a2, b, sigma, log_pre_fact=0, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
 
     @param s1: TODO
@@ -129,21 +127,75 @@ def fast_zrl_src_integrand_k0(s1, L2, a1, a2, b, sigma, k=0):
     @param a2: TODO
     @param b: TODO
     @param sigma: TODO
-    @param l: TODO
+    @param pre_fact: TODO
+    @param k: TODO
     @return: TODO
 
     """
-    A = a2 - b * s1
-    pre_fact = np.power(s1, k) * np.exp(-1. *
-                                        (s1 * (s1 - a1) - A * A) / (sigma * sigma))
+    A = a2 - (b * s1)
+    log_pre_fact -= (s1 * (s1 - 2. * a1) - (A * A)) / (sigma * sigma)
+
+    pre_fact = np.power(s1, k) * np.exp(log_pre_fact)
+    # ((s1 * (s1 - 2. * a1)) - (A * A)) / (sigma * sigma))
     I_m = semi_anti_deriv_boltz_0(-.5 * L2, s1, sigma, A)
     I_p = semi_anti_deriv_boltz_0(.5 * L2, s1, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
-@jit
-def fast_zrl_src_integrand_k1(s1, L2, a1, a2, b, sigma, k=0):
+@njit
+def fast_zrl_src_integrand_k1(s1, L2, a1, a2, b, sigma, log_pre_fact=0, k=0):
+    """!TODO: Docstring for fast_zrl_src_integrand_k1.
+
+    @param s1: TODO
+    @param L2: TODO
+    @param a1: TODO
+    @param a2: TODO
+    @param b: TODO
+    @param sigma: TODO
+    @param pre_fact: TODO
+    @param k: TODO
+    @return: TODO
+
+    """
+    A = a2 - (b * s1)
+    log_pre_fact -= (s1 * (s1 - 2. * a1) - (A * A)) / (sigma * sigma)
+    pre_fact = np.power(s1, k) * np.exp(log_pre_fact)
+
+    # pre_fact = np.power(s1, k) * np.exp(log_pre_fact)
+
+    # pre_fact *= pow(s1, k) * exp(-1. *
+    # ((s1 * (s1 - 2. * a1)) - (A * A)) / (sigma * sigma))
+    I_m = semi_anti_deriv_boltz_1(-.5 * L2, s1, sigma, A)
+    I_p = semi_anti_deriv_boltz_1(.5 * L2, s1, sigma, A)
+    return pre_fact * (I_p - I_m)
+
+
+@njit
+def fast_zrl_src_integrand_k2(s1, L2, a1, a2, b, sigma, log_pre_fact=0., k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
+
+    @param s1: TODO
+    @param L2: TODO
+    @param a1: TODO
+    @param a2: TODO
+    @param b: TODO
+    @param sigma: TODO
+    @param k: TODO
+    @return: TODO
+
+    """
+    A = a2 - (b * s1)
+    log_pre_fact -= (s1 * (s1 - 2. * a1) - (A * A)) / (sigma * sigma)
+    pre_fact = np.power(s1, k) * np.exp(log_pre_fact)
+    # pre_fact *= np.power(s1, k) * np.exp(-1. *
+    # ((s1 * (s1 - 2. * a1)) - (A * A)) / (sigma * sigma))
+    I_m = semi_anti_deriv_boltz_2(-.5 * L2, s1, sigma, A)
+    I_p = semi_anti_deriv_boltz_2(.5 * L2, s1, sigma, A)
+    return pre_fact * (I_p - I_m)
+
+
+def fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0):
+    """!TODO: Docstring for fast_zrl_src_full_kl
 
     @param s1: TODO
     @param L2: TODO
@@ -155,57 +207,37 @@ def fast_zrl_src_integrand_k1(s1, L2, a1, a2, b, sigma, k=0):
     @return: TODO
 
     """
-    A = a2 - b * s1
-    pre_fact = np.power(s1, k) * np.exp(-1. *
-                                        (s1 * (s1 - a1) - A * A) / (sigma * sigma))
-    I_m = semi_anti_deriv_boltz_1(-.5 * L2, s1, sigma, A)
-    I_p = semi_anti_deriv_boltz_1(.5 * L2, s1, sigma, A)
-    return pre_fact * (I_p - I_m)
-
-
-@jit
-def fast_zrl_src_integrand_k2(s1, L2, a1, a2, b, sigma, k=0):
-    """!TODO: Docstring for fast_zrl_src_integrand_k0.
-
-    @param s1: TODO
-    @param L2: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param sigma: TODO
-    @param l: TODO
-    @return: TODO
-
-    """
-    A = a2 - b * s1
-    pre_fact = np.power(s1, k) * np.exp(-1. *
-                                        (s1 * (s1 - a1) - A * A) / (sigma * sigma))
-    I_m = semi_anti_deriv_boltz_1(-.5 * L2, s1, sigma, A)
-    I_p = semi_anti_deriv_boltz_1(.5 * L2, s1, sigma, A)
-    return pre_fact * (I_p - I_m)
-
-
-def fast_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0):
     if l == 0:
-        integrand = fast_src_integrand_k0
+        integrand = fast_zrl_src_integrand_k0
     elif l == 1:
-        integrand = fast_src_integrand_k1
+        integrand = fast_zrl_src_integrand_k1
     elif l == 2:
-        integrand = fast_src_integrand_k2
+        integrand = fast_zrl_src_integrand_k2
     else:
         raise RuntimeError(
             "{}-order derivatives have not been implemented for fast source solver.".format(l))
-
     sigma = np.sqrt(2. / (ks * beta))
-    Q, e = quad()
+    log_pre_fact = -.5 * rsqr * ks * beta
 
-    pass
+    # Non-dimensionalize to keep integral stable
+    # ND = sigma
+    # L1 /= ND
+    # L2 /= ND
+    # a1 /= ND
+    # a2 /= ND
+    # sigma /= ND
+
+    q, e = quad(integrand, -.5 * L1, .5 * L1,
+                args=(L2, a1, a2, b, sigma, log_pre_fact, k))
+    return q
+    # return np.power(ND, (2 + l + k)) * q
+
 ##################################
 #  Geometric evolution functions  #
 ##################################
 
 
-@jit
+@njit
 def avg_force_zrl(r12, u1, u2, rho, P1, P2, ks):
     """!Find the average force of zero rest length (zrl) crosslinkers on rods
 
@@ -222,7 +254,7 @@ def avg_force_zrl(r12, u1, u2, rho, P1, P2, ks):
     return -ks * (r12 * rho + P2 * u2 - P1 * u1)
 
 
-@jit
+@njit
 def dr_dt_zrl(F, u, gpara, gperp):
     """!Get the evolution of a rods postion given a force, orientation of rod,
     and drag coefficients.
@@ -239,7 +271,7 @@ def dr_dt_zrl(F, u, gpara, gperp):
     return (u * (mpara - mperp) * np.dot(F, u)) + (mperp * F)
 
 
-@jit
+@njit
 def du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
@@ -285,7 +317,8 @@ def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2):
 ################################
 
 
-def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q=None):
+def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko,
+                c, ks, beta, L1, L2, q=None):
     """!Calculate the time-derivative of the zeroth moment of the zero rest
     length crosslinkers bound to rods.
 
@@ -310,6 +343,9 @@ def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q=None):
         q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
                        lambda s2: -.5 * L2, lambda s2: .5 * L2,
                        args=[rsqr, a1, a2, b, ks, beta])
+    elif q == 'fast':
+        q = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0)
+
     return ko * (c * q - rho)
 
 
@@ -342,6 +378,11 @@ def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo,
         q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
                          args=[1, 0, rsqr, a1, a2, b, ks, beta],)
+    elif q10 == 'fast':
+        # q10 = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=1, l=0)
+        # Make coordinate transformation
+        q10 = fast_zrl_src_full_kl(
+            L2, L1, rsqr, -a2, -a1, b, ks, beta, k=0, l=1)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q10) + ((vo + kappa * a1) * rho) - ((ko + kappa) * P1)
@@ -376,6 +417,8 @@ def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo,
         q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
                          args=[0, 1, rsqr, a1, a2, b, ks, beta])
+    elif q01 == 'fast':
+        q01 = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=1)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q01) + ((vo - kappa * a2) * rho) - ((ko + kappa) * P2)
@@ -413,6 +456,8 @@ def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
         q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
                          args=[1, 1, rsqr, a1, a2, b, ks, beta])
+    elif q11 == 'fast':
+        q11 = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=1, l=1)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q11) + ((vo - kappa * a2) * P1) - ((vo + kappa * a1) * P2)
@@ -450,6 +495,11 @@ def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
         q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
                          args=[2, 0, rsqr, a1, a2, b, ks, beta])
+    elif q20 == 'fast':
+        # q20 = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=2, l=0)
+        # Make coordinate transformation
+        q20 = fast_zrl_src_full_kl(
+            L2, L1, rsqr, -a2, -a1, b, ks, beta, k=0, l=2)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q20) + (2. * (vo + kappa * a1) * P1)
@@ -488,7 +538,7 @@ def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          lambda s2: -.5 * L2, lambda s2: .5 * L2,
                          args=[0, 2, rsqr, a1, a2, b, ks, beta])
     elif q02 == 'fast':
-        q02 = fast_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=2)
+        q02 = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=2)
     # Characteristic walking rate
     kappa = vo * ks / fs
     return ((ko * c * q02) + (2. * (vo - kappa * a2) * P2) +
@@ -503,7 +553,7 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
                 rho, P1, P2, mu11, mu20, mu02,  # Moments
                 gpara1, gperp1, grot1,  # Friction coefficients
                 gpara2, gperp2, grot2,
-                vo, fs, ko, c, ks, beta, L1, L2):  # Other constants
+                vo, fs, ko, c, ks, beta, L1, L2, fast=None):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -532,6 +582,7 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     @param beta: 1/(Boltzmann's constant * Temperature)
     @param L1: Length of rod1
     @param L2: Length of rod2
+    @param fast: Flag on whether or not to use fast solving techniques
     @return: Time-derivatives of all time varying quantities in a flattened
              array
     """
@@ -551,21 +602,21 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
     drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
-                       vo, fs, ko, c, ks, beta, L1, L2)
+                       vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evoultion of first moments
     dP1 = dP1_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2)
+                     vo, fs, ko, c, ks, beta, L1, L2, fast)
     dP2 = dP2_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2)
+                     vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
     dsol = np.concatenate(
         (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite

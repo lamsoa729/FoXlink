@@ -29,10 +29,13 @@ def reparameterize_rods(R1_pos, R2_pos, R1_vec, R2_vec):
     """
     rvec = R2_pos - R1_pos
     r = np.linalg.norm(rvec)
-    if not r == 0:
+    if not np.isclose(r, 0., atol=1e-13):
         rvec = rvec / r
-    a1 = np.dot(rvec, R1_vec)
-    a2 = np.dot(rvec, R2_vec)
+        a1 = np.dot(rvec, R1_vec)
+        a2 = np.dot(rvec, R2_vec)
+    else:
+        a1 = 0.
+        a2 = 0.
     b = np.dot(R1_vec, R2_vec)
     return r, a1, a2, b
 
