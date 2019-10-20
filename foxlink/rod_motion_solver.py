@@ -63,7 +63,7 @@ class RodMotionSolver(Solver):
     """!Docstring for FPRodMotionSolver. """
 
     def __init__(self, pfile=None, pdict=None):
-        """!Set parameters of PDE system
+        """!Set parameters of system
         Note: parameter file needs viscosity in order to run
 
         @param pfile: TODO

@@ -313,7 +313,7 @@ class FokkerPlanckSolver(Solver):
         @return: index of current step
 
         """
-        i_step = ((self.t / self.dt) / self.nwrite)
+        i_step = int((self.t / self.dt) / self.nwrite)
         if not self.written:
             self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t

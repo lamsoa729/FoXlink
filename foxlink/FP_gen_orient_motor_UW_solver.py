@@ -24,7 +24,7 @@ class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
         makeSourceMat: FPGenOrientSolver
         makeForceMat: FPGenOrientSolver
         makeTorueMat: FPGenOrientSolver
-        makeDiagMats: FPUWMotorSolver
+        makeDiagMats: FPUWSolver
         Step: FPUWMotorSolver
         RodStep: None
 

@@ -19,15 +19,14 @@ class FPGenMotionMotorUWSolver(RodMotionSolver, FPGenOrientMotorUWSolver):
         """!Set parameters for PDE to be solved including boundary conditions.
 
         ParseParams: FPGenOrientSolver
-        calcSourceMat: FPGenOrientSolver
-        calcForceMat: FPGenOrientSolver
-        calcTorqueMat: FPGenOrientSolver
+        calcSourceMatrix: FPGenOrientSolver
+        calcForceMatrix: FPGenOrientSolver
+        calcTorqueMatrix: FPGenOrientSolver
         calcVelocityMats: FPGenOrientMotorUWSolver
-        makeDiagMats: FPUWMotorSolver
+        makeDiagMats: FPUWSolver
         stepUW: FPUWSolver
         Step: self
         RodStep: FPGenMotionSolver
-
 
         @param pfile: parameter file path
         @param name: name to store data under
