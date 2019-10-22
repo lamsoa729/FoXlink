@@ -460,7 +460,7 @@ def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
         q11 = fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=1, l=1)
     # Characteristic walking rate
     kappa = vo * ks / fs
-    return ((ko * c * q11) + ((vo - kappa * a2) * P1) - ((vo + kappa * a1) * P2)
+    return ((ko * c * q11) + ((vo - kappa * a2) * P1) + ((vo + kappa * a1) * P2)
             - ((ko + 2. * kappa) * mu11) + (kappa * b * (mu20 + mu02)))
 
 

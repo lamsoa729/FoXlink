@@ -93,8 +93,8 @@ class MEAnalysis(FPAnalysis):
         # self.XL_analysis_grp = touchGroup(self.analysis_grp, 'XL_analysis')
         # self.XLMomentAnalysis(self.XL_analysis_grp)
 
-        self.MT_analysis_grp = touchGroup(self.analysis_grp, 'MT_analysis')
-        self.RodGeometryAnalysis(self.MT_analysis_grp)
+        self.rod_analysis_grp = touchGroup(self.analysis_grp, 'rod_analysis')
+        self.RodGeometryAnalysis(self.rod_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()

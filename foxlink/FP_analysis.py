@@ -148,8 +148,8 @@ class FPAnalysis(object):
         self.XL_analysis_grp = touchGroup(self.analysis_grp, 'XL_analysis')
         self.XLMomentAnalysis(self.XL_analysis_grp)
 
-        self.MT_analysis_grp = touchGroup(self.analysis_grp, 'MT_analysis')
-        self.RodGeometryAnalysis(self.MT_analysis_grp)
+        self.rod_analysis_grp = touchGroup(self.analysis_grp, 'rod_analysis')
+        self.RodGeometryAnalysis(self.rod_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
@@ -223,52 +223,52 @@ class FPAnalysis(object):
             self.u20 = np.asarray(self.second_mom_dset)[:, 1]
             self.u02 = np.asarray(self.second_mom_dset)[:, 2]
 
-    def RodGeometryAnalysis(self, MT_analysis_grp, analysis_type='analyze'):
+    def RodGeometryAnalysis(self, rod_analysis_grp, analysis_type='analyze'):
         """!Analyze and store data relating to the configuration of the rods
 
-        @param MT_analysis_grp: TODO
+        @param rod_analysis_grp: TODO
         @return: TODO
 
         """
         # Analyze distance between rod center at each time step
-        if 'center_separation' not in MT_analysis_grp:
+        if 'center_separation' not in rod_analysis_grp:
             if analysis_type != 'load':
                 self.dR_arr = np.linalg.norm(
                     np.subtract(self.R2_pos, self.R1_pos), axis=1)
-                self.MT_sep_dset = MT_analysis_grp.create_dataset(
+                self.rod_sep_dset = rod_analysis_grp.create_dataset(
                     'center_separation', data=self.dR_arr, dtype=np.float32)
             else:
                 print('--- The rod center separation not analyzed or stored. ---')
         else:
-            self.MT_sep_dset = MT_analysis_grp['center_separation']
-            self.dR_arr = np.asarray(self.MT_sep_dset)
+            self.rod_sep_dset = rod_analysis_grp['center_separation']
+            self.dR_arr = np.asarray(self.rod_sep_dset)
         # Analyze angle between rods at teach time step
-        if 'angle_between' not in MT_analysis_grp:
+        if 'angle_between' not in rod_analysis_grp:
             if analysis_type != 'load':
                 self.phi_arr = np.arccos(
                     np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
-                self.MT_phi_dset = MT_analysis_grp.create_dataset(
+                self.rod_phi_dset = rod_analysis_grp.create_dataset(
                     'angle_between', data=self.phi_arr, dtype=np.float32)
             else:
                 print('--- The angle between rods not analyzed or stored. ---')
         else:
-            self.MT_phi_dset = MT_analysis_grp['angle_between']
-            self.phi_arr = np.asarray(self.MT_phi_dset)
+            self.rod_phi_dset = rod_analysis_grp['angle_between']
+            self.phi_arr = np.asarray(self.rod_phi_dset)
 
         # Minus-end(bead) separations
-        if 'overlap' not in MT_analysis_grp:
+        if 'overlap' not in rod_analysis_grp:
             if analysis_type != 'load':
                 self.overlap_arr = self.calcOverlap(self.R1_pos, self.R2_pos,
                                                     self.R1_vec, self.R2_vec,
                                                     self._params['L1'],
                                                     self._params['L2'])
-                self.MT_overlap_dset = MT_analysis_grp.create_dataset(
+                self.rod_overlap_dset = rod_analysis_grp.create_dataset(
                     'overlap', data=self.overlap_arr, dtype=np.float32)
             else:
                 print('--- The rod overlap not analyzed or stored. ---')
         else:
-            self.MT_overlap_dset = MT_analysis_grp['overlap']
-            self.overlap_arr = np.asarray(self.MT_phi_dset)
+            self.rod_overlap_dset = rod_analysis_grp['overlap']
+            self.overlap_arr = np.asarray(self.rod_phi_dset)
 
     def OTAnalysis(self):
         """!Analyze data for optically trapped rods, especially if they
@@ -284,7 +284,7 @@ class FPAnalysis(object):
         # fft_sep_arr = np.fft.rfft(sep_arr[st:])
         # TODO Get overlap array
         # fft_overlap_arr = np.fft.rfft(overlap_arr[st:])
-        # TODO Get horizontal force on MTs
+        # TODO Get horizontal force on rods
         # fft_force_arr = np.fft.rfft(force_arr[st:])
         # TODO Get trap separation
         # TODO Calculate reology components if traps are oscillating

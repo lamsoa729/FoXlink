@@ -201,7 +201,7 @@ class MomentExpansionSolver(Solver):
                   "using twrite to calculate number of steps between write out.")
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
-        self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite))
+        self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite) + 1)
         print(self.t_eval)
         self._nframes = self.t_eval.size
 
