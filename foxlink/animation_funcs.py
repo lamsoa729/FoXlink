@@ -19,7 +19,7 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
     @return: TODO
 
     """
-    fig = plt.figure(constrained_layout=True, figsize=(15, 15))
+    fig = plt.figure(constrained_layout=True, figsize=(15, 13))
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,

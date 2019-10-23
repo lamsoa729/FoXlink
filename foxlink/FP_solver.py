@@ -115,8 +115,8 @@ class FokkerPlanckSolver(Solver):
         print("Time step: ", self.dt)
         print("Total time: ", self.nt)
         print("Number of steps: ", self.nsteps)
-        print("Write out every {} steps({}secs)".format(self.nwrite,
-                                                        self.twrite))
+        print("Write out every {} steps ({} secs)".format(self.nwrite,
+                                                          self.twrite))
 
     def setInitialConditions(self):
         """! Set the initial state for the solution grid.

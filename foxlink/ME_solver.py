@@ -122,7 +122,7 @@ def choose_ODE_solver(sol, vo, fs, ko, c, ks, beta, L1,
         return evolver_zrl_closure
 
     elif ODE_type == 'zrl_stat':
-        # Compute geometric terms
+        # Compute geometric terms that will not change
         rsqr, a1, a2, b, q, q10, q01, q11, q20, q02 = prep_zrl_stat_evolver(
             sol, ks, beta, L1, L2)
 
@@ -135,7 +135,7 @@ def choose_ODE_solver(sol, vo, fs, ko, c, ks, beta, L1,
             @return: Function to ODE zrl stat
 
             """
-            sol_print_out(sol)
+            # sol_print_out(sol)
             return evolver_zrl_stat(sol[12], sol[13], sol[14],  # Moments
                                     sol[15], sol[16], sol[17],
                                     rsqr, a1, a2, b, q, q10, q01, q11, q20, q02,  # Pre-computed values
