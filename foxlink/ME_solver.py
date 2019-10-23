@@ -2,7 +2,8 @@
 from scipy.integrate import solve_ivp, dblquad
 import time
 import numpy as np
-from .ME_helpers import (evolver_zrl, evolver_zrl_stat,
+from .ME_helpers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_ang,
+                         evolver_zrl_orient,
                          boltz_fact_zrl, weighted_boltz_fact_zrl)
 from .rod_motion_solver import get_rod_drag_coeff
 from .solver import Solver
@@ -142,6 +143,49 @@ def choose_ODE_solver(sol, vo, fs, ko, c, ks, beta, L1,
                                     vo, fs, ko, c, ks, beta, L1, L2)  # Other parameters
         return evolver_zrl_stat_closure
 
+    elif ODE_type == 'zrl_ang':
+        r1, r2, u1, u2 = convert_sol_to_geom(sol)
+        r12 = r1 - r2
+
+        def evolver_zrl_ang_closure(t, sol):
+            """!Define the function of an ODE solver with zero rest length
+            crosslinking protiens and stationary rods.
+
+            @param t: Time array
+            @param sol: Solution array
+            @return: Function to ODE zrl stat
+
+            """
+            r1, r2, u1, u2 = convert_sol_to_geom(sol)
+            return evolver_zrl_ang(u1, u2,  # Vectors
+                                   sol[12], sol[13], sol[14],  # Moments
+                                   sol[15], sol[16], sol[17],
+                                   gpara1, gperp1, grot1,  # Friction coefficients
+                                   gpara2, gperp2, grot2,
+                                   r12, vo, fs, ko, c, ks, beta, L1, L2, fast='fast')  # Other parameters
+        return evolver_zrl_ang_closure
+
+    elif ODE_type == 'zrl_orient':
+        r1, r2, u1, u2 = convert_sol_to_geom(sol)
+        r12 = r1 - r2
+
+        def evolver_zrl_orient_closure(t, sol):
+            """!Define the function of an ODE solver with zero rest length
+            crosslinking protiens and stationary rods.
+
+            @param t: Time array
+            @param sol: Solution array
+            @return: Function to ODE zrl stat
+
+            """
+            r1, r2, u1, u2 = convert_sol_to_geom(sol)
+            return evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
+                                      sol[12], sol[13], sol[14],  # Moments
+                                      sol[15], sol[16], sol[17],
+                                      gpara1, gperp1, grot1,  # Friction coefficients
+                                      gpara2, gperp2, grot2,
+                                      vo, fs, ko, c, ks, beta, L1, L2, fast='fast')  # Other parameters
+        return evolver_zrl_orient_closure
     else:
         raise IOError('{} not a defined ODE equation for foxlink.')
 
