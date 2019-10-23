@@ -56,7 +56,7 @@ class FokkerPlanckSolver(Solver):
         @param pfile: parameter file for PDEs
 
         """
-        print("Init FokkerPlanckSolver -> ")
+        print("Init FokkerPlanckSolver ->", end=" ")
         Solver.__init__(self, pfile, pdict)
 
     def ParseParams(self):

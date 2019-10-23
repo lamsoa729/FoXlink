@@ -28,7 +28,6 @@ class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
         Step: FPUWMotorSolver
         RodStep: None
 
-
         @param pfile: parameter file path
         @param pdict: parameter dictionary
 

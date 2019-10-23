@@ -158,7 +158,7 @@ class MomentExpansionSolver(Solver):
         @param pfile: TODO
         @param pdict: TODO
         """
-        print("Init MomentExpansionSolver -> ", end=" ")
+        print("Init MomentExpansionSolver ->", end=" ")
         Solver.__init__(self, pfile, pdict)
 
     def ParseParams(self):
