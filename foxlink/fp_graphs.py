@@ -277,12 +277,12 @@ def me_graph_all_data_2d(fig, axarr, n, ME_anal):
                                                      ME_anal.P1[n]),
                      "P$_2$({:.2f}) = {:.1f}".format(ME_anal.time[n],
                                                      ME_anal.P2[n])])
-    axarr[5].legend(["$\mu^{{11}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
-                                                            ME_anal.u11[n]),
-                     "$\mu^{{20}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
-                                                            ME_anal.u20[n]),
-                     "$\mu^{{02}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
-                                                            ME_anal.u02[n])])
+    axarr[5].legend([r"$\mu^{{11}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
+                                                             ME_anal.u11[n]),
+                     r"$\mu^{{20}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
+                                                             ME_anal.u20[n]),
+                     r"$\mu^{{02}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
+                                                             ME_anal.u02[n])])
     return fig.gca().lines + fig.gca().collections
 
 
@@ -394,28 +394,28 @@ def fp_graph_all_data_2d(fig, axarr, n, FP_anal):
     # Legend information
     axarr[2].legend(["N({:.2f}) = {:.1f}".format(
         FP_anal.time[n], FP_anal.Nxl_arr[n])])
-    axarr[3].legend(["F$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.force_arr[n, 0]),
-                     "F$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.force_arr[n, 1])])
-    axarr[4].legend(["$T_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.torque_arr[n, 0]),
-                     "$T_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.torque_arr[n, 1])])
-    axarr[5].legend(["P$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.P1[n]),
-                     "P$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.P2[n])])
+    axarr[3].legend([r"F$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.force_arr[n, 0]),
+                     r"F$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.force_arr[n, 1])])
+    axarr[4].legend([r"$T_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.torque_arr[n, 0]),
+                     r"$T_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.torque_arr[n, 1])])
+    axarr[5].legend([r"P$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.P1[n]),
+                     r"P$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.P2[n])])
     axarr[6].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(
         FP_anal.time[n], FP_anal.dR_arr[n])])
     axarr[7].legend([r"$\phi$({:.2f}) = {:.1f} rad".format(
         FP_anal.time[n], FP_anal.phi_arr[n])])
-    axarr[8].legend(["$\mu^{{11}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                            FP_anal.u11[n]),
-                     "$\mu^{{20}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                            FP_anal.u20[n]),
-                     "$\mu^{{02}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                            FP_anal.u02[n])])
+    axarr[8].legend([r"$\mu^{{11}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                             FP_anal.u11[n]),
+                     r"$\mu^{{20}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                             FP_anal.u20[n]),
+                     r"$\mu^{{02}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                             FP_anal.u02[n])])
     return fig.gca().lines + fig.gca().collections
 
 
@@ -508,26 +508,26 @@ def fp_graph_moment_data_2d(fig, axarr, n, FP_anal):
     graph_vs_time(axarr[6], FP_anal.time, FP_anal.torque_arr[:, 1], n,
                   color='tab:purple')
     # Legend information
-    axarr[2].legend(["N({:.2f}) = {:.1f}".format(
+    axarr[2].legend([r"N({:.2f}) = {:.1f}".format(
         FP_anal.time[n], FP_anal.Nxl_arr[n])])
-    axarr[3].legend(["P$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.P1[n]),
-                     "P$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.P2[n])])
-    axarr[4].legend(["$\mu^{{11}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                            FP_anal.u11[n]),
-                     "$\mu^{{20}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                            FP_anal.u20[n]),
-                     "$\mu^{{02}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                            FP_anal.u02[n])])
-    axarr[5].legend(["F$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.force_arr[n, 0]),
-                     "F$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.force_arr[n, 1])])
-    axarr[6].legend(["$T_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.torque_arr[n, 0]),
-                     "$T_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
-                                                     FP_anal.torque_arr[n, 1])])
+    axarr[3].legend([r"P$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.P1[n]),
+                     r"P$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.P2[n])])
+    axarr[4].legend([r"$\mu^{{11}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                             FP_anal.u11[n]),
+                     r"$\mu^{{20}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                             FP_anal.u20[n]),
+                     r"$\mu^{{02}}$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                             FP_anal.u02[n])])
+    axarr[5].legend([r"F$_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.force_arr[n, 0]),
+                     r"F$_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.force_arr[n, 1])])
+    axarr[6].legend([r"$T_1$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.torque_arr[n, 0]),
+                     r"$T_2$({:.2f}) = {:.1f}".format(FP_anal.time[n],
+                                                      FP_anal.torque_arr[n, 1])])
     return fig.gca().lines + fig.gca().collections
 
 

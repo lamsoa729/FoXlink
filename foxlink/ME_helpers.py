@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from scipy.integrate import solve_ivp, quad, dblquad
 # from scipy.special import erf
-from math import erf, pow, exp, log
+from math import erf, exp, log
 import numpy as np
 from numba import jit, njit
 

@@ -2,10 +2,8 @@
 # In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
 from pathlib import Path
 import time
-import numpy as np
 import yaml
 import h5py
-from scipy import sparse
 from copy import deepcopy as dcp
 
 
