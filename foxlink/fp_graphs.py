@@ -222,7 +222,7 @@ def me_graph_all_data_2d(fig, axarr, n, ME_anal):
     axarr[5].set_xlabel(r'Time (sec)')
     axarr[5].set_ylabel(r'Second moments (nm$^2$)')
     axarr[5].set_xlim(left=0, right=ME_anal.time[-1])
-    axarr[5].set_ylim(np.amin(ME_anal.mu_nn), np.amax(ME_anal.mu_nn))
+    axarr[5].set_ylim(np.amin(ME_anal.mu_kl), np.amax(ME_anal.mu_kl))
 
     # Draw rods
     graph_2d_rod_diagram(axarr[0], ME_anal, n)

@@ -8,6 +8,7 @@ import yaml
 
 from .FP_analysis import FPAnalysis, touchGroup
 from .fp_graphs import me_graph_all_data_2d  # TODO change to graph functions
+from .ME_helpers import avg_force_zrl
 
 """@package docstring
 File: ME_analysis.py
@@ -51,16 +52,16 @@ class MEAnalysis(FPAnalysis):
             self.OT1_pos = None
             self.OT2_pos = None
 
-        self.rho = self._h5_data['/XL_data/zeroth_moment']
+        self.rho = np.asarray(self._h5_data['/XL_data/zeroth_moment'])
         self.P_n = self._h5_data['/XL_data/first_moments']
         # TODO get rid of these eventually
-        self.P1 = self.P_n[:, 0]
-        self.P2 = self.P_n[:, 1]
+        self.P1 = np.asarray(self.P_n[:, 0])
+        self.P2 = np.asarray(self.P_n[:, 1])
 
-        self.mu_lk = self._h5_data['/XL_data/second_moments']
-        self.u11 = self.mu_lk[:, 0]
-        self.u20 = self.mu_lk[:, 1]
-        self.u02 = self.mu_lk[:, 2]
+        self.mu_kl = self._h5_data['/XL_data/second_moments']
+        self.u11 = np.asarray(self.mu_kl[:, 0])
+        self.u20 = np.asarray(self.mu_kl[:, 1])
+        self.u02 = np.asarray(self.mu_kl[:, 2])
 
     ########################
     #  Analysis functions  #
@@ -115,14 +116,16 @@ class MEAnalysis(FPAnalysis):
         if 'force' not in interaction_grp:
             if analysis_type != 'load':
                 ks = self._params['ks']
-                self.dR_arr = np.subtract(self.R2_pos, self.R1_pos)
-                self.force_vec_arr = avg_force_zrl(
-                    r12, self.R1_vec, self.R2_vec, self.P1, self.P2, ks)
-                self.force_vec_dset = interaction_grp.create_dset(
-                    'force_vector', data=self.force12, dtype=np.float32)
+                self.dR_vec_arr = np.subtract(self.R2_pos, self.R1_pos)
+                self.force_vec_arr = -ks * (np.multiply(self.dR_vec_arr, self.rho[:, None]) +
+                                            np.multiply(self.P2[:, None], self.R2_vec) -
+                                            np.multiply(self.P1[:, None], self.R1_vec))
 
-                self.force_arr = np.linalg.norm(force12, axis=1)
-                self.force_mag_dset = interaction_grp.create_dset(
+                self.force_vec_dset = interaction_grp.create_dataset(
+                    'force_vector', data=self.force_vec_arr, dtype=np.float32)
+
+                self.force_arr = np.linalg.norm(self.force_vec_arr, axis=1)
+                self.force_mag_dset = interaction_grp.create_dataset(
                     'force_magnitude', data=self.force_arr, dtype=np.float32)
             else:
                 print('--- The force on rods not analyzed or stored. ---')
