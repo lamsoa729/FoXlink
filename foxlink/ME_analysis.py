@@ -57,10 +57,10 @@ class MEAnalysis(FPAnalysis):
         self.P1 = self.P_n[:, 0]
         self.P2 = self.P_n[:, 1]
 
-        self.mu_nn = self._h5_data['/XL_data/second_moments']
-        self.u11 = self.mu_nn[:, 0]
-        self.u20 = self.mu_nn[:, 1]
-        self.u02 = self.mu_nn[:, 2]
+        self.mu_lk = self._h5_data['/XL_data/second_moments']
+        self.u11 = self.mu_lk[:, 0]
+        self.u20 = self.mu_lk[:, 1]
+        self.u02 = self.mu_lk[:, 2]
 
     ########################
     #  Analysis functions  #
@@ -95,11 +95,44 @@ class MEAnalysis(FPAnalysis):
         self.rod_analysis_grp = touchGroup(self.analysis_grp, 'rod_analysis')
         self.RodGeometryAnalysis(self.rod_analysis_grp)
 
+        self.interact_analysis_grp = touchGroup(self.analysis_grp,
+                                                'interaction_analysis')
+        self.ForceAnalysis(self.interact_analysis_grp)
+
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
+
+    def ForceAnalysis(self, interaction_grp, analysis_type='analyze'):
+        """!TODO: Docstring for ForceInteractionAnalysis.
+
+        @param grp: TODO
+        @return: TODO
+
+        """
+        if 'force' not in interaction_grp:
+            if analysis_type != 'load':
+                ks = self._params['ks']
+                self.dR_arr = np.subtract(self.R2_pos, self.R1_pos)
+                self.force_vec_arr = avg_force_zrl(
+                    r12, self.R1_vec, self.R2_vec, self.P1, self.P2, ks)
+                self.force_vec_dset = interaction_grp.create_dset(
+                    'force_vector', data=self.force12, dtype=np.float32)
+
+                self.force_arr = np.linalg.norm(force12, axis=1)
+                self.force_mag_dset = interaction_grp.create_dset(
+                    'force_magnitude', data=self.force_arr, dtype=np.float32)
+            else:
+                print('--- The force on rods not analyzed or stored. ---')
+        else:
+            self.force_vec_dset = interaction_grp['force_vector']
+            self.force_vec_arr = np.asarray(self.force_vec_dset)
+            self.force_mag_dset = interaction_grp['force_magnitude']
+            self.force_arr = np.asarray(self.force_mag_dset)
+
+            # self.dR_arr = np.asarray(self.rod_sep_dset)
 
     ########################
     #  Graphing functions  #
