@@ -9,7 +9,7 @@ L2: 1000. # Length of microtubule 2
 R1_pos: [0., 0., 0.]
 R2_pos: [0., 0., 0.]
 R1_vec: [0., 1., 0.]
-R2_vec: [0., -1., 0.]
+R2_vec: [0., 0., 1.]
 rod_diameter: 25 # nm
 
 # Integration parameters

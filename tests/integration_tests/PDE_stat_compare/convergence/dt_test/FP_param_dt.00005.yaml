@@ -1,0 +1,34 @@
+beta: 0.243309002
+viscosity: 1.0e-06
+L1: 1000.0
+L2: 1000.0
+R1_pos:
+- 0.0
+- 0.0
+- 0.0
+R2_pos:
+- 0.0
+- 0.0
+- 0.0
+R1_vec:
+- 0.0
+- 1.0
+- 0.0
+R2_vec:
+- 0.0
+- -1.0
+- 0.0
+rod_diameter: 25
+dt: 5.0e-05
+nt: 5
+ds: 2.0
+ko: 28.0
+co: 0.001
+ks: 0.1
+ho: 0.0
+vo: 500.0
+fs: 1.0
+twrite: 0.05
+initial_condition: empty
+end_pause: false
+solver_type: FPGenOrientMotorUWSolver
