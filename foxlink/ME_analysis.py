@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-import time
 import numpy as np
 import matplotlib.pyplot as plt
 # from matplotlib.lines import Line2D
 import h5py
 import yaml
+import time
 
 from .FP_analysis import FPAnalysis, touchGroup
 from .fp_graphs import me_graph_all_data_2d  # TODO change to graph functions
-from .ME_helpers import avg_force_zrl
+from .ME_zrl_helpers import avg_force_zrl
 
 """@package docstring
 File: ME_analysis.py

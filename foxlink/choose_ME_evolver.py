@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-from scipy.integrate import quad, dblquad
 import numpy as np
+from .ME_helpers import convert_sol_to_geom, sol_print_out
 from .ME_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_ang,
-                              evolver_zrl_orient)
+                              evolver_zrl_orient, prep_zrl_stat_evolver)
 from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
                              fast_zrl_src_full_kl)
 from .rod_motion_solver import get_rod_drag_coeff
@@ -13,63 +13,6 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
-
-
-def convert_sol_to_geom(sol):
-    return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
-
-
-def sol_print_out(sol):
-    """!Print out current solution to solver
-
-    @param r1: Center of mass postion of rod1
-    @param r2: Center of mass position of rod2
-    @param u1: Orientation unit vector of rod1
-    @param u2: Orientation unit vector of rod2
-    @param sol: Full solution array of ODE
-    @return: void
-
-    """
-    r1, r2, u1, u2 = convert_sol_to_geom(sol)
-    print ("Step-> r1:", r1, ", r2:", r2, ", u1:", u1, ", u2:", u2)
-    print ("       rho:{}, P1:{}, P2:{}, mu11:{}, mu20:{}, mu02:{}".format(
-        sol[12], sol[13], sol[14],
-        sol[15], sol[16], sol[17]))
-
-
-def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
-    """!TODO: Docstring for prep_zrl_stat_evolver.
-
-    @param arg1: TODO
-    @return: TODO
-
-    """
-    r1, r2, u1, u2 = convert_sol_to_geom(sol)
-    r12 = r2 - r1
-    rsqr = np.dot(r12, r12)
-    a1 = np.dot(r12, u1)
-    a2 = np.dot(r12, u2)
-    b = np.dot(u1, u2)
-
-    q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
-                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                   args=[rsqr, a1, a2, b, ks, beta])
-    q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[1, 0, rsqr, a1, a2, b, ks, beta],)
-    q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[0, 1, rsqr, a1, a2, b, ks, beta])
-    q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[1, 1, rsqr, a1, a2, b, ks, beta])
-    q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[2, 0, rsqr, a1, a2, b, ks, beta])
-    q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[0, 2, rsqr, a1, a2, b, ks, beta])
-    return rsqr, a1, a2, b, q, q10, q01, q11, q20, q02
 
 
 def choose_ME_evolver(sol, vo, fs, ko, c, ks, beta, L1,

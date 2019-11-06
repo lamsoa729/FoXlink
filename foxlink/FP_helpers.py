@@ -50,64 +50,6 @@ def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
 #                    General orientation functions                    #
 #######################################################################
 
-@jit
-def spring_force(s1, s2, r, a1, a2, b, ks, ho):
-    """!Spring force that is generated on rod2 by rod1
-
-    @param s1: TODO
-    @param s2: TODO
-    @param r: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param ks: TODO
-    @param ho: TODO
-    @return: TODO
-
-    """
-    return -1. * ks * (sqrt(r**2 + s1**2 + s2**2 - 2. * s1 * s2 *
-                            b + 2. * r * (s2 * a2 - s1 * a1)) - ho)
-
-
-@jit
-def calc_alpha(s1, s2, r, a1, a2, b, ks, ho, beta):
-    """!Calculate the exponent of the crosslinker's boltzmans factor
-
-    @param s1: TODO
-    @param s2: TODO
-    @param r: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param k: TODO
-    @param ho: TODO
-    @param beta: TODO
-    @return: TODO
-
-    """
-    return -.5 * beta * (spring_force(s1, s2, r, a1, a2, b, ks, ho)**2) / ks
-
-
-@jit
-def boltz_fact(s1, s2, r, a1, a2, b, ks, ho, beta):
-    """!TODO: Calculate the boltzmann factor for a given configuration
-
-    @param r: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param co: TODO
-    @param ks: TODO
-    @param ho: TODO
-    @param beta: TODO
-    @return: return boltzmann factor multiplied associated binding concentration
-
-    """
-    alpha = calc_alpha(s1, s2, r, a1, a2, b, ks, ho, beta)
-    return exp(alpha)
-
-
-# @njit
 @njit(parallel=True)
 def boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta):
     """! Calculate the boltzmann factor for a given configuration of rods
@@ -289,28 +231,4 @@ def make_ang_source_mat(s1_arr, s2_arr, phi, ko, co, ks, ho, beta):
             bf = boltz_fact_ang(s1_arr[i], s2_arr[j], phi, ks, ho, beta)
             if bf > 10e-8:
                 src[i, j] = co * bf
-    return sparse.csc_matrix(src)
-
-#######################################################################
-#                   Parallel orientation functions                    #
-#######################################################################
-
-
-def make_para_source_mat(s1_arr, s2_arr, R_pos, ko, co, ks, ho, beta):
-    """!TODO: Docstring for make_para_source_mat.
-    @param : TODO
-    @return: TODO
-    """
-
-    src = np.zeros((s1_arr.size, s2_arr.size))
-    r_vec = np.array(R_pos)
-
-    r = np.linalg.norm(r_vec)
-    a1 = r_vec[0] / r
-    a2 = r_vec[0] / r
-    for i in range(s1_arr.size):
-        for j in range(s2_arr.size):
-            bf = boltz_fact(s1_arr[i], s2_arr[j], r, a1, a2, 1., ks, ho, beta)
-            if bf > 10e-8:
-                src[i, j] = ko * co * bf
     return sparse.csc_matrix(src)

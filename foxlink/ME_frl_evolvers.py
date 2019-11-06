@@ -1,21 +1,15 @@
 #!/usr/bin/env python
-import numpy as np
-from scipy.integrate import dblquad
-from .ME_zrl_ODEs import (dr_dt_zrl, du1_dt_zrl, du2_dt_zrl,
-                          drho_dt_zrl, dP1_dt_zrl, dP2_dt_zrl,
-                          dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
-from .ME_zrl_helpers import avg_force_zrl
 
 """@package docstring
-File: ME_zrl_ODEs.py
+File: ME_frl_evolvers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
-    """!TODO: Docstring for prep_zrl_stat_evolver.
+def prep_frl_stat_2order_evolver(sol, ks, beta, L1, L2):
+    """!TODO: Docstring for prep_frl_stat_evolver.
 
     @param arg1: TODO
     @return: TODO
@@ -28,34 +22,34 @@ def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
     a2 = np.dot(r12, u2)
     b = np.dot(u1, u2)
 
-    q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
+    q, e = dblquad(boltz_fact, -.5 * L1, .5 * L1,
                    lambda s2: -.5 * L2, lambda s2: .5 * L2,
                    args=[rsqr, a1, a2, b, ks, beta])
-    q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+    q10, e = dblquad(weighted_boltz_fact, -.5 * L1, .5 * L1,
                      lambda s2: -.5 * L2, lambda s2: .5 * L2,
                      args=[1, 0, rsqr, a1, a2, b, ks, beta],)
-    q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+    q01, e = dblquad(weighted_boltz_fact, -.5 * L1, .5 * L1,
                      lambda s2: -.5 * L2, lambda s2: .5 * L2,
                      args=[0, 1, rsqr, a1, a2, b, ks, beta])
-    q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+    q11, e = dblquad(weighted_boltz_fact, -.5 * L1, .5 * L1,
                      lambda s2: -.5 * L2, lambda s2: .5 * L2,
                      args=[1, 1, rsqr, a1, a2, b, ks, beta])
-    q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+    q20, e = dblquad(weighted_boltz_fact, -.5 * L1, .5 * L1,
                      lambda s2: -.5 * L2, lambda s2: .5 * L2,
                      args=[2, 0, rsqr, a1, a2, b, ks, beta])
-    q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
+    q02, e = dblquad(weighted_boltz_fact, -.5 * L1, .5 * L1,
                      lambda s2: -.5 * L2, lambda s2: .5 * L2,
                      args=[0, 2, rsqr, a1, a2, b, ks, beta])
     return rsqr, a1, a2, b, q, q10, q01, q11, q20, q02
 
 
-def evolver_zrl(r1, r2, u1, u2,  # Vectors
+def evolver_frl(r1, r2, u1, u2,  # Vectors
                 rho, P1, P2, mu11, mu20, mu02,  # Moments
                 gpara1, gperp1, grot1,  # Friction coefficients
                 gpara2, gperp2, grot2,
                 vo, fs, ko, c, ks, beta, L1, L2, fast=None):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
-    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+    evolution of the Fokker-Planck equation of zero rest length (frl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
 
     @param r1: Center of mass postion of rod1
@@ -93,29 +87,29 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     a2 = np.dot(r12, u2)
     b = np.dot(u1, u2)
     # Get average force of crosslinkers on rod2
-    F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    F12 = avg_force_frl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of rod positions
-    dr1 = dr_dt_zrl(-1. * F12, u1, gpara1, gperp1)
-    dr2 = dr_dt_zrl(F12, u2, gpara2, gperp2)
+    dr1 = dr_dt_frl(-1. * F12, u1, gpara1, gperp1)
+    dr2 = dr_dt_frl(F12, u2, gpara2, gperp2)
     # Evolution of orientation vectors
-    du1 = du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
-    du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
+    du1 = du1_dt_frl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
+    du2 = du2_dt_frl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
-    drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
+    drho = drho_dt_frl(rho, rsqr, a1, a2, b,
                        vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evoultion of first moments
-    dP1 = dP1_dt_zrl(rho, P1, P2,
+    dP1 = dP1_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dP2 = dP2_dt_zrl(rho, P1, P2,
+    dP2 = dP2_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu11 = dmu11_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu20 = dmu20_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu02 = dmu02_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
     dsol = np.concatenate(
         (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
@@ -127,14 +121,14 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     return dsol
 
 
-def evolver_zrl_ang(u1, u2,  # Vectors
+def evolver_frl_ang(u1, u2,  # Vectors
                     rho, P1, P2, mu11, mu20, mu02,  # Moments
                     gpara1, gperp1, grot1,  # Friction coefficients
                     gpara2, gperp2, grot2,
                     r12, rsqr, vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
                     fast=None):
     """!Calculate all time derivatives necessary to solve the moment expansion
-    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+    evolution of the Fokker-Planck equation of zero rest length (frl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
 
     @param u1: Orientation unit vector of rod1
@@ -169,29 +163,29 @@ def evolver_zrl_ang(u1, u2,  # Vectors
     a2 = np.dot(r12, u2)
     b = np.dot(u1, u2)
     # Get average force of crosslinkers on rod2
-    # F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    # F12 = avg_force_frl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of rod positions
-    # dr1 = dr_dt_zrl(-1. * F12, u1, gpara1, gperp1)
-    # dr2 = dr_dt_zrl(F12, u2, gpara2, gperp2)
+    # dr1 = dr_dt_frl(-1. * F12, u1, gpara1, gperp1)
+    # dr2 = dr_dt_frl(F12, u2, gpara2, gperp2)
     # Evolution of orientation vectors
-    du1 = du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
-    du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
+    du1 = du1_dt_frl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
+    du2 = du2_dt_frl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
-    drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
+    drho = drho_dt_frl(rho, rsqr, a1, a2, b,
                        vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evoultion of first moments
-    dP1 = dP1_dt_zrl(rho, P1, P2,
+    dP1 = dP1_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dP2 = dP2_dt_zrl(rho, P1, P2,
+    dP2 = dP2_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu11 = dmu11_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu20 = dmu20_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu02 = dmu02_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
     dsol = np.concatenate(
         (rod_change_arr, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
@@ -203,15 +197,16 @@ def evolver_zrl_ang(u1, u2,  # Vectors
     return dsol
 
 
-def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
+def evolver_frl_orient(r1, r2, u1, u2,  # Vectors
                        rho, P1, P2, mu11, mu20, mu02,  # Moments
                        gpara1, gperp1, grot1,  # Friction coefficients
                        gpara2, gperp2, grot2,
                        vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
                        fast=None):
     """!Calculate all time derivatives necessary to solve the moment expansion
-    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
-    bound to moving rods. d<var> is the time derivative of corresponding variable
+    evolution of the Fokker-Planck equation of with motor proteins of
+    finite rest length (frl) crosslinkers bound to moving rods. d<var> is the
+    time derivative of corresponding variable
 
     @param u1: Orientation unit vector of rod1
     @param u2: Orientation unit vector of rod2
@@ -245,29 +240,29 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
     a2 = np.dot(r12, u2)
     b = np.dot(u1, u2)
     # Get average force of crosslinkers on rod2
-    F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    F12 = avg_force_frl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of rod positions
-    dr1 = dr_dt_zrl(-1. * F12, u1, gpara1, gperp1)
-    dr2 = dr_dt_zrl(F12, u2, gpara2, gperp2)
+    dr1 = dr_dt_frl(-1. * F12, u1, gpara1, gperp1)
+    dr2 = dr_dt_frl(F12, u2, gpara2, gperp2)
     # Evolution of orientation vectors
-    # du1 = du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
-    # du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
+    # du1 = du1_dt_frl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
+    # du2 = du2_dt_frl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
-    drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
+    drho = drho_dt_frl(rho, rsqr, a1, a2, b,
                        vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evoultion of first moments
-    dP1 = dP1_dt_zrl(rho, P1, P2,
+    dP1 = dP1_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dP2 = dP2_dt_zrl(rho, P1, P2,
+    dP2 = dP2_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, fast)
     # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu11 = dmu11_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu20 = dmu20_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
-    dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu02 = dmu02_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
     dsol = np.concatenate(
         (dr1, dr2, orient_change_arr, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
@@ -279,11 +274,11 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
     return dsol
 
 
-def evolver_zrl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
+def evolver_frl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
                      rsqr, a1, a2, b, q, q10, q01, q11, q20, q02,  # Pre-computed values
                      vo, fs, ko, c, ks, beta, L1, L2):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
-    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+    evolution of the Fokker-Planck equation of zero rest length (frl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
 
     @param rho: Zeroth motor moment
@@ -310,23 +305,23 @@ def evolver_zrl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
     # Define useful parameters for functions
     rod_change_arr = np.zeros(12)
     # Get average force of crosslinkers on rod2
-    # F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
+    # F12 = avg_force_frl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of zeroth moment
-    drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
+    drho = drho_dt_frl(rho, rsqr, a1, a2, b,
                        vo, fs, ko, c, ks, beta, L1, L2, q)
     # Evoultion of first moments
-    dP1 = dP1_dt_zrl(rho, P1, P2,
+    dP1 = dP1_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, q10)
-    dP2 = dP2_dt_zrl(rho, P1, P2,
+    dP2 = dP2_dt_frl(rho, P1, P2,
                      rsqr, a1, a2, b,
                      vo, fs, ko, c, ks, beta, L1, L2, q01)
     # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu11 = dmu11_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11)
-    dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu20 = dmu20_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20)
-    dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
+    dmu02 = dmu02_dt_frl(rho, P1, P2, mu11, mu20, mu02, rsqr,
                          a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02)
     dsol = np.concatenate(
         (rod_change_arr, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
