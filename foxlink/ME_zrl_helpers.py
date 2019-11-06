@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-from scipy.integrate import solve_ivp, quad, dblquad
-# from scipy.special import erf
-from math import erf, exp, log
 import numpy as np
+from scipy.integrate import quad, dblquad
+from math import erf, exp, log
 from numba import jit, njit
 
 """@package docstring
@@ -17,7 +16,7 @@ Description:
 ###################################
 
 
-@jit
+@njit
 def boltz_fact_zrl(s1, s2, rsqr, a1, a2, b, ks, beta):
     """!Boltzmann factor for a zero rest length crosslinking motor bound to two rods
 
@@ -37,7 +36,7 @@ def boltz_fact_zrl(s1, s2, rsqr, a1, a2, b, ks, beta):
                                      2. * (s2 * a2 - s1 * a1)))
 
 
-@jit
+@njit
 def weighted_boltz_fact_zrl(s1, s2, pow1, pow2, rsqr, a1, a2, b, ks, beta):
     """!Boltzmann factor for a zero rest length crosslinking motor bound to two
     rods multiplied by s1 and s2 raised to specified powers
@@ -218,15 +217,6 @@ def fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0):
             "{}-order derivatives have not been implemented for fast source solver.".format(l))
     sigma = np.sqrt(2. / (ks * beta))
     log_pre_fact = -.5 * rsqr * ks * beta
-
-    # Non-dimensionalize to keep integral stable
-    # ND = sigma
-    # L1 /= ND
-    # L2 /= ND
-    # a1 /= ND
-    # a2 /= ND
-    # sigma /= ND
-
     q, e = quad(integrand, -.5 * L1, .5 * L1,
                 args=(L2, a1, a2, b, sigma, log_pre_fact, k))
     return q
