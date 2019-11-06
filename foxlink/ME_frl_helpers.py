@@ -80,10 +80,10 @@ def avg_force_frl(r12, u1, u2, rsqr, a1, a2, b, rho, P1, P2,
     return: Vector of force from rod1 on rod2
 
     """
-    dhr2 = (ho * ho) - rsqr
-    return (-ks * ((dhr2 * rho + 2. * (a1 * P1 - a2 * P2 + b * mu11) - mu20 - mu02) * r12
-        + (-dhr2 * P1 + 2. * (a2 * mu11 - a1 * mu20 - b * mu21) + mu12 + mu30) * u1
-        + (dhr2 * P2 + 2. * (a1 * mu11 - a2 * mu02 + b * mu12) - mu21 - mu03) * u2))
+    drh2 = rsqr - (ho * ho)
+    return (-ks * ((-drh2 * rho + 2. * (a1 * P1 - a2 * P2 + b * mu11) - mu20 - mu02) * r12
+        + (drh2 * P1 + 2. * (a2 * mu11 - a1 * mu20 - b * mu21) + mu12 + mu30) * u1
+        + (-drh2 * P2 + 2. * (a1 * mu11 - a2 * mu02 + b * mu12) - mu21 - mu03) * u2))
 
 
 @njit
@@ -101,8 +101,8 @@ def avg_force_frl_2order(r12, u1, u2, rsqr, a1, a2, b,
     return: Vector of force from rod1 on rod2
 
     """
-    dhr2 = (ho * ho) - rsqr
-    return -ks * ((dhr2 * rho + 2. * (a1 * P1 - a2 * P2 + b * mu11) - mu20 - mu02) * r12  
-            + (-dhr2 * P1 + 2. * (a2 * mu11 - a1 * mu20 )) * u1 
-            + (dhr2 * P2 + 2. * (a1 * mu11 - a2 * mu02 )) * u2)
+    drh2 = rsqr - (ho * ho)
+    return -ks * ((-drh2 * rho + 2. * (a1 * P1 - a2 * P2 + b * mu11) - mu20 - mu02) * r12  
+            + (drh2 * P1 + 2. * (a2 * mu11 - a1 * mu20 )) * u1 
+            + (-drh2 * P2 + 2. * (a1 * mu11 - a2 * mu02 )) * u2)
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import numpy as np
 from scipy.integrate import dblquad
-from .ME_zrl_ODEs import (dr_dt_zrl, du1_dt_zrl, du2_dt_zrl,
+from .ME_helpers import dr_dt
+from .ME_zrl_ODEs import (du1_dt_zrl, du2_dt_zrl,
                           drho_dt_zrl, dP1_dt_zrl, dP2_dt_zrl,
                           dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
 from .ME_zrl_helpers import avg_force_zrl
@@ -95,8 +96,8 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     # Get average force of crosslinkers on rod2
     F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of rod positions
-    dr1 = dr_dt_zrl(-1. * F12, u1, gpara1, gperp1)
-    dr2 = dr_dt_zrl(F12, u2, gpara2, gperp2)
+    dr1 = dr_dt(-1. * F12, u1, gpara1, gperp1)
+    dr2 = dr_dt(F12, u2, gpara2, gperp2)
     # Evolution of orientation vectors
     du1 = du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
     du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
@@ -247,8 +248,8 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
     # Get average force of crosslinkers on rod2
     F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of rod positions
-    dr1 = dr_dt_zrl(-1. * F12, u1, gpara1, gperp1)
-    dr2 = dr_dt_zrl(F12, u2, gpara2, gperp2)
+    dr1 = dr_dt(-1. * F12, u1, gpara1, gperp1)
+    dr2 = dr_dt(F12, u2, gpara2, gperp2)
     # Evolution of orientation vectors
     # du1 = du1_dt_zrl(r12, u1, u2, P1, mu11, a1, b, ks, grot1)
     # du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
