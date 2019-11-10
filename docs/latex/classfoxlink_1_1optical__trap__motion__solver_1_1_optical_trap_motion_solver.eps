@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 93.283582
+%%BoundingBox: 0 0 500 74.626866
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,12 +19,12 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 5.360000 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 6.700000 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
-/rows 5 def
+/rows 4 def
 /cols 2 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
@@ -176,7 +176,6 @@ boxfont setfont
 (foxlink.optical_trap_motion_solver.OpticalTrapMotionSolver) cw
 (foxlink.rod_motion_solver.RodMotionSolver) cw
 (foxlink.solver.Solver) cw
-(object) cw
 (foxlink.FP_OT_gen_motion_motor_UW_solver.FPOpticalTrapGenMotionMotorUWSolver) cw
 (foxlink.FP_OT_gen_motion_static_xlinks_solver.FPOpticalTrapGenMotionStaticXlinksSolver) cw
 /boxwidth boxwidth marginwidth 2 mul add def
@@ -193,7 +192,6 @@ boundx scalefactor div boundy scalefactor div scale
  (foxlink.optical_trap_motion_solver.OpticalTrapMotionSolver) 0.500000 1.000000 box
  (foxlink.rod_motion_solver.RodMotionSolver) 0.500000 2.000000 box
  (foxlink.solver.Solver) 0.500000 3.000000 box
- (object) 0.500000 4.000000 box
  (foxlink.FP_OT_gen_motion_motor_UW_solver.FPOpticalTrapGenMotionMotorUWSolver) 0.000000 0.000000 box
  (foxlink.FP_OT_gen_motion_static_xlinks_solver.FPOpticalTrapGenMotionStaticXlinksSolver) 1.000000 0.000000 box
 
@@ -207,10 +205,6 @@ solid
 0 0.500000 2.000000 out
 solid
 1 0.500000 3.000000 in
-solid
-0 0.500000 3.000000 out
-solid
-1 0.500000 4.000000 in
 solid
 1 0.500000 0.250000 out
 solid

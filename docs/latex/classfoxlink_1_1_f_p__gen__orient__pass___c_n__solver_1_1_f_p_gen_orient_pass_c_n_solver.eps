@@ -5,7 +5,7 @@
 %%For: 
 %Magnification: 1.00
 %%Orientation: Portrait
-%%BoundingBox: 0 0 500 148.883375
+%%BoundingBox: 0 0 500 124.069479
 %%Pages: 0
 %%BeginSetup
 %%EndSetup
@@ -19,12 +19,12 @@
 /marginwidth 10 def
 /distx 20 def
 /disty 40 def
-/boundaspect 3.358333 def  % aspect ratio of the BoundingBox (width/height)
+/boundaspect 4.030000 def  % aspect ratio of the BoundingBox (width/height)
 /boundx 500 def
 /boundy boundx boundaspect div def
 /xspacing 0 def
 /yspacing 0 def
-/rows 6 def
+/rows 5 def
 /cols 2 def
 /scalefactor 0 def
 /boxfont /Times-Roman findfont fontheight scalefont def
@@ -180,9 +180,7 @@ boxfont setfont
 (foxlink.FP_CN_solver.FPCNSolver) cw
 (foxlink.solver.Solver) cw
 (foxlink.FP_solver.FokkerPlanckSolver) cw
-(object) cw
 (foxlink.solver.Solver) cw
-(object) cw
 /boxwidth boxwidth marginwidth 2 mul add def
 /xspacing boxwidth distx add def
 /yspacing boxheight disty add def
@@ -201,9 +199,7 @@ boundx scalefactor div boundy scalefactor div scale
  (foxlink.FP_CN_solver.FPCNSolver) 1.000000 2.000000 box
  (foxlink.solver.Solver) 0.000000 3.000000 box
  (foxlink.FP_solver.FokkerPlanckSolver) 1.000000 3.000000 box
- (object) 0.000000 4.000000 box
  (foxlink.solver.Solver) 1.000000 4.000000 box
- (object) 1.000000 5.000000 box
 
 % ----- relations -----
 
@@ -230,16 +226,8 @@ solid
 solid
 1 0.000000 3.000000 in
 solid
-0 0.000000 3.000000 out
-solid
 1 1.000000 3.000000 in
 solid
 0 1.000000 3.000000 out
 solid
-1 0.000000 4.000000 in
-solid
 1 1.000000 4.000000 in
-solid
-0 1.000000 4.000000 out
-solid
-1 1.000000 5.000000 in

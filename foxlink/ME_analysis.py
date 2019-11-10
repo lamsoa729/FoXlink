@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+
+"""@package docstring
+File: ME_analysis.py
+Author: Adam Lamson
+Email: adam.lamson@colorado.edu
+Description: File containing classes to analyze data, make movies, and
+create graphs from ODE moment expansionruns
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 # from matplotlib.lines import Line2D
@@ -8,15 +16,6 @@ import time
 
 from .FP_analysis import FPAnalysis, touchGroup
 from .fp_graphs import me_graph_all_data_2d  # TODO change to graph functions
-from .ME_zrl_helpers import avg_force_zrl
-
-"""@package docstring
-File: ME_analysis.py
-Author: Adam Lamson
-Email: adam.lamson@colorado.edu
-Description: File containing classes to analyze data, make movies, and
-create graphs from ODE moment expansionruns
-"""
 
 
 class MEAnalysis(FPAnalysis):
