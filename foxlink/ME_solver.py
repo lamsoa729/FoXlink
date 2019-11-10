@@ -1,9 +1,4 @@
 #!/usr/bin/env python
-import time
-import numpy as np
-from scipy.integrate import solve_ivp
-from .choose_ME_evolver import choose_ME_evolver
-from .solver import Solver
 
 """@package docstring
 File: ME_solver.py
@@ -11,6 +6,12 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+
+import time
+import numpy as np
+from scipy.integrate import solve_ivp
+from .choose_ME_evolver import choose_ME_evolver
+from .solver import Solver
 
 
 class MomentExpansionSolver(Solver):
