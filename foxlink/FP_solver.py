@@ -1,10 +1,4 @@
 #!/usr/bin/env python
-import time
-import numpy as np
-from scipy import sparse
-from copy import deepcopy as dcp
-from .solver import Solver
-
 
 """@package docstring
 File: solver.py
@@ -12,6 +6,11 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Base FokkerPlanckSolver class for FoXlink
 """
+
+import time
+import numpy as np
+from scipy import sparse
+from .solver import Solver
 
 
 class FokkerPlanckSolver(Solver):
@@ -24,8 +23,10 @@ class FokkerPlanckSolver(Solver):
             Step <- Abstract = Implement the specified algorithm at a times step
             ParseParams = Parse parameters from file that is given
             setInitialConditions = Set the initial stat of simulation
-            makeSolutionGrid = Create data structures that hold information about the position of xlinks and rods.
-            calc<>Matrix(ces) <- Abstract = Calculate current data structures used to evolve system in time.
+            makeSolutionGrid = Create data structures that hold information
+                               about the position of xlinks and rods.
+            calc<>Matrix(ces) <- Abstract = Calculate current data structures
+                                            used to evolve system in time.
             Write = At a specified time step add current solution to output file.
             Save = Flush the remaining data in hdf5 file.
         Foxlink uses inheritance to quickly create and combine PDE solving
@@ -212,8 +213,7 @@ class FokkerPlanckSolver(Solver):
 
         """
         print("Step not made!",
-              "Initialize Step method of {}.".format(
-                  self.__class__.__name__a))
+              "Initialize Step method of {}.".format(self.__class__.__name__))
 
     def makeDataframe(self):
         """! Make output data frame

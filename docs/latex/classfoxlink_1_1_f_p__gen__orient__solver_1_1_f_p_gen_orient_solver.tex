@@ -1,0 +1,220 @@
+\hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver}{}\doxysection{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver Class Reference}
+\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver}\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+
+
+Docstring for \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver}{F\+P\+Gen\+Orient\+Solver}}.  
+
+
+Inheritance diagram for foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.218905cm]{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aea8385711150178b485c829597650ad4}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, pfile=None, pdict=None)
+\begin{DoxyCompactList}\small\item\em Set parameters of P\+DE system. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a9f587bb3b7ddd1d3764b3c6fbcc824b3}{Parse\+Params}} (self)
+\begin{DoxyCompactList}\small\item\em Parse parameters from file and add to member variables. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a75635893683804f92981aa5be476ced0}{calc\+Source\+Matrix}} (self)
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_af82141d56842156f3d73354d16b7cfd0}{calc\+Force\+Matrix}} (self)
+\begin{DoxyCompactList}\small\item\em Calculate the force from each crosslinker. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa9d12d465470a33f97c0fbc0421dacc9}{calc\+Torque\+Matrix}} (self)
+\begin{DoxyCompactList}\small\item\em Calculate the torque provided by each point. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a5a931344f8632b2a6a412740521591d4}{make\+Dataframe}} (self)
+\begin{DoxyCompactList}\small\item\em Make data frame to read from later. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a1d50384cc25e3f17d82fc9f54aab186b}{Write}} (self)
+\begin{DoxyCompactList}\small\item\em Write current step in algorithm into dataframe. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a6b84b87b0aeb12527e9b3325927e92ca}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a6b84b87b0aeb12527e9b3325927e92ca}} 
+def {\bfseries Gen\+Orient\+Write} (self, i\+\_\+step)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a6b2afc3af5cb89bdffedc6b26ef624d0}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a6b2afc3af5cb89bdffedc6b26ef624d0}} 
+{\bfseries R1\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_ae03ba424f8fd318eb0894b12c393c32e}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_ae03ba424f8fd318eb0894b12c393c32e}} 
+{\bfseries R2\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a1916a8ab6a72a8262d17a0c495c4cb0e}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a1916a8ab6a72a8262d17a0c495c4cb0e}} 
+{\bfseries R1\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a82da7495301e5de79f8175f5a2357f79}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a82da7495301e5de79f8175f5a2357f79}} 
+{\bfseries R2\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_ae5e7bb828fdee601d3cebb5021c57ef7}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_ae5e7bb828fdee601d3cebb5021c57ef7}} 
+{\bfseries src\+\_\+mat}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a825218d6fcfea9baa5d19623dc2edda5}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a825218d6fcfea9baa5d19623dc2edda5}} 
+{\bfseries f\+\_\+mat}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aecfd1b9d8086f8ca6438803e6c22bec5}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aecfd1b9d8086f8ca6438803e6c22bec5}} 
+{\bfseries f\+\_\+mat\+\_\+dens}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa2ddae96823d1a4627d8c1380b3aaec5}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa2ddae96823d1a4627d8c1380b3aaec5}} 
+{\bfseries force2}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a946ac4785e73475514a62a0dd791b67e}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a946ac4785e73475514a62a0dd791b67e}} 
+{\bfseries force1}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_abf88e6fe014b46e735385e877e5a8de1}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_abf88e6fe014b46e735385e877e5a8de1}} 
+{\bfseries t\+\_\+mat1}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa56ff6e96a816b23969f6b791a6ae8ce}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa56ff6e96a816b23969f6b791a6ae8ce}} 
+{\bfseries t\+\_\+mat2}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a01a100bf8767bf0f1a2ebd3ad3f8237c}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a01a100bf8767bf0f1a2ebd3ad3f8237c}} 
+{\bfseries torque1}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a051cfefedd42553135987a60024d654c}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a051cfefedd42553135987a60024d654c}} 
+{\bfseries torque2}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Docstring for \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver}{F\+P\+Gen\+Orient\+Solver}}. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aea8385711150178b485c829597650ad4}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aea8385711150178b485c829597650ad4}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{pfile = {\ttfamily None},  }\item[{}]{pdict = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Set parameters of P\+DE system. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pfile} & T\+O\+DO \\
+\hline
+{\em name} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_ab75168497f3a3cc878f1faf3f0c9a65c}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__motor___u_w__solver_1_1_f_p_gen_orient_motor_u_w_solver_ab9c00102caec732b8c7a92bb1ab7ad78}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Orient\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__static__xlinks__solver_1_1_f_p_gen_orient_static_xlinks_solver_a2dfb4100439622c99b269d94e558515f}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Gen\+Orient\+Static\+Xlinks\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__def__motion__motor___u_w__solver_1_1_f_p_gen_def_motion_motor_u_w_solver_ae2a1941f8b17f8094c18c79057c45274}{foxlink.\+F\+P\+\_\+gen\+\_\+def\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Def\+Motion\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__motor___u_w__solver_1_1_f_p_gen_motion_motor_u_w_solver_a6cebdb5478fe1862e8e238366f2d03b4}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Motion\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__solver_1_1_f_p_gen_motion_solver_a6f1ff23d4d9d1509685cbacf4e70b418}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+solver.\+F\+P\+Gen\+Motion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__static__xlinks__solver_1_1_f_p_gen_motion_static_xlinks_solver_a4506d70bd8c5ce4c5cdcd900502df924}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Gen\+Motion\+Static\+Xlinks\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__motor___c_n__solver_1_1_f_p_gen_orient_motor_c_n_solver_a586714a0d182881da89fb3f4e0a8a069}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+motor\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Orient\+Motor\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__pass___c_n__solver_1_1_f_p_gen_orient_pass_c_n_solver_a582d4ffb08d3a587ab7dc22f24abeb10}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Orient\+Pass\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__pass___c_n__solver_1_1_f_p_gen_motion_pass_c_n_solver_a30761fd29aeac60973c1cf6fca1e7b24}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Motion\+Pass\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_a1d1b8046f8fabf4deb05831ba0063f1a}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_a7d3cb520586099daabf45647b0fd6be1}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_af82141d56842156f3d73354d16b7cfd0}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_af82141d56842156f3d73354d16b7cfd0}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!calcForceMatrix@{calcForceMatrix}}
+\index{calcForceMatrix@{calcForceMatrix}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{calcForceMatrix()}{calcForceMatrix()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+calc\+Force\+Matrix (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Calculate the force from each crosslinker. 
+
+\begin{DoxyReturn}{Returns}
+\+: void, changes f\+\_\+mat, f\+\_\+mat\+\_\+dens, force2, force1 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_acc74e2d85dd9c6b2c6cc75f8a8adcd0a}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a75635893683804f92981aa5be476ced0}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a75635893683804f92981aa5be476ced0}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!calcSourceMatrix@{calcSourceMatrix}}
+\index{calcSourceMatrix@{calcSourceMatrix}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{calcSourceMatrix()}{calcSourceMatrix()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+calc\+Source\+Matrix (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate source matrix for general orientations
+@return: TODO\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_a563b8da0f27a6acf0eccf3d6ca9204df}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa9d12d465470a33f97c0fbc0421dacc9}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aa9d12d465470a33f97c0fbc0421dacc9}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!calcTorqueMatrix@{calcTorqueMatrix}}
+\index{calcTorqueMatrix@{calcTorqueMatrix}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{calcTorqueMatrix()}{calcTorqueMatrix()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+calc\+Torque\+Matrix (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Calculate the torque provided by each point. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_a764eb92fac71f72b78de8a3cb60677a2}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a5a931344f8632b2a6a412740521591d4}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a5a931344f8632b2a6a412740521591d4}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!makeDataframe@{makeDataframe}}
+\index{makeDataframe@{makeDataframe}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{makeDataframe()}{makeDataframe()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+make\+Dataframe (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Make data frame to read from later. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_a7e76ab714582f154af22cb81495306be}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_a35114e588a47f083fa648f69f3437093}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_a3191d57cd9a0709a5d5ac123c9102117}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a9f587bb3b7ddd1d3764b3c6fbcc824b3}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a9f587bb3b7ddd1d3764b3c6fbcc824b3}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!ParseParams@{ParseParams}}
+\index{ParseParams@{ParseParams}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{ParseParams()}{ParseParams()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+Parse\+Params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Parse parameters from file and add to member variables. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_acc93da9781fd5d14958fba84882ee32d}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a1d50384cc25e3f17d82fc9f54aab186b}\label{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a1d50384cc25e3f17d82fc9f54aab186b}} 
+\index{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}!Write@{Write}}
+\index{Write@{Write}!foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver@{foxlink.FP\_gen\_orient\_solver.FPGenOrientSolver}}
+\doxysubsubsection{\texorpdfstring{Write()}{Write()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver.\+Write (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Write current step in algorithm into dataframe. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_afc37e9bb59c72336babb75de7e74a6f4}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_aa7c090647183c2544b4083182fdab8f8}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_aa1ced096efe8ec11229dbd0cb0df139f}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,233 @@
+\hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver}{}\doxysection{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver Class Reference}
+\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver}\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+
+
+Solve the evolution of two rods by expanding the Fokker -\/ Planck equation in a series of moments of motor end positions on rods.  
+
+
+Inheritance diagram for foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a893cc605364cdee3dfbeffeaed478e11}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, pfile=None, pdict=None)
+\begin{DoxyCompactList}\small\item\em Set parameters for O\+DE to be solved including initial conditions. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac59417c4a1c79623bad04bfbb0fc8808}{Parse\+Params}} (self)
+\begin{DoxyCompactList}\small\item\em Collect parameters from yaml file or dictionary. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1f7bcd5823245ee00193f4884b4f6835}{set\+Initial\+Conditions}} (self)
+\begin{DoxyCompactList}\small\item\em Set the initial conditions for the system of O\+D\+Es. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a5499bf15f758319b8f63527fee744710}{make\+Dataframe}} (self)
+\begin{DoxyCompactList}\small\item\em Create data frame to be written out. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a246964927a373104baa641f8f980e32f}{make\+Rod\+Data\+Set}} (self)
+\begin{DoxyCompactList}\small\item\em Initialize dataframe with empty rod configuration data. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a44d56c43ef5e3e694ab4c33ed192e06d}{make\+X\+L\+Moment\+Data\+Set}} (self)
+\begin{DoxyCompactList}\small\item\em Initialize dataframe with empty crosslinker moment data. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}{Run}} (self)
+\begin{DoxyCompactList}\small\item\em Run algorithm to solve system of O\+D\+Es. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af05fbf158175d0bf7ee8040f011accd9}{Write}} (self)
+\begin{DoxyCompactList}\small\item\em Write out data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4366116522a70d7f9fe49cfe7a05f5cd}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4366116522a70d7f9fe49cfe7a05f5cd}} 
+{\bfseries R1\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac78fb1d4acbade4d86ca593cd764b79e}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac78fb1d4acbade4d86ca593cd764b79e}} 
+{\bfseries R2\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a408a56dbb9d1caa3a4af3d9f6a6bc330}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a408a56dbb9d1caa3a4af3d9f6a6bc330}} 
+{\bfseries R1\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a34b5b27a7bb4b513dd5c18c47e6d9d13}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a34b5b27a7bb4b513dd5c18c47e6d9d13}} 
+{\bfseries R2\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a9820c591514e090503114dd283b6974b}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a9820c591514e090503114dd283b6974b}} 
+{\bfseries dt}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a89c4f12d3c86a16182ef41c86f553e84}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a89c4f12d3c86a16182ef41c86f553e84}} 
+{\bfseries nsteps}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a6ee44a3b7b6fe87d0c5e8fd80577b5ca}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a6ee44a3b7b6fe87d0c5e8fd80577b5ca}} 
+{\bfseries nt}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aeba7177ef4e905de5803be06b8ebc4ac}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aeba7177ef4e905de5803be06b8ebc4ac}} 
+{\bfseries twrite}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4dd2250ea197f6aa24be57b751fc7cab}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4dd2250ea197f6aa24be57b751fc7cab}} 
+{\bfseries nwrite}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a01f60d4ed29c4aa6aedd6a92d87f8fbf}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a01f60d4ed29c4aa6aedd6a92d87f8fbf}} 
+{\bfseries t\+\_\+eval}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ab60ed210bc0bc7083bf44e3702df1fdc}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ab60ed210bc0bc7083bf44e3702df1fdc}} 
+{\bfseries method}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a7e22bc0abc10d122f5218edd40f9d43d}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a7e22bc0abc10d122f5218edd40f9d43d}} 
+{\bfseries O\+D\+E\+\_\+type}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a9bb257ac330ae1dd44126f7dd2943214}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a9bb257ac330ae1dd44126f7dd2943214}} 
+{\bfseries sol\+\_\+init}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a96274859f74704e458940754fcad5756}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a96274859f74704e458940754fcad5756}} 
+{\bfseries ode\+\_\+solver}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af539891ed21382879175fefb9bc2e212}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af539891ed21382879175fefb9bc2e212}} 
+{\bfseries data\+\_\+frame\+\_\+made}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a880b695c27eb3a26f6d55a81f8650857}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a880b695c27eb3a26f6d55a81f8650857}} 
+{\bfseries sol}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a058ea5408a9aad3fe9059123e7184eae}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a058ea5408a9aad3fe9059123e7184eae}} 
+{\bfseries cpu\+\_\+time}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Solve the evolution of two rods by expanding the Fokker -\/ Planck equation in a series of moments of motor end positions on rods. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a893cc605364cdee3dfbeffeaed478e11}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a893cc605364cdee3dfbeffeaed478e11}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{pfile = {\ttfamily None},  }\item[{}]{pdict = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Set parameters for O\+DE to be solved including initial conditions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pfile} & T\+O\+DO \\
+\hline
+{\em pdict} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_ad2a93178f498ac081bcd4a993377f705}{foxlink.\+solver.\+Solver}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a5499bf15f758319b8f63527fee744710}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a5499bf15f758319b8f63527fee744710}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!makeDataframe@{makeDataframe}}
+\index{makeDataframe@{makeDataframe}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{makeDataframe()}{makeDataframe()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+make\+Dataframe (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Create data frame to be written out. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_af91aa3e76ff1cfd20c2e50981ecf4944}{foxlink.\+solver.\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a246964927a373104baa641f8f980e32f}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a246964927a373104baa641f8f980e32f}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!makeRodDataSet@{makeRodDataSet}}
+\index{makeRodDataSet@{makeRodDataSet}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{makeRodDataSet()}{makeRodDataSet()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+make\+Rod\+Data\+Set (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Initialize dataframe with empty rod configuration data. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a44d56c43ef5e3e694ab4c33ed192e06d}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a44d56c43ef5e3e694ab4c33ed192e06d}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!makeXLMomentDataSet@{makeXLMomentDataSet}}
+\index{makeXLMomentDataSet@{makeXLMomentDataSet}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{makeXLMomentDataSet()}{makeXLMomentDataSet()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+make\+X\+L\+Moment\+Data\+Set (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Initialize dataframe with empty crosslinker moment data. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac59417c4a1c79623bad04bfbb0fc8808}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac59417c4a1c79623bad04bfbb0fc8808}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!ParseParams@{ParseParams}}
+\index{ParseParams@{ParseParams}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{ParseParams()}{ParseParams()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+Parse\+Params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Collect parameters from yaml file or dictionary. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_acbf9a13173eda26bc574de1590d7bbbb}{foxlink.\+solver.\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!Run@{Run}}
+\index{Run@{Run}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+Run (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Run algorithm to solve system of O\+D\+Es. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a445819ba05152317bb5bbb736e269b73}{foxlink.\+solver.\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1f7bcd5823245ee00193f4884b4f6835}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1f7bcd5823245ee00193f4884b4f6835}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!setInitialConditions@{setInitialConditions}}
+\index{setInitialConditions@{setInitialConditions}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{setInitialConditions()}{setInitialConditions()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+set\+Initial\+Conditions (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Set the initial conditions for the system of O\+D\+Es. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a0ba774a24e7af8fec2b62d3b72c18cea}{foxlink.\+solver.\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af05fbf158175d0bf7ee8040f011accd9}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af05fbf158175d0bf7ee8040f011accd9}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!Write@{Write}}
+\index{Write@{Write}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{Write()}{Write()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+Write (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Write out data. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a1f156db9907513dcafafc706e861d286}{foxlink.\+solver.\+Solver}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/M\+E\+\_\+solver.\+py\end{DoxyCompactItemize}

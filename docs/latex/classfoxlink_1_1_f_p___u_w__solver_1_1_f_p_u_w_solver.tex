@@ -1,0 +1,102 @@
+\hypertarget{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver}{}\doxysection{foxlink.\+F\+P\+\_\+\+U\+W\+\_\+solver.\+F\+P\+U\+W\+Solver Class Reference}
+\label{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver}\index{foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}}
+
+
+Solve the Fokker-\/\+Planck equation for passive crosslinkers using the using the Crank-\/\+Nicholson method with 4 point laplacian.  
+
+
+Inheritance diagram for foxlink.\+F\+P\+\_\+\+U\+W\+\_\+solver.\+F\+P\+U\+W\+Solver\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.366472cm]{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_af0e32ccc96a71ac6333931ec7ed5e31a}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, pfile=None, pdict=None)
+\begin{DoxyCompactList}\small\item\em Set parameters for P\+DE to be solved including boundary conditions. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a553d055c2e9c5c71999b4ce298b18409}{make\+Diag\+Mats}} (self)
+\begin{DoxyCompactList}\small\item\em Make diagnal matrices for implicit solving. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_ac883e083edb38e4fb4d0add6205d4510}{step\+UW}} (self, sgrid\+\_\+bar)
+\begin{DoxyCompactList}\small\item\em Step crosslink density forward in time using upwind method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a5d980442b58ede3793de6b0676e9bfe3}\label{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a5d980442b58ede3793de6b0676e9bfe3}} 
+{\bfseries diag\+Grad\+UW}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a52fa3b8a63b34101fcb2df92786ebc2f}\label{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a52fa3b8a63b34101fcb2df92786ebc2f}} 
+{\bfseries diag\+Grad\+U\+WT}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Solve the Fokker-\/\+Planck equation for passive crosslinkers using the using the Crank-\/\+Nicholson method with 4 point laplacian. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_af0e32ccc96a71ac6333931ec7ed5e31a}\label{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_af0e32ccc96a71ac6333931ec7ed5e31a}} 
+\index{foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+\+U\+W\+\_\+solver.\+F\+P\+U\+W\+Solver.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{pfile = {\ttfamily None},  }\item[{}]{pdict = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Set parameters for P\+DE to be solved including boundary conditions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pfile} & parameter file path \\
+\hline
+{\em pdict} & parameter dictionary if file is not given directly. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_ab75168497f3a3cc878f1faf3f0c9a65c}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__motor___u_w__solver_1_1_f_p_gen_orient_motor_u_w_solver_ab9c00102caec732b8c7a92bb1ab7ad78}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Orient\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__motor___u_w__solver_1_1_f_p_motor_u_w_solver_a3d2e0af00341f0890dad16de6791f6b3}{foxlink.\+F\+P\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__def__motion__motor___u_w__solver_1_1_f_p_gen_def_motion_motor_u_w_solver_ae2a1941f8b17f8094c18c79057c45274}{foxlink.\+F\+P\+\_\+gen\+\_\+def\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Def\+Motion\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__motor___u_w__solver_1_1_f_p_gen_motion_motor_u_w_solver_a6cebdb5478fe1862e8e238366f2d03b4}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_a1d1b8046f8fabf4deb05831ba0063f1a}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a553d055c2e9c5c71999b4ce298b18409}\label{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_a553d055c2e9c5c71999b4ce298b18409}} 
+\index{foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}!makeDiagMats@{makeDiagMats}}
+\index{makeDiagMats@{makeDiagMats}!foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}}
+\doxysubsubsection{\texorpdfstring{makeDiagMats()}{makeDiagMats()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+\+U\+W\+\_\+solver.\+F\+P\+U\+W\+Solver.\+make\+Diag\+Mats (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Make diagnal matrices for implicit solving. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_ac883e083edb38e4fb4d0add6205d4510}\label{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_ac883e083edb38e4fb4d0add6205d4510}} 
+\index{foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}!stepUW@{stepUW}}
+\index{stepUW@{stepUW}!foxlink.FP\_UW\_solver.FPUWSolver@{foxlink.FP\_UW\_solver.FPUWSolver}}
+\doxysubsubsection{\texorpdfstring{stepUW()}{stepUW()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+\+U\+W\+\_\+solver.\+F\+P\+U\+W\+Solver.\+step\+UW (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{sgrid\+\_\+bar }\end{DoxyParamCaption})}
+
+
+
+Step crosslink density forward in time using upwind method. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sgrid\+\_\+bar} & Current solution to differential equations before upwind integration is applied \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Current solution after upwind method 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/F\+P\+\_\+\+U\+W\+\_\+solver.\+py\end{DoxyCompactItemize}

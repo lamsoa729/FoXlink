@@ -1,0 +1,122 @@
+\hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink}{}\doxysection{foxlink.\+foxlink.\+Fo\+Xlink Class Reference}
+\label{classfoxlink_1_1foxlink_1_1_fo_xlink}\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+
+
+Control structure classs for \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink}{Fo\+Xlink}} P\+DE solver framework.  
+
+
+Inheritance diagram for foxlink.\+foxlink.\+Fo\+Xlink\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classfoxlink_1_1foxlink_1_1_fo_xlink}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink_a631439ae860cb5b979d5be1e74d45586}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, opts)
+\begin{DoxyCompactList}\small\item\em Initialize \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink}{Fo\+Xlink}} object with command line options. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink_a59b6004327f0130fc9ef986465b6a6d5}{Parse\+Params}} (self)
+\begin{DoxyCompactList}\small\item\em Parse parameter file from options. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink_afb16c83c5dbd858e15fa253ed9e94aed}{get\+Solver\+Type}} (self)
+\begin{DoxyCompactList}\small\item\em Figure out which solver type to use on parameters. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink_af99f9c4ecac565744039a97439b0445b}{create\+Solver}} (self)
+\begin{DoxyCompactList}\small\item\em Create solver based of solver type. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink_a8e737fd6788c0f20b43affd167a68087}{Run}} (self)
+\begin{DoxyCompactList}\small\item\em Run simulation with created solver. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink_a09921dc74ab2de9779eb6049defe5521}{Analyze}} (self)
+\begin{DoxyCompactList}\small\item\em Analyze hdf5 file from foxlink solver run and make movie if parameter is given. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Control structure classs for \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink}{Fo\+Xlink}} P\+DE solver framework. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink_a631439ae860cb5b979d5be1e74d45586}\label{classfoxlink_1_1foxlink_1_1_fo_xlink_a631439ae860cb5b979d5be1e74d45586}} 
+\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+foxlink.\+Fo\+Xlink.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{opts }\end{DoxyParamCaption})}
+
+
+
+Initialize \mbox{\hyperlink{classfoxlink_1_1foxlink_1_1_fo_xlink}{Fo\+Xlink}} object with command line options. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em opts} & Argument\+Parser command line options \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink_a09921dc74ab2de9779eb6049defe5521}\label{classfoxlink_1_1foxlink_1_1_fo_xlink_a09921dc74ab2de9779eb6049defe5521}} 
+\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}!Analyze@{Analyze}}
+\index{Analyze@{Analyze}!foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+\doxysubsubsection{\texorpdfstring{Analyze()}{Analyze()}}
+{\footnotesize\ttfamily def foxlink.\+foxlink.\+Fo\+Xlink.\+Analyze (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Analyze hdf5 file from foxlink solver run and make movie if parameter is given. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink_af99f9c4ecac565744039a97439b0445b}\label{classfoxlink_1_1foxlink_1_1_fo_xlink_af99f9c4ecac565744039a97439b0445b}} 
+\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}!createSolver@{createSolver}}
+\index{createSolver@{createSolver}!foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+\doxysubsubsection{\texorpdfstring{createSolver()}{createSolver()}}
+{\footnotesize\ttfamily def foxlink.\+foxlink.\+Fo\+Xlink.\+create\+Solver (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Create solver based of solver type. 
+
+\begin{DoxyReturn}{Returns}
+\+: solver object to run 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink_afb16c83c5dbd858e15fa253ed9e94aed}\label{classfoxlink_1_1foxlink_1_1_fo_xlink_afb16c83c5dbd858e15fa253ed9e94aed}} 
+\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}!getSolverType@{getSolverType}}
+\index{getSolverType@{getSolverType}!foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+\doxysubsubsection{\texorpdfstring{getSolverType()}{getSolverType()}}
+{\footnotesize\ttfamily def foxlink.\+foxlink.\+Fo\+Xlink.\+get\+Solver\+Type (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Figure out which solver type to use on parameters. 
+
+\begin{DoxyReturn}{Returns}
+\+: Class of a solver type 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink_a59b6004327f0130fc9ef986465b6a6d5}\label{classfoxlink_1_1foxlink_1_1_fo_xlink_a59b6004327f0130fc9ef986465b6a6d5}} 
+\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}!ParseParams@{ParseParams}}
+\index{ParseParams@{ParseParams}!foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+\doxysubsubsection{\texorpdfstring{ParseParams()}{ParseParams()}}
+{\footnotesize\ttfamily def foxlink.\+foxlink.\+Fo\+Xlink.\+Parse\+Params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Parse parameter file from options. 
+
+\begin{DoxyReturn}{Returns}
+\+: dictionary of parameters and options 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1foxlink_1_1_fo_xlink_a8e737fd6788c0f20b43affd167a68087}\label{classfoxlink_1_1foxlink_1_1_fo_xlink_a8e737fd6788c0f20b43affd167a68087}} 
+\index{foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}!Run@{Run}}
+\index{Run@{Run}!foxlink.foxlink.FoXlink@{foxlink.foxlink.FoXlink}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily def foxlink.\+foxlink.\+Fo\+Xlink.\+Run (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Run simulation with created solver. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/foxlink.\+py\end{DoxyCompactItemize}

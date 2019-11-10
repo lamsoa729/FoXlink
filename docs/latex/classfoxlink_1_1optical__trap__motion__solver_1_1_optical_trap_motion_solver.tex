@@ -1,0 +1,241 @@
+\hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver}{}\doxysection{foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver Class Reference}
+\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver}\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+
+
+Docstring for F\+P\+Gen\+Optical\+Trap\+Motion\+Solver.  
+
+
+Inheritance diagram for foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.611940cm]{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ae226b60e59c3c7709c2736d82b63b4b7}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, pfile=None, pdict=None)
+\begin{DoxyCompactList}\small\item\em Set parameters of P\+DE system. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a0884c7c3416fce06b879b10e44f3a3ef}{O\+T\+Parse\+Params}} (self)
+\begin{DoxyCompactList}\small\item\em T\+O\+DO\+: Docstring for Parse\+Params. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ab965e0c1b86bff3b1d3e167a5450574d}{Rod\+Step}} (self, force1=0, force2=0, torque1=0, torque2=0, R1\+\_\+pos=None, R2\+\_\+pos=None, R1\+\_\+vec=None, R2\+\_\+vec=None)
+\begin{DoxyCompactList}\small\item\em Change the position of rods based on forces and torques exerted on rod. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a24873ed0aa0269cc9f84d2531622510c}{calc\+O\+T\+Interactions}} (self, R1\+\_\+pos, R2\+\_\+pos, R1\+\_\+vec, R2\+\_\+vec)
+\begin{DoxyCompactList}\small\item\em T\+O\+DO\+: Docstring for calc\+O\+T\+Interactions. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a657ce1f0c7b2906095f44377e011a66b}{step\+OT}} (self)
+\begin{DoxyCompactList}\small\item\em Move optical traps based on current time step. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a33466a076181efac55d73c0897abfa87}{add\+O\+T\+Dataframe}} (self)
+\begin{DoxyCompactList}\small\item\em Make data frame to read from later. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a93f63b45e21dc4830b60b7959abcd039}{Write}} (self)
+\begin{DoxyCompactList}\small\item\em Write current step in algorithm into dataframe. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a96c0e5b728c9370ac6732464257eb613}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a96c0e5b728c9370ac6732464257eb613}} 
+def {\bfseries O\+T\+Write} (self, i\+\_\+step)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a7b74c8c1f370b72e148ef1885f31a71a}{init\+O\+T\+Motion}} (ot\+\_\+mot\+\_\+dict, ot\+\_\+num, ot\+\_\+pos)
+\begin{DoxyCompactList}\small\item\em T\+O\+DO\+: Docstring for init\+O\+T\+Motion. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a2b0850947c2a111a3eb36e058200626b}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a2b0850947c2a111a3eb36e058200626b}} 
+{\bfseries O\+T1\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a5f06f103274e1ded03fbabf90bfd4584}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a5f06f103274e1ded03fbabf90bfd4584}} 
+{\bfseries O\+T2\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a241cdbb64df57bec531510c8cfbcd770}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a241cdbb64df57bec531510c8cfbcd770}} 
+{\bfseries O\+T1\+\_\+mot}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_aee5590e1b815d1108e77c900fc8510c8}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_aee5590e1b815d1108e77c900fc8510c8}} 
+{\bfseries O\+T2\+\_\+mot}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_af0fcab45aca1786bcbf84766e16307aa}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_af0fcab45aca1786bcbf84766e16307aa}} 
+{\bfseries ot1\+\_\+force}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a75fd4bafe5727b89de6ed332bdbb673e}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a75fd4bafe5727b89de6ed332bdbb673e}} 
+{\bfseries ot2\+\_\+force}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ab143954955c227f168f07294f733c74b}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ab143954955c227f168f07294f733c74b}} 
+{\bfseries ot1\+\_\+torque}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ad1488b2a84f1a9651ee09933bf75f989}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ad1488b2a84f1a9651ee09933bf75f989}} 
+{\bfseries ot2\+\_\+torque}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Docstring for F\+P\+Gen\+Optical\+Trap\+Motion\+Solver. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ae226b60e59c3c7709c2736d82b63b4b7}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ae226b60e59c3c7709c2736d82b63b4b7}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{pfile = {\ttfamily None},  }\item[{}]{pdict = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Set parameters of P\+DE system. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pfile} & parameter file \\
+\hline
+{\em pdict} & parameter dictionary \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1rod__motion__solver_1_1_rod_motion_solver_ac394f0a68399c157b20fcb56dd46c471}{foxlink.\+rod\+\_\+motion\+\_\+solver.\+Rod\+Motion\+Solver}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_a1d1b8046f8fabf4deb05831ba0063f1a}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_a7d3cb520586099daabf45647b0fd6be1}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a33466a076181efac55d73c0897abfa87}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a33466a076181efac55d73c0897abfa87}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!addOTDataframe@{addOTDataframe}}
+\index{addOTDataframe@{addOTDataframe}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{addOTDataframe()}{addOTDataframe()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+add\+O\+T\+Dataframe (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Make data frame to read from later. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a24873ed0aa0269cc9f84d2531622510c}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a24873ed0aa0269cc9f84d2531622510c}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!calcOTInteractions@{calcOTInteractions}}
+\index{calcOTInteractions@{calcOTInteractions}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{calcOTInteractions()}{calcOTInteractions()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+calc\+O\+T\+Interactions (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{R1\+\_\+pos,  }\item[{}]{R2\+\_\+pos,  }\item[{}]{R1\+\_\+vec,  }\item[{}]{R2\+\_\+vec }\end{DoxyParamCaption})}
+
+
+
+T\+O\+DO\+: Docstring for calc\+O\+T\+Interactions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em R1\+\_\+pos} & T\+O\+DO \\
+\hline
+{\em R2\+\_\+pos} & T\+O\+DO \\
+\hline
+{\em R1\+\_\+vec} & T\+O\+DO \\
+\hline
+{\em R2\+\_\+vec} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a7b74c8c1f370b72e148ef1885f31a71a}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a7b74c8c1f370b72e148ef1885f31a71a}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!initOTMotion@{initOTMotion}}
+\index{initOTMotion@{initOTMotion}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{initOTMotion()}{initOTMotion()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+init\+O\+T\+Motion (\begin{DoxyParamCaption}\item[{}]{ot\+\_\+mot\+\_\+dict,  }\item[{}]{ot\+\_\+num,  }\item[{}]{ot\+\_\+pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+T\+O\+DO\+: Docstring for init\+O\+T\+Motion. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ot\+\_\+mot\+\_\+dict} & T\+O\+DO \\
+\hline
+{\em ot\+\_\+num} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a0884c7c3416fce06b879b10e44f3a3ef}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a0884c7c3416fce06b879b10e44f3a3ef}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!OTParseParams@{OTParseParams}}
+\index{OTParseParams@{OTParseParams}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{OTParseParams()}{OTParseParams()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+O\+T\+Parse\+Params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+T\+O\+DO\+: Docstring for Parse\+Params. 
+
+\begin{DoxyReturn}{Returns}
+\+: void, set position of optical traps and motion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ab965e0c1b86bff3b1d3e167a5450574d}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ab965e0c1b86bff3b1d3e167a5450574d}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!RodStep@{RodStep}}
+\index{RodStep@{RodStep}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{RodStep()}{RodStep()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+Rod\+Step (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{force1 = {\ttfamily 0},  }\item[{}]{force2 = {\ttfamily 0},  }\item[{}]{torque1 = {\ttfamily 0},  }\item[{}]{torque2 = {\ttfamily 0},  }\item[{}]{R1\+\_\+pos = {\ttfamily None},  }\item[{}]{R2\+\_\+pos = {\ttfamily None},  }\item[{}]{R1\+\_\+vec = {\ttfamily None},  }\item[{}]{R2\+\_\+vec = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Change the position of rods based on forces and torques exerted on rod. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em force} & Force vector of rod2 by rod1 \\
+\hline
+{\em torque} & Torque vector of rod2 by rod1 \\
+\hline
+{\em R1\+\_\+pos} & T\+O\+DO \\
+\hline
+{\em R2\+\_\+pos} & T\+O\+DO \\
+\hline
+{\em R1\+\_\+vec} & T\+O\+DO \\
+\hline
+{\em R2\+\_\+vec} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1rod__motion__solver_1_1_rod_motion_solver_ae6bb93ce16029ff37b9bddce0eb06bf7}{foxlink.\+rod\+\_\+motion\+\_\+solver.\+Rod\+Motion\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a657ce1f0c7b2906095f44377e011a66b}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a657ce1f0c7b2906095f44377e011a66b}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!stepOT@{stepOT}}
+\index{stepOT@{stepOT}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{stepOT()}{stepOT()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+step\+OT (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Move optical traps based on current time step. 
+
+\begin{DoxyReturn}{Returns}
+\+: void, change position of optical traps if optical trap type exists 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a93f63b45e21dc4830b60b7959abcd039}\label{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a93f63b45e21dc4830b60b7959abcd039}} 
+\index{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}!Write@{Write}}
+\index{Write@{Write}!foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver@{foxlink.optical\_trap\_motion\_solver.OpticalTrapMotionSolver}}
+\doxysubsubsection{\texorpdfstring{Write()}{Write()}}
+{\footnotesize\ttfamily def foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver.\+Write (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Write current step in algorithm into dataframe. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a1f156db9907513dcafafc706e861d286}{foxlink.\+solver.\+Solver}}.
+
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_aa7c090647183c2544b4083182fdab8f8}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_aa1ced096efe8ec11229dbd0cb0df139f}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/optical\+\_\+trap\+\_\+motion\+\_\+solver.\+py\end{DoxyCompactItemize}

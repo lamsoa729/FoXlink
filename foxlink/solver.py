@@ -1,22 +1,17 @@
 #!/usr/bin/env python
-# In case of poor (Sh***y) commenting contact adam.lamson@colorado.edu
-from pathlib import Path
-import time
-import yaml
-import h5py
-from copy import deepcopy as dcp
-
-
 """@package docstring
 File: solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Base Solver class for FoXlink
 """
+from pathlib import Path
+from copy import deepcopy as dcp
+import yaml
+import h5py
 
 
-class Solver(object):
-
+class Solver():
     """!Abstract class for solver objects. All PDE algorithms are implemented
     through these classes.
 

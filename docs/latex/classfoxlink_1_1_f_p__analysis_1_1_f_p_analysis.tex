@@ -1,0 +1,431 @@
+\hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis}{}\doxysection{foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis Class Reference}
+\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis}\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+
+
+Analyze Fokker-\/\+Planck equation code.  
+
+
+Inheritance diagram for foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a622d08512b52cf563396940bf17c4047}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, filename=\char`\"{}Solver.\+h5\char`\"{}, analysis\+\_\+type=\textquotesingle{}load\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Initialize analysis code by loading in hdf5 file and setting up params. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ab78b5ee2f228850d15d6f47e0ba3a268}{collect\+Data\+Arrays}} (self)
+\begin{DoxyCompactList}\small\item\em Store data arrays in member variables. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a265b737511cde04c143f5c36acbd9e7e}{Load}} (self, analysis\+\_\+type=\textquotesingle{}load\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Load in data from hdf5 file and grab analysis files if they exist. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ac43a2a698218baacb942ad150a4b1f31}{Save}} (self)
+\begin{DoxyCompactList}\small\item\em Create a pickle file of solution. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a3bb1cdf391b948e43bb4ef00ac9abb9a}{Analyze}} (self, analysis\+\_\+type=\textquotesingle{}analyze\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Analysis functions \#. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ae470aa3f25712e35849b093b6447a819}{X\+L\+Moment\+Analysis}} (self, X\+L\+\_\+analysis\+\_\+grp, analysis\+\_\+type=\textquotesingle{}analyze\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em T\+O\+DO\+: Docstring for Moment\+Analysis. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a027817f4fa0e3d9d08d90509d306c3d1}{Rod\+Geometry\+Analysis}} (self, rod\+\_\+analysis\+\_\+grp, analysis\+\_\+type=\textquotesingle{}analyze\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Analyze and store data relating to the configuration of the rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a442c61540bb9274dc77b6c0d18693814}{O\+T\+Analysis}} (self)
+\begin{DoxyCompactList}\small\item\em Analyze data for optically trapped rods, especially if they are oscillating traps. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a92690b7e5c73fb0109314eed47947941}{graph\+Slice}} (self, n, fig, axarr)
+\begin{DoxyCompactList}\small\item\em Graphing functions \#. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a53855717bb8677e1988d933a9bea4833}{graph\+Reduced\+Slice}} (self, n, fig, axarr)
+\begin{DoxyCompactList}\small\item\em Graph the solution Psi at a specific time. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aace1e9540fdf66dfc50e3602e9fa8f2b}{graph\+Orient\+Slice}} (self, n, fig, axarr)
+\begin{DoxyCompactList}\small\item\em Graph the solution Psi at a specific time. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a384e87855cb54ad42f20cffbc317e0f1}{graph\+Moment\+Slice}} (self, n, fig, axarr)
+\begin{DoxyCompactList}\small\item\em Graph the solution Psi at a specific time. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a533e7b4ec995dff25d7cd99f9d99aa0a}{calc\+Overlap}} (R1\+\_\+pos, R2\+\_\+pos, R1\+\_\+vec, R2\+\_\+vec, L1, L2)
+\begin{DoxyCompactList}\small\item\em Calculation functions \#. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a562b68afdcb57aea7085230ec074ef29}{Find\+Start\+Time}} (arr, reps=1)
+\begin{DoxyCompactList}\small\item\em A function to find when simulations reaches a steady state with respect to array, arr. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a28c78839180aeb4b1ebd7632814c167b}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a28c78839180aeb4b1ebd7632814c167b}} 
+{\bfseries s\+Type}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a599eea4c0698fbe289fef7d5abddfa01}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a599eea4c0698fbe289fef7d5abddfa01}} 
+{\bfseries init\+\_\+flag}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ad34a95d291084c85b3e2c775a84b3f7d}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ad34a95d291084c85b3e2c775a84b3f7d}} 
+{\bfseries time}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a1a2b67edbc007baef2acdd1cfb9ae708}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a1a2b67edbc007baef2acdd1cfb9ae708}} 
+{\bfseries s1}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_abc27730c1c63f94331a00e183af43229}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_abc27730c1c63f94331a00e183af43229}} 
+{\bfseries s2}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ab230b12d096bd416ce62eb4cf6aa287c}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ab230b12d096bd416ce62eb4cf6aa287c}} 
+{\bfseries phi\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a05870684bc24eb82f4495e3d8ffe9cd9}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a05870684bc24eb82f4495e3d8ffe9cd9}} 
+{\bfseries R\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a0815aa9b421116ee0241ee017ecc75aa}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a0815aa9b421116ee0241ee017ecc75aa}} 
+{\bfseries R1\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a8a8aab0f95dd81794460223bc3e461be}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a8a8aab0f95dd81794460223bc3e461be}} 
+{\bfseries R2\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_abb65002be907ccfdf036711bcf0dd816}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_abb65002be907ccfdf036711bcf0dd816}} 
+{\bfseries R1\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ad6ccb780d6779e2cb1dca06171d9618b}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ad6ccb780d6779e2cb1dca06171d9618b}} 
+{\bfseries R2\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a1c70b6009b80bc337844ce6677fdc5c6}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a1c70b6009b80bc337844ce6677fdc5c6}} 
+{\bfseries O\+T1\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ad3fd04006fadd7afd8757be340a1f856}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ad3fd04006fadd7afd8757be340a1f856}} 
+{\bfseries O\+T2\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a7cf414efdd1b7ab69e1d2cb026375cc5}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a7cf414efdd1b7ab69e1d2cb026375cc5}} 
+{\bfseries xl\+\_\+distr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a155c9fbe90c56f548fdbd1b927df66ba}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a155c9fbe90c56f548fdbd1b927df66ba}} 
+{\bfseries Nxl\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_afa07165c2e6408f3ef614fcee175347c}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_afa07165c2e6408f3ef614fcee175347c}} 
+{\bfseries torque\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a7db333a42dc3e2754f75da18377480ff}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a7db333a42dc3e2754f75da18377480ff}} 
+{\bfseries max\+\_\+dens\+\_\+val}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aa3e656dfb14f8ddc2981ca587c0bda1b}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aa3e656dfb14f8ddc2981ca587c0bda1b}} 
+{\bfseries force\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a91cb78fe2597283c47bb60e1c9cae26d}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a91cb78fe2597283c47bb60e1c9cae26d}} 
+{\bfseries analysis\+\_\+grp}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a1714b3362e4aa215bb543840da487b10}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a1714b3362e4aa215bb543840da487b10}} 
+{\bfseries X\+L\+\_\+analysis\+\_\+grp}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a3356530c9d71dabc1246b31b6394a839}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a3356530c9d71dabc1246b31b6394a839}} 
+{\bfseries rod\+\_\+analysis\+\_\+grp}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a40bf95a45b785ef81cd1550ce9034210}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a40bf95a45b785ef81cd1550ce9034210}} 
+{\bfseries zero\+\_\+mom\+\_\+dset}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a733f52682fb5dcc4172ce1107e8e8935}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a733f52682fb5dcc4172ce1107e8e8935}} 
+{\bfseries P1}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a8b690a1dc118da344ee26077dfe74e22}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a8b690a1dc118da344ee26077dfe74e22}} 
+{\bfseries P2}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a99530c0948af4778ad9cec6dec2cc93f}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a99530c0948af4778ad9cec6dec2cc93f}} 
+{\bfseries first\+\_\+mom\+\_\+dset}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_afeac3fd5b8de2c28fbdc9e28c5fc489f}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_afeac3fd5b8de2c28fbdc9e28c5fc489f}} 
+{\bfseries u11}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a7eadf25780b3b1c410af2fc00c2b0e45}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a7eadf25780b3b1c410af2fc00c2b0e45}} 
+{\bfseries u20}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a6036bb9424e1a3e4c0219295b839a52c}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a6036bb9424e1a3e4c0219295b839a52c}} 
+{\bfseries u02}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a2d27e901f9f82a9ca71a539a1bfd5fdc}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a2d27e901f9f82a9ca71a539a1bfd5fdc}} 
+{\bfseries second\+\_\+mom\+\_\+dset}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a4efd94a1283b4e30bebb0f8f4fa323a8}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a4efd94a1283b4e30bebb0f8f4fa323a8}} 
+{\bfseries d\+R\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aa9e5f54b6ceeaf07be2e1ee2671a0950}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aa9e5f54b6ceeaf07be2e1ee2671a0950}} 
+{\bfseries rod\+\_\+sep\+\_\+dset}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a973200c4271524ba6da15053e8a10f8f}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a973200c4271524ba6da15053e8a10f8f}} 
+{\bfseries rod\+\_\+phi\+\_\+dset}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_af270ac647dca6a4cf21cc59db8b3d4ca}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_af270ac647dca6a4cf21cc59db8b3d4ca}} 
+{\bfseries overlap\+\_\+arr}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_acdb8318c05e9ca4fd015dff17dd7523c}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_acdb8318c05e9ca4fd015dff17dd7523c}} 
+{\bfseries rod\+\_\+overlap\+\_\+dset}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Analyze Fokker-\/\+Planck equation code. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a622d08512b52cf563396940bf17c4047}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a622d08512b52cf563396940bf17c4047}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename = {\ttfamily \char`\"{}Solver.h5\char`\"{}},  }\item[{}]{analysis\+\_\+type = {\ttfamily \textquotesingle{}load\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Initialize analysis code by loading in hdf5 file and setting up params. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & Name of file to be analyzed \\
+\hline
+{\em analysis\+\_\+type} & What kind of analysis ot run on data file \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis_ab63fd1799e8cbe4d6f408b1275f696be}{foxlink.\+M\+E\+\_\+analysis.\+M\+E\+Analysis}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a3bb1cdf391b948e43bb4ef00ac9abb9a}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a3bb1cdf391b948e43bb4ef00ac9abb9a}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!Analyze@{Analyze}}
+\index{Analyze@{Analyze}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{Analyze()}{Analyze()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+Analyze (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{analysis\+\_\+type = {\ttfamily \textquotesingle{}analyze\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Analysis functions \#. 
+
+Read in analysis or analyze data according to type of solver hdf5 file came from and what analysis\+\_\+type was specified.
+
+
+\begin{DoxyParams}{Parameters}
+{\em analysis\+\_\+type} & load, analyze, overwrite. The extent of the analysis that should be carried out. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis_aadd183c5ab4db453d31d86923865052a}{foxlink.\+M\+E\+\_\+analysis.\+M\+E\+Analysis}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a533e7b4ec995dff25d7cd99f9d99aa0a}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a533e7b4ec995dff25d7cd99f9d99aa0a}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!calcOverlap@{calcOverlap}}
+\index{calcOverlap@{calcOverlap}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{calcOverlap()}{calcOverlap()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+calc\+Overlap (\begin{DoxyParamCaption}\item[{}]{R1\+\_\+pos,  }\item[{}]{R2\+\_\+pos,  }\item[{}]{R1\+\_\+vec,  }\item[{}]{R2\+\_\+vec,  }\item[{}]{L1,  }\item[{}]{L2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Calculation functions \#. 
+
+Calculate the overlap of two antiparalle rods based on the location of their minus ends. You can also negate the vector of one of the rods if they are parallel instead of antiparallel.
+
+
+\begin{DoxyParams}{Parameters}
+{\em R1\+\_\+pos} & T\+O\+DO \\
+\hline
+{\em R2\+\_\+pos} & T\+O\+DO \\
+\hline
+{\em R1\+\_\+vec} & T\+O\+DO \\
+\hline
+{\em R2\+\_\+vec} & T\+O\+DO \\
+\hline
+{\em L1} & T\+O\+DO \\
+\hline
+{\em L2} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Overlap of two rods as a function of time 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ab78b5ee2f228850d15d6f47e0ba3a268}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ab78b5ee2f228850d15d6f47e0ba3a268}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!collectDataArrays@{collectDataArrays}}
+\index{collectDataArrays@{collectDataArrays}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{collectDataArrays()}{collectDataArrays()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+collect\+Data\+Arrays (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Store data arrays in member variables. 
+
+\begin{DoxyReturn}{Returns}
+\+: void, modifies member variables 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis_aba652254f69cd69fc715d41e51e56e2f}{foxlink.\+M\+E\+\_\+analysis.\+M\+E\+Analysis}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a562b68afdcb57aea7085230ec074ef29}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a562b68afdcb57aea7085230ec074ef29}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!FindStartTime@{FindStartTime}}
+\index{FindStartTime@{FindStartTime}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{FindStartTime()}{FindStartTime()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+Find\+Start\+Time (\begin{DoxyParamCaption}\item[{}]{arr,  }\item[{}]{reps = {\ttfamily 1} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+A function to find when simulations reaches a steady state with respect to array, arr. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arr} & Array to find steady state in \\
+\hline
+{\em reps} & repetitions of recursion \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: st Start time, the index of time array when the simulation first reaches a the steady state average 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a384e87855cb54ad42f20cffbc317e0f1}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a384e87855cb54ad42f20cffbc317e0f1}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!graphMomentSlice@{graphMomentSlice}}
+\index{graphMomentSlice@{graphMomentSlice}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{graphMomentSlice()}{graphMomentSlice()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+graph\+Moment\+Slice (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n,  }\item[{}]{fig,  }\item[{}]{axarr }\end{DoxyParamCaption})}
+
+
+
+Graph the solution Psi at a specific time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & index of slice to graph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aace1e9540fdf66dfc50e3602e9fa8f2b}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_aace1e9540fdf66dfc50e3602e9fa8f2b}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!graphOrientSlice@{graphOrientSlice}}
+\index{graphOrientSlice@{graphOrientSlice}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{graphOrientSlice()}{graphOrientSlice()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+graph\+Orient\+Slice (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n,  }\item[{}]{fig,  }\item[{}]{axarr }\end{DoxyParamCaption})}
+
+
+
+Graph the solution Psi at a specific time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & index of slice to graph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a53855717bb8677e1988d933a9bea4833}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a53855717bb8677e1988d933a9bea4833}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!graphReducedSlice@{graphReducedSlice}}
+\index{graphReducedSlice@{graphReducedSlice}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{graphReducedSlice()}{graphReducedSlice()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+graph\+Reduced\+Slice (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n,  }\item[{}]{fig,  }\item[{}]{axarr }\end{DoxyParamCaption})}
+
+
+
+Graph the solution Psi at a specific time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & index of slice to graph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a92690b7e5c73fb0109314eed47947941}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a92690b7e5c73fb0109314eed47947941}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!graphSlice@{graphSlice}}
+\index{graphSlice@{graphSlice}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{graphSlice()}{graphSlice()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+graph\+Slice (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n,  }\item[{}]{fig,  }\item[{}]{axarr }\end{DoxyParamCaption})}
+
+
+
+Graphing functions \#. 
+
+Graph the solution Psi at a specific time
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & index of slice to graph \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis_a80c324a9783f9ec6551c4c8f44797615}{foxlink.\+M\+E\+\_\+analysis.\+M\+E\+Analysis}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a265b737511cde04c143f5c36acbd9e7e}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a265b737511cde04c143f5c36acbd9e7e}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!Load@{Load}}
+\index{Load@{Load}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{Load()}{Load()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+Load (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{analysis\+\_\+type = {\ttfamily \textquotesingle{}load\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Load in data from hdf5 file and grab analysis files if they exist. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em analysis\+\_\+type} & load, analyze, overwrite. The extent of the analysis that should be carried out. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void, stores hdf5 file, parameters, and data arrays to self. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a442c61540bb9274dc77b6c0d18693814}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a442c61540bb9274dc77b6c0d18693814}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!OTAnalysis@{OTAnalysis}}
+\index{OTAnalysis@{OTAnalysis}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{OTAnalysis()}{OTAnalysis()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+O\+T\+Analysis (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Analyze data for optically trapped rods, especially if they are oscillating traps. 
+
+\begin{DoxyReturn}{Returns}
+\+: void, Adds optical trap post-\/analysis to hdf5 file 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a027817f4fa0e3d9d08d90509d306c3d1}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_a027817f4fa0e3d9d08d90509d306c3d1}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!RodGeometryAnalysis@{RodGeometryAnalysis}}
+\index{RodGeometryAnalysis@{RodGeometryAnalysis}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{RodGeometryAnalysis()}{RodGeometryAnalysis()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+Rod\+Geometry\+Analysis (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{rod\+\_\+analysis\+\_\+grp,  }\item[{}]{analysis\+\_\+type = {\ttfamily \textquotesingle{}analyze\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Analyze and store data relating to the configuration of the rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rod\+\_\+analysis\+\_\+grp} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ac43a2a698218baacb942ad150a4b1f31}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ac43a2a698218baacb942ad150a4b1f31}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!Save@{Save}}
+\index{Save@{Save}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+Save (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Create a pickle file of solution. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ae470aa3f25712e35849b093b6447a819}\label{classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis_ae470aa3f25712e35849b093b6447a819}} 
+\index{foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}!XLMomentAnalysis@{XLMomentAnalysis}}
+\index{XLMomentAnalysis@{XLMomentAnalysis}!foxlink.FP\_analysis.FPAnalysis@{foxlink.FP\_analysis.FPAnalysis}}
+\doxysubsubsection{\texorpdfstring{XLMomentAnalysis()}{XLMomentAnalysis()}}
+{\footnotesize\ttfamily def foxlink.\+F\+P\+\_\+analysis.\+F\+P\+Analysis.\+X\+L\+Moment\+Analysis (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{X\+L\+\_\+analysis\+\_\+grp,  }\item[{}]{analysis\+\_\+type = {\ttfamily \textquotesingle{}analyze\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+T\+O\+DO\+: Docstring for Moment\+Analysis. 
+
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/F\+P\+\_\+analysis.\+py\end{DoxyCompactItemize}

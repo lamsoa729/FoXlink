@@ -1,0 +1,272 @@
+\hypertarget{classfoxlink_1_1solver_1_1_solver}{}\doxysection{foxlink.\+solver.\+Solver Class Reference}
+\label{classfoxlink_1_1solver_1_1_solver}\index{foxlink.solver.Solver@{foxlink.solver.Solver}}
+
+
+Abstract class for solver objects.  
+
+
+Inheritance diagram for foxlink.\+solver.\+Solver\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.316785cm]{classfoxlink_1_1solver_1_1_solver}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_ad2a93178f498ac081bcd4a993377f705}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, pfile=None, pdict=None)
+\begin{DoxyCompactList}\small\item\em Set parameters for P\+DE to be solved including boundary conditions. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_acbf9a13173eda26bc574de1590d7bbbb}{Parse\+Params}} (self)
+\begin{DoxyCompactList}\small\item\em Method to extract and/or calculate parameter values necessary for solving algorithms to run. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a261fb447379a31b314c00fbf9ca48e7c}{Save}} (self)
+\begin{DoxyCompactList}\small\item\em Flush and close hdf5 data frame. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_af91aa3e76ff1cfd20c2e50981ecf4944}{make\+Dataframe}} (self)
+\begin{DoxyCompactList}\small\item\em Make data frame to read from later. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a0ba774a24e7af8fec2b62d3b72c18cea}{set\+Initial\+Conditions}} (self)
+\begin{DoxyCompactList}\small\item\em Virtual methods \#. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a445819ba05152317bb5bbb736e269b73}{Run}} (self)
+\begin{DoxyCompactList}\small\item\em Run P\+DE solver with parameters in pfile through explicity interative time stepping. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_aa5490a4b2084433dfdf93fb693a9d3e6}{Step}} (self)
+\begin{DoxyCompactList}\small\item\em Step solver method one unit in time. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a1f156db9907513dcafafc706e861d286}{Write}} (self)
+\begin{DoxyCompactList}\small\item\em Write current step in algorithm into data frame. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_ab694d99bab44de4e157de57fed4e25f4}\label{classfoxlink_1_1solver_1_1_solver_ab694d99bab44de4e157de57fed4e25f4}} 
+{\bfseries data\+\_\+frame\+\_\+made}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_a7c00b34e960b70e960d0c8c8122d9e26}\label{classfoxlink_1_1solver_1_1_solver_a7c00b34e960b70e960d0c8c8122d9e26}} 
+{\bfseries written}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+dictionary {\bfseries default\+\_\+params}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Abstract class for solver objects. 
+
+All P\+DE algorithms are implemented through these classes. \begin{DoxyVerb}Common method functions for inherited solver classes:
+    Run <- Abstract = Iterate through time using the Step method
+    Step <- Abstract = Implement the specified algorithm at a times step
+    setInitialConditions <- Abstract = Set the initial stat of simulation
+    makeDataframe <- Abstract = Make a HDF5 data frame
+    Write <- Abstract = At a specified time step add current solution to output dataframe.
+
+    ParseParams = Parse parameters from file that is given
+    Save = Flush the remaining data in hdf5 file.
+
+Foxlink uses inheritance to quickly create and combine PDE solving
+algorithms. While solvers do not need to follow specific guidelines, it
+is useful to categorize solvers into different types avoid inheritance
+conflicts when using multi-inheritance. These include:
+    Orientation solver -> Defines rods orientations and associate parameters.
+                          eg. Parallel (para),
+    Xlink algorithm solver -> What technique is used to solve the xlink
+                              density equations. Can use multiple in one
+                              system. eg. Upwind (UW), Crank-Nicolson(CN)
+    Xlink type solver -> What type of crosslinks are being modeled.
+                         eg. Motor, Static, Passive
+    Rod algorithm solver -> What technique is used to solve the rods
+                              position equations.
+                              eg. Orient (no motions), Motion, Optical Trap
+
+Derivative class names are based on their solver type.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_ad2a93178f498ac081bcd4a993377f705}\label{classfoxlink_1_1solver_1_1_solver_ad2a93178f498ac081bcd4a993377f705}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{pfile = {\ttfamily None},  }\item[{}]{pdict = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Set parameters for P\+DE to be solved including boundary conditions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pfile} & parameter file for P\+D\+Es \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_t_b___o_d_e__solver_1_1_o_d_e_adiabatic_ang_solver_a7c833cc6d71dd7c020e5348e2192785a}{foxlink.\+T\+B\+\_\+\+O\+D\+E\+\_\+solver.\+O\+D\+E\+Adiabatic\+Ang\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1rod__motion__solver_1_1_rod_motion_solver_ac394f0a68399c157b20fcb56dd46c471}{foxlink.\+rod\+\_\+motion\+\_\+solver.\+Rod\+Motion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1gen__def__motion__solver_1_1_gen_def_motion_solver_adbd7d46fae44755a83b5ad0ed11a49f2}{foxlink.\+gen\+\_\+def\+\_\+motion\+\_\+solver.\+Gen\+Def\+Motion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_ab75168497f3a3cc878f1faf3f0c9a65c}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_aea8385711150178b485c829597650ad4}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__pass___c_n__solver_1_1_f_p_passive_c_n_solver_af368ae22fe3ebc9079e5402745782124}{foxlink.\+F\+P\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Passive\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a893cc605364cdee3dfbeffeaed478e11}{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p___u_w__solver_1_1_f_p_u_w_solver_af0e32ccc96a71ac6333931ec7ed5e31a}{foxlink.\+F\+P\+\_\+\+U\+W\+\_\+solver.\+F\+P\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__motor___u_w__solver_1_1_f_p_gen_orient_motor_u_w_solver_ab9c00102caec732b8c7a92bb1ab7ad78}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Orient\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__static__xlinks__solver_1_1_f_p_gen_orient_static_xlinks_solver_a2dfb4100439622c99b269d94e558515f}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Gen\+Orient\+Static\+Xlinks\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__motor___u_w__solver_1_1_f_p_motor_u_w_solver_a3d2e0af00341f0890dad16de6791f6b3}{foxlink.\+F\+P\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_ae226b60e59c3c7709c2736d82b63b4b7}{foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p___c_n__solver_1_1_f_p_c_n_solver_aaa6bf0d8666bb96df64b154507486f12}{foxlink.\+F\+P\+\_\+\+C\+N\+\_\+solver.\+F\+P\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__def__motion__motor___u_w__solver_1_1_f_p_gen_def_motion_motor_u_w_solver_ae2a1941f8b17f8094c18c79057c45274}{foxlink.\+F\+P\+\_\+gen\+\_\+def\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Def\+Motion\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__motor___u_w__solver_1_1_f_p_gen_motion_motor_u_w_solver_a6cebdb5478fe1862e8e238366f2d03b4}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Motion\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__solver_1_1_f_p_gen_motion_solver_a6f1ff23d4d9d1509685cbacf4e70b418}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+solver.\+F\+P\+Gen\+Motion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__static__xlinks__solver_1_1_f_p_gen_motion_static_xlinks_solver_a4506d70bd8c5ce4c5cdcd900502df924}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Gen\+Motion\+Static\+Xlinks\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__motor___c_n__solver_1_1_f_p_gen_orient_motor_c_n_solver_a586714a0d182881da89fb3f4e0a8a069}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+motor\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Orient\+Motor\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__pass___c_n__solver_1_1_f_p_gen_orient_pass_c_n_solver_a582d4ffb08d3a587ab7dc22f24abeb10}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Orient\+Pass\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__static__xlinks__solver_1_1_f_p_static_xlinks_solver_a027310bc84e6c835748834eff3a87f21}{foxlink.\+F\+P\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Static\+Xlinks\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__pass___c_n__solver_1_1_f_p_gen_motion_pass_c_n_solver_a30761fd29aeac60973c1cf6fca1e7b24}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Motion\+Pass\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_a1d1b8046f8fabf4deb05831ba0063f1a}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_a7d3cb520586099daabf45647b0fd6be1}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_af91aa3e76ff1cfd20c2e50981ecf4944}\label{classfoxlink_1_1solver_1_1_solver_af91aa3e76ff1cfd20c2e50981ecf4944}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!makeDataframe@{makeDataframe}}
+\index{makeDataframe@{makeDataframe}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{makeDataframe()}{makeDataframe()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+make\+Dataframe (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Make data frame to read from later. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_a7e76ab714582f154af22cb81495306be}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a5a931344f8632b2a6a412740521591d4}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a5499bf15f758319b8f63527fee744710}{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_a35114e588a47f083fa648f69f3437093}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_a3191d57cd9a0709a5d5ac123c9102117}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_acbf9a13173eda26bc574de1590d7bbbb}\label{classfoxlink_1_1solver_1_1_solver_acbf9a13173eda26bc574de1590d7bbbb}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!ParseParams@{ParseParams}}
+\index{ParseParams@{ParseParams}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{ParseParams()}{ParseParams()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+Parse\+Params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Method to extract and/or calculate parameter values necessary for solving algorithms to run. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em skip} & Load parameter file but skip rest of the parsing. Used when you need to load special parameters before making solution grid in subclasses.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void, modifies self.\+\_\+params 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_acc93da9781fd5d14958fba84882ee32d}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a9f587bb3b7ddd1d3764b3c6fbcc824b3}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac59417c4a1c79623bad04bfbb0fc8808}{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_a445819ba05152317bb5bbb736e269b73}\label{classfoxlink_1_1solver_1_1_solver_a445819ba05152317bb5bbb736e269b73}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!Run@{Run}}
+\index{Run@{Run}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+Run (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Run P\+DE solver with parameters in pfile through explicity interative time stepping. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_afc9316a07143caa626ba8debf869ae0a}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_t_b___o_d_e__solver_1_1_o_d_e_adiabatic_ang_solver_ad689294985ff03b16a3049d171d76345}{foxlink.\+T\+B\+\_\+\+O\+D\+E\+\_\+solver.\+O\+D\+E\+Adiabatic\+Ang\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_a261fb447379a31b314c00fbf9ca48e7c}\label{classfoxlink_1_1solver_1_1_solver_a261fb447379a31b314c00fbf9ca48e7c}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!Save@{Save}}
+\index{Save@{Save}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{Save()}{Save()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+Save (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Flush and close hdf5 data frame. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_t_b___o_d_e__solver_1_1_o_d_e_adiabatic_ang_solver_a04ec0cdc2b7246d2b6aa12461be1a473}{foxlink.\+T\+B\+\_\+\+O\+D\+E\+\_\+solver.\+O\+D\+E\+Adiabatic\+Ang\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_a0ba774a24e7af8fec2b62d3b72c18cea}\label{classfoxlink_1_1solver_1_1_solver_a0ba774a24e7af8fec2b62d3b72c18cea}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!setInitialConditions@{setInitialConditions}}
+\index{setInitialConditions@{setInitialConditions}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{setInitialConditions()}{setInitialConditions()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+set\+Initial\+Conditions (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Virtual methods \#. 
+
+Set the initial state for the solution.
+
+\begin{DoxyReturn}{Returns}
+\+: void, modifies solution grid 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_ac9206e8c6609c46d0f6f2b0ae915946e}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_t_b___o_d_e__solver_1_1_o_d_e_adiabatic_ang_solver_a72c351fd6b4fe12f0091e2762fc84385}{foxlink.\+T\+B\+\_\+\+O\+D\+E\+\_\+solver.\+O\+D\+E\+Adiabatic\+Ang\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1f7bcd5823245ee00193f4884b4f6835}{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_aa5490a4b2084433dfdf93fb693a9d3e6}\label{classfoxlink_1_1solver_1_1_solver_aa5490a4b2084433dfdf93fb693a9d3e6}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!Step@{Step}}
+\index{Step@{Step}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{Step()}{Step()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+Step (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Step solver method one unit in time. 
+
+\begin{DoxyReturn}{Returns}
+\+: None 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_a1a316cadf617044fae24cbb547e11459}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__pass___c_n__solver_1_1_f_p_passive_c_n_solver_a3db394e76b143b13e349c3eec3a1d9ae}{foxlink.\+F\+P\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Passive\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__motor___c_n__solver_1_1_f_p_gen_orient_motor_c_n_solver_aace6bf39bfdee4bb200c6d298a1ba037}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+motor\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Orient\+Motor\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__motor___u_w__solver_1_1_f_p_motor_u_w_solver_aca30c56f8ec0b891f198dd46b87a3434}{foxlink.\+F\+P\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__motor___u_w__solver_1_1_f_p_gen_motion_motor_u_w_solver_a2786babc520e937ff5edaedd23a1fd97}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Gen\+Motion\+Motor\+U\+W\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__pass___c_n__solver_1_1_f_p_gen_motion_pass_c_n_solver_ac8ae5eba7178ceff53d59e954cfed3ba}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+pass\+\_\+\+C\+N\+\_\+solver.\+F\+P\+Gen\+Motion\+Pass\+C\+N\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__static__xlinks__solver_1_1_f_p_static_xlinks_solver_afbe464a020f1113ac8400f307a546d8c}{foxlink.\+F\+P\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Static\+Xlinks\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__motion__static__xlinks__solver_1_1_f_p_gen_motion_static_xlinks_solver_a3fb566f5975e12e7b2aa34382d439e01}{foxlink.\+F\+P\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_a1f156db9907513dcafafc706e861d286}\label{classfoxlink_1_1solver_1_1_solver_a1f156db9907513dcafafc706e861d286}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!Write@{Write}}
+\index{Write@{Write}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{Write()}{Write()}}
+{\footnotesize\ttfamily def foxlink.\+solver.\+Solver.\+Write (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Write current step in algorithm into data frame. 
+
+\begin{DoxyReturn}{Returns}
+\+: index of current step 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver_afc37e9bb59c72336babb75de7e74a6f4}{foxlink.\+F\+P\+\_\+solver.\+Fokker\+Planck\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af05fbf158175d0bf7ee8040f011accd9}{foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver_a93f63b45e21dc4830b60b7959abcd039}{foxlink.\+optical\+\_\+trap\+\_\+motion\+\_\+solver.\+Optical\+Trap\+Motion\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_t_b___o_d_e__solver_1_1_o_d_e_adiabatic_ang_solver_a243e4d759d9d642d64ab051b6f8e691f}{foxlink.\+T\+B\+\_\+\+O\+D\+E\+\_\+solver.\+O\+D\+E\+Adiabatic\+Ang\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p__gen__orient__solver_1_1_f_p_gen_orient_solver_a1d50384cc25e3f17d82fc9f54aab186b}{foxlink.\+F\+P\+\_\+gen\+\_\+orient\+\_\+solver.\+F\+P\+Gen\+Orient\+Solver}}, \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__motor___u_w__solver_1_1_f_p_optical_trap_gen_motion_motor_u_w_solver_aa7c090647183c2544b4083182fdab8f8}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+motor\+\_\+\+U\+W\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Motor\+U\+W\+Solver}}, and \mbox{\hyperlink{classfoxlink_1_1_f_p___o_t__gen__motion__static__xlinks__solver_1_1_f_p_optical_trap_gen_motion_static_xlinks_solver_aa1ced096efe8ec11229dbd0cb0df139f}{foxlink.\+F\+P\+\_\+\+O\+T\+\_\+gen\+\_\+motion\+\_\+static\+\_\+xlinks\+\_\+solver.\+F\+P\+Optical\+Trap\+Gen\+Motion\+Static\+Xlinks\+Solver}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classfoxlink_1_1solver_1_1_solver_ac991c0c71ca4f19582b15d516acdfd9f}\label{classfoxlink_1_1solver_1_1_solver_ac991c0c71ca4f19582b15d516acdfd9f}} 
+\index{foxlink.solver.Solver@{foxlink.solver.Solver}!default\_params@{default\_params}}
+\index{default\_params@{default\_params}!foxlink.solver.Solver@{foxlink.solver.Solver}}
+\doxysubsubsection{\texorpdfstring{default\_params}{default\_params}}
+{\footnotesize\ttfamily dictionary foxlink.\+solver.\+Solver.\+default\+\_\+params\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=  \{}
+\DoxyCodeLine{        \textcolor{stringliteral}{"r"}: 1.,  \textcolor{comment}{\# Distance between rod centers}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"a1"}: 0.,  \textcolor{comment}{\# Dot product between u1 and r unit vectors}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"a2"}: 0.,  \textcolor{comment}{\# Dot product between u2 and r unit vectors}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"b"}: -\/1.,  \textcolor{comment}{\# Dot product between u1 and u2 unit vectors}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"R1\_pos"}: [0., 0., 0.],}
+\DoxyCodeLine{        \textcolor{stringliteral}{"R2\_pos"}: [0., 0., 0.],}
+\DoxyCodeLine{        \textcolor{stringliteral}{"R1\_vec"}: [0., 1., 0.],}
+\DoxyCodeLine{        \textcolor{stringliteral}{"R2\_vec"}: [0., 1., 0.],}
+\DoxyCodeLine{        \textcolor{stringliteral}{"L1"}: 100.,  \textcolor{comment}{\# Length of microtubule 1}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"L2"}: 100.,  \textcolor{comment}{\# Length of microtubule 2}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"dt"}: 1.,  \textcolor{comment}{\# Time step}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"nt"}: 2000.,  \textcolor{comment}{\# total time}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"nsteps"}: 2000,  \textcolor{comment}{\# total time}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"nwrite"}: 1,}
+\DoxyCodeLine{        \textcolor{stringliteral}{"twrite"}: 1.,}
+\DoxyCodeLine{        \textcolor{stringliteral}{"ds"}: 1.,  \textcolor{comment}{\# Segmentation size of microtubules}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"ko"}: 1.,  \textcolor{comment}{\# Crosslinker turnover rate}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"co"}: 1.,  \textcolor{comment}{\# Effective crosslinker concentration}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"ks"}: 1.,  \textcolor{comment}{\# Crosslinker spring concentration}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"ho"}: 1.,  \textcolor{comment}{\# Equilibrium length of crosslinkers}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"vo"}: 1.,  \textcolor{comment}{\# Base velocity of crosslinker heads}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"fs"}: 1.,  \textcolor{comment}{\# Stall force of crosslinker heads}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"beta"}: 1.,  \textcolor{comment}{\# Inverse temperature}}
+\DoxyCodeLine{    \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+foxlink/solver.\+py\end{DoxyCompactItemize}
