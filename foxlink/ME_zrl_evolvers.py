@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-import numpy as np
-from scipy.integrate import dblquad
-from .ME_helpers import dr_dt
-from .ME_zrl_ODEs import (du1_dt_zrl, du2_dt_zrl,
-                          drho_dt_zrl, dP1_dt_zrl, dP2_dt_zrl,
-                          dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
-from .ME_zrl_helpers import avg_force_zrl
 
 """@package docstring
 File: ME_zrl_ODEs.py
@@ -13,6 +6,14 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+
+import numpy as np
+from scipy.integrate import dblquad
+from .ME_helpers import dr_dt
+from .ME_zrl_ODEs import (du1_dt_zrl, du2_dt_zrl,
+                          drho_dt_zrl, dP1_dt_zrl, dP2_dt_zrl,
+                          dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
+from .ME_zrl_helpers import avg_force_zrl
 
 
 def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):

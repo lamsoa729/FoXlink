@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['linedataunits_52',['LineDataUnits',['../classfoxlink_1_1fp__graphs_1_1_line_data_units.html',1,'foxlink::fp_graphs']]],
-  ['load_53',['Load',['../classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis.html#a265b737511cde04c143f5c36acbd9e7e',1,'foxlink::FP_analysis::FPAnalysis']]]
+  ['initotmotion_64',['initOTMotion',['../classfoxlink_1_1optical__trap__motion__solver_1_1_optical_trap_motion_solver.html#a7b74c8c1f370b72e148ef1885f31a71a',1,'foxlink::optical_trap_motion_solver::OpticalTrapMotionSolver']]]
 ];

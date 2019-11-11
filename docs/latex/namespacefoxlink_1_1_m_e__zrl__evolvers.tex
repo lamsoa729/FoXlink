@@ -1,0 +1,295 @@
+\hypertarget{namespacefoxlink_1_1_m_e__zrl__evolvers}{}\doxysection{foxlink.\+M\+E\+\_\+zrl\+\_\+evolvers Namespace Reference}
+\label{namespacefoxlink_1_1_m_e__zrl__evolvers}\index{foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl__evolvers_a4e90b820dc2af492a3ad9faac00e9b06}{prep\+\_\+zrl\+\_\+stat\+\_\+evolver}} (sol, ks, beta, L1, L2)
+\begin{DoxyCompactList}\small\item\em T\+O\+DO\+: Docstring for prep\+\_\+zrl\+\_\+stat\+\_\+evolver. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl__evolvers_a65346d0dbcada5ac6b2186b88208effc}{evolver\+\_\+zrl}} (r1, r2, u1, u2, rho, P1, P2, mu11, mu20, mu02, gpara1, gperp1, grot1, gpara2, gperp2, grot2, vo, fs, ko, c, ks, beta, L1, L2, fast=None)
+\begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl__evolvers_a827baee60b11ce06f7f7ce977af1ab0c}{evolver\+\_\+zrl\+\_\+ang}} (u1, u2, rho, P1, P2, mu11, mu20, mu02, gpara1, gperp1, grot1, gpara2, gperp2, grot2, r12, rsqr, vo, fs, ko, c, ks, beta, L1, L2, fast=None)
+\begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl__evolvers_acfc9a281badcffd969c1ef64ec8ef348}{evolver\+\_\+zrl\+\_\+orient}} (r1, r2, u1, u2, rho, P1, P2, mu11, mu20, mu02, gpara1, gperp1, grot1, gpara2, gperp2, grot2, vo, fs, ko, c, ks, beta, L1, L2, fast=None)
+\begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl__evolvers_af773e05a219583d93bd7093d4f076031}{evolver\+\_\+zrl\+\_\+stat}} (rho, P1, P2, mu11, mu20, mu02, rsqr, a1, a2, b, q, q10, q01, q11, q20, q02, vo, fs, ko, c, ks, beta, L1, L2)
+\begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@package docstring
+File: ME_zrl_ODEs.py
+Author: Adam Lamson
+Email: adam.lamson@colorado.edu
+Description:
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl__evolvers_a65346d0dbcada5ac6b2186b88208effc}\label{namespacefoxlink_1_1_m_e__zrl__evolvers_a65346d0dbcada5ac6b2186b88208effc}} 
+\index{foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}!evolver\_zrl@{evolver\_zrl}}
+\index{evolver\_zrl@{evolver\_zrl}!foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}}
+\doxysubsubsection{\texorpdfstring{evolver\_zrl()}{evolver\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+evolvers.\+evolver\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{r1,  }\item[{}]{r2,  }\item[{}]{u1,  }\item[{}]{u2,  }\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{gpara1,  }\item[{}]{gperp1,  }\item[{}]{grot1,  }\item[{}]{gpara2,  }\item[{}]{gperp2,  }\item[{}]{grot2,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{fast = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. 
+
+d{\itshape  is the time derivative of corresponding variable}
+
+{\itshape 
+\begin{DoxyParams}{Parameters}
+{\em r1} & Center of mass postion of rod1 \\
+\hline
+{\em r2} & Center of mass position of rod2 \\
+\hline
+{\em u1} & Orientation unit vector of rod1 \\
+\hline
+{\em u2} & Orientation unit vector of rod2 \\
+\hline
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em gpara1} & Parallel drag coefficient of rod1 \\
+\hline
+{\em gperp1} & Perpendicular drag coefficient of rod1 \\
+\hline
+{\em grot1} & Rotational drag coefficient of rod1 \\
+\hline
+{\em gpara2} & Parallel drag coefficient of rod1 \\
+\hline
+{\em gperp2} & Perpendicular drag coefficient of rod1 \\
+\hline
+{\em grot2} & Rotational drag coefficient of rod1 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+{\em fast} & Flag on whether or not to use fast solving techniques \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivatives of all time varying quantities in a flattened array 
+\end{DoxyReturn}
+}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl__evolvers_a827baee60b11ce06f7f7ce977af1ab0c}\label{namespacefoxlink_1_1_m_e__zrl__evolvers_a827baee60b11ce06f7f7ce977af1ab0c}} 
+\index{foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}!evolver\_zrl\_ang@{evolver\_zrl\_ang}}
+\index{evolver\_zrl\_ang@{evolver\_zrl\_ang}!foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}}
+\doxysubsubsection{\texorpdfstring{evolver\_zrl\_ang()}{evolver\_zrl\_ang()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+evolvers.\+evolver\+\_\+zrl\+\_\+ang (\begin{DoxyParamCaption}\item[{}]{u1,  }\item[{}]{u2,  }\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{gpara1,  }\item[{}]{gperp1,  }\item[{}]{grot1,  }\item[{}]{gpara2,  }\item[{}]{gperp2,  }\item[{}]{grot2,  }\item[{}]{r12,  }\item[{}]{rsqr,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{fast = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. 
+
+d{\itshape  is the time derivative of corresponding variable}
+
+{\itshape 
+\begin{DoxyParams}{Parameters}
+{\em u1} & Orientation unit vector of rod1 \\
+\hline
+{\em u2} & Orientation unit vector of rod2 \\
+\hline
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em gpara1} & Parallel drag coefficient of rod1 \\
+\hline
+{\em gperp1} & Perpendicular drag coefficient of rod1 \\
+\hline
+{\em grot1} & Rotational drag coefficient of rod1 \\
+\hline
+{\em gpara2} & Parallel drag coefficient of rod1 \\
+\hline
+{\em gperp2} & Perpendicular drag coefficient of rod1 \\
+\hline
+{\em grot2} & Rotational drag coefficient of rod1 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+{\em fast} & Flag on whether or not to use fast solving techniques \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivatives of all time varying quantities in a flattened array 
+\end{DoxyReturn}
+}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl__evolvers_acfc9a281badcffd969c1ef64ec8ef348}\label{namespacefoxlink_1_1_m_e__zrl__evolvers_acfc9a281badcffd969c1ef64ec8ef348}} 
+\index{foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}!evolver\_zrl\_orient@{evolver\_zrl\_orient}}
+\index{evolver\_zrl\_orient@{evolver\_zrl\_orient}!foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}}
+\doxysubsubsection{\texorpdfstring{evolver\_zrl\_orient()}{evolver\_zrl\_orient()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+evolvers.\+evolver\+\_\+zrl\+\_\+orient (\begin{DoxyParamCaption}\item[{}]{r1,  }\item[{}]{r2,  }\item[{}]{u1,  }\item[{}]{u2,  }\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{gpara1,  }\item[{}]{gperp1,  }\item[{}]{grot1,  }\item[{}]{gpara2,  }\item[{}]{gperp2,  }\item[{}]{grot2,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{fast = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. 
+
+d{\itshape  is the time derivative of corresponding variable}
+
+{\itshape 
+\begin{DoxyParams}{Parameters}
+{\em u1} & Orientation unit vector of rod1 \\
+\hline
+{\em u2} & Orientation unit vector of rod2 \\
+\hline
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em gpara1} & Parallel drag coefficient of rod1 \\
+\hline
+{\em gperp1} & Perpendicular drag coefficient of rod1 \\
+\hline
+{\em grot1} & Rotational drag coefficient of rod1 \\
+\hline
+{\em gpara2} & Parallel drag coefficient of rod1 \\
+\hline
+{\em gperp2} & Perpendicular drag coefficient of rod1 \\
+\hline
+{\em grot2} & Rotational drag coefficient of rod1 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+{\em fast} & Flag on whether or not to use fast solving techniques \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivatives of all time varying quantities in a flattened array 
+\end{DoxyReturn}
+}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl__evolvers_af773e05a219583d93bd7093d4f076031}\label{namespacefoxlink_1_1_m_e__zrl__evolvers_af773e05a219583d93bd7093d4f076031}} 
+\index{foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}!evolver\_zrl\_stat@{evolver\_zrl\_stat}}
+\index{evolver\_zrl\_stat@{evolver\_zrl\_stat}!foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}}
+\doxysubsubsection{\texorpdfstring{evolver\_zrl\_stat()}{evolver\_zrl\_stat()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+evolvers.\+evolver\+\_\+zrl\+\_\+stat (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{q,  }\item[{}]{q10,  }\item[{}]{q01,  }\item[{}]{q11,  }\item[{}]{q20,  }\item[{}]{q02,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2 }\end{DoxyParamCaption})}
+
+
+
+Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (zrl) crosslinkers bound to moving rods. 
+
+d{\itshape  is the time derivative of corresponding variable}
+
+{\itshape 
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM (r12) \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivatives of all time varying quantities in a flattened array 
+\end{DoxyReturn}
+}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl__evolvers_a4e90b820dc2af492a3ad9faac00e9b06}\label{namespacefoxlink_1_1_m_e__zrl__evolvers_a4e90b820dc2af492a3ad9faac00e9b06}} 
+\index{foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}!prep\_zrl\_stat\_evolver@{prep\_zrl\_stat\_evolver}}
+\index{prep\_zrl\_stat\_evolver@{prep\_zrl\_stat\_evolver}!foxlink.ME\_zrl\_evolvers@{foxlink.ME\_zrl\_evolvers}}
+\doxysubsubsection{\texorpdfstring{prep\_zrl\_stat\_evolver()}{prep\_zrl\_stat\_evolver()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+evolvers.\+prep\+\_\+zrl\+\_\+stat\+\_\+evolver (\begin{DoxyParamCaption}\item[{}]{sol,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2 }\end{DoxyParamCaption})}
+
+
+
+T\+O\+DO\+: Docstring for prep\+\_\+zrl\+\_\+stat\+\_\+evolver. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arg1} & T\+O\+DO \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}
