@@ -103,7 +103,7 @@ def choose_ME_evolver(sol, slvr):
                                    gpara1, gperp1, grot1,  # Friction coefficients
                                    gpara2, gperp2, grot2,
                                    r12, slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                   slvr.ks, slvr.beta, slvr.L1, slvr.L2, fast='fast')  # Other parameters
+                                   slvr.ks, slvr.beta, slvr.L1, slvr.L2, fast='fast')
         return evolver_zrl_ang_closure
 
     elif slvr.ODE_type == 'zrl_orient':
@@ -145,6 +145,7 @@ def choose_ME_evolver(sol, slvr):
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+            print("sol({}):".format(t), sol)
 
             return me_evolver_gen_2ord(sol, gpara_i, gperp_i, grot_i,
                                        gpara_j, gperp_j, grot_j,

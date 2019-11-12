@@ -43,7 +43,8 @@ def du_dt_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
 
 
 @njit
-def du_dt_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu10, mu11, mu20,
+def du_dt_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+                   mu10, mu11, mu20,
                    ks, ho, grot):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
@@ -75,7 +76,7 @@ def dmu00_dt_gen(mu00, ko, q=0):
 @njit
 def dmu10_dt_gen_2ord(rsqr, a_ij, a_ji, b,
                       mu00, mu10, mu01, mu11, mu20, mu02,
-                      ko, vo, fs, ks, ho, beta, q=None):
+                      ko, vo, fs, ks, ho, q):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length.

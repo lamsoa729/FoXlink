@@ -34,8 +34,7 @@ def boltz_fact_gen(s_i, s_j, rsqr, a_ij, a_ji, b, ks, ho, beta):
     """
     return np.exp(-.5 * beta * ks * np.power(
         np.sqrt(rsqr + s_i**2 + s_j**2 -
-                (2. * s_i * s_j * b) +
-                2. * (s_j * a_ji - s_i * a_ij)) - ho, 2))
+                2. * (s_i * s_j * b + s_j * a_ji + s_i * a_ij)) - ho, 2))
 
 
 @njit
@@ -107,6 +106,7 @@ def avg_force_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
     """
     drh2 = rsqr - (ho * ho)
 
-    return -ks * ((-drh2 * mu00 + 2. * (a_ij * mu10 - a_ji * mu01 + b * mu11) - mu20 - mu02) * r_ij
-                  + (drh2 * mu10 + 2. * (a_ji * mu11 - a_ij * mu20)) * u_i
-                  + (-drh2 * mu01 + 2. * (a_ij * mu11 - a_ji * mu02)) * u_j)
+    return -ks * ((drh2 * mu00 - 2. * (a_ij * mu10 + a_ji * mu01 + b * mu11)
+                   + mu20 + mu02) * r_ij
+                  - (drh2 * mu10 - 2. * (a_ji * mu11 + a_ij * mu20)) * u_i
+                  + (drh2 * mu01 - 2. * (a_ij * mu11 + a_ji * mu02)) * u_j)
