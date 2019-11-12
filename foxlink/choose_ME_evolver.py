@@ -3,8 +3,6 @@ import numpy as np
 from .ME_helpers import convert_sol_to_geom, sol_print_out
 from .ME_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_ang,
                               evolver_zrl_orient, prep_zrl_stat_evolver)
-from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
-                             fast_zrl_src_full_kl)
 from .rod_motion_solver import get_rod_drag_coeff
 
 """@package docstring
@@ -86,6 +84,8 @@ def choose_ME_evolver(sol, vo, fs, ko, c, ks, beta, L1,
         return evolver_zrl_stat_closure
 
     elif ODE_type == 'zrl_ang':
+        gpara1, gperp1, grot1 = get_rod_drag_coeff(visc, L1, d)
+        gpara2, gperp2, grot2 = get_rod_drag_coeff(visc, L2, d)
         r1, r2, u1, u2 = convert_sol_to_geom(sol)
         r12 = r1 - r2
 
@@ -108,6 +108,8 @@ def choose_ME_evolver(sol, vo, fs, ko, c, ks, beta, L1,
         return evolver_zrl_ang_closure
 
     elif ODE_type == 'zrl_orient':
+        gpara1, gperp1, grot1 = get_rod_drag_coeff(visc, L1, d)
+        gpara2, gperp2, grot2 = get_rod_drag_coeff(visc, L2, d)
         r1, r2, u1, u2 = convert_sol_to_geom(sol)
         r12 = r1 - r2
 
@@ -127,7 +129,7 @@ def choose_ME_evolver(sol, vo, fs, ko, c, ks, beta, L1,
                                       sol[15], sol[16], sol[17],
                                       gpara1, gperp1, grot1,  # Friction coefficients
                                       gpara2, gperp2, grot2,
-                                      vo, fs, ko, c, ks, beta, L1, L2, fast='fast')  # Other parameters
+                                      vo, fs, ko, c, ks, beta, L1, L2, fast='fast')
         return evolver_zrl_orient_closure
     else:
         raise IOError('{} not a defined ODE equation for foxlink.')

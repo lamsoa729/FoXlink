@@ -88,7 +88,7 @@ class MomentExpansionSolver(Solver):
 
     def setInitialConditions(self):
         """!Set the initial conditions for the system of ODEs
-        @return: TODO
+        @return: void
         """
         self.sol_init = np.zeros(18)
         # Set all geometric variables
@@ -116,8 +116,8 @@ class MomentExpansionSolver(Solver):
         """!Create data frame to be written out
         @return: TODO
         """
-        # TODO: Dimensialize time array <11-11-19, ARL> #
         t_arr = self.non_dimmer.dim_val(self.t_eval, ['time'])
+        print("Evaluated at:", t_arr)
         if not self.data_frame_made:
             self._time_dset = self._h5_data.create_dataset('time',
                                                            data=t_arr,
@@ -193,21 +193,22 @@ class MomentExpansionSolver(Solver):
                         'length': max(self._params['L1'], self._params['L2']),
                         'energy': 1. / self._params['beta']}
         non_dimmer = NonDimensionalizer(**non_dim_dict)
-        non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
+        # non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
 
         self.beta = non_dimmer.non_dim_val(self._params['beta'],
                                            ['energy'], [-1])
         self.viscosity = non_dimmer.non_dim_val(
-            self._params['viscosity'], ['force', 'time', 'length'], [1, 1, -2])
+            self._params['viscosity'], ['energy', 'time', 'length'], [1, 1, -3])
         self.L1 = non_dimmer.non_dim_val(self._params['L1'], ['length'])
         self.L2 = non_dimmer.non_dim_val(self._params['L2'], ['length'])
-        self.R1_pos = non_dimmer.non_dim_val(self.R1_pos, ['length'])
-        self.R2_pos = non_dimmer.non_dim_val(self.R2_pos, ['length'])
+        self.R1_pos = non_dimmer.non_dim_val(
+            self._params['R1_pos'], ['length'])
+        self.R2_pos = non_dimmer.non_dim_val(
+            self._params['R2_pos'], ['length'])
         self.rod_diameter = non_dimmer.non_dim_val(self._params['rod_diameter'],
                                                    ['length'])
-        self.dt = non_dimmer.non_dim_val(self._params['dt'], ['time'])
+        self.dt = non_dimmer.non_dim_val(self.dt, ['time'])
         self.nt = non_dimmer.non_dim_val(self.nt, ['time'])
-        self.t_eval = non_dimmer.non_dim_val(self.t_eval, ['time'])
         self.twrite = non_dimmer.non_dim_val(self.twrite, ['time'])
         self.ko = non_dimmer.non_dim_val(self._params['ko'], ['time'], [-1])
         self.co = non_dimmer.non_dim_val(self._params['co'], ['length'], [-2])
@@ -216,7 +217,8 @@ class MomentExpansionSolver(Solver):
         self.ho = non_dimmer.non_dim_val(self._params['ho'], ['length'])
         self.vo = non_dimmer.non_dim_val(self._params['vo'],
                                          ['length', 'time'], [1, -1])
-        self.fs = non_dimmer.non_dim_val(self._params['fs'], ['force'], [1])
+        self.fs = non_dimmer.non_dim_val(
+            self._params['fs'], ['energy', 'length'], [1, -1])
         return non_dimmer
 
     def redimensionalize(self):

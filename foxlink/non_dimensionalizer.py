@@ -8,6 +8,7 @@ Description:
 """
 
 import numpy as np
+from copy import deepcopy as dcp
 
 
 class NonDimensionalizer():
@@ -33,12 +34,14 @@ class NonDimensionalizer():
         """
         if exp_list is None:
             exp_list = [1]
+        val = dcp(value)
         for dim, exp in zip(dim_list, exp_list):
             if dim not in self.__dict__:
                 raise RuntimeError(
                     "Dimension ({}) not in NonDimensionalizer.".format(dim))
-            value /= np.power(self.__dict__[dim], exp)
-        return value
+            val /= np.power(self.__dict__[dim], exp)
+        print(val)
+        return val
 
     def dim_val(self, value, dim_list, exp_list=None):
         """!Non-dimensionalize value based on units and dim
@@ -52,12 +55,13 @@ class NonDimensionalizer():
         """
         if exp_list is None:
             exp_list = [1]
+        val = dcp(value)
         for dim, exp in zip(dim_list, exp_list):
             if dim not in self.__dict__:
                 raise RuntimeError(
                     "Dimension ({}) not in NonDimensionalizer.".format(dim))
-            value *= np.power(self.__dict__[dim], exp)
-        return value
+            val *= np.power(self.__dict__[dim], exp)
+        return val
 
     def calc_new_dim(self, dim_name, dim_list, exp_list):
         """!Calculate new dimension based off current dimensions that already

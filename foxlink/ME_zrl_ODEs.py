@@ -1,9 +1,4 @@
 #!/usr/bin/env python
-from scipy.integrate import quad, dblquad
-import numpy as np
-from numba import jit, njit
-from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
-                             fast_zrl_src_full_kl)
 
 """@package docstring
 File: ME_zrl_ODEs.py
@@ -11,6 +6,10 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+from scipy.integrate import dblquad
+from numba import njit
+from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
+                             fast_zrl_src_full_kl)
 
 
 @njit
@@ -59,7 +58,8 @@ def du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2):
 ################################
 
 
-def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q=None):
+def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko,
+                c, ks, beta, L1, L2, q='fast'):
     """!Calculate the time-derivative of the zeroth moment of the zero rest
     length crosslinkers bound to rods.
 
@@ -91,7 +91,7 @@ def drho_dt_zrl(rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q=None):
 
 
 def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs,
-               ko, c, ks, beta, L1, L2, q10=None):
+               ko, c, ks, beta, L1, L2, q10='fast'):
     """!Calculate the time-derivative of the first moment(s1) of the zero rest
     length crosslinkers bound to rods.
 
@@ -131,7 +131,7 @@ def dP1_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo, fs,
 
 
 def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo,
-               fs, ko, c, ks, beta, L1, L2, q01=None):
+               fs, ko, c, ks, beta, L1, L2, q01='fast'):
     """!Calculate the time-derivative of the first moment(s2) of zero rest
     length crosslinkers bound to rods.
 
@@ -167,7 +167,7 @@ def dP2_dt_zrl(rho, P1, P2, rsqr, a1, a2, b, vo,
 
 
 def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11=None):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11='fast'):
     """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
     length crosslinkers bound to rods.
 
@@ -206,7 +206,7 @@ def dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
 
 def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20=None):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20='fast'):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -248,7 +248,7 @@ def dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
 
 
 def dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02=None):
+                 a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02='fast'):
     """!Calculate the time-derivative of the second moment(s2^2) of zero rest
     length crosslinkers bound to rods.
 

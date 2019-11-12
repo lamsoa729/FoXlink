@@ -1,0 +1,399 @@
+\hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es}{}\doxysection{foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es Namespace Reference}
+\label{namespacefoxlink_1_1_m_e__zrl___o_d_es}\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_a54ded595a87d6620ef09a6b3cdda5fa7}{du1\+\_\+dt\+\_\+zrl}} (r12, u1, u2, P1, mu11, a1, b, ks, grot1)
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of rod1\textquotesingle{}s orientation vector with respect to the current state of the crosslinked rod system when crosslinkers have zero rest length. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_adbd66808e583918524c4988c95948428}{du2\+\_\+dt\+\_\+zrl}} (r12, u1, u2, P2, mu11, a2, b, ks, grot2)
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of rod2\textquotesingle{}s orientation vector with respect to the current state of the crosslinked rod system when motor have zero rest length. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_a13dd2ec8632ec765bff86f7a545f4e25}{drho\+\_\+dt\+\_\+zrl}} (rho, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q=\textquotesingle{}fast\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Moment evolution functions \#. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_a80225c80a63dfb411cab37d8e5b59dd9}{d\+P1\+\_\+dt\+\_\+zrl}} (rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q10=\textquotesingle{}fast\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of the first moment(s1) of the zero rest length crosslinkers bound to rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_a7e23e7163dd86522f7f62e62ee250f51}{d\+P2\+\_\+dt\+\_\+zrl}} (rho, P1, P2, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q01=\textquotesingle{}fast\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of the first moment(s2) of zero rest length crosslinkers bound to rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_a21666bc05354280efd3232253198dbbf}{dmu11\+\_\+dt\+\_\+zrl}} (rho, P1, P2, mu11, mu20, mu02, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11=\textquotesingle{}fast\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of the second moment(s1,s2) of zero rest length crosslinkers bound to rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_a819a25547b52ddf5a10b44ed0951d533}{dmu20\+\_\+dt\+\_\+zrl}} (rho, P1, P2, mu11, mu20, mu02, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20=\textquotesingle{}fast\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of the second moment(s1$^\wedge$2) of zero rest length crosslinkers bound to rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__zrl___o_d_es_aba01e3a7996de568237dd859c87d6fb9}{dmu02\+\_\+dt\+\_\+zrl}} (rho, P1, P2, mu11, mu20, mu02, rsqr, a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02=\textquotesingle{}fast\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Calculate the time-\/derivative of the second moment(s2$^\wedge$2) of zero rest length crosslinkers bound to rods. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@package docstring
+File: ME_zrl_ODEs.py
+Author: Adam Lamson
+Email: adam.lamson@colorado.edu
+Description:
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_aba01e3a7996de568237dd859c87d6fb9}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_aba01e3a7996de568237dd859c87d6fb9}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!dmu02\_dt\_zrl@{dmu02\_dt\_zrl}}
+\index{dmu02\_dt\_zrl@{dmu02\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{dmu02\_dt\_zrl()}{dmu02\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+dmu02\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{q02 = {\ttfamily \textquotesingle{}fast\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of the second moment(s2$^\wedge$2) of zero rest length crosslinkers bound to rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM (r12) \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time derivative of the second(s2$^\wedge$2) moment of motors 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_a21666bc05354280efd3232253198dbbf}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_a21666bc05354280efd3232253198dbbf}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!dmu11\_dt\_zrl@{dmu11\_dt\_zrl}}
+\index{dmu11\_dt\_zrl@{dmu11\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{dmu11\_dt\_zrl()}{dmu11\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+dmu11\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{q11 = {\ttfamily \textquotesingle{}fast\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of the second moment(s1,s2) of zero rest length crosslinkers bound to rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM (r12) \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time derivative of the second(s1,s2) moment of motors 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_a819a25547b52ddf5a10b44ed0951d533}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_a819a25547b52ddf5a10b44ed0951d533}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!dmu20\_dt\_zrl@{dmu20\_dt\_zrl}}
+\index{dmu20\_dt\_zrl@{dmu20\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{dmu20\_dt\_zrl()}{dmu20\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+dmu20\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{q20 = {\ttfamily \textquotesingle{}fast\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of the second moment(s1$^\wedge$2) of zero rest length crosslinkers bound to rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em mu11} & Second motor moment of s1 and s2 \\
+\hline
+{\em mu20} & Second motor moment of s1 \\
+\hline
+{\em mu02} & Second motor moment of s2 \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM (r12) \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time derivative of the second(s1$^\wedge$2) moment of motors 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_a80225c80a63dfb411cab37d8e5b59dd9}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_a80225c80a63dfb411cab37d8e5b59dd9}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!dP1\_dt\_zrl@{dP1\_dt\_zrl}}
+\index{dP1\_dt\_zrl@{dP1\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{dP1\_dt\_zrl()}{dP1\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+d\+P1\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{q10 = {\ttfamily \textquotesingle{}fast\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of the first moment(s1) of the zero rest length crosslinkers bound to rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+{\em q10} & Binding source term of first moment \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time derivative of the first(s1) moment of motors 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_a7e23e7163dd86522f7f62e62ee250f51}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_a7e23e7163dd86522f7f62e62ee250f51}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!dP2\_dt\_zrl@{dP2\_dt\_zrl}}
+\index{dP2\_dt\_zrl@{dP2\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{dP2\_dt\_zrl()}{dP2\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+d\+P2\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{P1,  }\item[{}]{P2,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{q01 = {\ttfamily \textquotesingle{}fast\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of the first moment(s2) of zero rest length crosslinkers bound to rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em P2} & First motor moment of s2 \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time derivative of the first(s2) moment of motors 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_a13dd2ec8632ec765bff86f7a545f4e25}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_a13dd2ec8632ec765bff86f7a545f4e25}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!drho\_dt\_zrl@{drho\_dt\_zrl}}
+\index{drho\_dt\_zrl@{drho\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{drho\_dt\_zrl()}{drho\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+drho\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{rho,  }\item[{}]{rsqr,  }\item[{}]{a1,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{c,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L1,  }\item[{}]{L2,  }\item[{}]{q = {\ttfamily \textquotesingle{}fast\textquotesingle{}} }\end{DoxyParamCaption})}
+
+
+
+Moment evolution functions \#. 
+
+Calculate the time-\/derivative of the zeroth moment of the zero rest length crosslinkers bound to rods.
+
+
+\begin{DoxyParams}{Parameters}
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod1\textquotesingle{}s C\+OM to rod2\textquotesingle{}s C\+OM \\
+\hline
+{\em a1} & Dot product of u1 and r12 \\
+\hline
+{\em a2} & Dot product of u2 and r12 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L1} & Length of rod1 \\
+\hline
+{\em L2} & Length of rod2 \\
+\hline
+{\em q} & Binding source term (i.\+e. partition function) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time derivative of the zeroth moment of motors 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_a54ded595a87d6620ef09a6b3cdda5fa7}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_a54ded595a87d6620ef09a6b3cdda5fa7}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!du1\_dt\_zrl@{du1\_dt\_zrl}}
+\index{du1\_dt\_zrl@{du1\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{du1\_dt\_zrl()}{du1\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+du1\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{r12,  }\item[{}]{u1,  }\item[{}]{u2,  }\item[{}]{P1,  }\item[{}]{mu11,  }\item[{}]{a1,  }\item[{}]{b,  }\item[{}]{ks,  }\item[{}]{grot1 }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of rod1\textquotesingle{}s orientation vector with respect to the current state of the crosslinked rod system when crosslinkers have zero rest length. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r12} & Vector from rod1\textquotesingle{}s center of mass to rod2\textquotesingle{}s center of mass \\
+\hline
+{\em u1} & Orientation unit vector of rod1 \\
+\hline
+{\em u2} & Orientation unit vector of rod2 \\
+\hline
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em mu11} & Second motor momement of s1,s2 \\
+\hline
+{\em a1} & dot product of r12 and u1 \\
+\hline
+{\em b} & dot product of u1 and u2 \\
+\hline
+{\em ks} & motor spring constant \\
+\hline
+{\em grot1} & Rotational drag coefficient of rod1 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivative of rod1\textquotesingle{}s orientation vector 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__zrl___o_d_es_adbd66808e583918524c4988c95948428}\label{namespacefoxlink_1_1_m_e__zrl___o_d_es_adbd66808e583918524c4988c95948428}} 
+\index{foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}!du2\_dt\_zrl@{du2\_dt\_zrl}}
+\index{du2\_dt\_zrl@{du2\_dt\_zrl}!foxlink.ME\_zrl\_ODEs@{foxlink.ME\_zrl\_ODEs}}
+\doxysubsubsection{\texorpdfstring{du2\_dt\_zrl()}{du2\_dt\_zrl()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+zrl\+\_\+\+O\+D\+Es.\+du2\+\_\+dt\+\_\+zrl (\begin{DoxyParamCaption}\item[{}]{r12,  }\item[{}]{u1,  }\item[{}]{u2,  }\item[{}]{P2,  }\item[{}]{mu11,  }\item[{}]{a2,  }\item[{}]{b,  }\item[{}]{ks,  }\item[{}]{grot2 }\end{DoxyParamCaption})}
+
+
+
+Calculate the time-\/derivative of rod2\textquotesingle{}s orientation vector with respect to the current state of the crosslinked rod system when motor have zero rest length. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r12} & Vector from rod1\textquotesingle{}s center of mass to rod2\textquotesingle{}s center of mass \\
+\hline
+{\em u1} & Orientation unit vector of rod1 \\
+\hline
+{\em u2} & Orientation unit vector of rod2 \\
+\hline
+{\em rho} & Zeroth motor moment \\
+\hline
+{\em P1} & First motor moment of s1 \\
+\hline
+{\em mu11} & Second motor momement of s1,s2 \\
+\hline
+{\em a1} & Dot product of r12 and u1 \\
+\hline
+{\em b} & Dot product of u1 and u2 \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em grot2} & Rotational drag coefficient of rod2 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivative of rod2\textquotesingle{}s orientation vector 
+\end{DoxyReturn}

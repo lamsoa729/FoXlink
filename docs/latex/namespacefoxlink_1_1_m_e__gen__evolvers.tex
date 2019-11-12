@@ -3,9 +3,9 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a7608198ea1703d7c6cdc7d152e828308}{prep\+\_\+gen\+\_\+stat\+\_\+2ord\+\_\+me\+\_\+evolver}} (sol, ks, beta, L\+\_\+i, L\+\_\+j)
-\begin{DoxyCompactList}\small\item\em T\+O\+DO\+: Docstring for prep\+\_\+gen\+\_\+stat\+\_\+me\+\_\+evolver. \end{DoxyCompactList}\item 
-def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a37f833e6190a91538ca7993705c917d2}{me\+\_\+evolver\+\_\+gen\+\_\+2ord}} (r\+\_\+i, r\+\_\+j, u\+\_\+i, u\+\_\+j, mu00, mu10, mu01, mu11, mu20, mu02, gpara\+\_\+ij, gperp\+\_\+i, grot\+\_\+i, gpara\+\_\+ji, gperp\+\_\+j, grot\+\_\+j, vo, fs, ko, co, ks, ho, beta, L\+\_\+i, L\+\_\+j, fast=None)
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a9c1eb0fd0eddf5f1a83d68e02633b8ab}{prep\+\_\+me\+\_\+evolver\+\_\+gen\+\_\+2ord}} (sol, co, ks, ho, beta, L\+\_\+i, L\+\_\+j)
+\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a25a8fb642c211ab1a0dce54757c5cad4}{me\+\_\+evolver\+\_\+gen\+\_\+2ord}} (sol, gpara\+\_\+i, gperp\+\_\+i, grot\+\_\+i, gpara\+\_\+j, gperp\+\_\+j, grot\+\_\+j, vo, fs, ko, co, ks, ho, beta, L\+\_\+i, L\+\_\+j)
 \begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (gen) crosslinkers bound to moving rods. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -19,11 +19,11 @@ Description:
  
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__evolvers_a37f833e6190a91538ca7993705c917d2}\label{namespacefoxlink_1_1_m_e__gen__evolvers_a37f833e6190a91538ca7993705c917d2}} 
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__evolvers_a25a8fb642c211ab1a0dce54757c5cad4}\label{namespacefoxlink_1_1_m_e__gen__evolvers_a25a8fb642c211ab1a0dce54757c5cad4}} 
 \index{foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}!me\_evolver\_gen\_2ord@{me\_evolver\_gen\_2ord}}
 \index{me\_evolver\_gen\_2ord@{me\_evolver\_gen\_2ord}!foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}}
 \doxysubsubsection{\texorpdfstring{me\_evolver\_gen\_2ord()}{me\_evolver\_gen\_2ord()}}
-{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+evolvers.\+me\+\_\+evolver\+\_\+gen\+\_\+2ord (\begin{DoxyParamCaption}\item[{}]{r\+\_\+i,  }\item[{}]{r\+\_\+j,  }\item[{}]{u\+\_\+i,  }\item[{}]{u\+\_\+j,  }\item[{}]{mu00,  }\item[{}]{mu10,  }\item[{}]{mu01,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{gpara\+\_\+ij,  }\item[{}]{gperp\+\_\+i,  }\item[{}]{grot\+\_\+i,  }\item[{}]{gpara\+\_\+ji,  }\item[{}]{gperp\+\_\+j,  }\item[{}]{grot\+\_\+j,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{co,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta,  }\item[{}]{L\+\_\+i,  }\item[{}]{L\+\_\+j,  }\item[{}]{fast = {\ttfamily None} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+evolvers.\+me\+\_\+evolver\+\_\+gen\+\_\+2ord (\begin{DoxyParamCaption}\item[{}]{sol,  }\item[{}]{gpara\+\_\+i,  }\item[{}]{gperp\+\_\+i,  }\item[{}]{grot\+\_\+i,  }\item[{}]{gpara\+\_\+j,  }\item[{}]{gperp\+\_\+j,  }\item[{}]{grot\+\_\+j,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{co,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta,  }\item[{}]{L\+\_\+i,  }\item[{}]{L\+\_\+j }\end{DoxyParamCaption})}
 
 
 
@@ -33,25 +33,7 @@ d{\itshape  is the time derivative of corresponding variable}
 
 {\itshape 
 \begin{DoxyParams}{Parameters}
-{\em r\+\_\+i} & Center of mass postion of rod\+\_\+i \\
-\hline
-{\em r\+\_\+j} & Center of mass position of rod\+\_\+j \\
-\hline
-{\em u\+\_\+i} & Orientation unit vector of rod\+\_\+i \\
-\hline
-{\em u\+\_\+j} & Orientation unit vector of rod\+\_\+j \\
-\hline
-{\em mu00} & Zeroth motor moment \\
-\hline
-{\em mu10} & First motor moment of s\+\_\+i \\
-\hline
-{\em mu01} & First motor moment of s\+\_\+j \\
-\hline
-{\em mu11} & Second motor moment of s\+\_\+i and s\+\_\+j \\
-\hline
-{\em mu20} & Second motor moment of s\+\_\+i \\
-\hline
-{\em mu02} & Second motor moment of s\+\_\+j \\
+{\em sol} & Current solution of O\+DE \\
 \hline
 {\em gpara\+\_\+ij} & Parallel drag coefficient of rod\+\_\+i \\
 \hline
@@ -71,7 +53,7 @@ d{\itshape  is the time derivative of corresponding variable}
 \hline
 {\em ko} & Turnover rate of motors \\
 \hline
-{\em c} & Effective concentration of motors in solution \\
+{\em co} & Effective concentration of motors in solution \\
 \hline
 {\em ks} & Motor spring constant \\
 \hline
@@ -81,21 +63,15 @@ d{\itshape  is the time derivative of corresponding variable}
 \hline
 {\em L\+\_\+j} & Length of rod\+\_\+j \\
 \hline
-{\em fast} & Flag on whether or not to use fast solving techniques \\
-\hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
 \+: Time-\/derivatives of all time varying quantities in a flattened array 
 \end{DoxyReturn}
-}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__evolvers_a7608198ea1703d7c6cdc7d152e828308}\label{namespacefoxlink_1_1_m_e__gen__evolvers_a7608198ea1703d7c6cdc7d152e828308}} 
-\index{foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}!prep\_gen\_stat\_2ord\_me\_evolver@{prep\_gen\_stat\_2ord\_me\_evolver}}
-\index{prep\_gen\_stat\_2ord\_me\_evolver@{prep\_gen\_stat\_2ord\_me\_evolver}!foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}}
-\doxysubsubsection{\texorpdfstring{prep\_gen\_stat\_2ord\_me\_evolver()}{prep\_gen\_stat\_2ord\_me\_evolver()}}
-{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+evolvers.\+prep\+\_\+gen\+\_\+stat\+\_\+2ord\+\_\+me\+\_\+evolver (\begin{DoxyParamCaption}\item[{}]{sol,  }\item[{}]{ks,  }\item[{}]{beta,  }\item[{}]{L\+\_\+i,  }\item[{}]{L\+\_\+j }\end{DoxyParamCaption})}
-
-
-
-T\+O\+DO\+: Docstring for prep\+\_\+gen\+\_\+stat\+\_\+me\+\_\+evolver. 
+}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__evolvers_a9c1eb0fd0eddf5f1a83d68e02633b8ab}\label{namespacefoxlink_1_1_m_e__gen__evolvers_a9c1eb0fd0eddf5f1a83d68e02633b8ab}} 
+\index{foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}!prep\_me\_evolver\_gen\_2ord@{prep\_me\_evolver\_gen\_2ord}}
+\index{prep\_me\_evolver\_gen\_2ord@{prep\_me\_evolver\_gen\_2ord}!foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}}
+\doxysubsubsection{\texorpdfstring{prep\_me\_evolver\_gen\_2ord()}{prep\_me\_evolver\_gen\_2ord()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+evolvers.\+prep\+\_\+me\+\_\+evolver\+\_\+gen\+\_\+2ord (\begin{DoxyParamCaption}\item[{}]{sol,  }\item[{}]{co,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta,  }\item[{}]{L\+\_\+i,  }\item[{}]{L\+\_\+j }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}

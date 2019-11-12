@@ -74,12 +74,11 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7608198ea1703d7c6cdc7d152e828308"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a7608198ea1703d7c6cdc7d152e828308">prep_gen_stat_2ord_me_evolver</a> (sol, ks, beta, L_i, L_j)</td></tr>
-<tr class="memdesc:a7608198ea1703d7c6cdc7d152e828308"><td class="mdescLeft">&#160;</td><td class="mdescRight">TODO: Docstring for prep_gen_stat_me_evolver.  <a href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a7608198ea1703d7c6cdc7d152e828308">More...</a><br /></td></tr>
-<tr class="separator:a7608198ea1703d7c6cdc7d152e828308"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37f833e6190a91538ca7993705c917d2"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a37f833e6190a91538ca7993705c917d2">me_evolver_gen_2ord</a> (r_i, r_j, u_i, u_j, mu00, mu10, mu01, mu11, mu20, mu02, gpara_ij, gperp_i, grot_i, gpara_ji, gperp_j, grot_j, vo, fs, ko, co, ks, ho, beta, L_i, L_j, fast=None)</td></tr>
-<tr class="memdesc:a37f833e6190a91538ca7993705c917d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-Planck equation of zero rest length (gen) crosslinkers bound to moving rods.  <a href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a37f833e6190a91538ca7993705c917d2">More...</a><br /></td></tr>
-<tr class="separator:a37f833e6190a91538ca7993705c917d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c1eb0fd0eddf5f1a83d68e02633b8ab"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a9c1eb0fd0eddf5f1a83d68e02633b8ab">prep_me_evolver_gen_2ord</a> (sol, co, ks, ho, beta, L_i, L_j)</td></tr>
+<tr class="separator:a9c1eb0fd0eddf5f1a83d68e02633b8ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25a8fb642c211ab1a0dce54757c5cad4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a25a8fb642c211ab1a0dce54757c5cad4">me_evolver_gen_2ord</a> (sol, gpara_i, gperp_i, grot_i, gpara_j, gperp_j, grot_j, vo, fs, ko, co, ks, ho, beta, L_i, L_j)</td></tr>
+<tr class="memdesc:a25a8fb642c211ab1a0dce54757c5cad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-Planck equation of zero rest length (gen) crosslinkers bound to moving rods.  <a href="namespacefoxlink_1_1_m_e__gen__evolvers.html#a25a8fb642c211ab1a0dce54757c5cad4">More...</a><br /></td></tr>
+<tr class="separator:a25a8fb642c211ab1a0dce54757c5cad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">@package docstring
@@ -88,8 +87,8 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 </pre> </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a37f833e6190a91538ca7993705c917d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37f833e6190a91538ca7993705c917d2">&#9670;&nbsp;</a></span>me_evolver_gen_2ord()</h2>
+<a id="a25a8fb642c211ab1a0dce54757c5cad4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25a8fb642c211ab1a0dce54757c5cad4">&#9670;&nbsp;</a></span>me_evolver_gen_2ord()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -98,67 +97,13 @@ Description:
           <td class="memname">def foxlink.ME_gen_evolvers.me_evolver_gen_2ord </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>r_i</em>, </td>
+          <td class="paramname"><em>sol</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>r_j</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>u_i</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>u_j</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>mu00</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>mu10</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>mu01</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>mu11</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>mu20</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>mu02</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>gpara_ij</em>, </td>
+          <td class="paramname"><em>gpara_i</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -176,7 +121,7 @@ Description:
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>gpara_ji</em>, </td>
+          <td class="paramname"><em>gpara_j</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -242,13 +187,7 @@ Description:
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>L_j</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>fast</em> = <code>None</code>&#160;</td>
+          <td class="paramname"><em>L_j</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -262,16 +201,7 @@ Description:
 <p>d<em> is the time derivative of corresponding variable</em></p>
 <p><em></p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">r_i</td><td>Center of mass postion of rod_i </td></tr>
-    <tr><td class="paramname">r_j</td><td>Center of mass position of rod_j </td></tr>
-    <tr><td class="paramname">u_i</td><td>Orientation unit vector of rod_i </td></tr>
-    <tr><td class="paramname">u_j</td><td>Orientation unit vector of rod_j </td></tr>
-    <tr><td class="paramname">mu00</td><td>Zeroth motor moment </td></tr>
-    <tr><td class="paramname">mu10</td><td>First motor moment of s_i </td></tr>
-    <tr><td class="paramname">mu01</td><td>First motor moment of s_j </td></tr>
-    <tr><td class="paramname">mu11</td><td>Second motor moment of s_i and s_j </td></tr>
-    <tr><td class="paramname">mu20</td><td>Second motor moment of s_i </td></tr>
-    <tr><td class="paramname">mu02</td><td>Second motor moment of s_j </td></tr>
+    <tr><td class="paramname">sol</td><td>Current solution of ODE </td></tr>
     <tr><td class="paramname">gpara_ij</td><td>Parallel drag coefficient of rod_i </td></tr>
     <tr><td class="paramname">gperp_i</td><td>Perpendicular drag coefficient of rod_i </td></tr>
     <tr><td class="paramname">grot_i</td><td>Rotational drag coefficient of rod_i </td></tr>
@@ -281,12 +211,11 @@ Description:
     <tr><td class="paramname">vo</td><td>Velocity of motor when no force is applied </td></tr>
     <tr><td class="paramname">fs</td><td>Stall force of motor ends </td></tr>
     <tr><td class="paramname">ko</td><td>Turnover rate of motors </td></tr>
-    <tr><td class="paramname">c</td><td>Effective concentration of motors in solution </td></tr>
+    <tr><td class="paramname">co</td><td>Effective concentration of motors in solution </td></tr>
     <tr><td class="paramname">ks</td><td>Motor spring constant </td></tr>
     <tr><td class="paramname">beta</td><td>1/(Boltzmann's constant * Temperature) </td></tr>
     <tr><td class="paramname">L_i</td><td>Length of rod_i </td></tr>
     <tr><td class="paramname">L_j</td><td>Length of rod_j </td></tr>
-    <tr><td class="paramname">fast</td><td>Flag on whether or not to use fast solving techniques </td></tr>
   </table>
   </dd>
 </dl>
@@ -295,14 +224,14 @@ Description:
 
 </div>
 </div>
-<a id="a7608198ea1703d7c6cdc7d152e828308"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7608198ea1703d7c6cdc7d152e828308">&#9670;&nbsp;</a></span>prep_gen_stat_2ord_me_evolver()</h2>
+<a id="a9c1eb0fd0eddf5f1a83d68e02633b8ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c1eb0fd0eddf5f1a83d68e02633b8ab">&#9670;&nbsp;</a></span>prep_me_evolver_gen_2ord()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def foxlink.ME_gen_evolvers.prep_gen_stat_2ord_me_evolver </td>
+          <td class="memname">def foxlink.ME_gen_evolvers.prep_me_evolver_gen_2ord </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>sol</em>, </td>
@@ -311,7 +240,19 @@ Description:
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>co</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
           <td class="paramname"><em>ks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>ho</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -338,8 +279,6 @@ Description:
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>TODO: Docstring for prep_gen_stat_me_evolver. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arg1</td><td>TODO </td></tr>

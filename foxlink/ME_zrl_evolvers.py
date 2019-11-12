@@ -9,11 +9,12 @@ Description:
 
 import numpy as np
 from scipy.integrate import dblquad
-from .ME_helpers import dr_dt
+from .ME_helpers import dr_dt, convert_sol_to_geom
 from .ME_zrl_ODEs import (du1_dt_zrl, du2_dt_zrl,
                           drho_dt_zrl, dP1_dt_zrl, dP2_dt_zrl,
                           dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
-from .ME_zrl_helpers import avg_force_zrl
+from .ME_zrl_helpers import (avg_force_zrl, boltz_fact_zrl,
+                             weighted_boltz_fact_zrl)
 
 
 def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
@@ -55,7 +56,7 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
                 rho, P1, P2, mu11, mu20, mu02,  # Moments
                 gpara1, gperp1, grot1,  # Friction coefficients
                 gpara2, gperp2, grot2,
-                vo, fs, ko, c, ks, beta, L1, L2, fast=None):  # Other constants
+                vo, fs, ko, c, ks, beta, L1, L2, fast='fast'):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -133,8 +134,8 @@ def evolver_zrl_ang(u1, u2,  # Vectors
                     rho, P1, P2, mu11, mu20, mu02,  # Moments
                     gpara1, gperp1, grot1,  # Friction coefficients
                     gpara2, gperp2, grot2,
-                    r12, rsqr, vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
-                    fast=None):
+                    r12, vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
+                    fast='fast'):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -167,6 +168,7 @@ def evolver_zrl_ang(u1, u2,  # Vectors
     """
     rod_change_arr = np.zeros(6)
     # Define useful parameters for functions
+    rsqr = np.dot(r12, r12)
     a1 = np.dot(r12, u1)
     a2 = np.dot(r12, u2)
     b = np.dot(u1, u2)
@@ -210,7 +212,7 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
                        gpara1, gperp1, grot1,  # Friction coefficients
                        gpara2, gperp2, grot2,
                        vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
-                       fast=None):
+                       fast='fast'):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
