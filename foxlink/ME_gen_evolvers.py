@@ -7,7 +7,11 @@ Email: adam.lamson@colorado.edu
 Description:
 """
 
-from scipy.integrate import quad, dblquad
+from scipy.integrate import dblquad
+from ME_helpers import dr_dt
+from ME_gen_helpers import avg_force_gen, avg_force_gen_2ord
+from ME_gen_ODEs import (du_dt_gen_2ord, dmu00_dt_gen_2ord, dmu10_dt_gen_2ord,
+                         dmu11_dt_gen_2ord, dmu20_dt_gen_2ord)
 import numpy as np
 
 
@@ -22,7 +26,7 @@ def prep_gen_stat_2ord_me_evolver(sol, ks, beta, L_i, L_j):
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
     a_ij = np.dot(r_ij, u_i)
-    a_ji = np.dot(r_ij, u_j)
+    a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
     q, e = dblquad(boltz_fact, -.5 * L_i, .5 * L_i,
@@ -122,3 +126,8 @@ def me_evolver_gen_2ord(r_i, r_j, u_i, u_j,  # Vectors
             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
 
     return dsol
+
+# TODO: Need to make these functions eventually <11-11-19, ARL> #
+# me_evolver_gen_stat_2ord
+# me_evolver_gen_ang_2ord
+# me_evolver_gen_orient_2ord

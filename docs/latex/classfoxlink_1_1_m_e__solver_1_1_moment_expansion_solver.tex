@@ -22,28 +22,20 @@ def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1
 \begin{DoxyCompactList}\small\item\em Set the initial conditions for the system of O\+D\+Es. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a5499bf15f758319b8f63527fee744710}{make\+Dataframe}} (self)
 \begin{DoxyCompactList}\small\item\em Create data frame to be written out. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}{Run}} (self)
+\begin{DoxyCompactList}\small\item\em Run algorithm to solve system of O\+D\+Es. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a246964927a373104baa641f8f980e32f}{make\+Rod\+Data\+Set}} (self)
 \begin{DoxyCompactList}\small\item\em Initialize dataframe with empty rod configuration data. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a44d56c43ef5e3e694ab4c33ed192e06d}{make\+X\+L\+Moment\+Data\+Set}} (self)
 \begin{DoxyCompactList}\small\item\em Initialize dataframe with empty crosslinker moment data. \end{DoxyCompactList}\item 
-def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}{Run}} (self)
-\begin{DoxyCompactList}\small\item\em Run algorithm to solve system of O\+D\+Es. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af05fbf158175d0bf7ee8040f011accd9}{Write}} (self)
-\begin{DoxyCompactList}\small\item\em Write out data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Write out data. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a8b47efa6b4fd531fee8c3365aa8f7e01}{non\+\_\+dimensionalize}} (self)
+\begin{DoxyCompactList}\small\item\em Non-\/dimensionalize parameters to reduce error in calculations. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a6a9f57c29b2c9a694becc686cd769d49}{redimensionalize}} (self)
+\begin{DoxyCompactList}\small\item\em Redimensionalize data arrays. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
-\item 
-\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4366116522a70d7f9fe49cfe7a05f5cd}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4366116522a70d7f9fe49cfe7a05f5cd}} 
-{\bfseries R1\+\_\+pos}
-\item 
-\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac78fb1d4acbade4d86ca593cd764b79e}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac78fb1d4acbade4d86ca593cd764b79e}} 
-{\bfseries R2\+\_\+pos}
-\item 
-\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a408a56dbb9d1caa3a4af3d9f6a6bc330}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a408a56dbb9d1caa3a4af3d9f6a6bc330}} 
-{\bfseries R1\+\_\+vec}
-\item 
-\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a34b5b27a7bb4b513dd5c18c47e6d9d13}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a34b5b27a7bb4b513dd5c18c47e6d9d13}} 
-{\bfseries R2\+\_\+vec}
 \item 
 \mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a9820c591514e090503114dd283b6974b}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a9820c591514e090503114dd283b6974b}} 
 {\bfseries dt}
@@ -59,6 +51,15 @@ def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af
 \item 
 \mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4dd2250ea197f6aa24be57b751fc7cab}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4dd2250ea197f6aa24be57b751fc7cab}} 
 {\bfseries nwrite}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a987f4f7f083565077d504bf89ba6d074}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a987f4f7f083565077d504bf89ba6d074}} 
+{\bfseries non\+\_\+dimmer}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a408a56dbb9d1caa3a4af3d9f6a6bc330}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a408a56dbb9d1caa3a4af3d9f6a6bc330}} 
+{\bfseries R1\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a34b5b27a7bb4b513dd5c18c47e6d9d13}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a34b5b27a7bb4b513dd5c18c47e6d9d13}} 
+{\bfseries R2\+\_\+vec}
 \item 
 \mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a01f60d4ed29c4aa6aedd6a92d87f8fbf}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a01f60d4ed29c4aa6aedd6a92d87f8fbf}} 
 {\bfseries t\+\_\+eval}
@@ -83,6 +84,45 @@ def \mbox{\hyperlink{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_af
 \item 
 \mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a058ea5408a9aad3fe9059123e7184eae}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a058ea5408a9aad3fe9059123e7184eae}} 
 {\bfseries cpu\+\_\+time}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a746490577d95f7f24e292e0ad711f17e}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a746490577d95f7f24e292e0ad711f17e}} 
+{\bfseries beta}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a26a4382c43ffad776010fcc5acd651c6}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a26a4382c43ffad776010fcc5acd651c6}} 
+{\bfseries viscosity}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_acd11b21e358f8211c4574e5705ac6e0d}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_acd11b21e358f8211c4574e5705ac6e0d}} 
+{\bfseries L1}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a24edb3c04491f944f8b165a19870024a}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a24edb3c04491f944f8b165a19870024a}} 
+{\bfseries L2}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4366116522a70d7f9fe49cfe7a05f5cd}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a4366116522a70d7f9fe49cfe7a05f5cd}} 
+{\bfseries R1\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac78fb1d4acbade4d86ca593cd764b79e}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac78fb1d4acbade4d86ca593cd764b79e}} 
+{\bfseries R2\+\_\+pos}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a7675957b271f0474bf684b123456516a}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a7675957b271f0474bf684b123456516a}} 
+{\bfseries rod\+\_\+diameter}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a7286f431c7479318388f4829aff199cf}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a7286f431c7479318388f4829aff199cf}} 
+{\bfseries ko}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aeaca5ab2e44c11da85b1d6d54a0e6ce7}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aeaca5ab2e44c11da85b1d6d54a0e6ce7}} 
+{\bfseries co}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a93e221df7171ab8165a52129a29af8ff}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a93e221df7171ab8165a52129a29af8ff}} 
+{\bfseries ks}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1d7490eeb8353bd8b3ba874ecd4104ba}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a1d7490eeb8353bd8b3ba874ecd4104ba}} 
+{\bfseries ho}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_afc1e05595dd4d4cbbe8158e90eaaf3e4}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_afc1e05595dd4d4cbbe8158e90eaaf3e4}} 
+{\bfseries vo}
+\item 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aeae862dbf7bf6964c9ce04770731d97d}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aeae862dbf7bf6964c9ce04770731d97d}} 
+{\bfseries fs}
 \end{DoxyCompactItemize}
 \doxysubsection*{Additional Inherited Members}
 
@@ -158,6 +198,19 @@ Initialize dataframe with empty crosslinker moment data.
 \begin{DoxyReturn}{Returns}
 \+: void 
 \end{DoxyReturn}
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a8b47efa6b4fd531fee8c3365aa8f7e01}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a8b47efa6b4fd531fee8c3365aa8f7e01}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!non\_dimensionalize@{non\_dimensionalize}}
+\index{non\_dimensionalize@{non\_dimensionalize}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{non\_dimensionalize()}{non\_dimensionalize()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+non\+\_\+dimensionalize (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Non-\/dimensionalize parameters to reduce error in calculations. 
+
+\begin{DoxyReturn}{Returns}
+\+: non dimensionalizer 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac59417c4a1c79623bad04bfbb0fc8808}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_ac59417c4a1c79623bad04bfbb0fc8808}} 
 \index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!ParseParams@{ParseParams}}
 \index{ParseParams@{ParseParams}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
@@ -175,6 +228,19 @@ Collect parameters from yaml file or dictionary.
 
 Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_acbf9a13173eda26bc574de1590d7bbbb}{foxlink.\+solver.\+Solver}}.
 
+\mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a6a9f57c29b2c9a694becc686cd769d49}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_a6a9f57c29b2c9a694becc686cd769d49}} 
+\index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!redimensionalize@{redimensionalize}}
+\index{redimensionalize@{redimensionalize}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
+\doxysubsubsection{\texorpdfstring{redimensionalize()}{redimensionalize()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+solver.\+Moment\+Expansion\+Solver.\+redimensionalize (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+
+
+Redimensionalize data arrays. 
+
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}\label{classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver_aca14bb9f5bed59841158cc0f5baf820e}} 
 \index{foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}!Run@{Run}}
 \index{Run@{Run}!foxlink.ME\_solver.MomentExpansionSolver@{foxlink.ME\_solver.MomentExpansionSolver}}
@@ -220,7 +286,7 @@ Reimplemented from \mbox{\hyperlink{classfoxlink_1_1solver_1_1_solver_a0ba774a24
 Write out data. 
 
 \begin{DoxyReturn}{Returns}
-\+: T\+O\+DO 
+\+: void 
 \end{DoxyReturn}
 
 

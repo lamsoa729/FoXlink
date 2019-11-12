@@ -12,6 +12,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from .choose_ME_evolver import choose_ME_evolver
 from .solver import Solver
+from .non_dimensionalizer import NonDimensionalizer
 
 
 class MomentExpansionSolver(Solver):
@@ -34,20 +35,6 @@ class MomentExpansionSolver(Solver):
         @return: void
         """
         Solver.ParseParams(self)
-        # TODO Non-dimensionalize params right here
-        self.R1_pos = np.asarray(self._params['R1_pos'])
-        self.R2_pos = np.asarray(self._params['R2_pos'])
-        print("R1_pos = ", self.R1_pos)
-        print("R2_pos = ", self.R2_pos)
-        # Rod orientation vectors
-        self.R1_vec = np.asarray(self._params['R1_vec'])
-        self.R2_vec = np.asarray(self._params['R2_vec'])
-        # Make sure to renormalize
-        self.R1_vec /= np.linalg.norm(self.R1_vec)
-        self.R2_vec /= np.linalg.norm(self.R2_vec)
-
-        print("R1_vec = ", self.R1_vec)
-        print("R2_vec = ", self.R2_vec)
 
         self.dt = self._params["dt"]  # Time step
         if "nt" not in self._params:
@@ -70,8 +57,19 @@ class MomentExpansionSolver(Solver):
                   "using twrite to calculate number of steps between write out.")
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
+
+        self.non_dimmer = self.non_dimensionalize()
+        # Rod orientation vectors
+        self.R1_vec = np.asarray(self._params['R1_vec'])
+        self.R2_vec = np.asarray(self._params['R2_vec'])
+        # Make sure to renormalize
+        self.R1_vec /= np.linalg.norm(self.R1_vec)
+        self.R2_vec /= np.linalg.norm(self.R2_vec)
+
+        print("R1_vec = ", self.R1_vec)
+        print("R2_vec = ", self.R2_vec)
+
         self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite) + 1)
-        print(self.t_eval)
         self._nframes = self.t_eval.size
 
         # Set integration method for solver
@@ -102,25 +100,27 @@ class MomentExpansionSolver(Solver):
 
         # Set solver once you set initial conditions
         self.ode_solver = choose_ME_evolver(self.sol_init,
-                                            self._params['vo'],
-                                            self._params['fs'],
-                                            self._params['ko'],
-                                            self._params['co'],
-                                            self._params['ks'],
-                                            self._params['beta'],
-                                            self._params['L1'],
-                                            self._params['L2'],
-                                            self._params['rod_diameter'],
-                                            self._params['viscosity'],
+                                            self.vo,
+                                            self.fs,
+                                            self.ko,
+                                            self.co,
+                                            self.ks,
+                                            self.beta,
+                                            self.L1,
+                                            self.L2,
+                                            self.rod_diameter,
+                                            self.viscosity,
                                             self.ODE_type)
 
     def makeDataframe(self):
         """!Create data frame to be written out
         @return: TODO
         """
+        # TODO: Dimensialize time array <11-11-19, ARL> #
+        t_arr = self.non_dimmer.dim_val(self.t_eval, ['time'])
         if not self.data_frame_made:
             self._time_dset = self._h5_data.create_dataset('time',
-                                                           data=self.t_eval,
+                                                           data=t_arr,
                                                            dtype=np.float32)
             self._xl_grp = self._h5_data.create_group('XL_data')
             self._rod_grp = self._h5_data.create_group('rod_data')
@@ -129,35 +129,6 @@ class MomentExpansionSolver(Solver):
             # 'Interaction_data')
             Solver.makeDataframe(self)
             self.data_frame_made = True
-
-    def makeRodDataSet(self):
-        """!Initialize dataframe with empty rod configuration data
-        @return: void
-
-        """
-        self._R1_pos_dset = self._rod_grp.create_dataset(
-            'R1_pos', data=self.sol.y[:3, :].T)
-        self._R2_pos_dset = self._rod_grp.create_dataset(
-            'R2_pos', data=self.sol.y[3:6, :].T)
-        self._R1_vec_dset = self._rod_grp.create_dataset(
-            'R1_vec', data=self.sol.y[6:9, :].T)
-        self._R2_vec_dset = self._rod_grp.create_dataset(
-            'R2_vec', data=self.sol.y[9:12, :].T)
-
-    def makeXLMomentDataSet(self):
-        """!Initialize dataframe with empty crosslinker moment data
-        @return: void
-
-        """
-        self._rho_dset = self._xl_grp.create_dataset('zeroth_moment',
-                                                     data=self.sol.y[12, :].T,
-                                                     dtype=np.float32)
-        self._P_dset = self._xl_grp.create_dataset('first_moments',
-                                                   data=self.sol.y[13:15, :].T,
-                                                   dtype=np.float32)
-        self._mu_dset = self._xl_grp.create_dataset('second_moments',
-                                                    data=self.sol.y[15:, :].T,
-                                                    dtype=np.float32)
 
     def Run(self):
         """!Run algorithm to solve system of ODEs
@@ -173,12 +144,92 @@ class MomentExpansionSolver(Solver):
 
         self.Write()
 
-    def Write(self):
-        """!Write out data
-        @return: TODO
+    def makeRodDataSet(self):
+        """!Initialize dataframe with empty rod configuration data
+        @return: void
 
         """
+        self._R1_pos_dset = self._rod_grp.create_dataset(
+            'R1_pos', data=self.sol.y[: 3, :].T)
+        self._R2_pos_dset = self._rod_grp.create_dataset(
+            'R2_pos', data=self.sol.y[3: 6, :].T)
+        self._R1_vec_dset = self._rod_grp.create_dataset(
+            'R1_vec', data=self.sol.y[6: 9, :].T)
+        self._R2_vec_dset = self._rod_grp.create_dataset(
+            'R2_vec', data=self.sol.y[9: 12, :].T)
+
+    def makeXLMomentDataSet(self):
+        """!Initialize dataframe with empty crosslinker moment data
+        @return: void
+
+        """
+        self._rho_dset = self._xl_grp.create_dataset('zeroth_moment',
+                                                     data=self.sol.y[12, :].T,
+                                                     dtype=np.float32)
+        self._P_dset = self._xl_grp.create_dataset('first_moments',
+                                                   data=self.sol.y[13: 15, :].T,
+                                                   dtype=np.float32)
+        self._mu_dset = self._xl_grp.create_dataset('second_moments',
+                                                    data=self.sol.y[15:, :].T,
+                                                    dtype=np.float32)
+
+    def Write(self):
+        """!Write out data
+        @return: void
+
+        """
+        self.redimensionalize()
         self.makeXLMomentDataSet()
         self.makeRodDataSet()
         # Store how long the simulation took
         self._h5_data.attrs['cpu_time'] = self.cpu_time
+
+    def non_dimensionalize(self):
+        """!Non-dimensionalize parameters to reduce error in calculations.
+        @return: non dimensionalizer
+
+        """
+        non_dim_dict = {'time': 1. / self._params['ko'],
+                        'length': max(self._params['L1'], self._params['L2']),
+                        'energy': 1. / self._params['beta']}
+        non_dimmer = NonDimensionalizer(**non_dim_dict)
+        non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
+
+        self.beta = non_dimmer.non_dim_val(self._params['beta'],
+                                           ['energy'], [-1])
+        self.viscosity = non_dimmer.non_dim_val(
+            self._params['viscosity'], ['force', 'time', 'length'], [1, 1, -2])
+        self.L1 = non_dimmer.non_dim_val(self._params['L1'], ['length'])
+        self.L2 = non_dimmer.non_dim_val(self._params['L2'], ['length'])
+        self.R1_pos = non_dimmer.non_dim_val(self.R1_pos, ['length'])
+        self.R2_pos = non_dimmer.non_dim_val(self.R2_pos, ['length'])
+        self.rod_diameter = non_dimmer.non_dim_val(self._params['rod_diameter'],
+                                                   ['length'])
+        self.dt = non_dimmer.non_dim_val(self._params['dt'], ['time'])
+        self.nt = non_dimmer.non_dim_val(self.nt, ['time'])
+        self.t_eval = non_dimmer.non_dim_val(self.t_eval, ['time'])
+        self.twrite = non_dimmer.non_dim_val(self.twrite, ['time'])
+        self.ko = non_dimmer.non_dim_val(self._params['ko'], ['time'], [-1])
+        self.co = non_dimmer.non_dim_val(self._params['co'], ['length'], [-2])
+        self.ks = non_dimmer.non_dim_val(self._params['ks'],
+                                         ['energy', 'length'], [1, -2])
+        self.ho = non_dimmer.non_dim_val(self._params['ho'], ['length'])
+        self.vo = non_dimmer.non_dim_val(self._params['vo'],
+                                         ['length', 'time'], [1, -1])
+        self.fs = non_dimmer.non_dim_val(self._params['fs'], ['force'], [1])
+        return non_dimmer
+
+    def redimensionalize(self):
+        """!Redimensionalize data arrays
+        @return: void
+
+        """
+        # Redimensionalize rod positions
+        self.sol.y[: 6, :] = self.non_dimmer.dim_val(
+            self.sol.y[: 6, :], ['length'])
+        # Redimensionalize first moments
+        self.sol.y[13: 15, :] = self.non_dimmer.dim_val(self.sol.y[13: 15, :],
+                                                        ['length'])
+        # Redimensionalize second moments
+        self.sol.y[15:, :] = self.non_dimmer.dim_val(self.sol.y[15:, :],
+                                                     ['length'], [2])

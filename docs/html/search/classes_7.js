@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['solver_131',['Solver',['../classfoxlink_1_1solver_1_1_solver.html',1,'foxlink::solver']]]
+  ['rodmotionsolver_147',['RodMotionSolver',['../classfoxlink_1_1rod__motion__solver_1_1_rod_motion_solver.html',1,'foxlink::rod_motion_solver']]]
 ];

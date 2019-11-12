@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-import numpy as np
-from scipy.integrate import quad, dblquad
-from math import erf, exp, log
-from numba import jit, njit
 
 """@package docstring
 File: ME_gen_helpers.py
@@ -10,6 +6,11 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+
+import numpy as np
+from scipy.integrate import quad, dblquad
+from numba import jit, njit
+
 
 ###################################
 #  Boltzmann factor calculations  #

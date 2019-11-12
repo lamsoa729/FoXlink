@@ -1,0 +1,157 @@
+\hypertarget{namespacefoxlink_1_1_m_e__gen__helpers}{}\doxysection{foxlink.\+M\+E\+\_\+gen\+\_\+helpers Namespace Reference}
+\label{namespacefoxlink_1_1_m_e__gen__helpers}\index{foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__helpers_ac807eac6c9995d5fb9c679393130ee02}{boltz\+\_\+fact\+\_\+gen}} (s\+\_\+i, s\+\_\+j, rsqr, a\+\_\+ij, a\+\_\+ji, b, ks, ho, beta)
+\begin{DoxyCompactList}\small\item\em Boltzmann factor calculations \#. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__helpers_a3cee18ecaf308c65c38ae03b883e74f9}{weighted\+\_\+boltz\+\_\+fact\+\_\+gen}} (s\+\_\+i, s\+\_\+j, pow\+\_\+i, pow\+\_\+j, rsqr, a\+\_\+ij, a\+\_\+ji, b, ks, ho, beta)
+\begin{DoxyCompactList}\small\item\em Boltzmann factor for a zero rest length crosslinking motor bound to two rods multiplied by s\+\_\+i and s\+\_\+j raised to specified powers. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__helpers_a9650977e5f378aaeeffc7ce268020be6}{avg\+\_\+force\+\_\+gen}} (r\+\_\+ij, u\+\_\+i, u\+\_\+j, rsqr, a\+\_\+ij, a\+\_\+ji, b, mu00, mu10, mu01, mu11, mu20, mu02, mu21, mu12, mu30, mu03, ks, ho)
+\begin{DoxyCompactList}\small\item\em Find the average force of zero rest length (gen) crosslinkers on rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__helpers_a71297db66756f019b88609ad99052917}{avg\+\_\+force\+\_\+gen\+\_\+2ord}} (r\+\_\+ij, u\+\_\+i, u\+\_\+j, rsqr, a\+\_\+ij, a\+\_\+ji, b, mu00, mu10, mu01, mu11, mu20, mu02, ks, ho)
+\begin{DoxyCompactList}\small\item\em Find the average force of zero rest length (gen) crosslinkers on rods. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__helpers_afd6bf1b350667b78acd7b34e18755fee}\label{namespacefoxlink_1_1_m_e__gen__helpers_afd6bf1b350667b78acd7b34e18755fee}} 
+\mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__helpers_afd6bf1b350667b78acd7b34e18755fee}{sqrt\+\_\+pi}} = np.\+sqrt(np.\+pi)
+\begin{DoxyCompactList}\small\item\em Semi-\/anti derivatives for source terms \#. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@package docstring
+File: ME_gen_helpers.py
+Author: Adam Lamson
+Email: adam.lamson@colorado.edu
+Description:
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__helpers_a9650977e5f378aaeeffc7ce268020be6}\label{namespacefoxlink_1_1_m_e__gen__helpers_a9650977e5f378aaeeffc7ce268020be6}} 
+\index{foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}!avg\_force\_gen@{avg\_force\_gen}}
+\index{avg\_force\_gen@{avg\_force\_gen}!foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}}
+\doxysubsubsection{\texorpdfstring{avg\_force\_gen()}{avg\_force\_gen()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+helpers.\+avg\+\_\+force\+\_\+gen (\begin{DoxyParamCaption}\item[{}]{r\+\_\+ij,  }\item[{}]{u\+\_\+i,  }\item[{}]{u\+\_\+j,  }\item[{}]{rsqr,  }\item[{}]{a\+\_\+ij,  }\item[{}]{a\+\_\+ji,  }\item[{}]{b,  }\item[{}]{mu00,  }\item[{}]{mu10,  }\item[{}]{mu01,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{mu21,  }\item[{}]{mu12,  }\item[{}]{mu30,  }\item[{}]{mu03,  }\item[{}]{ks,  }\item[{}]{ho }\end{DoxyParamCaption})}
+
+
+
+Find the average force of zero rest length (gen) crosslinkers on rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r\+\_\+ij} & Vector from the center of mass of rod\+\_\+i to the center of mass of rod\+\_\+j \\
+\hline
+{\em u\+\_\+i} & Orientation unit vector of rod\+\_\+i \\
+\hline
+{\em u\+\_\+j} & Orientation unit vector of rod\+\_\+j \\
+\hline
+{\em mu00} & Zeroth motor moment \\
+\hline
+{\em mu10} & First motor moment of s\+\_\+i \\
+\hline
+{\em mu01} & First motor moment of s\+\_\+j \\
+\hline
+{\em ks} & motor spring constant return\+: Vector of force from rod\+\_\+i on rod\+\_\+j \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__helpers_a71297db66756f019b88609ad99052917}\label{namespacefoxlink_1_1_m_e__gen__helpers_a71297db66756f019b88609ad99052917}} 
+\index{foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}!avg\_force\_gen\_2ord@{avg\_force\_gen\_2ord}}
+\index{avg\_force\_gen\_2ord@{avg\_force\_gen\_2ord}!foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}}
+\doxysubsubsection{\texorpdfstring{avg\_force\_gen\_2ord()}{avg\_force\_gen\_2ord()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+helpers.\+avg\+\_\+force\+\_\+gen\+\_\+2ord (\begin{DoxyParamCaption}\item[{}]{r\+\_\+ij,  }\item[{}]{u\+\_\+i,  }\item[{}]{u\+\_\+j,  }\item[{}]{rsqr,  }\item[{}]{a\+\_\+ij,  }\item[{}]{a\+\_\+ji,  }\item[{}]{b,  }\item[{}]{mu00,  }\item[{}]{mu10,  }\item[{}]{mu01,  }\item[{}]{mu11,  }\item[{}]{mu20,  }\item[{}]{mu02,  }\item[{}]{ks,  }\item[{}]{ho }\end{DoxyParamCaption})}
+
+
+
+Find the average force of zero rest length (gen) crosslinkers on rods. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r\+\_\+ij} & Vector from the center of mass of rod\+\_\+i to the center of mass of rod\+\_\+j \\
+\hline
+{\em u\+\_\+i} & Orientation unit vector of rod\+\_\+i \\
+\hline
+{\em u\+\_\+j} & Orientation unit vector of rod\+\_\+j \\
+\hline
+{\em mu00} & Zeroth motor moment \\
+\hline
+{\em mu10} & First motor moment of s\+\_\+i \\
+\hline
+{\em mu01} & First motor moment of s\+\_\+j \\
+\hline
+{\em ks} & motor spring constant \\
+\hline
+{\em ho} & motor spring rest length return\+: Vector of force from rod\+\_\+i on rod\+\_\+j \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__helpers_ac807eac6c9995d5fb9c679393130ee02}\label{namespacefoxlink_1_1_m_e__gen__helpers_ac807eac6c9995d5fb9c679393130ee02}} 
+\index{foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}!boltz\_fact\_gen@{boltz\_fact\_gen}}
+\index{boltz\_fact\_gen@{boltz\_fact\_gen}!foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}}
+\doxysubsubsection{\texorpdfstring{boltz\_fact\_gen()}{boltz\_fact\_gen()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+helpers.\+boltz\+\_\+fact\+\_\+gen (\begin{DoxyParamCaption}\item[{}]{s\+\_\+i,  }\item[{}]{s\+\_\+j,  }\item[{}]{rsqr,  }\item[{}]{a\+\_\+ij,  }\item[{}]{a\+\_\+ji,  }\item[{}]{b,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta }\end{DoxyParamCaption})}
+
+
+
+Boltzmann factor calculations \#. 
+
+Boltzmann factor for a zero rest length crosslinking motor bound to two rods
+
+
+\begin{DoxyParams}{Parameters}
+{\em s\+\_\+i} & Position of a bound motor end on rod\+\_\+i relative to the rods center \\
+\hline
+{\em s\+\_\+j} & Position of a bound motor end on rod\+\_\+i relative to the rods center \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod\+\_\+i\textquotesingle{}s C\+OM to rod\+\_\+j\textquotesingle{}s C\+OM \\
+\hline
+{\em a\+\_\+ij} & Dot product of u\+\_\+i and r\+\_\+ij \\
+\hline
+{\em a\+\_\+ji} & Dot product of u\+\_\+j and r\+\_\+ij \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Computed Boltzmann factor 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__helpers_a3cee18ecaf308c65c38ae03b883e74f9}\label{namespacefoxlink_1_1_m_e__gen__helpers_a3cee18ecaf308c65c38ae03b883e74f9}} 
+\index{foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}!weighted\_boltz\_fact\_gen@{weighted\_boltz\_fact\_gen}}
+\index{weighted\_boltz\_fact\_gen@{weighted\_boltz\_fact\_gen}!foxlink.ME\_gen\_helpers@{foxlink.ME\_gen\_helpers}}
+\doxysubsubsection{\texorpdfstring{weighted\_boltz\_fact\_gen()}{weighted\_boltz\_fact\_gen()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+helpers.\+weighted\+\_\+boltz\+\_\+fact\+\_\+gen (\begin{DoxyParamCaption}\item[{}]{s\+\_\+i,  }\item[{}]{s\+\_\+j,  }\item[{}]{pow\+\_\+i,  }\item[{}]{pow\+\_\+j,  }\item[{}]{rsqr,  }\item[{}]{a\+\_\+ij,  }\item[{}]{a\+\_\+ji,  }\item[{}]{b,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta }\end{DoxyParamCaption})}
+
+
+
+Boltzmann factor for a zero rest length crosslinking motor bound to two rods multiplied by s\+\_\+i and s\+\_\+j raised to specified powers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s\+\_\+i} & Position of a bound motor end on rod\+\_\+i relative to the rods center \\
+\hline
+{\em s\+\_\+j} & Position of a bound motor end on rod\+\_\+i relative to the rods center \\
+\hline
+{\em pow1} & Power of s\+\_\+i to weight Boltzmann factor by \\
+\hline
+{\em pow2} & Power of s\+\_\+j to weight Boltzmann factor by \\
+\hline
+{\em rsqr} & Magnitude squared of the vector from rod\+\_\+i\textquotesingle{}s C\+OM to rod\+\_\+j\textquotesingle{}s C\+OM \\
+\hline
+{\em a\+\_\+ij} & Dot product of u\+\_\+i and r\+\_\+ij \\
+\hline
+{\em a\+\_\+ji} & Dot product of u\+\_\+j and r\+\_\+ij \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em c} & Effective concentration of motors in solution \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: T\+O\+DO 
+\end{DoxyReturn}

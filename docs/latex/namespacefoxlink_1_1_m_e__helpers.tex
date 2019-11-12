@@ -1,0 +1,74 @@
+\hypertarget{namespacefoxlink_1_1_m_e__helpers}{}\doxysection{foxlink.\+M\+E\+\_\+helpers Namespace Reference}
+\label{namespacefoxlink_1_1_m_e__helpers}\index{foxlink.ME\_helpers@{foxlink.ME\_helpers}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}\label{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}} 
+def {\bfseries convert\+\_\+sol\+\_\+to\+\_\+geom} (sol)
+\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}{sol\+\_\+print\+\_\+out}} (sol)
+\begin{DoxyCompactList}\small\item\em Print out current solution to solver. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}{dr\+\_\+dt}} (F, u\+\_\+i, gpara, gperp)
+\begin{DoxyCompactList}\small\item\em Get the evolution of a rods postion given a force, orientation of rod, and drag coefficients. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@package docstring
+File: ME_helpers.py
+Author: Adam Lamson
+Email: adam.lamson@colorado.edu
+Description:
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}\label{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}} 
+\index{foxlink.ME\_helpers@{foxlink.ME\_helpers}!dr\_dt@{dr\_dt}}
+\index{dr\_dt@{dr\_dt}!foxlink.ME\_helpers@{foxlink.ME\_helpers}}
+\doxysubsubsection{\texorpdfstring{dr\_dt()}{dr\_dt()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+helpers.\+dr\+\_\+dt (\begin{DoxyParamCaption}\item[{}]{F,  }\item[{}]{u\+\_\+i,  }\item[{}]{gpara,  }\item[{}]{gperp }\end{DoxyParamCaption})}
+
+
+
+Get the evolution of a rods postion given a force, orientation of rod, and drag coefficients. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em F} & Average force exerted on rod \\
+\hline
+{\em u\+\_\+i} & Orientation vector of rod \\
+\hline
+{\em gpara} & Parallel friction coefficient of rod \\
+\hline
+{\em gperp} & Perpendicular friction coefficient of rod \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivative of the rod motion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}\label{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}} 
+\index{foxlink.ME\_helpers@{foxlink.ME\_helpers}!sol\_print\_out@{sol\_print\_out}}
+\index{sol\_print\_out@{sol\_print\_out}!foxlink.ME\_helpers@{foxlink.ME\_helpers}}
+\doxysubsubsection{\texorpdfstring{sol\_print\_out()}{sol\_print\_out()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+helpers.\+sol\+\_\+print\+\_\+out (\begin{DoxyParamCaption}\item[{}]{sol }\end{DoxyParamCaption})}
+
+
+
+Print out current solution to solver. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r1} & Center of mass postion of rod1 \\
+\hline
+{\em r2} & Center of mass position of rod2 \\
+\hline
+{\em u1} & Orientation unit vector of rod1 \\
+\hline
+{\em u2} & Orientation unit vector of rod2 \\
+\hline
+{\em sol} & Full solution array of O\+DE \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: void 
+\end{DoxyReturn}

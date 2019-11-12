@@ -8,10 +8,10 @@ Description:
 """
 
 from scipy.integrate import quad, dblquad
-import numpy as np
-from numba import jit, njit
-from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
-                             fast_zrl_src_full_kl)
+# import numpy as np
+from numba import njit
+from .ME_gen_helpers import (boltz_fact_gen, weighted_boltz_fact_gen,
+                             avg_force_gen, avg_force_gen_2ord)
 
 
 @njit
@@ -43,8 +43,8 @@ def du_dt_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
 
 
 @njit
-def du_dt_gen_2order(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu10, mu11, mu20,
-                     ks, ho, grot):
+def du_dt_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu10, mu11, mu20,
+                   ks, ho, grot):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length. (Notation is consistent with paper and thesis)
@@ -60,8 +60,8 @@ def du_dt_gen_2order(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu10, mu11, mu20,
 
 
 @njit
-def dmu00_dt_gen_2order(rsqr, a_ij, a_ji, b, mu00,
-                        ko, co, ks, ho, beta, q=None):
+def dmu00_dt_gen_2ord(rsqr, a_ij, a_ji, b, mu00,
+                      ko, co, ks, ho, beta, q=None):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length.
@@ -77,9 +77,9 @@ def dmu00_dt_gen_2order(rsqr, a_ij, a_ji, b, mu00,
 
 
 @njit
-def dmu10_dt_gen_2order(rsqr, a_ij, a_ji, b,
-                        mu00, mu10, mu01, mu11, mu20, mu02,
-                        ko, co, vo, fs, ks, ho, beta, q=None):
+def dmu10_dt_gen_2ord(rsqr, a_ij, a_ji, b,
+                      mu00, mu10, mu01, mu11, mu20, mu02,
+                      ko, co, vo, fs, ks, ho, beta, q=None):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length.
@@ -101,9 +101,9 @@ def dmu10_dt_gen_2order(rsqr, a_ij, a_ji, b,
 
 
 @njit
-def dmu11_dt_gen_2order(rsqr, a_ij, a_ji, b,
-                        mu10, mu01, mu11, mu20, mu02,
-                        ko, co, vo, fs, ks, ho, beta, q=None):
+def dmu11_dt_gen_2ord(rsqr, a_ij, a_ji, b,
+                      mu10, mu01, mu11, mu20, mu02,
+                      ko, co, vo, fs, ks, ho, beta, q=None):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length.
@@ -125,9 +125,9 @@ def dmu11_dt_gen_2order(rsqr, a_ij, a_ji, b,
 
 
 @njit
-def dmu20_dt_gen_2order(rsqr, a_ij, a_ji, b,
-                        mu10, mu11, mu20,
-                        ko, co, vo, fs, ks, ho, beta, q=None):
+def dmu20_dt_gen_2ord(rsqr, a_ij, a_ji, b,
+                      mu10, mu11, mu20,
+                      ko, co, vo, fs, ks, ho, beta, q=None):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length.

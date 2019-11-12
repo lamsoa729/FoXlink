@@ -1,7 +1,7 @@
 # System parameters
 beta: .243309002 # Inverse temperature
-#viscosity: 0.00089 # Using nucleoplasm pN/nm^2
-viscosity: 0.000001 # Using cytoplasm pN/nm^2
+#viscosity: 0.00089 # Using nucleoplasm pN s/nm^2
+viscosity: 0.000001 # Using cytoplasm pN s /nm^2
 
 # Microtubule parameters
 L1: 1000. # Length of microtubule 1
