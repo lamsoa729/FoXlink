@@ -92,7 +92,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a893cc605364cdee3dfbeffeaed478e11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set parameters for ODE to be solved including initial conditions.  <a href="classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#a893cc605364cdee3dfbeffeaed478e11">More...</a><br /></td></tr>
 <tr class="separator:a893cc605364cdee3dfbeffeaed478e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac59417c4a1c79623bad04bfbb0fc8808"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#ac59417c4a1c79623bad04bfbb0fc8808">ParseParams</a> (self)</td></tr>
-<tr class="memdesc:ac59417c4a1c79623bad04bfbb0fc8808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collect parameters from yaml file or dictionary.  <a href="classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#ac59417c4a1c79623bad04bfbb0fc8808">More...</a><br /></td></tr>
+<tr class="memdesc:ac59417c4a1c79623bad04bfbb0fc8808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collect parameters from yaml file or dictionary then calculate some necessary parameters if not defined.  <a href="classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#ac59417c4a1c79623bad04bfbb0fc8808">More...</a><br /></td></tr>
 <tr class="separator:ac59417c4a1c79623bad04bfbb0fc8808"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f7bcd5823245ee00193f4884b4f6835"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#a1f7bcd5823245ee00193f4884b4f6835">setInitialConditions</a> (self)</td></tr>
 <tr class="memdesc:a1f7bcd5823245ee00193f4884b4f6835"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the initial conditions for the system of ODEs.  <a href="classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#a1f7bcd5823245ee00193f4884b4f6835">More...</a><br /></td></tr>
@@ -179,9 +179,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a746490577d95f7f24e292e0ad711f17e"><td class="memItemLeft" align="right" valign="top"><a id="a746490577d95f7f24e292e0ad711f17e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>beta</b></td></tr>
 <tr class="separator:a746490577d95f7f24e292e0ad711f17e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26a4382c43ffad776010fcc5acd651c6"><td class="memItemLeft" align="right" valign="top"><a id="a26a4382c43ffad776010fcc5acd651c6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>viscosity</b></td></tr>
-<tr class="separator:a26a4382c43ffad776010fcc5acd651c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a620e51287c2d1e40ac239a7446e2cb64"><td class="memItemLeft" align="right" valign="top"><a id="a620e51287c2d1e40ac239a7446e2cb64"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>visc</b></td></tr>
+<tr class="separator:a620e51287c2d1e40ac239a7446e2cb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd11b21e358f8211c4574e5705ac6e0d"><td class="memItemLeft" align="right" valign="top"><a id="acd11b21e358f8211c4574e5705ac6e0d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>L1</b></td></tr>
 <tr class="separator:acd11b21e358f8211c4574e5705ac6e0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -194,9 +194,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ac78fb1d4acbade4d86ca593cd764b79e"><td class="memItemLeft" align="right" valign="top"><a id="ac78fb1d4acbade4d86ca593cd764b79e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>R2_pos</b></td></tr>
 <tr class="separator:ac78fb1d4acbade4d86ca593cd764b79e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7675957b271f0474bf684b123456516a"><td class="memItemLeft" align="right" valign="top"><a id="a7675957b271f0474bf684b123456516a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>rod_diameter</b></td></tr>
-<tr class="separator:a7675957b271f0474bf684b123456516a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a677206cb26928d6f62060b88d93e5ba3"><td class="memItemLeft" align="right" valign="top"><a id="a677206cb26928d6f62060b88d93e5ba3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>rod_diam</b></td></tr>
+<tr class="separator:a677206cb26928d6f62060b88d93e5ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7286f431c7479318388f4829aff199cf"><td class="memItemLeft" align="right" valign="top"><a id="a7286f431c7479318388f4829aff199cf"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ko</b></td></tr>
 <tr class="separator:a7286f431c7479318388f4829aff199cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -267,8 +267,8 @@ Additional Inherited Members</h2></td></tr>
 <p>Set parameters for ODE to be solved including initial conditions. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pfile</td><td>TODO </td></tr>
-    <tr><td class="paramname">pdict</td><td>TODO </td></tr>
+    <tr><td class="paramname">pfile</td><td>yaml parameter file name </td></tr>
+    <tr><td class="paramname">pdict</td><td>parameter dictionary </td></tr>
   </table>
   </dd>
 </dl>
@@ -380,8 +380,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Collect parameters from yaml file or dictionary. </p>
-<dl class="section return"><dt>Returns</dt><dd>: void </dd></dl>
+<p>Collect parameters from yaml file or dictionary then calculate some necessary parameters if not defined. </p>
+<p>Also non-dimensionalize parameters. </p><dl class="section return"><dt>Returns</dt><dd>: void </dd></dl>
 
 <p>Reimplemented from <a class="el" href="classfoxlink_1_1solver_1_1_solver.html#acbf9a13173eda26bc574de1590d7bbbb">foxlink.solver.Solver</a>.</p>
 

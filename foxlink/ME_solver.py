@@ -24,14 +24,15 @@ class MomentExpansionSolver(Solver):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for ODE to be solved including initial conditions.
 
-        @param pfile: TODO
-        @param pdict: TODO
+        @param pfile: yaml parameter file name
+        @param pdict: parameter dictionary
         """
         print("Init MomentExpansionSolver ->", end=" ")
         Solver.__init__(self, pfile, pdict)
 
     def ParseParams(self):
-        """!Collect parameters from yaml file or dictionary
+        """!Collect parameters from yaml file or dictionary then calculate
+        some necessary parameters if not defined. Also non-dimensionalize parameters.
         @return: void
         """
         Solver.ParseParams(self)
@@ -99,18 +100,8 @@ class MomentExpansionSolver(Solver):
         # TODO Allow for different initial conditions of moments besides zero
 
         # Set solver once you set initial conditions
-        self.ode_solver = choose_ME_evolver(self.sol_init,
-                                            self.vo,
-                                            self.fs,
-                                            self.ko,
-                                            self.co,
-                                            self.ks,
-                                            self.beta,
-                                            self.L1,
-                                            self.L2,
-                                            self.rod_diameter,
-                                            self.viscosity,
-                                            self.ODE_type)
+        # Add kwargs
+        self.ode_solver = choose_ME_evolver(self.sol_init, self)
 
     def makeDataframe(self):
         """!Create data frame to be written out
@@ -197,16 +188,17 @@ class MomentExpansionSolver(Solver):
 
         self.beta = non_dimmer.non_dim_val(self._params['beta'],
                                            ['energy'], [-1])
-        self.viscosity = non_dimmer.non_dim_val(
-            self._params['viscosity'], ['energy', 'time', 'length'], [1, 1, -3])
+        self.visc = non_dimmer.non_dim_val(self._params['viscosity'],
+                                           ['energy', 'time', 'length'],
+                                           [1, 1, -3])
         self.L1 = non_dimmer.non_dim_val(self._params['L1'], ['length'])
         self.L2 = non_dimmer.non_dim_val(self._params['L2'], ['length'])
         self.R1_pos = non_dimmer.non_dim_val(
             self._params['R1_pos'], ['length'])
         self.R2_pos = non_dimmer.non_dim_val(
             self._params['R2_pos'], ['length'])
-        self.rod_diameter = non_dimmer.non_dim_val(self._params['rod_diameter'],
-                                                   ['length'])
+        self.rod_diam = non_dimmer.non_dim_val(self._params['rod_diameter'],
+                                               ['length'])
         self.dt = non_dimmer.non_dim_val(self.dt, ['time'])
         self.nt = non_dimmer.non_dim_val(self.nt, ['time'])
         self.twrite = non_dimmer.non_dim_val(self.twrite, ['time'])

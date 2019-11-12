@@ -7,24 +7,28 @@ Email: adam.lamson@colorado.edu
 Description:
 """
 
+import numpy as np
 from scipy.integrate import dblquad
 from ME_helpers import dr_dt, convert_sol_to_geom
 from ME_gen_helpers import (weighted_boltz_fact_gen,
                             boltz_fact_gen,
-                            avg_force_gen,
                             avg_force_gen_2ord)
 from ME_gen_ODEs import (du_dt_gen_2ord, dmu00_dt_gen, dmu10_dt_gen_2ord,
                          dmu11_dt_gen_2ord, dmu20_dt_gen_2ord)
-import numpy as np
 
 
 def prep_me_evolver_gen_2ord(sol, co, ks, ho, beta, L_i, L_j):
-    """!
+    """!Calculate necessary variables to evolve the solution.
 
-    @param arg1: TODO
+    @param sol: TODO
+    @param co: TODO
+    @param ks: TODO
     @return: TODO
 
     """
+
+    # Convert solution entries into readable geometric variables to use in
+    # derivatives
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
@@ -32,8 +36,9 @@ def prep_me_evolver_gen_2ord(sol, co, ks, ho, beta, L_i, L_j):
     a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
+    # Convert solution into readable moments to use in derivatives
     mu00, mu10, mu01, mu11, mu20, mu02 = sol[12:18].tolist()
-
+    # Calculate source terms (qkl) to use in derivatives
     q00 = co * dblquad(boltz_fact_gen, -.5 * L_i, .5 * L_i,
                        lambda s_j: -.5 * L_j, lambda s_j: .5 * L_j,
                        args=[rsqr, a_ij, a_ji, b, ks, ho, beta])[0]  # only want val, not error
@@ -89,18 +94,18 @@ def me_evolver_gen_2ord(sol,
                                                               beta, L_i, L_j)
 
     # Get average force of crosslinkers on rod_j
-    f_ij = avg_force_gen_2ord(r_ij, u_i, u_j,
-                              rsqr, a_ij, a_ji, b,
-                              mu00, mu10, mu01, mu11, mu20, mu02, ks, ho)
+    f_ij = avg_force_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+                              mu00, mu10, mu01, mu11, mu20, mu02,
+                              ks, ho)
     # Evolution of rod positions
     dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
     dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
-
     # Evolution of orientation vectors
-    du_i = du_dt_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu10, mu11, mu20,
+    du_i = du_dt_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+                          mu10, mu11, mu20,
                           ks, ho, grot_i)
     du_j = du_dt_gen_2ord(-1. * r_ij, u_j, u_i, rsqr, a_ji, a_ij, b,  # ij-ji
-                          mu10, mu11, mu20,  # kl->lk
+                          mu01, mu11, mu02,  # kl->lk
                           ks, ho, grot_j)
     # Evolution of zeroth moment
     dmu00 = dmu00_dt_gen(mu00, ko, q00)
@@ -118,7 +123,6 @@ def me_evolver_gen_2ord(sol,
     dmu20 = dmu20_dt_gen_2ord(rsqr, a_ij, a_ji, b,
                               mu10, mu11, mu20,
                               ko, vo, fs, ks, ho, q=q20)
-
     dmu02 = dmu20_dt_gen_2ord(rsqr, a_ji, a_ij, b,  # ij->ji
                               mu01, mu11, mu02,  # kl->lk
                               ko, vo, fs, ks, ho, q=q02)
