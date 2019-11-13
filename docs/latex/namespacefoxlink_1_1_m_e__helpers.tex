@@ -3,8 +3,7 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}\label{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}} 
-def {\bfseries convert\+\_\+sol\+\_\+to\+\_\+geom} (sol)
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}{convert\+\_\+sol\+\_\+to\+\_\+geom}} (sol)
 \item 
 def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}{sol\+\_\+print\+\_\+out}} (sol)
 \begin{DoxyCompactList}\small\item\em Print out current solution to solver. \end{DoxyCompactList}\item 
@@ -22,7 +21,21 @@ Description:
  
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}\label{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}} 
+\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}\label{namespacefoxlink_1_1_m_e__helpers_a79cceea402afe87dc069e7d12e2f634a}} 
+\index{foxlink.ME\_helpers@{foxlink.ME\_helpers}!convert\_sol\_to\_geom@{convert\_sol\_to\_geom}}
+\index{convert\_sol\_to\_geom@{convert\_sol\_to\_geom}!foxlink.ME\_helpers@{foxlink.ME\_helpers}}
+\doxysubsubsection{\texorpdfstring{convert\_sol\_to\_geom()}{convert\_sol\_to\_geom()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+helpers.\+convert\+\_\+sol\+\_\+to\+\_\+geom (\begin{DoxyParamCaption}\item[{}]{sol }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Convert solution array of ME_solver into 3D vectors
+@param sol: Solution numpy array greater than 11 items long
+
+Examples
+-------------------------
+>>> a = np.arange(18)
+>>> convert_sol_to_geom(a)
+(array([0, 1, 2]), array([3, 4, 5]), array([6, 7, 8]), array([ 9, 10, 11]))\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}\label{namespacefoxlink_1_1_m_e__helpers_a68f1150146d0b060b9518d25b0451a6d}} 
 \index{foxlink.ME\_helpers@{foxlink.ME\_helpers}!dr\_dt@{dr\_dt}}
 \index{dr\_dt@{dr\_dt}!foxlink.ME\_helpers@{foxlink.ME\_helpers}}
 \doxysubsubsection{\texorpdfstring{dr\_dt()}{dr\_dt()}}

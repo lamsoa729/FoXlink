@@ -74,8 +74,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a79cceea402afe87dc069e7d12e2f634a"><td class="memItemLeft" align="right" valign="top"><a id="a79cceea402afe87dc069e7d12e2f634a"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>convert_sol_to_geom</b> (sol)</td></tr>
+<tr class="memitem:a79cceea402afe87dc069e7d12e2f634a"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefoxlink_1_1_m_e__helpers.html#a79cceea402afe87dc069e7d12e2f634a">convert_sol_to_geom</a> (sol)</td></tr>
 <tr class="separator:a79cceea402afe87dc069e7d12e2f634a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75de9e30d8c597a9e9a314eb3f80b04a"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefoxlink_1_1_m_e__helpers.html#a75de9e30d8c597a9e9a314eb3f80b04a">sol_print_out</a> (sol)</td></tr>
 <tr class="memdesc:a75de9e30d8c597a9e9a314eb3f80b04a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print out current solution to solver.  <a href="namespacefoxlink_1_1_m_e__helpers.html#a75de9e30d8c597a9e9a314eb3f80b04a">More...</a><br /></td></tr>
@@ -91,6 +90,31 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 </pre> </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a79cceea402afe87dc069e7d12e2f634a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79cceea402afe87dc069e7d12e2f634a">&#9670;&nbsp;</a></span>convert_sol_to_geom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def foxlink.ME_helpers.convert_sol_to_geom </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>sol</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Convert solution array of ME_solver into 3D vectors
+@param sol: Solution numpy array greater than 11 items long
+
+Examples
+-------------------------
+&gt;&gt;&gt; a = np.arange(18)
+&gt;&gt;&gt; convert_sol_to_geom(a)
+(array([0, 1, 2]), array([3, 4, 5]), array([6, 7, 8]), array([ 9, 10, 11]))</pre> 
+</div>
+</div>
 <a id="a68f1150146d0b060b9518d25b0451a6d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68f1150146d0b060b9518d25b0451a6d">&#9670;&nbsp;</a></span>dr_dt()</h2>
 

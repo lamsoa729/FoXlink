@@ -12,5 +12,6 @@ var searchData=
   ['choose_5fme_5fevolver_15',['choose_ME_evolver',['../namespacefoxlink_1_1choose___m_e__evolver.html#a58c6a3e51fdb6591e61ea1c1c14b9c56',1,'foxlink::choose_ME_evolver']]],
   ['clearinteractions_16',['clearInteractions',['../classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver.html#a83d7c3b2e68a2e94b2f6af1b99a7c77e',1,'foxlink::FP_solver::FokkerPlanckSolver']]],
   ['collectdataarrays_17',['collectDataArrays',['../classfoxlink_1_1_f_p__analysis_1_1_f_p_analysis.html#ab78b5ee2f228850d15d6f47e0ba3a268',1,'foxlink.FP_analysis.FPAnalysis.collectDataArrays()'],['../classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis.html#aba652254f69cd69fc715d41e51e56e2f',1,'foxlink.ME_analysis.MEAnalysis.collectDataArrays()']]],
-  ['createsolver_18',['createSolver',['../classfoxlink_1_1foxlink_1_1_fo_xlink.html#af99f9c4ecac565744039a97439b0445b',1,'foxlink::foxlink::FoXlink']]]
+  ['convert_5fsol_5fto_5fgeom_18',['convert_sol_to_geom',['../namespacefoxlink_1_1_m_e__helpers.html#a79cceea402afe87dc069e7d12e2f634a',1,'foxlink::ME_helpers']]],
+  ['createsolver_19',['createSolver',['../classfoxlink_1_1foxlink_1_1_fo_xlink.html#af99f9c4ecac565744039a97439b0445b',1,'foxlink::foxlink::FoXlink']]]
 ];

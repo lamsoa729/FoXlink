@@ -6,10 +6,20 @@ Email: adam.lamson@colorado.edu
 Description:
 """
 import numpy as np
-from numba import jit, njit
+from numba import njit
 
 
 def convert_sol_to_geom(sol):
+    """ Convert solution array of ME_solver into 3D vectors
+    @param sol: Solution numpy array greater than 11 items long
+
+    Examples
+    -------------------------
+    >>> a = np.arange(18)
+    >>> convert_sol_to_geom(a)
+    (array([0, 1, 2]), array([3, 4, 5]), array([6, 7, 8]), array([ 9, 10, 11]))
+
+    """
     return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
 
 
@@ -35,6 +45,7 @@ def sol_print_out(sol):
 def dr_dt(F, u_i, gpara, gperp):
     """!Get the evolution of a rods postion given a force, orientation of rod,
     and drag coefficients.
+
 
     @param F: Average force exerted on rod
     @param u_i: Orientation vector of rod

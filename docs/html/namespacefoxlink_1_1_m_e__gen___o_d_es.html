@@ -360,7 +360,76 @@ Description:
 
 <p>Calculate the time-derivative of rod1's orientation vector with respect to the current state of the crosslinked rod system when crosslinkers have zero rest length. </p>
 <p>TODO</p>
-<dl class="section return"><dt>Returns</dt><dd>: </dd></dl>
+<hr  />
+<p> Antiparallel case. Should be symmetric </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>(rsqr, a_ij, a_ji, b, mu10, mu01, mu11, mu20, mu02, ko, vo, fs, ks, ho, q) = (1,0,0,-1,1,1,1,1,1,0,2,2,1,2,0) c1 = dmu11_dt_gen_2ord(rsqr, a_ij, a_ji, b, mu10, mu01, mu11, mu20, </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>... mu02, ko, vo, fs, ks, ho, q) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>c2 = dmu11_dt_gen_2ord(rsqr, a_ji, a_ij, b, mu01, mu10, mu11, mu02, </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>... mu20, ko, vo, fs, ks, ho, q) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>c1 == c2 </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>True</p>
+<p>Test symmetry with asymmetric case </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>(rsqr, a_ij, a_ji, b, mu10, mu01, mu11, mu20, mu02, ko, vo, fs, ks, ho, q) = ( </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>... 1,2,3,-1,4,5,6,7,8,9,10,11,12,13,14) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>c1 = dmu11_dt_gen_2ord(rsqr, a_ij, a_ji, b, mu10, mu01, mu11, mu20, </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>... mu02, ko, vo, fs, ks, ho, q) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>c2 = dmu11_dt_gen_2ord(rsqr, a_ji, a_ij, b, mu01, mu10, mu11, mu02, </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>... mu20, ko, vo, fs, ks, ho, q) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>c1 == c2 </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>True </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h1><a class="anchor" id="autotoc_md9"></a>
+Make sure it fails when not ij-&gt;ji and kl-&gt;lk is not satisfied</h1>
+<p>c3 = dmu11_dt_gen_2ord(rsqr, a_ij, a_ji, b, mu01, mu10, mu11, mu02, </p>
+<p>... mu20, ko, vo, fs, ks, ho, q) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>c1 == c3 </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>False</p>
+<dl class="section return"><dt>Returns</dt><dd>: Derivative of the mu_ij^11 moment. </dd></dl>
 
 </div>
 </div>
@@ -711,7 +780,21 @@ Description:
 
 <p>Calculate the time-derivative of rod1's orientation vector with respect to the current state of the crosslinked rod system when crosslinkers have zero rest length. </p>
 <p>(Notation is consistent with paper and thesis)</p>
-<p>TODO</p>
+<p>Test symmetry with asymmetric geometry but symmetric distribution </p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+&gt;&gt;&gt; r_ij, u_i, u_j = (np.asarray([1,2,3]), np.asarray([1,0,0]), np.asarray([0,1,0]))</h1>
+<h1><a class="anchor" id="autotoc_md2"></a>
+&gt;&gt;&gt; rsqr, a_ij, a_ji, b = (np.dot(r_ij, r_ij), np.dot(u_i, r_ij), np.dot(u_j, -1.*r_ij), np.dot(u_j,u_i))</h1>
+<h1><a class="anchor" id="autotoc_md3"></a>
+&gt;&gt;&gt; mu10, mu01, mu11, mu20, mu02, ks, ho, grot = (2,2,3,1,1,4,5,6)</h1>
+<h1><a class="anchor" id="autotoc_md4"></a>
+&gt;&gt;&gt; c1 = du_dt_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu10, mu11, mu20,</h1>
+<h1><a class="anchor" id="autotoc_md5"></a>
+... ks, ho, grot)</h1>
+<h1><a class="anchor" id="autotoc_md6"></a>
+&gt;&gt;&gt; c2 = du_dt_gen_2ord(-1.*r_ij, u_j, u_i, rsqr, a_ji, a_ij, b, mu01, mu11, mu02,</h1>
+<h1><a class="anchor" id="autotoc_md7"></a>
+... ks, ho, grot)</h1>
 <dl class="section return"><dt>Returns</dt><dd>: Time-derivative of rod_i's orientation vector </dd></dl>
 
 </div>

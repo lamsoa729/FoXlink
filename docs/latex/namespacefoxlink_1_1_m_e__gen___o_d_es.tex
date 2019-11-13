@@ -69,8 +69,70 @@ Calculate the time-\/derivative of rod1\textquotesingle{}s orientation vector wi
 
 T\+O\+DO
 
+\DoxyHorRuler
+ Antiparallel case. Should be symmetric \begin{quote}
+\begin{quote}
+\begin{quote}
+(rsqr, a\+\_\+ij, a\+\_\+ji, b, mu10, mu01, mu11, mu20, mu02, ko, vo, fs, ks, ho, q) = (1,0,0,-\/1,1,1,1,1,1,0,2,2,1,2,0) c1 = dmu11\+\_\+dt\+\_\+gen\+\_\+2ord(rsqr, a\+\_\+ij, a\+\_\+ji, b, mu10, mu01, mu11, mu20, \end{quote}
+\end{quote}
+\end{quote}
+... mu02, ko, vo, fs, ks, ho, q) \begin{quote}
+\begin{quote}
+\begin{quote}
+c2 = dmu11\+\_\+dt\+\_\+gen\+\_\+2ord(rsqr, a\+\_\+ji, a\+\_\+ij, b, mu01, mu10, mu11, mu02, \end{quote}
+\end{quote}
+\end{quote}
+... mu20, ko, vo, fs, ks, ho, q) \begin{quote}
+\begin{quote}
+\begin{quote}
+c1 == c2 \end{quote}
+\end{quote}
+\end{quote}
+True
+
+Test symmetry with asymmetric case \begin{quote}
+\begin{quote}
+\begin{quote}
+(rsqr, a\+\_\+ij, a\+\_\+ji, b, mu10, mu01, mu11, mu20, mu02, ko, vo, fs, ks, ho, q) = ( \end{quote}
+\end{quote}
+\end{quote}
+... 1,2,3,-\/1,4,5,6,7,8,9,10,11,12,13,14) \begin{quote}
+\begin{quote}
+\begin{quote}
+c1 = dmu11\+\_\+dt\+\_\+gen\+\_\+2ord(rsqr, a\+\_\+ij, a\+\_\+ji, b, mu10, mu01, mu11, mu20, \end{quote}
+\end{quote}
+\end{quote}
+... mu02, ko, vo, fs, ks, ho, q) \begin{quote}
+\begin{quote}
+\begin{quote}
+c2 = dmu11\+\_\+dt\+\_\+gen\+\_\+2ord(rsqr, a\+\_\+ji, a\+\_\+ij, b, mu01, mu10, mu11, mu02, \end{quote}
+\end{quote}
+\end{quote}
+... mu20, ko, vo, fs, ks, ho, q) \begin{quote}
+\begin{quote}
+\begin{quote}
+c1 == c2 \end{quote}
+\end{quote}
+\end{quote}
+True \begin{quote}
+\begin{quote}
+\begin{quote}
+\end{quote}
+\end{quote}
+\end{quote}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md9}{}\doxysubsection{Make sure it fails when not ij-\/$>$ji and kl-\/$>$lk is not satisfied}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md9}
+c3 = dmu11\+\_\+dt\+\_\+gen\+\_\+2ord(rsqr, a\+\_\+ij, a\+\_\+ji, b, mu01, mu10, mu11, mu02, 
+
+... mu20, ko, vo, fs, ks, ho, q) \begin{quote}
+\begin{quote}
+\begin{quote}
+c1 == c3 \end{quote}
+\end{quote}
+\end{quote}
+False
+
 \begin{DoxyReturn}{Returns}
-\+: 
+\+: Derivative of the mu\+\_\+ij$^\wedge$11 moment. 
 \end{DoxyReturn}
 \mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_ad300d636357ae2e08313b8ad6c3a303c}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_ad300d636357ae2e08313b8ad6c3a303c}} 
 \index{foxlink.ME\_gen\_ODEs@{foxlink.ME\_gen\_ODEs}!dmu20\_dt\_gen\_2ord@{dmu20\_dt\_gen\_2ord}}
@@ -137,8 +199,13 @@ Calculate the time-\/derivative of rod1\textquotesingle{}s orientation vector wi
 
 (Notation is consistent with paper and thesis)
 
-T\+O\+DO
-
+Test symmetry with asymmetric geometry but symmetric distribution \hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md1}{}\doxysubsection{$>$$>$$>$ r\+\_\+ij, u\+\_\+i, u\+\_\+j = (np.\+asarray(\mbox{[}1,2,3\mbox{]}), np.\+asarray(\mbox{[}1,0,0\mbox{]}), np.\+asarray(\mbox{[}0,1,0\mbox{]}))}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md1}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md2}{}\doxysubsection{$>$$>$$>$ rsqr, a\+\_\+ij, a\+\_\+ji, b = (np.\+dot(r\+\_\+ij, r\+\_\+ij), np.\+dot(u\+\_\+i, r\+\_\+ij), np.\+dot(u\+\_\+j, -\/1.$\ast$r\+\_\+ij), np.\+dot(u\+\_\+j,u\+\_\+i))}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md2}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md3}{}\doxysubsection{$>$$>$$>$ mu10, mu01, mu11, mu20, mu02, ks, ho, grot = (2,2,3,1,1,4,5,6)}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md3}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md4}{}\doxysubsection{$>$$>$$>$ c1 = du\+\_\+dt\+\_\+gen\+\_\+2ord(r\+\_\+ij, u\+\_\+i, u\+\_\+j, rsqr, a\+\_\+ij, a\+\_\+ji, b, mu10, mu11, mu20,}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md4}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md5}{}\doxysubsection{... ks, ho, grot)}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md5}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md6}{}\doxysubsection{$>$$>$$>$ c2 = du\+\_\+dt\+\_\+gen\+\_\+2ord(-\/1.$\ast$r\+\_\+ij, u\+\_\+j, u\+\_\+i, rsqr, a\+\_\+ji, a\+\_\+ij, b, mu01, mu11, mu02,}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md6}
+\hypertarget{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md7}{}\doxysubsection{... ks, ho, grot)}\label{namespacefoxlink_1_1_m_e__gen___o_d_es_autotoc_md7}
 \begin{DoxyReturn}{Returns}
 \+: Time-\/derivative of rod\+\_\+i\textquotesingle{}s orientation vector 
 \end{DoxyReturn}
