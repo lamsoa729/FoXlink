@@ -57,9 +57,25 @@ Get the evolution of a rods postion given a force, orientation of rod, and drag 
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-\+: Time-\/derivative of the rod motion 
+\+: Time-\/derivative of the rod motion
 \end{DoxyReturn}
-\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}\label{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}} 
+\hypertarget{namespacefoxlink_1_1_m_e__helpers_autotoc_md10}{}\doxysubsubsection{Examples}\label{namespacefoxlink_1_1_m_e__helpers_autotoc_md10}
+\begin{quote}
+\begin{quote}
+\begin{quote}
+F = np.\+asarray(\mbox{[}5.,0,0\mbox{]}) \# u\+\_\+i = F / np.\+linalg.\+norm(\+F) gpara, gperp = (.5, .4) dr\+\_\+dt(\+F, u\+\_\+i, gpara, gperp) == F/gpara \end{quote}
+\end{quote}
+\end{quote}
+array(\mbox{[} True,  True,  True\mbox{]}) \begin{quote}
+\begin{quote}
+\begin{quote}
+\end{quote}
+\end{quote}
+\end{quote}
+\hypertarget{namespacefoxlink_1_1_m_e__helpers_autotoc_md11}{}\doxysubsection{Now try with perpendicular force to orientation}\label{namespacefoxlink_1_1_m_e__helpers_autotoc_md11}
+u\+\_\+i = np.\+asarray(\mbox{[}0,1.,0\mbox{]}) dr\+\_\+dt(\+F, u\+\_\+i, gpara, gperp) == F/gperp 
+
+array(\mbox{[} True,  True,  True\mbox{]}) \mbox{\Hypertarget{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}\label{namespacefoxlink_1_1_m_e__helpers_a75de9e30d8c597a9e9a314eb3f80b04a}} 
 \index{foxlink.ME\_helpers@{foxlink.ME\_helpers}!sol\_print\_out@{sol\_print\_out}}
 \index{sol\_print\_out@{sol\_print\_out}!foxlink.ME\_helpers@{foxlink.ME\_helpers}}
 \doxysubsubsection{\texorpdfstring{sol\_print\_out()}{sol\_print\_out()}}

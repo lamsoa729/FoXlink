@@ -141,7 +141,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class for solver objects. </p>
-<p>All PDE algorithms are implemented through these classes. </p><pre class="fragment">Common method functions for inherited solver classes:
+<p>All solving algorithms are implemented through these classes. </p><pre class="fragment">Common method functions for inherited solver classes:
     Run &lt;- Abstract = Iterate through time using the Step method
     Step &lt;- Abstract = Implement the specified algorithm at a times step
     setInitialConditions &lt;- Abstract = Set the initial stat of simulation
@@ -151,7 +151,7 @@ Static Public Attributes</h2></td></tr>
     ParseParams = Parse parameters from file that is given
     Save = Flush the remaining data in hdf5 file.
 
-Foxlink uses inheritance to quickly create and combine PDE solving
+Foxlink uses inheritance to quickly create and combine PDE and ME solving
 algorithms. While solvers do not need to follow specific guidelines, it
 is useful to categorize solvers into different types avoid inheritance
 conflicts when using multi-inheritance. These include:
@@ -402,16 +402,13 @@ Derivative class names are based on their solver type.
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=  {</div>
-<div class="line">        <span class="stringliteral">&quot;r&quot;</span>: 1.,  <span class="comment"># Distance between rod centers</span></div>
-<div class="line">        <span class="stringliteral">&quot;a1&quot;</span>: 0.,  <span class="comment"># Dot product between u1 and r unit vectors</span></div>
-<div class="line">        <span class="stringliteral">&quot;a2&quot;</span>: 0.,  <span class="comment"># Dot product between u2 and r unit vectors</span></div>
-<div class="line">        <span class="stringliteral">&quot;b&quot;</span>: -1.,  <span class="comment"># Dot product between u1 and u2 unit vectors</span></div>
 <div class="line">        <span class="stringliteral">&quot;R1_pos&quot;</span>: [0., 0., 0.],</div>
 <div class="line">        <span class="stringliteral">&quot;R2_pos&quot;</span>: [0., 0., 0.],</div>
 <div class="line">        <span class="stringliteral">&quot;R1_vec&quot;</span>: [0., 1., 0.],</div>
 <div class="line">        <span class="stringliteral">&quot;R2_vec&quot;</span>: [0., 1., 0.],</div>
 <div class="line">        <span class="stringliteral">&quot;L1&quot;</span>: 100.,  <span class="comment"># Length of microtubule 1</span></div>
 <div class="line">        <span class="stringliteral">&quot;L2&quot;</span>: 100.,  <span class="comment"># Length of microtubule 2</span></div>
+<div class="line">        <span class="stringliteral">&quot;rod_diameter&quot;</span>: 25,  <span class="comment"># Diameter of filament</span></div>
 <div class="line">        <span class="stringliteral">&quot;dt&quot;</span>: 1.,  <span class="comment"># Time step</span></div>
 <div class="line">        <span class="stringliteral">&quot;nt&quot;</span>: 2000.,  <span class="comment"># total time</span></div>
 <div class="line">        <span class="stringliteral">&quot;nsteps&quot;</span>: 2000,  <span class="comment"># total time</span></div>
@@ -425,6 +422,9 @@ Derivative class names are based on their solver type.
 <div class="line">        <span class="stringliteral">&quot;vo&quot;</span>: 1.,  <span class="comment"># Base velocity of crosslinker heads</span></div>
 <div class="line">        <span class="stringliteral">&quot;fs&quot;</span>: 1.,  <span class="comment"># Stall force of crosslinker heads</span></div>
 <div class="line">        <span class="stringliteral">&quot;beta&quot;</span>: 1.,  <span class="comment"># Inverse temperature</span></div>
+<div class="line">        <span class="stringliteral">&quot;viscosity&quot;</span>: 0.00089,  <span class="comment"># Viscosity of fluid filaments are in</span></div>
+<div class="line">        <span class="stringliteral">&quot;initial_condition&quot;</span>: <span class="stringliteral">&#39;empty&#39;</span>,</div>
+<div class="line">        <span class="stringliteral">&quot;end_pause&quot;</span>: <span class="keyword">False</span></div>
 <div class="line">    }</div>
 </div><!-- fragment -->
 </div>

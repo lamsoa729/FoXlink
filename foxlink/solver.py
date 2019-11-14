@@ -12,7 +12,7 @@ import h5py
 
 
 class Solver():
-    """!Abstract class for solver objects. All PDE algorithms are implemented
+    """!Abstract class for solver objects. All solving algorithms are implemented
     through these classes.
 
         Common method functions for inherited solver classes:
@@ -25,7 +25,7 @@ class Solver():
             ParseParams = Parse parameters from file that is given
             Save = Flush the remaining data in hdf5 file.
 
-        Foxlink uses inheritance to quickly create and combine PDE solving
+        Foxlink uses inheritance to quickly create and combine PDE and ME solving
         algorithms. While solvers do not need to follow specific guidelines, it
         is useful to categorize solvers into different types avoid inheritance
         conflicts when using multi-inheritance. These include:
@@ -139,16 +139,13 @@ class Solver():
                 self.__class__.__name__))
 
     default_params = {
-        "r": 1.,  # Distance between rod centers
-        "a1": 0.,  # Dot product between u1 and r unit vectors
-        "a2": 0.,  # Dot product between u2 and r unit vectors
-        "b": -1.,  # Dot product between u1 and u2 unit vectors
         "R1_pos": [0., 0., 0.],
         "R2_pos": [0., 0., 0.],
         "R1_vec": [0., 1., 0.],
         "R2_vec": [0., 1., 0.],
         "L1": 100.,  # Length of microtubule 1
         "L2": 100.,  # Length of microtubule 2
+        "rod_diameter": 25,  # Diameter of filament
         "dt": 1.,  # Time step
         "nt": 2000.,  # total time
         "nsteps": 2000,  # total time
@@ -162,4 +159,7 @@ class Solver():
         "vo": 1.,  # Base velocity of crosslinker heads
         "fs": 1.,  # Stall force of crosslinker heads
         "beta": 1.,  # Inverse temperature
+        "viscosity": 0.00089,  # Viscosity of fluid filaments are in
+        "initial_condition": 'empty',
+        "end_pause": False
     }

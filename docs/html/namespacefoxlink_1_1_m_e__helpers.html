@@ -163,7 +163,27 @@ Examples
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>: Time-derivative of the rod motion </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>: Time-derivative of the rod motion</dd></dl>
+<h2><a class="anchor" id="autotoc_md10"></a>
+Examples</h2>
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p>F = np.asarray([5.,0,0]) # u_i = F / np.linalg.norm(F) gpara, gperp = (.5, .4) dr_dt(F, u_i, gpara, gperp) == F/gpara </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>array([ True,  True,  True]) </p><blockquote class="doxtable">
+<blockquote class="doxtable">
+<blockquote class="doxtable">
+<p></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h1><a class="anchor" id="autotoc_md11"></a>
+Now try with perpendicular force to orientation</h1>
+<p>u_i = np.asarray([0,1.,0]) dr_dt(F, u_i, gpara, gperp) == F/gperp </p>
+<p>array([ True,  True,  True]) </p>
 
 </div>
 </div>

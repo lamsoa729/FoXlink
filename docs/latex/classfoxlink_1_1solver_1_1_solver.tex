@@ -49,7 +49,7 @@ dictionary {\bfseries default\+\_\+params}
 \doxysubsection{Detailed Description}
 Abstract class for solver objects. 
 
-All P\+DE algorithms are implemented through these classes. \begin{DoxyVerb}Common method functions for inherited solver classes:
+All solving algorithms are implemented through these classes. \begin{DoxyVerb}Common method functions for inherited solver classes:
     Run <- Abstract = Iterate through time using the Step method
     Step <- Abstract = Implement the specified algorithm at a times step
     setInitialConditions <- Abstract = Set the initial stat of simulation
@@ -59,7 +59,7 @@ All P\+DE algorithms are implemented through these classes. \begin{DoxyVerb}Comm
     ParseParams = Parse parameters from file that is given
     Save = Flush the remaining data in hdf5 file.
 
-Foxlink uses inheritance to quickly create and combine PDE solving
+Foxlink uses inheritance to quickly create and combine PDE and ME solving
 algorithms. While solvers do not need to follow specific guidelines, it
 is useful to categorize solvers into different types avoid inheritance
 conflicts when using multi-inheritance. These include:
@@ -239,16 +239,13 @@ Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck
 {\bfseries Initial value\+:}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{=  \{}
-\DoxyCodeLine{        \textcolor{stringliteral}{"r"}: 1.,  \textcolor{comment}{\# Distance between rod centers}}
-\DoxyCodeLine{        \textcolor{stringliteral}{"a1"}: 0.,  \textcolor{comment}{\# Dot product between u1 and r unit vectors}}
-\DoxyCodeLine{        \textcolor{stringliteral}{"a2"}: 0.,  \textcolor{comment}{\# Dot product between u2 and r unit vectors}}
-\DoxyCodeLine{        \textcolor{stringliteral}{"b"}: -\/1.,  \textcolor{comment}{\# Dot product between u1 and u2 unit vectors}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"R1\_pos"}: [0., 0., 0.],}
 \DoxyCodeLine{        \textcolor{stringliteral}{"R2\_pos"}: [0., 0., 0.],}
 \DoxyCodeLine{        \textcolor{stringliteral}{"R1\_vec"}: [0., 1., 0.],}
 \DoxyCodeLine{        \textcolor{stringliteral}{"R2\_vec"}: [0., 1., 0.],}
 \DoxyCodeLine{        \textcolor{stringliteral}{"L1"}: 100.,  \textcolor{comment}{\# Length of microtubule 1}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"L2"}: 100.,  \textcolor{comment}{\# Length of microtubule 2}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"rod\_diameter"}: 25,  \textcolor{comment}{\# Diameter of filament}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"dt"}: 1.,  \textcolor{comment}{\# Time step}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"nt"}: 2000.,  \textcolor{comment}{\# total time}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"nsteps"}: 2000,  \textcolor{comment}{\# total time}}
@@ -262,6 +259,9 @@ Reimplemented in \mbox{\hyperlink{classfoxlink_1_1_f_p__solver_1_1_fokker_planck
 \DoxyCodeLine{        \textcolor{stringliteral}{"vo"}: 1.,  \textcolor{comment}{\# Base velocity of crosslinker heads}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"fs"}: 1.,  \textcolor{comment}{\# Stall force of crosslinker heads}}
 \DoxyCodeLine{        \textcolor{stringliteral}{"beta"}: 1.,  \textcolor{comment}{\# Inverse temperature}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"viscosity"}: 0.00089,  \textcolor{comment}{\# Viscosity of fluid filaments are in}}
+\DoxyCodeLine{        \textcolor{stringliteral}{"initial\_condition"}: \textcolor{stringliteral}{'empty'},}
+\DoxyCodeLine{        \textcolor{stringliteral}{"end\_pause"}: \textcolor{keyword}{False}}
 \DoxyCodeLine{    \}}
 
 \end{DoxyCode}

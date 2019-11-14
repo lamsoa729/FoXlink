@@ -36,7 +36,7 @@ def sol_print_out(sol):
     """
     r1, r2, u1, u2 = convert_sol_to_geom(sol)
     print("Step-> r1:", r1, ", r2:", r2, ", u1:", u1, ", u2:", u2)
-    print("       rho:{}, P1:{}, P2:{}, mu11:{}, mu20:{}, mu02:{}".format(
+    print("       mu00:{}, mu10:{}, mu01:{}, mu11:{}, mu20:{}, mu02:{}".format(
         sol[12], sol[13], sol[14],
         sol[15], sol[16], sol[17]))
 
@@ -52,6 +52,18 @@ def dr_dt(F, u_i, gpara, gperp):
     @param gpara: Parallel friction coefficient of rod
     @param gperp: Perpendicular friction coefficient of rod
     @return: Time-derivative of the rod motion
+
+    Examples
+    -------------------------
+    >>> F = np.asarray([5.,0,0]) #
+    >>> u_i = F / np.linalg.norm(F)
+    >>> gpara, gperp = (.5, .4)
+    >>> dr_dt(F, u_i, gpara, gperp) == F/gpara
+    array([ True,  True,  True])
+    >>> # Now try with perpendicular force to orientation
+    >>> u_i = np.asarray([0,1.,0])
+    >>> dr_dt(F, u_i, gpara, gperp) == F/gperp
+    array([ True,  True,  True])
 
     """
     mpara = 1. / gpara
