@@ -6,6 +6,8 @@
 def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a9c1eb0fd0eddf5f1a83d68e02633b8ab}{prep\+\_\+me\+\_\+evolver\+\_\+gen\+\_\+2ord}} (sol, co, ks, ho, beta, L\+\_\+i, L\+\_\+j)
 \begin{DoxyCompactList}\small\item\em Calculate necessary variables to evolve the solution. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a25a8fb642c211ab1a0dce54757c5cad4}{me\+\_\+evolver\+\_\+gen\+\_\+2ord}} (sol, gpara\+\_\+i, gperp\+\_\+i, grot\+\_\+i, gpara\+\_\+j, gperp\+\_\+j, grot\+\_\+j, vo, fs, ko, co, ks, ho, beta, L\+\_\+i, L\+\_\+j)
+\begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (gen) crosslinkers bound to moving rods. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{namespacefoxlink_1_1_m_e__gen__evolvers_a28ff2f8d3b635833a7be101e7c680418}{me\+\_\+evolver\+\_\+gen\+\_\+orient\+\_\+2ord}} (sol, gpara\+\_\+i, gperp\+\_\+i, grot\+\_\+i, gpara\+\_\+j, gperp\+\_\+j, grot\+\_\+j, vo, fs, ko, co, ks, ho, beta, L\+\_\+i, L\+\_\+j)
 \begin{DoxyCompactList}\small\item\em Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (gen) crosslinkers bound to moving rods. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -24,6 +26,54 @@ Description:
 \index{me\_evolver\_gen\_2ord@{me\_evolver\_gen\_2ord}!foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}}
 \doxysubsubsection{\texorpdfstring{me\_evolver\_gen\_2ord()}{me\_evolver\_gen\_2ord()}}
 {\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+evolvers.\+me\+\_\+evolver\+\_\+gen\+\_\+2ord (\begin{DoxyParamCaption}\item[{}]{sol,  }\item[{}]{gpara\+\_\+i,  }\item[{}]{gperp\+\_\+i,  }\item[{}]{grot\+\_\+i,  }\item[{}]{gpara\+\_\+j,  }\item[{}]{gperp\+\_\+j,  }\item[{}]{grot\+\_\+j,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{co,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta,  }\item[{}]{L\+\_\+i,  }\item[{}]{L\+\_\+j }\end{DoxyParamCaption})}
+
+
+
+Calculate all time derivatives necessary to solve the moment expansion evolution of the Fokker-\/\+Planck equation of zero rest length (gen) crosslinkers bound to moving rods. 
+
+d{\itshape  is the time derivative of corresponding variable}
+
+{\itshape 
+\begin{DoxyParams}{Parameters}
+{\em sol} & Current solution of O\+DE \\
+\hline
+{\em gpara\+\_\+ij} & Parallel drag coefficient of rod\+\_\+i \\
+\hline
+{\em gperp\+\_\+i} & Perpendicular drag coefficient of rod\+\_\+i \\
+\hline
+{\em grot\+\_\+i} & Rotational drag coefficient of rod\+\_\+i \\
+\hline
+{\em gpara\+\_\+ji} & Parallel drag coefficient of rod\+\_\+i \\
+\hline
+{\em gperp\+\_\+j} & Perpendicular drag coefficient of rod\+\_\+i \\
+\hline
+{\em grot\+\_\+j} & Rotational drag coefficient of rod\+\_\+i \\
+\hline
+{\em vo} & Velocity of motor when no force is applied \\
+\hline
+{\em fs} & Stall force of motor ends \\
+\hline
+{\em ko} & Turnover rate of motors \\
+\hline
+{\em co} & Effective concentration of motors in solution \\
+\hline
+{\em ks} & Motor spring constant \\
+\hline
+{\em beta} & 1/(Boltzmann\textquotesingle{}s constant $\ast$ Temperature) \\
+\hline
+{\em L\+\_\+i} & Length of rod\+\_\+i \\
+\hline
+{\em L\+\_\+j} & Length of rod\+\_\+j \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\+: Time-\/derivatives of all time varying quantities in a flattened array 
+\end{DoxyReturn}
+}\mbox{\Hypertarget{namespacefoxlink_1_1_m_e__gen__evolvers_a28ff2f8d3b635833a7be101e7c680418}\label{namespacefoxlink_1_1_m_e__gen__evolvers_a28ff2f8d3b635833a7be101e7c680418}} 
+\index{foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}!me\_evolver\_gen\_orient\_2ord@{me\_evolver\_gen\_orient\_2ord}}
+\index{me\_evolver\_gen\_orient\_2ord@{me\_evolver\_gen\_orient\_2ord}!foxlink.ME\_gen\_evolvers@{foxlink.ME\_gen\_evolvers}}
+\doxysubsubsection{\texorpdfstring{me\_evolver\_gen\_orient\_2ord()}{me\_evolver\_gen\_orient\_2ord()}}
+{\footnotesize\ttfamily def foxlink.\+M\+E\+\_\+gen\+\_\+evolvers.\+me\+\_\+evolver\+\_\+gen\+\_\+orient\+\_\+2ord (\begin{DoxyParamCaption}\item[{}]{sol,  }\item[{}]{gpara\+\_\+i,  }\item[{}]{gperp\+\_\+i,  }\item[{}]{grot\+\_\+i,  }\item[{}]{gpara\+\_\+j,  }\item[{}]{gperp\+\_\+j,  }\item[{}]{grot\+\_\+j,  }\item[{}]{vo,  }\item[{}]{fs,  }\item[{}]{ko,  }\item[{}]{co,  }\item[{}]{ks,  }\item[{}]{ho,  }\item[{}]{beta,  }\item[{}]{L\+\_\+i,  }\item[{}]{L\+\_\+j }\end{DoxyParamCaption})}
 
 
 

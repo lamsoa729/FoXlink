@@ -11,7 +11,7 @@ import numpy as np
 from .ME_helpers import convert_sol_to_geom
 from .ME_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_ang,
                               evolver_zrl_orient, prep_zrl_stat_evolver)
-from .ME_gen_evolvers import me_evolver_gen_2ord
+from .ME_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
 from .rod_motion_solver import get_rod_drag_coeff
 
 
@@ -147,6 +147,8 @@ def choose_ME_evolver(sol, slvr):
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
             print("sol({}):".format(t), sol)
 
+            sol[6:9] /= np.linalg.norm(sol[6:9])
+            sol[9:12] /= np.linalg.norm(sol[9:12])
             return me_evolver_gen_2ord(sol, gpara_i, gperp_i, grot_i,
                                        gpara_j, gperp_j, grot_j,
                                        slvr.vo, slvr.fs, slvr.ko, slvr.co,
@@ -154,6 +156,25 @@ def choose_ME_evolver(sol, slvr):
                                        slvr.L1, slvr.L2)
 
         return me_evolver_gen_2ord_closure
+
+    elif slvr.ODE_type == 'gen_orient_2ord':
+        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+            slvr.visc, slvr.L1, slvr.rod_diam)
+        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+            slvr.visc, slvr.L2, slvr.rod_diam)
+
+        def me_evolver_gen_orient_2ord_closure(t, sol):
+            if not np.all(np.isfinite(sol)):
+                raise RuntimeError(
+                    'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+            print("sol({}):".format(t), sol)
+
+            return me_evolver_gen_orient_2ord(sol, gpara_i, gperp_i, grot_i,
+                                              gpara_j, gperp_j, grot_j,
+                                              slvr.vo, slvr.fs, slvr.ko, slvr.co,
+                                              slvr.ks, slvr.ho, slvr.beta,
+                                              slvr.L1, slvr.L2)
+        return me_evolver_gen_orient_2ord_closure
 
     else:
         raise IOError('{} not a defined ODE equation for foxlink.')

@@ -32,8 +32,8 @@ class FPMotorUWSolver(FPUWSolver):
         @return: TODO
 
         """
-        raise NotImplementedError(("makeVelocityMat has not been defined for {}.",
-                                   " To use the UWMotor subclass, construction",
+        raise NotImplementedError(("makeVelocityMat has not been defined for {}."
+                                   " To use the UWMotor subclass, construction"
                                    "of these matrices is necessary.").format(self.__class__.__name__))
 
     def Step(self):
@@ -49,7 +49,7 @@ class FPMotorUWSolver(FPUWSolver):
         # Take away half the sink term
         sgrid_bar *= (1. - ko * self.dt * .5)
         # Apply upwind solver
-        sgrid_bar = self.stepUW(sgrid_bar)
+        sgrid_bar = self.stepUW(sgrid_bar, self.vel_mat1, self.vel_mat2)
         # Take away the other half of the sink term
         sgrid_bar *= (1. - ko * self.dt * .5)
         # Step 4: Add the other half of the source
@@ -60,7 +60,6 @@ class FPMotorUWSolver(FPUWSolver):
         @return: void
 
         """
-        vo = self._params['vo']
-        if (vo * self.dt) >= self.ds:
+        if (self._params['vo'] * self.dt) >= self.ds:
             raise RuntimeError("CFL condition (v < ds/dt) is not satisfied.",
                                "The parameter dt must be reduced or ds increased.")

@@ -137,6 +137,78 @@ def me_evolver_gen_2ord(sol,
 
     return dsol
 
+
+def me_evolver_gen_orient_2ord(sol,
+                               gpara_i, gperp_i, grot_i, gpara_j, gperp_j, grot_j,
+                               vo, fs, ko, co, ks, ho, beta, L_i, L_j):
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (gen) crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
+
+    @param sol: Current solution of ODE
+    @param gpara_ij: Parallel drag coefficient of rod_i
+    @param gperp_i: Perpendicular drag coefficient of rod_i
+    @param grot_i: Rotational drag coefficient of rod_i
+    @param gpara_ji: Parallel drag coefficient of rod_i
+    @param gperp_j: Perpendicular drag coefficient of rod_i
+    @param grot_j: Rotational drag coefficient of rod_i
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param co: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L_i: Length of rod_i
+    @param L_j: Length of rod_j
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    # Get variables needed to solve ODE
+    (r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+     mu00, mu10, mu01, mu11, mu20, mu02,
+     q00, q10, q01, q11, q20, q02) = prep_me_evolver_gen_2ord(sol, co, ks, ho,
+                                                              beta, L_i, L_j)
+
+    # Get average force of crosslinkers on rod_j
+    f_ij = avg_force_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+                              mu00, mu10, mu01, mu11, mu20, mu02,
+                              ks, ho)
+    # Evolution of rod positions
+    dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
+    dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
+    # Orientations are not updated
+    du_arr = np.zeros(6)
+    # Evolution of zeroth moment
+    dmu00 = dmu00_dt_gen(mu00, ko, q00)
+    # Evoultion of first moments
+    print("q10:", q10)
+    print("q01:", q01)
+    dmu10 = dmu10_dt_gen_2ord(rsqr, a_ij, a_ji, b,
+                              mu00, mu10, mu01, mu11, mu20, mu02,
+                              ko, vo, fs, ks, ho, q=q10)
+    dmu01 = dmu10_dt_gen_2ord(rsqr, a_ji, a_ij, b,  # ij->ji
+                              mu00, mu01, mu10, mu11, mu02, mu20,  # kl->lk
+                              ko, vo, fs, ks, ho, q=q01)
+
+    # Evolution of second moments
+    dmu11 = dmu11_dt_gen_2ord(rsqr, a_ij, a_ji, b,
+                              mu10, mu01, mu11, mu20, mu02,
+                              ko, vo, fs, ks, ho, q=q11)
+    dmu20 = dmu20_dt_gen_2ord(rsqr, a_ij, a_ji, b,
+                              mu10, mu11, mu20,
+                              ko, vo, fs, ks, ho, q=q20)
+    dmu02 = dmu20_dt_gen_2ord(rsqr, a_ji, a_ij, b,  # ij->ji
+                              mu01, mu11, mu02,  # kl->lk
+                              ko, vo, fs, ks, ho, q=q02)
+
+    dsol = np.concatenate(
+        (dr_i, dr_j, du_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
+    # Check to make sure all values are finite
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError(
+            'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
+
+    return dsol
 # TODO: Need to make these functions eventually <11-11-19, ARL> #
 # me_evolver_gen_stat_2ord
 # me_evolver_gen_ang_2ord

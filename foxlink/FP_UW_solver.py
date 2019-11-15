@@ -50,15 +50,22 @@ class FPUWSolver(FokkerPlanckSolver):
             else:
                 print("No end pausing")
                 # End flux term diffuses off the end of the rod
+        elif "boundary_conditions" in self._params:
+            if self._params["boundary_conditions"] == 'zero':
+                diag[0] = 0
+                diag[-1] = 0
+                # Need to set second from end to zero because offset diagnol is
+                # truncated
+                off_set_diag[-2] = 0
 
-        # Create matrix using sparse numpy matrices
+                # Create matrix using sparse numpy matrices
         diag_arr = np.stack((diag, off_set_diag))
         off_sets = [0, -1]
         self.diagGradUW = (1. / self.ds) * sparse.dia_matrix((diag_arr, off_sets),
                                                              shape=(self.ns1, self.ns2)).tocsc()
         self.diagGradUWT = self.diagGradUW.T
 
-    def stepUW(self, sgrid_bar):
+    def stepUW(self, sgrid_bar, vel_mat1, vel_mat2):
         """!Step crosslink density forward in time using upwind method.
 
         @param sgrid_bar: Current solution to differential equations before
@@ -67,9 +74,10 @@ class FPUWSolver(FokkerPlanckSolver):
 
         """
         #  TODO: TEST using pytest <26-06-19, ARL> #
-        # Explicit step along s1 and s2 direction with corresponding velocities
+        # Explicit step along s1 and s2 direction with corresponding
+        # velocities
         return -1. * self.dt * (
             sparse.csc_matrix.dot(self.diagGradUW,
-                                  np.multiply(self.vel_mat1, sgrid_bar)) +
-            sparse.csc_matrix.dot(np.multiply(self.vel_mat2, sgrid_bar),
+                                  np.multiply(vel_mat1, sgrid_bar)) +
+            sparse.csc_matrix.dot(np.multiply(vel_mat2, sgrid_bar),
                                   self.diagGradUWT)) + sgrid_bar

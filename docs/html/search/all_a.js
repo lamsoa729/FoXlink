@@ -9,7 +9,8 @@ var searchData=
   ['makexldataset_94',['makeXLDataSet',['../classfoxlink_1_1_f_p__solver_1_1_fokker_planck_solver.html#a7dc38123c41e34394659c961fd5e8171',1,'foxlink::FP_solver::FokkerPlanckSolver']]],
   ['makexlmomentdataset_95',['makeXLMomentDataSet',['../classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html#a44d56c43ef5e3e694ab4c33ed192e06d',1,'foxlink::ME_solver::MomentExpansionSolver']]],
   ['me_5fevolver_5fgen_5f2ord_96',['me_evolver_gen_2ord',['../namespacefoxlink_1_1_m_e__gen__evolvers.html#a25a8fb642c211ab1a0dce54757c5cad4',1,'foxlink::ME_gen_evolvers']]],
-  ['meanalysis_97',['MEAnalysis',['../classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis.html',1,'foxlink::ME_analysis']]],
-  ['momentexpansionsolver_98',['MomentExpansionSolver',['../classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html',1,'foxlink::ME_solver']]],
-  ['moveopticaltrap_99',['moveOpticalTrap',['../classfoxlink_1_1optical__trap__types_1_1_optical_trap_type.html#a9cb90b7651ebfcd5cc4150befb7319ef',1,'foxlink.optical_trap_types.OpticalTrapType.moveOpticalTrap()'],['../classfoxlink_1_1optical__trap__types_1_1_optical_trap_oscillator.html#a67d1bc376efc5ade5e082c36339f5c7c',1,'foxlink.optical_trap_types.OpticalTrapOscillator.moveOpticalTrap()']]]
+  ['me_5fevolver_5fgen_5forient_5f2ord_97',['me_evolver_gen_orient_2ord',['../namespacefoxlink_1_1_m_e__gen__evolvers.html#a28ff2f8d3b635833a7be101e7c680418',1,'foxlink::ME_gen_evolvers']]],
+  ['meanalysis_98',['MEAnalysis',['../classfoxlink_1_1_m_e__analysis_1_1_m_e_analysis.html',1,'foxlink::ME_analysis']]],
+  ['momentexpansionsolver_99',['MomentExpansionSolver',['../classfoxlink_1_1_m_e__solver_1_1_moment_expansion_solver.html',1,'foxlink::ME_solver']]],
+  ['moveopticaltrap_100',['moveOpticalTrap',['../classfoxlink_1_1optical__trap__types_1_1_optical_trap_type.html#a9cb90b7651ebfcd5cc4150befb7319ef',1,'foxlink.optical_trap_types.OpticalTrapType.moveOpticalTrap()'],['../classfoxlink_1_1optical__trap__types_1_1_optical_trap_oscillator.html#a67d1bc376efc5ade5e082c36339f5c7c',1,'foxlink.optical_trap_types.OpticalTrapOscillator.moveOpticalTrap()']]]
 ];
