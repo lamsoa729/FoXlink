@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-from .FP_solver import FokkerPlanckSolver
-
 """@package docstring
 File: FP_CN_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Abstract xlink algorithm class implementing Crank-Nicolson solving algorithm.
 """
+from .FP_solver import FokkerPlanckSolver
 
 
 class FPCNSolver(FokkerPlanckSolver):

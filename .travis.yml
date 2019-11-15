@@ -37,6 +37,7 @@ install:
 ## Command to run tests, e.g. python setup.py test
 #script: tox
 script: 
+  - find . \( -name '__pycache__' -or -name '*.pyc' \) -delete
   - pytest --cov --cov-report=xml
 
 notifications:
