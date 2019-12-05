@@ -14,10 +14,10 @@ from .ME_zrl_ODEs import (du1_dt_zrl, du2_dt_zrl,
                           drho_dt_zrl, dP1_dt_zrl, dP2_dt_zrl,
                           dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
 from .ME_zrl_helpers import (avg_force_zrl, boltz_fact_zrl,
-                             weighted_boltz_fact_zrl)
+                             weighted_boltz_fact_zrl, fast_zrl_src_full_kl)
 
 
-def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
+def prep_zrl_stat_evolver(sol, ks, beta, L_i, L_j):
     """!TODO: Docstring for prep_zrl_stat_evolver.
 
     @param arg1: TODO
@@ -27,36 +27,44 @@ def prep_zrl_stat_evolver(sol, ks, beta, L1, L2):
     r1, r2, u1, u2 = convert_sol_to_geom(sol)
     r12 = r2 - r1
     rsqr = np.dot(r12, r12)
-    a1 = np.dot(r12, u1)
+    a_ij = np.dot(r12, u1)
     a2 = np.dot(r12, u2)
     b = np.dot(u1, u2)
 
-    q, e = dblquad(boltz_fact_zrl, -.5 * L1, .5 * L1,
-                   lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                   args=[rsqr, a1, a2, b, ks, beta])
-    q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[1, 0, rsqr, a1, a2, b, ks, beta],)
-    q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[0, 1, rsqr, a1, a2, b, ks, beta])
-    q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[1, 1, rsqr, a1, a2, b, ks, beta])
-    q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[2, 0, rsqr, a1, a2, b, ks, beta])
-    q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L1, .5 * L1,
-                     lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                     args=[0, 2, rsqr, a1, a2, b, ks, beta])
-    return rsqr, a1, a2, b, q, q10, q01, q11, q20, q02
+    q00 = fast_zrl_src_full_kl(L_i, L_j, rsqr, a_ij, a2, b, ks, beta, k=0, l=0)
+    # q00, e = dblquad(boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    #                  lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    #                  args=[rsqr, a1, a2, b, ks, beta])
+    q10 = fast_zrl_src_full_kl(
+        L_j, L_i, rsqr, -1. * a2, -1. * a_ij, b, ks, beta, k=0, l=1)
+    # q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[1, 0, rsqr, a1, a2, b, ks, beta],)
+    q01 = fast_zrl_src_full_kl(L_i, L_j, rsqr, a_ij, a2, b, ks, beta, k=0, l=1)
+    # q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[0, 1, rsqr, a1, a2, b, ks, beta])
+    q11 = fast_zrl_src_full_kl(L_i, L_j, rsqr, a_ij, a2, b, ks, beta, k=1, l=1)
+    # q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[1, 1, rsqr, a1, a2, b, ks, beta])
+    q20 = fast_zrl_src_full_kl(
+        L_j, L_i, rsqr, -1. * a2, -1. * a_ij, b, ks, beta, k=0, l=2)
+    # q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[2, 0, rsqr, a1, a2, b, ks, beta])
+    q02 = fast_zrl_src_full_kl(L_i, L_j, rsqr, a_ij, a2, b, ks, beta, k=0, l=2)
+    # q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[0, 2, rsqr, a1, a2, b, ks, beta])
+    return rsqr, a_ij, a2, b, q00, q10, q01, q11, q20, q02
 
 
 def evolver_zrl(r1, r2, u1, u2,  # Vectors
                 rho, P1, P2, mu11, mu20, mu02,  # Moments
                 gpara1, gperp1, grot1,  # Friction coefficients
                 gpara2, gperp2, grot2,
-                vo, fs, ko, c, ks, beta, L1, L2, fast='fast'):  # Other constants
+                vo, fs, ko, c, ks, beta, L_i, L_j, fast='fast'):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -83,8 +91,8 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     @param c: Effective concentration of motors in solution
     @param ks: Motor spring constant
     @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L1: Length of rod1
-    @param L2: Length of rod2
+    @param L_i: Length of rod1
+    @param L_j: Length of rod2
     @param fast: Flag on whether or not to use fast solving techniques
     @return: Time-derivatives of all time varying quantities in a flattened
              array
@@ -105,21 +113,21 @@ def evolver_zrl(r1, r2, u1, u2,  # Vectors
     du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
     drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
-                       vo, fs, ko, c, ks, beta, L1, L2, fast)
+                       vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     # Evoultion of first moments
     dP1 = dP1_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, fast)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dP2 = dP2_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, fast)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dsol = np.concatenate(
         (dr1, dr2, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
@@ -134,7 +142,7 @@ def evolver_zrl_ang(u1, u2,  # Vectors
                     rho, P1, P2, mu11, mu20, mu02,  # Moments
                     gpara1, gperp1, grot1,  # Friction coefficients
                     gpara2, gperp2, grot2,
-                    r12, vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
+                    r12, vo, fs, ko, c, ks, beta, L_i, L_j,  # Other constants
                     fast='fast'):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
@@ -160,8 +168,8 @@ def evolver_zrl_ang(u1, u2,  # Vectors
     @param c: Effective concentration of motors in solution
     @param ks: Motor spring constant
     @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L1: Length of rod1
-    @param L2: Length of rod2
+    @param L_i: Length of rod1
+    @param L_j: Length of rod2
     @param fast: Flag on whether or not to use fast solving techniques
     @return: Time-derivatives of all time varying quantities in a flattened
              array
@@ -182,21 +190,21 @@ def evolver_zrl_ang(u1, u2,  # Vectors
     du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
     drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
-                       vo, fs, ko, c, ks, beta, L1, L2, fast)
+                       vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     # Evoultion of first moments
     dP1 = dP1_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, fast)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dP2 = dP2_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, fast)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dsol = np.concatenate(
         (rod_change_arr, du1, du2, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
@@ -211,7 +219,7 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
                        rho, P1, P2, mu11, mu20, mu02,  # Moments
                        gpara1, gperp1, grot1,  # Friction coefficients
                        gpara2, gperp2, grot2,
-                       vo, fs, ko, c, ks, beta, L1, L2,  # Other constants
+                       vo, fs, ko, c, ks, beta, L_i, L_j,  # Other constants
                        fast='fast'):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
@@ -237,8 +245,8 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
     @param c: Effective concentration of motors in solution
     @param ks: Motor spring constant
     @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L1: Length of rod1
-    @param L2: Length of rod2
+    @param L_i: Length of rod1
+    @param L_j: Length of rod2
     @param fast: Flag on whether or not to use fast solving techniques
     @return: Time-derivatives of all time varying quantities in a flattened
              array
@@ -258,21 +266,21 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
     # du2 = du2_dt_zrl(r12, u1, u2, P2, mu11, a2, b, ks, grot2)
     # Evolution of zeroth moment
     drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
-                       vo, fs, ko, c, ks, beta, L1, L2, fast)
+                       vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     # Evoultion of first moments
     dP1 = dP1_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, fast)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dP2 = dP2_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, fast)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, fast)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
     dsol = np.concatenate(
         (dr1, dr2, orient_change_arr, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
@@ -285,7 +293,7 @@ def evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
 
 def evolver_zrl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
                      rsqr, a1, a2, b, q, q10, q01, q11, q20, q02,  # Pre-computed values
-                     vo, fs, ko, c, ks, beta, L1, L2):  # Other constants
+                     vo, fs, ko, c, ks, beta, L_i, L_j):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -306,8 +314,8 @@ def evolver_zrl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
     @param c: Effective concentration of motors in solution
     @param ks: Motor spring constant
     @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L1: Length of rod1
-    @param L2: Length of rod2
+    @param L_i: Length of rod1
+    @param L_j: Length of rod2
     @return: Time-derivatives of all time varying quantities in a flattened
              array
     """
@@ -317,21 +325,21 @@ def evolver_zrl_stat(rho, P1, P2, mu11, mu20, mu02,  # Moments
     # F12 = avg_force_zrl(r12, u1, u2, rho, P1, P2, ks)
     # Evolution of zeroth moment
     drho = drho_dt_zrl(rho, rsqr, a1, a2, b,
-                       vo, fs, ko, c, ks, beta, L1, L2, q)
+                       vo, fs, ko, c, ks, beta, L_i, L_j, q)
     # Evoultion of first moments
     dP1 = dP1_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, q10)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, q10)
     dP2 = dP2_dt_zrl(rho, P1, P2,
                      rsqr, a1, a2, b,
-                     vo, fs, ko, c, ks, beta, L1, L2, q01)
+                     vo, fs, ko, c, ks, beta, L_i, L_j, q01)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q11)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, q11)
     dmu20 = dmu20_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q20)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, q20)
     dmu02 = dmu02_dt_zrl(rho, P1, P2, mu11, mu20, mu02, rsqr,
-                         a1, a2, b, vo, fs, ko, c, ks, beta, L1, L2, q02)
+                         a1, a2, b, vo, fs, ko, c, ks, beta, L_i, L_j, q02)
     dsol = np.concatenate(
         (rod_change_arr, [drho, dP1, dP2, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite

@@ -15,7 +15,7 @@ rod_diameter: 25 # nm
 # Integration parameters
 dt: .001 # Crosslinker turnover rate (sec^-1)
 #nsteps: 1000 # Total number of steps, used if dt is not defined
-nt: 5  # total time (sec)
+nt: 50  # total time (sec)
 ds: 2.0 # Segmentation size of microtubules (nm
 # Boundary conditions
 
@@ -33,7 +33,8 @@ fs: 1. # Stall force of crosslinker heads (pN)
 
 # Misc
 #nwrite: 1000
-twrite: .05
+#twrite: .05
+twrite: 100
 initial_condition: 'empty'
 end_pause: False
 solver_type: "MomentExpansionSolver"

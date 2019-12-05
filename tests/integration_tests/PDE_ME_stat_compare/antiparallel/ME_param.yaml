@@ -3,8 +3,8 @@ beta: .243309002 # Inverse temperature
 viscosity: 0.00089 # Using nucleoplasm pN/nm^2
 
 # Microtubule parameters
-L1: 500. # Length of microtubule 1
-L2: 500. # Length of microtubule 2
+L1: 1000. # Length of microtubule 1
+L2: 1000. # Length of microtubule 2
 R1_pos: [0., 0., 0.]
 R2_pos: [0., 0., 0.]
 R1_vec: [0., 1., 0.]
