@@ -27,10 +27,10 @@ def choose_ME_evolver(sol, slvr):
 
     if slvr.ODE_type == 'zrl':
         # Get drag coefficients
-        gpara1, gperp1, grot1 = get_rod_drag_coeff(
-            slvr.visc, slvr.L1, slvr.rod_diam)
-        gpara2, gperp2, grot2 = get_rod_drag_coeff(
-            slvr.visc, slvr.L2, slvr.rod_diam)
+        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+            slvr.visc, slvr.L_i, slvr.rod_diam)
+        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+            slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -45,22 +45,22 @@ def choose_ME_evolver(sol, slvr):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
-            r1, r2, u1, u2 = convert_sol_to_geom(sol)
+            r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
             # sol_print_out(sol)
-            return evolver_zrl(r1, r2, u1, u2,  # Vectors
+            return evolver_zrl(r_i, r_j, u_i, u_j,  # Vectors
                                sol[12], sol[13], sol[14],  # Moments
                                sol[15], sol[16], sol[17],
-                               gpara1, gperp1, grot1,  # Friction coefficients
-                               gpara2, gperp2, grot2,
+                               gpara_i, gperp_i, grot_i,  # Friction coefficients
+                               gpara_j, gperp_j, grot_j,
                                slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                               slvr.ks, slvr.beta, slvr.L1, slvr.L2,
+                               slvr.ks, slvr.beta, slvr.L_i, slvr.L_j,
                                fast='fast')
         return evolver_zrl_closure
 
     elif slvr.ODE_type == 'zrl_stat':
         # Compute geometric terms that will not change
-        rsqr, a1, a2, b, q00, q10, q01, q11, q20, q02 = prep_zrl_stat_evolver(
-            sol, slvr.ks, slvr.beta, slvr.L1, slvr.L2)
+        rsqr, a_ij, a2, b, q00, q10, q01, q11, q20, q02 = prep_zrl_stat_evolver(
+            sol, slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
 
         def evolver_zrl_stat_closure(t, sol):
             """!Define the function of an ODE solver with zero rest length
@@ -74,17 +74,17 @@ def choose_ME_evolver(sol, slvr):
             # sol_print_out(sol)
             return evolver_zrl_stat(sol[12], sol[13], sol[14],  # Moments
                                     sol[15], sol[16], sol[17],
-                                    rsqr, a1, a2, b, q00, q10, q01, q11, q20, q02,
+                                    rsqr, a_ij, a2, b, q00, q10, q01, q11, q20, q02,
                                     slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                    slvr.ks, slvr.beta, slvr.L1, slvr.L2)  # Other parameters
+                                    slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)  # Other parameters
         return evolver_zrl_stat_closure
 
     elif slvr.ODE_type == 'zrl_ang':
-        gpara1, gperp1, grot1 = get_rod_drag_coeff(
-            slvr.visc, slvr.L1, slvr.rod_diam)
-        gpara2, gperp2, grot2 = get_rod_drag_coeff(
-            slvr.visc, slvr.L2, slvr.rod_diam)
-        r1, r2, u1, u2 = convert_sol_to_geom(sol)
+        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+            slvr.visc, slvr.L_i, slvr.rod_diam)
+        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+            slvr.visc, slvr.L_j, slvr.rod_diam)
+        # r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
 
         def evolver_zrl_ang_closure(t, sol):
             """!Define the function of an ODE solver with zero rest length
@@ -95,24 +95,24 @@ def choose_ME_evolver(sol, slvr):
             @return: Function to ODE zrl stat
 
             """
-            r1, r2, u1, u2 = convert_sol_to_geom(sol)
-            r12 = r2 - r1
-            return evolver_zrl_ang(u1, u2,  # Vectors
+            r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+            r_ij = r_j - r_i
+            return evolver_zrl_ang(u_i, u_j,  # Vectors
                                    sol[12], sol[13], sol[14],  # Moments
                                    sol[15], sol[16], sol[17],
-                                   gpara1, gperp1, grot1,  # Friction coefficients
-                                   gpara2, gperp2, grot2,
-                                   r12, slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                   slvr.ks, slvr.beta, slvr.L1, slvr.L2, fast='fast')
+                                   gpara_i, gperp_i, grot_i,  # Friction coefficients
+                                   gpara_j, gperp_j, grot_j,
+                                   r_ij, slvr.vo, slvr.fs, slvr.ko, slvr.co,
+                                   slvr.ks, slvr.beta, slvr.L_i, slvr.L_j, fast='fast')
         return evolver_zrl_ang_closure
 
     elif slvr.ODE_type == 'zrl_orient':
-        gpara1, gperp1, grot1 = get_rod_drag_coeff(
-            slvr.visc, slvr.L1, slvr.rod_diam)
-        gpara2, gperp2, grot2 = get_rod_drag_coeff(
-            slvr.visc, slvr.L2, slvr.rod_diam)
-        r1, r2, u1, u2 = convert_sol_to_geom(sol)
-        r12 = r1 - r2
+        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+            slvr.visc, slvr.L_i, slvr.rod_diam)
+        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+            slvr.visc, slvr.L_j, slvr.rod_diam)
+        r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+        r_ij = r_i - r_j
 
         def evolver_zrl_orient_closure(t, sol):
             """!Define the function of an ODE solver with zero rest length
@@ -123,23 +123,23 @@ def choose_ME_evolver(sol, slvr):
             @return: Function to ODE zrl stat
 
             """
-            r1, r2, u1, u2 = convert_sol_to_geom(sol)
-            return evolver_zrl_orient(r1, r2, u1, u2,  # Vectors
+            r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+            return evolver_zrl_orient(r_i, r_j, u_i, u_j,  # Vectors
                                       # Moments
                                       sol[12], sol[13], sol[14],
                                       sol[15], sol[16], sol[17],
-                                      gpara1, gperp1, grot1,  # Friction coefficients
-                                      gpara2, gperp2, grot2,
+                                      gpara_i, gperp_i, grot_i,  # Friction coefficients
+                                      gpara_j, gperp_j, grot_j,
                                       slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                      slvr.ks, slvr.beta, slvr.L1, slvr.L2,
+                                      slvr.ks, slvr.beta, slvr.L_i, slvr.L_j,
                                       fast='fast')
         return evolver_zrl_orient_closure
 
     elif slvr.ODE_type == 'gen_2ord':
         gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L1, slvr.rod_diam)
+            slvr.visc, slvr.L_i, slvr.rod_diam)
         gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L2, slvr.rod_diam)
+            slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def me_evolver_gen_2ord_closure(t, sol):
             if not np.all(np.isfinite(sol)):
@@ -153,15 +153,15 @@ def choose_ME_evolver(sol, slvr):
                                        gpara_j, gperp_j, grot_j,
                                        slvr.vo, slvr.fs, slvr.ko, slvr.co,
                                        slvr.ks, slvr.ho, slvr.beta,
-                                       slvr.L1, slvr.L2)
+                                       slvr.L_i, slvr.L_j)
 
         return me_evolver_gen_2ord_closure
 
     elif slvr.ODE_type == 'gen_orient_2ord':
         gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L1, slvr.rod_diam)
+            slvr.visc, slvr.L_i, slvr.rod_diam)
         gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L2, slvr.rod_diam)
+            slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def me_evolver_gen_orient_2ord_closure(t, sol):
             if not np.all(np.isfinite(sol)):
@@ -173,7 +173,7 @@ def choose_ME_evolver(sol, slvr):
                                               gpara_j, gperp_j, grot_j,
                                               slvr.vo, slvr.fs, slvr.ko, slvr.co,
                                               slvr.ks, slvr.ho, slvr.beta,
-                                              slvr.L1, slvr.L2)
+                                              slvr.L_i, slvr.L_j)
         return me_evolver_gen_orient_2ord_closure
 
     else:
