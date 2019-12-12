@@ -141,8 +141,9 @@ def evolver_zrl(sol,
 
 
 def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
-                     a_ij, a_ji, b, q00, q10, q01, q11, q20, q02,  # Pre-computed values
-                     vo, fs, ko, ks, ):  # Other constants
+                     a_ij, a_ji, b,
+                     q00, q10, q01, q11, q20, q02,  # Pre-computed values
+                     vo, fs, ko, ks):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -160,19 +161,12 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
     @param vo: Velocity of motor when no force is applied
     @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
-    @param c: Effective concentration of motors in solution
     @param ks: Motor spring constant
-    @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L_i: Length of rod1
-    @param L_j: Length of rod2
     @return: Time-derivatives of all time varying quantities in a flattened
              array
     """
     # Define useful parameters for functions
     rod_change_arr = np.zeros(12)
-    # Get average force of crosslinkers on rod2
-    # f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
-    # Evolution of zeroth moment
     # Characteristic walking rate
     kappa = vo * ks / fs
     # Evolution of zeroth moment

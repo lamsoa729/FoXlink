@@ -28,7 +28,7 @@ def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_j):
     @param a_ij: dot product of r_ij and u_i
     @param b: dot product of u_i and u_j
     @param ks: motor spring constant
-    @param grot1: Rotational drag coefficient of rod1
+    @param grot_j: Rotational drag coefficient of rod1
     @return: Time-derivative of rod1's orientation vector
     """
     return (ks / grot_j) * ((r_ij - (a_ij * u_i))
@@ -46,18 +46,8 @@ def dmu00_dt_zrl(mu00, ko, q00=0):
     length crosslinkers bound to rods.
 
     @param mu00: Zeroth motor moment
-    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
-    @param a_ij: Dot product of u_i and r_ij
-    @param a_ji: Dot product of u_j and r_ij
-    @param b: Dot product of u_i and u_j
-    @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
-    @param ks: Motor spring constant
-    @param c: Effective concentration of motors in solution
-    @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L_i: Length of rod1
-    @param L_j: Length of rod2
-    @param q: Binding source term (i.e. partition function)
+    @param q00: Binding source term (i.e. partition function)
     @return: Time derivative of the zeroth moment of motors
 
     """
@@ -73,6 +63,7 @@ def dmu00_dt_zrl(mu00, ko, q00=0):
     return ko * (q00 - mu00)
 
 
+@njit
 def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0):
     """!Calculate the time-derivative of the first moment(s1) of the zero rest
     length crosslinkers bound to rods.
@@ -82,10 +73,8 @@ def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0):
     @param mu01: First motor moment of s2
     @param a_ij: Dot product of u_i and r_ij
     @param b: Dot product of u_i and u_j
-    @param vo: Velocity of motor when no force is applied
-    @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
-    @param ks: Motor spring constant
+    @param vo: Velocity of motor when no force is applied
     @param q10: Binding source term of first moment
     @return: Time derivative of the first(s1) moment of motors
 
@@ -105,6 +94,7 @@ def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0):
             + (kappa * b * mu01))
 
 
+@njit
 def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
                  ko, vo, kappa, q11=0):
     """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
@@ -142,28 +132,19 @@ def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
             - ((ko + 2. * kappa) * mu11) + (kappa * b * (mu20 + mu02)))
 
 
+@njit
 def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20='fast'):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
-    @param mu00: Zeroth motor moment
     @param mu10: First motor moment of s1
-    @param mu01: First motor moment of s2
     @param mu11: Second motor moment of s1 and s2
     @param mu20: Second motor moment of s1
-    @param mu02: Second motor moment of s2
-    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM (r_ij)
     @param a_ij: Dot product of u_i and r_ij
-    @param a_ji: Dot product of u_j and r_ij
     @param b: Dot product of u_i and u_j
-    @param vo: Velocity of motor when no force is applied
-    @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
-    @param c: Effective concentration of motors in solution
-    @param ks: Motor spring constant
-    @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L_i: Length of rod1
-    @param L_j: Length of rod2
+    @param vo: Velocity of motor when no force is applied
+    @param kappa: Characteristic walking rate
     @return: Time derivative of the second(s1^2) moment of motors
 
     """
