@@ -4,7 +4,7 @@
 File: choose_ME_evolver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description:
+Description: Function that creates closures of ODE system evolvers
 """
 
 import numpy as np
@@ -45,21 +45,16 @@ def choose_ME_evolver(sol, slvr):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
-            r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
-            # sol_print_out(sol)
-            return evolver_zrl(r_i, r_j, u_i, u_j,  # Vectors
-                               sol[12], sol[13], sol[14],  # Moments
-                               sol[15], sol[16], sol[17],
+            return evolver_zrl(sol,
                                gpara_i, gperp_i, grot_i,  # Friction coefficients
                                gpara_j, gperp_j, grot_j,
                                slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                               slvr.ks, slvr.beta, slvr.L_i, slvr.L_j,
-                               fast='fast')
+                               slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
         return evolver_zrl_closure
 
     elif slvr.ODE_type == 'zrl_stat':
         # Compute geometric terms that will not change
-        rsqr, a_ij, a2, b, q00, q10, q01, q11, q20, q02 = prep_zrl_stat_evolver(
+        rsqr, a_ij, a_ji, b, q00, q10, q01, q11, q20, q02 = prep_zrl_stat_evolver(
             sol, slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
 
         def evolver_zrl_stat_closure(t, sol):
@@ -74,7 +69,7 @@ def choose_ME_evolver(sol, slvr):
             # sol_print_out(sol)
             return evolver_zrl_stat(sol[12], sol[13], sol[14],  # Moments
                                     sol[15], sol[16], sol[17],
-                                    rsqr, a_ij, a2, b, q00, q10, q01, q11, q20, q02,
+                                    rsqr, a_ij, a_ji, b, q00, q10, q01, q11, q20, q02,
                                     slvr.vo, slvr.fs, slvr.ko, slvr.co,
                                     slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)  # Other parameters
         return evolver_zrl_stat_closure

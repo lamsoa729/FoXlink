@@ -193,8 +193,8 @@ def fast_zrl_src_integrand_k2(s1, L2, a1, a2, b, sigma, log_pre_fact=0., k=0):
     return pre_fact * (I_p - I_m)
 
 
-def fast_zrl_src_full_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0):
-    """!TODO: Docstring for fast_zrl_src_full_kl
+def fast_zrl_src_kl(L1, L2, rsqr, a1, a2, b, ks, beta, k=0, l=0):
+    """!TODO: Docstring for fast_zrl_src_kl
 
     @param s1: TODO
     @param L2: TODO
