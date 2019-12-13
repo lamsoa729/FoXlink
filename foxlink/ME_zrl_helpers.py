@@ -123,12 +123,12 @@ def fast_zrl_src_integrand_l0(
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
 
     @param s_i: TODO
-    @param L2: TODO
-    @param a1: TODO
-    @param a2: TODO
+    @param L_j: TODO
+    @param rsqr: TODO
+    @param a_ij: TODO
+    @param a_ji: TODO
     @param b: TODO
     @param sigma: TODO
-    @param pre_fact: TODO
     @param k: TODO
     @return: TODO
 
@@ -150,12 +150,12 @@ def fast_zrl_src_integrand_l1(
     """!TODO: Docstring for fast_zrl_src_integrand_k1.
 
     @param s_i: TODO
-    @param L2: TODO
-    @param a1: TODO
-    @param a2: TODO
+    @param L_j: TODO
+    @param rsqr: TODO
+    @param a_ij: TODO
+    @param a_ji: TODO
     @param b: TODO
     @param sigma: TODO
-    @param pre_fact: TODO
     @param k: TODO
     @return: TODO
 
@@ -175,9 +175,10 @@ def fast_zrl_src_integrand_l2(
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
 
     @param s_i: TODO
-    @param L2: TODO
-    @param a1: TODO
-    @param a2: TODO
+    @param L_j: TODO
+    @param rsqr: TODO
+    @param a_ij: TODO
+    @param a_ji: TODO
     @param b: TODO
     @param sigma: TODO
     @param k: TODO
