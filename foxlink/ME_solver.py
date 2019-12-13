@@ -180,9 +180,14 @@ class MomentExpansionSolver(Solver):
         @return: non dimensionalizer
 
         """
-        non_dim_dict = {'time': 1. / self._params['ko'],
-                        'length': max(self._params['L1'], self._params['L2']),
-                        'energy': 1. / self._params['beta']}
+        # non_dim_dict = {'time': 1. / self._params['ko'],
+        #                 # 'length': max(self._params['L1'], self._params['L2']),
+        #                 'length': self._params['fs'] / self._params['ks'],
+        #                 'energy': 1. / self._params['beta']}
+        non_dim_dict = {'time': 1.,
+                        # 'length': max(self._params['L1'], self._params['L2']),
+                        'length': 1.,
+                        'energy': 1.}
         non_dimmer = NonDimensionalizer(**non_dim_dict)
         # non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
 
@@ -191,8 +196,8 @@ class MomentExpansionSolver(Solver):
         self.visc = non_dimmer.non_dim_val(self._params['viscosity'],
                                            ['energy', 'time', 'length'],
                                            [1, 1, -3])
-        self.L1 = non_dimmer.non_dim_val(self._params['L1'], ['length'])
-        self.L2 = non_dimmer.non_dim_val(self._params['L2'], ['length'])
+        self.L_i = non_dimmer.non_dim_val(self._params['L1'], ['length'])
+        self.L_j = non_dimmer.non_dim_val(self._params['L2'], ['length'])
         self.R1_pos = non_dimmer.non_dim_val(
             self._params['R1_pos'], ['length'])
         self.R2_pos = non_dimmer.non_dim_val(

@@ -10,11 +10,9 @@ Description:
 import numpy as np
 # from scipy.integrate import dblquad
 from .ME_helpers import dr_dt, convert_sol_to_geom
-from .ME_zrl_ODEs import (dui_dt_zrl,
-                          dmu00_dt_zrl, dmu10_dt_zrl, dmu01_dt_zrl,
-                          dmu11_dt_zrl, dmu20_dt_zrl, dmu02_dt_zrl)
-from .ME_zrl_helpers import (avg_force_zrl, boltz_fact_zrl,
-                             weighted_boltz_fact_zrl, fast_zrl_src_kl)
+from .ME_zrl_ODEs import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
+                          dmu11_dt_zrl, dmu20_dt_zrl)
+from .ME_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl)
 
 
 def get_zrl_moments(sol):
@@ -186,9 +184,7 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
-
     return dsol
-
 
 # def evolver_zrl_ang(sol, mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
 #                     grot_i, grot_j,  # Friction coefficients

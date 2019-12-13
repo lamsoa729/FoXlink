@@ -14,7 +14,7 @@ from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
 
 
 @njit
-def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_j):
+def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i):
     """!Calculate the time-derivative of rod1's orientation vector with respect
     to the current state of the crosslinked rod system when crosslinkers have
     zero rest length.
@@ -31,7 +31,7 @@ def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_j):
     @param grot_j: Rotational drag coefficient of rod1
     @return: Time-derivative of rod1's orientation vector
     """
-    return (ks / grot_j) * ((r_ij - (a_ij * u_i))
+    return (ks / grot_i) * ((r_ij - (a_ij * u_i))
                             * mu10 + (u_j - (b * u_i)) * mu11)
 
 
@@ -128,7 +128,7 @@ def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
     #     q11 = fast_zrl_src_full_kl(
     #         L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
     # Characteristic walking rate
-    return ((ko * q11) + ((vo - kappa * a_ji) * mu10) + ((vo + kappa * a_ij) * mu01)
+    return ((ko * q11) + ((vo + kappa * a_ji) * mu10) + ((vo + kappa * a_ij) * mu01)
             - ((ko + 2. * kappa) * mu11) + (kappa * b * (mu20 + mu02)))
 
 
