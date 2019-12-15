@@ -20,7 +20,7 @@ import pytest
     (100, 100, 0., 0., 0., 1., 10., 1.),
     (100, 100, 0., 0., 0., 0., 1., 1.),
 ])
-def test_fast_zrl_src_kl_against_dbquad(
+def test_fast_zrl_src_kl_against_dblquad(
         L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta):
     for k in range(0, 2):
         for l in range(0, 2):
