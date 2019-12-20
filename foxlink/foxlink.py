@@ -60,7 +60,7 @@ def parse_args():
     parser.add_argument("-g", "--graph", action="store_true", default=False,
                         help="Graph data after simulation has run and been analyzed. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-m", "--movie", type=str, default='',
-                        help=("Make movie of systems of evolution. Options: 'all' or 'min'.\n"
+                        help=("Make movie of systems of evolution. Options:\n"
                               "\tall = Make movie with all the data \n"
                               "\tmin = Make movie with just diagram of rods and crosslink data.\n"
                               "\torient = Make movie that describes orientation of rods.\n"
