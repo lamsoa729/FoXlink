@@ -304,6 +304,16 @@ class FokkerPlanckSolver(Solver):
         self.torque2 = 0
         self.cleared = True
 
+    def apply_dirichlet_bc(self, bc_val=0.):
+        """! Apply a constant boundary condition to solution grid
+        @return: TODO
+
+        """
+        self.sgrid[:, 0] *= bc_val
+        self.sgrid[:, -1] *= bc_val
+        self.sgrid[0, :] *= bc_val
+        self.sgrid[-1, :] *= bc_val
+
     def Write(self):
         """!Write current step in algorithm into data frame
         @return: index of current step

@@ -79,6 +79,7 @@ class MomentExpansionSolver(Solver):
         else:
             self.method = 'LSODA'
             self._params['method'] = self.method
+        print(self.method)
 
         # Specify the ODE type
         if 'ODE_type' in self._params:

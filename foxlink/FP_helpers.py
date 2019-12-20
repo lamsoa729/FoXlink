@@ -13,8 +13,8 @@ Description: Helper functions for FP solver.
 """
 
 
-@jit
-def vhead(vo, fpar, fstall):
+@njit
+def vhead_smooth(vo, fpar, fstall):
     """!Calculate the velocity of a motor head with a smooth
     force-velocity relation
 
@@ -25,6 +25,22 @@ def vhead(vo, fpar, fstall):
 
     """
     return vo / (1. + np.exp(-2. * (1. + (2. * fpar / fstall))))
+
+
+def vhead(vo, fpar, fstall):
+    """!Calculate the velocity of a motor head with a linear force-velocity
+    relation.
+
+    @param vo: Unladen velocity of motor head
+    @param fpar: Force on motor head parallel to rod head is attached
+    @param fstall: Stall force of motor head
+    @return: velocity of motor head
+
+    """
+    # Clip sets bounds between 0, 1 necessary for linear force-velocity
+    # relation
+
+    return vo * np.clip(1. + (fpar / fstall), 0., 1.)
 
 
 def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):

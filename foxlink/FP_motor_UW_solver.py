@@ -48,12 +48,18 @@ class FPMotorUWSolver(FPUWSolver):
         sgrid_bar = .5 * self.dt * self.src_mat + self.sgrid
         # Take away half the sink term
         sgrid_bar *= (1. - ko * self.dt * .5)
+        # Apply boundary conditions before using differential matrix
+        if self._params["boundary_conditions"] == 'zero':
+            self.apply_dirichlet_bc()
         # Apply upwind solver
         sgrid_bar = self.stepUW(sgrid_bar, self.vel_mat1, self.vel_mat2)
         # Take away the other half of the sink term
         sgrid_bar *= (1. - ko * self.dt * .5)
-        # Step 4: Add the other half of the source
+        # Add the other half of the source
         self.sgrid = .5 * self.dt * self.src_mat + sgrid_bar
+        # Apply boundary conditions once again
+        if self._params["boundary_conditions"] == 'zero':
+            self.apply_dirichlet_bc()
 
     def checkCFL(self):
         """!Check to make sure CFL conditions is satisfied

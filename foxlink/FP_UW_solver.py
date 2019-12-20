@@ -49,11 +49,6 @@ class FPUWSolver(FokkerPlanckSolver):
                 diag[-1] = 0
                 # End flux term diffuses off the end of the rod
             elif self._params["boundary_conditions"] == 'zero':
-                diag[0] = 0
-                diag[-1] = 0
-                # Need to set second from end to zero because offset diagnol is
-                # truncated
-                off_set_diag[-2] = 0
                 print("Zero at boundaries")
             else:
                 print("No end pausing")
