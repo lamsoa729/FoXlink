@@ -225,13 +225,13 @@ class FokkerPlanckSolver(Solver):
             self._time_dset = self._h5_data.create_dataset('time', data=time,
                                                            dtype=np.float32)
             self._xl_grp = self._h5_data.create_group('xl_data')
-            self._rod_grp = self._h5_data.create_group('fil_data')
+            self._rod_grp = self._h5_data.create_group('rod_data')
 
             self._rod_grp.create_dataset('s1', data=self.s1)
             self._rod_grp.create_dataset('s2', data=self.s2)
 
             self._interaction_grp = self._h5_data.create_group(
-                'Interaction_data')
+                'interaction_data')
 
             self.makeXLDataSet()
             self.makeInteractionDataSet()

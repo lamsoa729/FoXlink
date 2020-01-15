@@ -81,7 +81,7 @@ class FPAnalysis(object):
             self.OT1_pos = None
             self.OT2_pos = None
 
-        self.xl_distr = self._h5_data['/XL_data/XL_distr']
+        self.xl_distr = self._h5_data['/xl_data/xl_distr']
         # self.makexl_densArrs()
         self.Nxl_arr = []  # Array of crosslinker number vs time
         self.torque_arr = []  # Array of torque by crosslinker vs time
@@ -91,9 +91,9 @@ class FPAnalysis(object):
         print('Max density: ', self.max_dens_val)
 
         # Get forces and torques
-        self.torque_arr = self._h5_data['/Interaction_data/torque_data']
+        self.torque_arr = self._h5_data['/interaction_data/torque_data']
         self.torque_arr = np.linalg.norm(self.torque_arr, axis=2)
-        self.force_arr = self._h5_data['/Interaction_data/force_data']
+        self.force_arr = self._h5_data['/interaction_data/force_data']
         self.force_arr = np.linalg.norm(self.force_arr, axis=2)
 
     def Load(self, analysis_type='load'):
@@ -119,7 +119,7 @@ class FPAnalysis(object):
         self._h5_data.close()
 
     ########################
-    #  Analysis functions  #
+    #  analysis functions  #
     ########################
 
     def Analyze(self, analysis_type='analyze'):
@@ -131,37 +131,37 @@ class FPAnalysis(object):
         @return: void
 
         """
-        if 'Analysis' not in self._h5_data:
+        if 'analysis' not in self._h5_data:
             if analysis_type == 'load':
                 print('-- {} has not been analyzed. --'.format(self._filename))
                 return
             else:
-                self.analysis_grp = self._h5_data.create_group('Analysis')
+                self.analysis_grp = self._h5_data.create_group('analysis')
         elif analysis_type == 'overwrite':  # Delete old analysis and try again
-            del self._h5_data['Analysis']
-            self.analysis_grp = self._h5_data.create_group('Analysis')
+            del self._h5_data['analysis']
+            self.analysis_grp = self._h5_data.create_group('analysis')
         else:
-            self.analysis_grp = self._h5_data['Analysis']
+            self.analysis_grp = self._h5_data['analysis']
 
         t0 = time.time()
 
-        self.XL_analysis_grp = touchGroup(self.analysis_grp, 'XL_analysis')
-        self.XLMomentAnalysis(self.XL_analysis_grp)
+        self.xl_analysis_grp = touchGroup(self.analysis_grp, 'xl_analysis')
+        self.xl_moment_analysis(self.xl_analysis_grp)
 
         self.rod_analysis_grp = touchGroup(self.analysis_grp, 'rod_analysis')
         self.RodGeometryAnalysis(self.rod_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
-        # self.OTAnalysis()
+        # self.OTanalysis()
 
         t1 = time.time()
-        print(("Analysis time: {}".format(t1 - t0)))
+        print(("analysis time: {}".format(t1 - t0)))
 
         # t2 = time.time()
         # print(("Save time: {}".format(t2 - t1)))
 
-    def XLMomentAnalysis(self, XL_analysis_grp, analysis_type='analyze'):
-        """!TODO: Docstring for MomentAnalysis.
+    def xl_moment_analysis(self, xl_analysis_grp, analysis_type='analyze'):
+        """!TODO: Docstring for Momentanalysis.
         @return: TODO
 
         """
@@ -171,23 +171,23 @@ class FPAnalysis(object):
         s2 = self.s2
 
         # Zeroth moment (number of crosslinkers)
-        if 'zeroth_moment' not in XL_analysis_grp:
+        if 'zeroth_moment' not in xl_analysis_grp:
             if analysis_type != 'load':
                 self.Nxl_arr = np.sum(self.xl_distr, axis=(0, 1)) * ds_sqr
-                self.zero_mom_dset = XL_analysis_grp.create_dataset(
+                self.zero_mom_dset = xl_analysis_grp.create_dataset(
                     'zeroth_moment', data=self.Nxl_arr, dtype=np.float32)
             else:
                 print('--- The zeroth moment not analyzed or stored. ---')
         else:
-            self.zero_mom_dset = XL_analysis_grp['zeroth_moment']
+            self.zero_mom_dset = xl_analysis_grp['zeroth_moment']
             self.Nxl_arr = np.asarray(self.zero_mom_dset)
 
         # First moments
-        if 'first_moments' not in XL_analysis_grp:
+        if 'first_moments' not in xl_analysis_grp:
             if analysis_type != 'load':
                 self.P1 = np.einsum('ijn,i->n', self.xl_distr, s1) * ds_sqr
                 self.P2 = np.einsum('ijn,j->n', self.xl_distr, s2) * ds_sqr
-                self.first_mom_dset = XL_analysis_grp.create_dataset(
+                self.first_mom_dset = xl_analysis_grp.create_dataset(
                     'first_moments', data=np.stack((self.P1, self.P2), axis=-1),
                     dtype=np.float32)
                 self.first_mom_dset.attrs['columns'] = ['s1 moment',
@@ -195,12 +195,12 @@ class FPAnalysis(object):
             else:
                 print('--- The first moments not analyzed or stored. ---')
         else:
-            self.first_mom_dset = XL_analysis_grp['first_moments']
+            self.first_mom_dset = xl_analysis_grp['first_moments']
             self.P1 = np.asarray(self.first_mom_dset)[:, 0]
             self.P2 = np.asarray(self.first_mom_dset)[:, 1]
 
         # Second moments calculations
-        if 'second_moments' not in XL_analysis_grp:
+        if 'second_moments' not in xl_analysis_grp:
             if analysis_type != 'load':
                 self.u11 = np.einsum(
                     'ijn,i,j->n', self.xl_distr, s1, s2) * ds_sqr
@@ -208,7 +208,7 @@ class FPAnalysis(object):
                     'ijn,i->n', self.xl_distr, s1 * s1) * ds_sqr
                 self.u02 = np.einsum(
                     'ijn,j->n', self.xl_distr, s2 * s2) * ds_sqr
-                self.second_mom_dset = XL_analysis_grp.create_dataset(
+                self.second_mom_dset = xl_analysis_grp.create_dataset(
                     'second_moments',
                     data=np.stack((self.u11, self.u20, self.u02), axis=-1),
                     dtype=np.float32)
@@ -218,7 +218,7 @@ class FPAnalysis(object):
             else:
                 print('--- The second moments not analyzed or stored. ---')
         else:
-            self.second_mom_dset = XL_analysis_grp['second_moments']
+            self.second_mom_dset = xl_analysis_grp['second_moments']
             self.u11 = np.asarray(self.second_mom_dset)[:, 0]
             self.u20 = np.asarray(self.second_mom_dset)[:, 1]
             self.u02 = np.asarray(self.second_mom_dset)[:, 2]
@@ -270,7 +270,7 @@ class FPAnalysis(object):
             self.rod_overlap_dset = rod_analysis_grp['overlap']
             self.overlap_arr = np.asarray(self.rod_phi_dset)
 
-    def OTAnalysis(self):
+    def OTanalysis(self):
         """!Analyze data for optically trapped rods, especially if they
         are oscillating traps
         @return: void, Adds optical trap post-analysis to hdf5 file
@@ -406,7 +406,7 @@ class FPAnalysis(object):
 
 ##########################################
 # if __name__ == "__main__":
-    # FPP_analysis = FPAnalysis(sys.argv[1])
+    # FPP_analysis = FPanalysis(sys.argv[1])
     # # FPP_analysis.Analyze()
     # FP_analysis.Analyze(True)
     # print("Started making movie")

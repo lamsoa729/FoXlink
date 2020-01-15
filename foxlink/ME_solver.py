@@ -114,11 +114,9 @@ class MomentExpansionSolver(Solver):
             self._time_dset = self._h5_data.create_dataset('time',
                                                            data=t_arr,
                                                            dtype=np.float32)
-            self._xl_grp = self._h5_data.create_group('XL_data')
+            self._xl_grp = self._h5_data.create_group('xl_data')
             self._rod_grp = self._h5_data.create_group('rod_data')
 
-            # self._interaction_grp = self._h5_data.create_group(
-            # 'Interaction_data')
             Solver.makeDataframe(self)
             self.data_frame_made = True
 

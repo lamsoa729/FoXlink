@@ -51,13 +51,13 @@ class MEAnalysis(FPAnalysis):
             self.OT1_pos = None
             self.OT2_pos = None
 
-        self.rho = np.asarray(self._h5_data['/XL_data/zeroth_moment'])
-        self.P_n = self._h5_data['/XL_data/first_moments']
+        self.rho = np.asarray(self._h5_data['/xl_data/zeroth_moment'])
+        self.P_n = self._h5_data['/xl_data/first_moments']
         # TODO get rid of these eventually
         self.P1 = np.asarray(self.P_n[:, 0])
         self.P2 = np.asarray(self.P_n[:, 1])
 
-        self.mu_kl = self._h5_data['/XL_data/second_moments']
+        self.mu_kl = self._h5_data['/xl_data/second_moments']
         self.u11 = np.asarray(self.mu_kl[:, 0])
         self.u20 = np.asarray(self.mu_kl[:, 1])
         self.u02 = np.asarray(self.mu_kl[:, 2])
@@ -75,22 +75,22 @@ class MEAnalysis(FPAnalysis):
         @return: void
 
         """
-        if 'Analysis' not in self._h5_data:
+        if 'analysis' not in self._h5_data:
             if analysis_type == 'load':
                 print('-- {} has not been analyzed. --'.format(self._filename))
                 return
             else:
-                self.analysis_grp = self._h5_data.create_group('Analysis')
+                self.analysis_grp = self._h5_data.create_group('analysis')
         elif analysis_type == 'overwrite':  # Delete old analysis and try again
-            del self._h5_data['Analysis']
-            self.analysis_grp = self._h5_data.create_group('Analysis')
+            del self._h5_data['analysis']
+            self.analysis_grp = self._h5_data.create_group('analysis')
         else:
-            self.analysis_grp = self._h5_data['Analysis']
+            self.analysis_grp = self._h5_data['analysis']
 
         t0 = time.time()
 
-        # self.XL_analysis_grp = touchGroup(self.analysis_grp, 'XL_analysis')
-        # self.XLMomentAnalysis(self.XL_analysis_grp)
+        # self.xl_analysis_grp = touchGroup(self.analysis_grp, 'xl_analysis')
+        # self.xlMomentAnalysis(self.xl_analysis_grp)
 
         self.rod_analysis_grp = touchGroup(self.analysis_grp, 'rod_analysis')
         self.RodGeometryAnalysis(self.rod_analysis_grp)
