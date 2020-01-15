@@ -105,7 +105,6 @@ def evolver_zrl(sol,
     (rsqr, a_ij, a_ji, b,
      q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i, L_j)
     mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
-    print(mu00)
 
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
@@ -164,7 +163,7 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
     @return: Time-derivatives of all time varying quantities in a flattened
              array
     """
-    print(mu00)
+    # print(mu00)
     # Define useful parameters for functions
     rod_change_arr = np.zeros(12)
     # Characteristic walking rate

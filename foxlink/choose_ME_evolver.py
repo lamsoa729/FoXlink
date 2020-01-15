@@ -8,7 +8,7 @@ Description: Function that creates closures of ODE system evolvers
 """
 
 import numpy as np
-from .ME_helpers import convert_sol_to_geom
+from .ME_helpers import convert_sol_to_geom, sol_print_out
 from .ME_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, prep_zrl_evolver,
                               get_zrl_moments)
 from .ME_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
@@ -41,6 +41,7 @@ def choose_ME_evolver(sol_init, slvr):
             @return: Function to ODE zrl
 
             """
+            # TODO Add verbose option
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
@@ -67,6 +68,8 @@ def choose_ME_evolver(sol_init, slvr):
             @return: Function to ODE zrl stat
 
             """
+            # TODO Add verbose option
+            sol_print_out(sol)
             mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
             # sol_print_out(sol)
             return evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments

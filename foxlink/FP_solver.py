@@ -203,7 +203,7 @@ class FokkerPlanckSolver(Solver):
         tot_time = time.time() - t_start
         print(r" --- Total of {:d} steps in {:.4f} seconds ---".format(self.nsteps,
                                                                        tot_time))
-        self._h5_data.attrs['run_time'] = tot_time
+        self._h5_data.attrs['cpu_time'] = tot_time
 
         return
 
@@ -224,8 +224,8 @@ class FokkerPlanckSolver(Solver):
             time = self.time[::self.nwrite]
             self._time_dset = self._h5_data.create_dataset('time', data=time,
                                                            dtype=np.float32)
-            self._xl_grp = self._h5_data.create_group('XL_data')
-            self._rod_grp = self._h5_data.create_group('rod_data')
+            self._xl_grp = self._h5_data.create_group('xl_data')
+            self._rod_grp = self._h5_data.create_group('fil_data')
 
             self._rod_grp.create_dataset('s1', data=self.s1)
             self._rod_grp.create_dataset('s2', data=self.s2)
@@ -244,7 +244,7 @@ class FokkerPlanckSolver(Solver):
 
         """
         self._xl_distr_dset = self._xl_grp.create_dataset(
-            'XL_distr',
+            'xl_distr',
             shape=(self.ns1, self.ns2, self._nframes),
             dtype=np.float32)
 

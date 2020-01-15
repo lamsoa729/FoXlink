@@ -75,7 +75,7 @@ def semi_anti_deriv_boltz_0(L, sigma, A):
     @param L: minus or plus end of bound
     @param s_i: location along the first rod
     @param sigma: sqrt(2 kBT/crosslinker spring constant)
-    @param A: a2 - b s_i
+    @param A: a2 + b s_i
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
@@ -111,7 +111,6 @@ def semi_anti_deriv_boltz_2(L, sigma, A):
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
-    # inv_sig = 1. / sigma
     B = (L + A) / sigma
     return (.25 * sigma) * (2. * sigma * (A - L) * np.exp(-1. * B * B) +
                             (((2. * A * A) + (sigma * sigma)) * SQRT_PI) * erf(B))

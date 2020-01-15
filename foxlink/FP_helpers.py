@@ -39,7 +39,6 @@ def vhead(vo, fpar, fstall):
     """
     # Clip sets bounds between 0, 1 necessary for linear force-velocity
     # relation
-
     return vo * np.clip(1. + (fpar / fstall), 0., 1.)
 
 
@@ -95,8 +94,8 @@ def make_gen_source_mat(s1_arr, s2_arr, r, a1, a2, b, ko, co, ks, ho, beta):
     @param : TODO
     @return: TODO
     """
-    S2, S1 = np.meshgrid(s2_arr, s1_arr)
-    src = ko * co * boltz_fact_mat(S1, S2, r, a1, a2, b, ks, ho, beta)
+    s2, s1 = np.meshgrid(s2_arr, s1_arr)
+    src = ko * co * boltz_fact_mat(s1, s2, r, a1, a2, b, ks, ho, beta)
     return src.round(30)  # Get rid of un-norm numbers for speed up
 
 
@@ -136,8 +135,6 @@ def make_gen_force_mat(s1_arr, s2_arr, u1, u2, rvec, r, ks, ho):
         ho_mat = np.ones(h.shape) * ho
         f_mat = -ks * (1. - np.divide(ho_mat, h, out=np.zeros_like(ho_mat),
                                       where=h != 0))
-        # Weight force matrix by density of crosslinkers
-        # f_mat *= sgrid
         # More vector broadcasting to give direction to force again
         f_mat = f_mat[:, :, None] * hvec[:, :, :]
 
