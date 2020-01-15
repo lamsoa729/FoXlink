@@ -42,6 +42,7 @@ def choose_ME_evolver(sol_init, slvr):
 
             """
             # TODO Add verbose option
+            # sol_print_out(sol)
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
@@ -69,7 +70,7 @@ def choose_ME_evolver(sol_init, slvr):
 
             """
             # TODO Add verbose option
-            sol_print_out(sol)
+            # sol_print_out(sol)
             mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
             # sol_print_out(sol)
             return evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
