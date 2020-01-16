@@ -60,7 +60,9 @@ class Solver():
         # self.setBoundaryConditions()
 
         # Create data frame
-        self._h5_fpath = Path("{}.h5".format(self.__class__.__name__))
+        if 'name' not in self._params:
+            self._params['name'] = str(self.__class__.__name__)
+        self._h5_fpath = Path("{}.h5".format(self._params['name']))
         self._h5_data = h5py.File(self._h5_fpath, 'w')
         self.makeDataframe()
 
