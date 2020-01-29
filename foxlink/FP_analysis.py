@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from pathlib import Path
 import sys
 import time
 import numpy as np
@@ -121,6 +122,11 @@ class FPAnalysis(object):
     ########################
     #  analysis functions  #
     ########################
+
+    def get_name(self):
+        """ Get name of simulation """
+        return self._params['name'] if 'name' in self._params else Path.cwd(
+        ).name
 
     def Analyze(self, analysis_type='analyze'):
         """!Read in analysis or analyze data according to type of solver hdf5

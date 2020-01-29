@@ -52,8 +52,9 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
             interval=50,
             blit=True)
     t0 = time.time()
+    param_dict = FPanal
 
-    anim.save('{}.mp4'.format(Path.cwd().name), writer=writer)
+    anim.save('{}.mp4'.format(FPanal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
@@ -87,7 +88,7 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_min.mp4'.format(Path.cwd().name), writer=writer)
+    anim.save('{}_min.mp4'.format(FPanal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
@@ -125,7 +126,7 @@ def makeOrientAnimation(FPanal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_orient.mp4'.format(Path.cwd().name), writer=writer)
+    anim.save('{}_orient.mp4'.format(FPanal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
@@ -166,7 +167,7 @@ def makeMomentAnimation(FPanal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_moment.mp4'.format(Path.cwd().name), writer=writer)
+    anim.save('{}_moment.mp4'.format(FPanal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
@@ -207,6 +208,6 @@ def makeMomentExpansionAnimation(MEanal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_ME.mp4'.format(Path.cwd().name), writer=writer)
+    anim.save('{}_ME.mp4'.format(MEanal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
