@@ -82,18 +82,18 @@ class FoXlink(object):
         """
         self._opts = opts
 
-    def ParseParams(self):
+    def parse_params(self):
         """!Parse parameter file from options.
 
         @return: dictionary of parameters and options
 
         """
-        with open(self._opts.file, 'r') as pf:
-            params = yaml.safe_load(pf)
+        with open(self._opts.file, 'r') as pfile:
+            params = yaml.safe_load(pfile)
 
         return params
 
-    def getSolverType(self):
+    def get_solver_type(self):
         """!Figure out which solver type to use on parameters
         @return: Class of a solver type
 
@@ -107,7 +107,7 @@ class FoXlink(object):
             raise
         return solver_type
 
-    def createSolver(self):
+    def create_solver(self):
         """!Create solver based of solver type
         @return: solver object to run
 
@@ -118,18 +118,18 @@ class FoXlink(object):
             raise
         return solver
 
-    def Run(self):
+    def run(self):
         """!Run simulation with created solver
         @return: void
 
         """
-        self._params = self.ParseParams()
-        self._solver_type = self.getSolverType()
-        self._solver = self.createSolver()
+        self._params = self.parse_params()
+        self._solver_type = self.get_solver_type()
+        self._solver = self.create_solver()
         self._solver.Run()
         self._solver.Save()
 
-    def Analyze(self):
+    def analyze(self):
         """!Analyze hdf5 file from foxlink solver run and make movie if parameter is given.
         @return: void
 
@@ -168,11 +168,11 @@ def main():
 
     """
     opts = parse_args()
-    FXlink = FoXlink(opts)
+    foxlink = FoXlink(opts)
     if opts.analysis or opts.movie:
-        FXlink.Analyze()
+        foxlink.analyze()
     else:
-        FXlink.Run()
+        foxlink.run()
 
 
 ##########################################
