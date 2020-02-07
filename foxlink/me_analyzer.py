@@ -48,11 +48,13 @@ class MEAnalyzer(Analyzer):
         self.mu00 = np.asarray(self._h5_data['/xl_data/zeroth_moment'])
         self.mu10 = np.asarray(self._h5_data['/xl_data/first_moments'][:, 0])
         self.mu01 = np.asarray(self._h5_data['/xl_data/first_moments'][:, 1])
+        # self.mu01 = np.asarray(self._h5_data['/xl_data/first_moments'][:, 1])
 
-        mu_kl = self._h5_data['/xl_data/second_moments']
-        self.mu11 = np.asarray(mu_kl[:, 0])
-        self.mu20 = np.asarray(mu_kl[:, 1])
-        self.mu02 = np.asarray(mu_kl[:, 2])
+        # mu_kl = self._h5_data['/xl_data/second_moments']
+        mu_kl = self._h5_data['/xl_data/second_moments'][...]
+        self.mu11 = mu_kl[:, 0]
+        self.mu20 = mu_kl[:, 1]
+        self.mu02 = mu_kl[:, 2]
 
     ########################
     #  Analysis functions  #

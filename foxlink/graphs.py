@@ -214,31 +214,24 @@ def me_graph_all_data_2d(fig, axarr, n, ME_anal):
     axarr[3].set_ylim(np.amin(ME_anal.mu00),
                       np.amax(ME_anal.mu00))
 
-    p_n = ME_anal._h5_data['/xl_data/first_moments'][...]
+    p_n = np.stack((ME_anal.mu10, ME_anal.mu01))
     axarr[4].set_xlabel(r'Time (sec)')
     axarr[4].set_ylabel(r'First moments (nm)')
     axarr[4].set_xlim(left=0, right=ME_anal.time[-1])
     axarr[4].set_ylim(np.amin(p_n), np.amax(p_n))
 
-    mu_kl = ME_anal._h5_data['/xl_data/second_moments'][...]
+    # mu_kl = ME_anal._h5_data['/xl_data/second_moments'][...]
+    mu_kl = np.stack((ME_anal.mu11, ME_anal.mu20, ME_anal.mu02))
     axarr[5].set_xlabel(r'Time (sec)')
     axarr[5].set_ylabel(r'Second moments (nm$^2$)')
     axarr[5].set_xlim(left=0, right=ME_anal.time[-1])
-    axarr[5].set_ylim(np.amin(mu_kl), np.amax(mu_kl))
+    axarr[5].set_ylim(np.amin(ME_anal.mu_kl), np.amax(ME_anal.mu_kl))
 
     # Draw rods
     graph_2d_rod_diagram(axarr[0], ME_anal, n)
 
-    # # Make crosslinker density plot
-    # c = graph_xl_dens(axarr[1],
-    #                   ME_anal.xl_distr[:, :, n],
-    #                   ME_anal.s1,
-    #                   ME_anal.s2,
-    #                   max_dens_val=ME_anal.max_dens_val)
     if ME_anal.init_flag:
         axarr[0].set_aspect(1.0)
-        # axarr[1].set_aspect(1.0)
-        # fig.colorbar(c, ax=axarr[1])
         ME_anal.init_flag = False
 
     # Graph rod center separations
