@@ -1,0 +1,41 @@
+# System parameters
+beta: .243309002 # Inverse temperature
+#viscosity: 0.00089 # Using nucleoplasm pN sec/nm^2
+viscosity: 0.000001 # Using cytoplasm pN sec/nm^2
+#viscosity: 0.000000001 # Using water pN sec/nm^2 (I think)
+
+# Microtubule parameters
+L1: 1000. # Length of microtubule 1
+L2: 1000. # Length of microtubule 2
+R1_pos: [0., 0., 0.]
+R2_pos: [0., 0., 0.]
+R1_vec: [0., 1., 0.]
+R2_vec: [0., -1., 0.]
+rod_diameter: 25 # nm
+
+# Integration parameters
+dt: .001 # Crosslinker turnover rate (sec^-1)
+#nsteps: 1000 # Total number of steps, used if dt is not defined
+nt: 10  # total time (sec)
+ds: 2.0 # Segmentation size of microtubules (nm
+# Boundary conditions
+
+# Crosslinker parameters
+ko: 10. # Crosslinker turnover rate (sec^-1)
+#co: .015625 # Effective crosslinker concentration
+co: .001 # Effective crosslinker concentration (nm^-2)
+ks: .3 # Crosslinker spring (pN/nm)
+#ho: 32. # Equilibrium length of kinesin5
+ho: 0. # Equilibrium length of ideal motor
+#gamma: .000617 # Friction coefficient of crosslinkers (pN*s/nm)
+vo: 50. # Base velocity of crosslinker heads (nm/sec)
+fs: 2. # Stall force of crosslinker heads (pN)
+
+# Misc
+#nwrite: 1000
+twrite: .1
+initial_condition: 'empty'
+end_pause: False
+solver_type: "MomentExpansionSolver"
+ODE_type: "zrl"
+method: "BDF"

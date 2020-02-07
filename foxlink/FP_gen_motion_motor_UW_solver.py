@@ -13,7 +13,7 @@ Description:
 
 class FPGenMotionMotorUWSolver(RodMotionSolver, FPGenOrientMotorUWSolver):
 
-    """!    """
+    """!Docstring for FPGenMotionMotorUWSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
@@ -44,6 +44,7 @@ class FPGenMotionMotorUWSolver(RodMotionSolver, FPGenOrientMotorUWSolver):
         FPGenOrientMotorUWSolver.Step(self)
         # Calculate new forces and torque
         self.calcInteractions()
+
         # Update rod positions and recalculate source matrices
         self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
             self.force1, self.force2, self.torque1, self.torque2,
