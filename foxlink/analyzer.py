@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# RodGeometryAnalysiusr/bin/env python
 """@package docstring
 File: analyzer.py
 Author: Adam Lamson
@@ -47,7 +47,7 @@ class Analyzer():
 
         self.init_flag = True
 
-        self.analyze(analysis_type)
+        self.analyzsis_grp = self.analyze(analysis_type)
 
     def collect_data_arrays(self):
         """!Store data arrays in member variables
@@ -55,6 +55,16 @@ class Analyzer():
 
         """
         self.time = np.asarray(self._h5_data["time"])
+
+        if 'phio' in self._params:  # Ang motion
+            self.phi_arr = self._h5_data['rod_data/phi']
+        elif 'ro' in self._params:  # Para motion
+            self.R_arr = np.asarray(self._h5_data['rod_data/R_pos'])
+        else:  # General motion
+            self.R1_pos = np.asarray(self._h5_data['/rod_data/R1_pos'])
+            self.R2_pos = np.asarray(self._h5_data['/rod_data/R2_pos'])
+            self.R1_vec = np.asarray(self._h5_data['/rod_data/R1_vec'])
+            self.R2_vec = np.asarray(self._h5_data['/rod_data/R2_vec'])
 
     def load(self):
         """!Load in data from hdf5 file and grab analysis files if they exist.
@@ -79,14 +89,14 @@ class Analyzer():
         self._h5_data.flush()
         self._h5_data.close()
 
-    ########################
-    #  analysis functions  #
-    ########################
-
     def get_name(self):
         """ Get name of simulation """
         return self._params['name'] if 'name' in self._params else Path.cwd(
         ).name
+
+    ########################
+    #  analysis functions  #
+    ########################
 
     def analyze(self, analysis_type='analyze'):
         """!Read in analysis or analyze data according to type of solver hdf5
@@ -101,14 +111,61 @@ class Analyzer():
             if analysis_type == 'load':
                 print('-- {} has not been analyzed. --'.format(self._filename))
                 return
-            self.analysis_grp = self._h5_data.create_group('analysis')
+            analysis_grp = self._h5_data.create_group('analysis')
         elif analysis_type == 'overwrite':  # Delete old analysis and try again
             del self._h5_data['analysis']
-            self.analysis_grp = self._h5_data.create_group('analysis')
+            analysis_grp = self._h5_data.create_group('analysis')
         else:
-            self.analysis_grp = self._h5_data['analysis']
+            analysis_grp = self._h5_data['analysis']
 
         return analysis_grp
+
+    def rod_geometry_analysis(self, rod_analysis_grp, analysis_type='analyze'):
+        """!Analyze and store data relating to the configuration of the rods
+
+        @param rod_analysis_grp: TODO
+        @return: TODO
+
+        """
+        # Analyze distance between rod center at each time step
+        if 'center_separation' not in rod_analysis_grp:
+            if analysis_type != 'load':
+                self.dR_arr = np.linalg.norm(
+                    np.subtract(self.R2_pos, self.R1_pos), axis=1)
+                self.rod_sep_dset = rod_analysis_grp.create_dataset(
+                    'center_separation', data=self.dR_arr, dtype=np.float32)
+            else:
+                print('--- The rod center separation not analyzed or stored. ---')
+        else:
+            self.rod_sep_dset = rod_analysis_grp['center_separation']
+            self.dR_arr = np.asarray(self.rod_sep_dset)
+        # Analyze angle between rods at teach time step
+        if 'angle_between' not in rod_analysis_grp:
+            if analysis_type != 'load':
+                self.phi_arr = np.arccos(
+                    np.einsum('ij,ij->i', self.R1_vec, self.R2_vec))
+                self.rod_phi_dset = rod_analysis_grp.create_dataset(
+                    'angle_between', data=self.phi_arr, dtype=np.float32)
+            else:
+                print('--- The angle between rods not analyzed or stored. ---')
+        else:
+            self.rod_phi_dset = rod_analysis_grp['angle_between']
+            self.phi_arr = np.asarray(self.rod_phi_dset)
+
+        # Minus-end(bead) separations
+        if 'overlap' not in rod_analysis_grp:
+            if analysis_type != 'load':
+                self.overlap_arr = Analyzer.calc_overlap(self.R1_pos, self.R2_pos,
+                                                         self.R1_vec, self.R2_vec,
+                                                         self._params['L1'],
+                                                         self._params['L2'])
+                self.rod_overlap_dset = rod_analysis_grp.create_dataset(
+                    'overlap', data=self.overlap_arr, dtype=np.float32)
+            else:
+                print('--- The rod overlap not analyzed or stored. ---')
+        else:
+            self.rod_overlap_dset = rod_analysis_grp['overlap']
+            self.overlap_arr = np.asarray(self.rod_phi_dset)
 
     ###########################
     #  Calculation functions  #
