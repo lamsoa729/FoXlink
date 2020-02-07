@@ -6,7 +6,7 @@ import numpy as np
 import h5py
 import yaml
 
-from analyzer import Analyzer, touch_group
+from .analyzer import Analyzer, touch_group
 from .graphs import (fp_graph_all_data_2d, fp_graph_mts_xlink_distr_2d,
                      fp_graph_stationary_runs_2d, fp_graph_moment_data_2d)
 
@@ -83,7 +83,7 @@ class PDEAnalyzer(Analyzer):
         @return: void
 
         """
-        analysis_grp = Analyzer(self, analysis_type)
+        analysis_grp = Analyzer.analyze(self, analysis_type)
 
         t0 = time.time()
 

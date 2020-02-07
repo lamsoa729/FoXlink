@@ -67,7 +67,7 @@ class MEAnalyzer(Analyzer):
         @return: void
 
         """
-        analysis_grp = Analyzer(self, analysis_type)
+        analysis_grp = Analyzer.analyze(self, analysis_type)
         t0 = time.time()
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
@@ -98,7 +98,7 @@ class MEAnalyzer(Analyzer):
                 self.force_vec_arr = -ks * (
                     np.multiply(self.dR_vec_arr, self.mu00[:, None]) +
                     np.multiply(self.mu01[:, None], self.R2_vec) -
-                    np.multiply(self.m10[:, None], self.R1_vec))
+                    np.multiply(self.mu10[:, None], self.R1_vec))
 
                 self.force_vec_dset = interaction_grp.create_dataset(
                     'force_vector', data=self.force_vec_arr, dtype=np.float32)
