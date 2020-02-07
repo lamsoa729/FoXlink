@@ -7,9 +7,8 @@ import h5py
 import yaml
 
 from analyzer import Analyzer, touch_group
-from .FP_helpers import *
-from .fp_graphs import (fp_graph_all_data_2d, fp_graph_mts_xlink_distr_2d,
-                        fp_graph_stationary_runs_2d, fp_graph_moment_data_2d)
+from .graphs import (fp_graph_all_data_2d, fp_graph_mts_xlink_distr_2d,
+                     fp_graph_stationary_runs_2d, fp_graph_moment_data_2d)
 
 """@package docstring
 File: FP_analysis.py
@@ -187,7 +186,6 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
-
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time

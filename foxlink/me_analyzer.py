@@ -14,7 +14,7 @@ import time
 
 from .analyzer import Analyzer, touch_group
 
-from .fp_graphs import me_graph_all_data_2d  # TODO change to graph functions
+from .graphs import me_graph_all_data_2d
 
 
 class MEAnalyzer(Analyzer):
@@ -37,11 +37,6 @@ class MEAnalyzer(Analyzer):
 
         """
         Analyzer.collect_data_arrays(self)
-        # What kind of motion of microtubules
-        self.R1_pos = np.asarray(self._h5_data['/rod_data/R1_pos'])
-        self.R2_pos = np.asarray(self._h5_data['/rod_data/R2_pos'])
-        self.R1_vec = np.asarray(self._h5_data['/rod_data/R1_vec'])
-        self.R2_vec = np.asarray(self._h5_data['/rod_data/R2_vec'])
 
         if '/OT_data' in self._h5_data:
             self.OT1_pos = self._h5_data['/OT_data/OT1_pos']

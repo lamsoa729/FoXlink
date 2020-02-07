@@ -56,6 +56,7 @@ class Analyzer():
         """
         self.time = np.asarray(self._h5_data["time"])
 
+        # What kind of motion of microtubules
         if 'phio' in self._params:  # Ang motion
             self.phi_arr = self._h5_data['rod_data/phi']
         elif 'ro' in self._params:  # Para motion

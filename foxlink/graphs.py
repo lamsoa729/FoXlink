@@ -6,7 +6,7 @@ from matplotlib.patches import Circle
 
 
 """@package docstring
-File: fp_graphs.py
+File: graphs.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: File containing modular graphing functions for Fokker-Planck data.
