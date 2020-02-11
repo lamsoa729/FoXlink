@@ -260,10 +260,10 @@ def me_graph_all_data_2d(fig, axarr, n, ME_anal):
         ME_anal.time[n], ME_anal.phi_arr[n])])
     axarr[3].legend([r"N({:.2f})={:.1f}".format(
         ME_anal.time[n], ME_anal.mu00[n])])
-    axarr[4].legend(["$\mu^{{1,0}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
-                                                             ME_anal.mu10[n]),
-                     "$\mu^{{0,1}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
-                                                             ME_anal.mu01[n])])
+    axarr[4].legend([r"$\mu^{{1,0}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
+                                                              ME_anal.mu10[n]),
+                     r"$\mu^{{0,1}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
+                                                              ME_anal.mu01[n])])
     axarr[5].legend([r"$\mu^{{1,1}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
                                                               ME_anal.mu11[n]),
                      r"$\mu^{{2,0}}$({:.2f}) = {:.1f}".format(ME_anal.time[n],
