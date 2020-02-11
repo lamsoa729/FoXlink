@@ -150,7 +150,7 @@ class PDEAnalyzer(Analyzer):
                     'ijn,j->n', self.xl_distr, s2 * s2) * ds_sqr
                 self.second_mom_dset = xl_analysis_grp.create_dataset(
                     'second_moments',
-                    data=np.stack((self.u11, self.u20, self.u02), axis=-1),
+                    data=np.stack((self.mu11, self.mu20, self.mu02), axis=-1),
                     dtype=np.float32)
                 self.second_mom_dset.attrs['columns'] = ['s1*s2 moment',
                                                          's1^2 moment',
@@ -186,6 +186,7 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
+
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
@@ -238,18 +239,3 @@ class PDEAnalyzer(Analyzer):
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
-
-
-##########################################
-# if __name__ == "__main__":
-    # FPP_analysis = FPanalysis(sys.argv[1])
-    # # FPP_analysis.Analyze()
-    # FP_analysis.Analyze(True)
-    # print("Started making movie")
-
-    # # Movie maker
-    # Writer = FFMpegWriter
-    # writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
-
-    # makeAnimation(FPP_analysis, writer)
-    # FPP_analysis.Save()
