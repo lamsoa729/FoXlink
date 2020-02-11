@@ -10,15 +10,14 @@ create graphs from ODE moment expansionruns
 import numpy as np
 import matplotlib.pyplot as plt
 # from matplotlib.lines import Line2D
-import h5py
-import yaml
 import time
 
-from .FP_analysis import FPAnalysis, touchGroup
-from .fp_graphs import me_graph_all_data_2d  # TODO change to graph functions
+from .analyzer import Analyzer, touch_group
+
+from .graphs import me_graph_all_data_2d
 
 
-class MEAnalysis(FPAnalysis):
+class MEAnalyzer(Analyzer):
 
     """!Analyze Moment Expansion runs"""
 
@@ -30,19 +29,14 @@ class MEAnalysis(FPAnalysis):
         @param analysis_type: What kind of analysis ot run on data file
 
         """
-        FPAnalysis.__init__(self, filename, analysis_type)
+        Analyzer.__init__(self, filename, analysis_type)
 
-    def collectDataArrays(self):
+    def collect_data_arrays(self):
         """!Store data arrays in member variables
         @return: void, modifies member variables
 
         """
-        self.time = np.asarray(self._h5_data["time"])
-        # What kind of motion of microtubules
-        self.R1_pos = np.asarray(self._h5_data['/rod_data/R1_pos'])
-        self.R2_pos = np.asarray(self._h5_data['/rod_data/R2_pos'])
-        self.R1_vec = np.asarray(self._h5_data['/rod_data/R1_vec'])
-        self.R2_vec = np.asarray(self._h5_data['/rod_data/R2_vec'])
+        Analyzer.collect_data_arrays(self)
 
         if '/OT_data' in self._h5_data:
             self.OT1_pos = self._h5_data['/OT_data/OT1_pos']
@@ -51,22 +45,22 @@ class MEAnalysis(FPAnalysis):
             self.OT1_pos = None
             self.OT2_pos = None
 
-        self.rho = np.asarray(self._h5_data['/xl_data/zeroth_moment'])
-        self.P_n = self._h5_data['/xl_data/first_moments']
-        # TODO get rid of these eventually
-        self.P1 = np.asarray(self.P_n[:, 0])
-        self.P2 = np.asarray(self.P_n[:, 1])
+        self.mu00 = np.asarray(self._h5_data['/xl_data/zeroth_moment'])
+        self.mu10 = np.asarray(self._h5_data['/xl_data/first_moments'][:, 0])
+        self.mu01 = np.asarray(self._h5_data['/xl_data/first_moments'][:, 1])
+        # self.mu01 = np.asarray(self._h5_data['/xl_data/first_moments'][:, 1])
 
-        self.mu_kl = self._h5_data['/xl_data/second_moments']
-        self.u11 = np.asarray(self.mu_kl[:, 0])
-        self.u20 = np.asarray(self.mu_kl[:, 1])
-        self.u02 = np.asarray(self.mu_kl[:, 2])
+        # mu_kl = self._h5_data['/xl_data/second_moments']
+        mu_kl = self._h5_data['/xl_data/second_moments'][...]
+        self.mu11 = mu_kl[:, 0]
+        self.mu20 = mu_kl[:, 1]
+        self.mu02 = mu_kl[:, 2]
 
     ########################
     #  Analysis functions  #
     ########################
 
-    def Analyze(self, analysis_type='analyze'):
+    def analyze(self, analysis_type='analyze'):
         """!Read in analysis or analyze data according to type of solver hdf5
         file came from and what analysis_type was specified.
 
@@ -75,37 +69,24 @@ class MEAnalysis(FPAnalysis):
         @return: void
 
         """
-        if 'analysis' not in self._h5_data:
-            if analysis_type == 'load':
-                print('-- {} has not been analyzed. --'.format(self._filename))
-                return
-            else:
-                self.analysis_grp = self._h5_data.create_group('analysis')
-        elif analysis_type == 'overwrite':  # Delete old analysis and try again
-            del self._h5_data['analysis']
-            self.analysis_grp = self._h5_data.create_group('analysis')
-        else:
-            self.analysis_grp = self._h5_data['analysis']
-
+        analysis_grp = Analyzer.analyze(self, analysis_type)
         t0 = time.time()
 
-        # self.xl_analysis_grp = touchGroup(self.analysis_grp, 'xl_analysis')
-        # self.xlMomentAnalysis(self.xl_analysis_grp)
+        rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
+        self.rod_geometry_analysis(rod_analysis_grp)
 
-        self.rod_analysis_grp = touchGroup(self.analysis_grp, 'rod_analysis')
-        self.RodGeometryAnalysis(self.rod_analysis_grp)
-
-        self.interact_analysis_grp = touchGroup(self.analysis_grp,
-                                                'interaction_analysis')
-        self.ForceAnalysis(self.interact_analysis_grp)
+        interact_analysis_grp = touch_group(analysis_grp,
+                                            'interaction_analysis')
+        self.force_analysis(interact_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
 
         t1 = time.time()
         print(("Analysis time: {}".format(t1 - t0)))
+        return analysis_grp
 
-    def ForceAnalysis(self, interaction_grp, analysis_type='analyze'):
+    def force_analysis(self, interaction_grp, analysis_type='analyze'):
         """!TODO: Docstring for ForceInteractionAnalysis.
 
         @param grp: TODO
@@ -116,9 +97,10 @@ class MEAnalysis(FPAnalysis):
             if analysis_type != 'load':
                 ks = self._params['ks']
                 self.dR_vec_arr = np.subtract(self.R2_pos, self.R1_pos)
-                self.force_vec_arr = -ks * (np.multiply(self.dR_vec_arr, self.rho[:, None]) +
-                                            np.multiply(self.P2[:, None], self.R2_vec) -
-                                            np.multiply(self.P1[:, None], self.R1_vec))
+                self.force_vec_arr = -ks * (
+                    np.multiply(self.dR_vec_arr, self.mu00[:, None]) +
+                    np.multiply(self.mu01[:, None], self.R2_vec) -
+                    np.multiply(self.mu10[:, None], self.R1_vec))
 
                 self.force_vec_dset = interaction_grp.create_dataset(
                     'force_vector', data=self.force_vec_arr, dtype=np.float32)
@@ -133,8 +115,6 @@ class MEAnalysis(FPAnalysis):
             self.force_vec_arr = np.asarray(self.force_vec_dset)
             self.force_mag_dset = interaction_grp['force_magnitude']
             self.force_arr = np.asarray(self.force_mag_dset)
-
-            # self.dR_arr = np.asarray(self.rod_sep_dset)
 
     ########################
     #  Graphing functions  #

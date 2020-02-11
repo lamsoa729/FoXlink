@@ -3,8 +3,8 @@ from matplotlib.animation import FFMpegWriter
 from .animation_funcs import (makeAnimation, makeMinimalAnimation,
                               makeOrientAnimation, makeMomentAnimation,
                               makeMomentExpansionAnimation)
-from .FP_analysis import FPAnalysis
-from .ME_analysis import MEAnalysis
+from .pde_analyzer import PDEAnalyzer
+from .me_analyzer import MEAnalyzer
 # from .FP_pass_ang_CN import FPPassiveAngCNSolver
 import argparse
 import sys
@@ -41,9 +41,13 @@ def parse_args():
                                      formatter_class=argparse.RawTextHelpFormatter)
     # Specialized optical trap arguments go here
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
-                        help="Print out more text from simulations. NOT IMPLEMENTED YET!")  # TODO
+                        help=("Print out more text from simulations. "
+                              "NOT IMPLEMENTED YET!"))  # TODO
     parser.add_argument("-f", "--file", type=str, default="FP_params.yaml",
-                        help="Parameter file used to run FoXlink solver. This should be a yaml parameter file if running a simulation. If analyzing a file, this should be an HDF5 file.")
+                        help=("Parameter file used to run FoXlink solver. "
+                              "This should be a yaml parameter file if running a "
+                              "simulation. If analyzing a file, this should be an "
+                              "HDF5 file."))
     parser.add_argument("-t", "--test", action='store_true',
                         help="Run test protocol on FoXlink solver. NOT IMPLEMENTED YET!")  # TODO
     parser.add_argument("-c", "--change_params", action="store_true", default=False,
@@ -137,11 +141,11 @@ class FoXlink(object):
         # analysis = FPAnalysis(self._opts.file)
         if self._opts.analysis:
             if self._opts.analysis == "ME":
-                analysis = MEAnalysis(self._opts.file, 'overwrite')
+                analyzer = MEAnalyzer(self._opts.file, 'overwrite')
             else:
-                analysis = FPAnalysis(self._opts.file, self._opts.analysis)
+                analyzer = PDEAnalyzer(self._opts.file, self._opts.analysis)
         else:
-            analysis = FPAnalysis(self._opts.file, 'analyze')
+            analyzer = PDEAnalyzer(self._opts.file, 'analyze')
 
         if self._opts.movie:
             print("Started making movie")
@@ -150,16 +154,16 @@ class FoXlink(object):
                 fps=25, metadata=dict(
                     artist='Me'), bitrate=1800)
             if self._opts.analysis == "ME":
-                makeMomentExpansionAnimation(analysis, writer)
+                makeMomentExpansionAnimation(analyzer, writer)
             elif self._opts.movie == 'all':
-                makeAnimation(analysis, writer)
+                makeAnimation(analyzer, writer)
             elif self._opts.movie == 'min':
-                makeMinimalAnimation(analysis, writer)
+                makeMinimalAnimation(analyzer, writer)
             elif self._opts.movie == 'orient':
-                makeOrientAnimation(analysis, writer)
+                makeOrientAnimation(analyzer, writer)
             elif self._opts.movie == 'moment':
-                makeMomentAnimation(analysis, writer)
-        analysis.Save()
+                makeMomentAnimation(analyzer, writer)
+        analyzer.save()
 
 
 def main():
