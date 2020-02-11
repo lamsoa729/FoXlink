@@ -1,17 +1,14 @@
 #!/usr/bin/env python
-from pathlib import Path
 import time
 import numpy as np
 # from matplotlib.lines import Line2D
-import h5py
-import yaml
 
 from .analyzer import Analyzer, touch_group
 from .graphs import (fp_graph_all_data_2d, fp_graph_mts_xlink_distr_2d,
                      fp_graph_stationary_runs_2d, fp_graph_moment_data_2d)
 
 """@package docstring
-File: FP_analysis.py
+File: pde_analyzer.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: File containing classes to analyze data, make movies, and create graphs from passive PDE runs
