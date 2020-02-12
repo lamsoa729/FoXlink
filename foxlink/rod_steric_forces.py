@@ -163,7 +163,7 @@ def calc_wca_force_torque(r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps):
     min_vec_ij, l_i, l_j = find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j)
 
     f_ij = wca_force(min_vec_ij, rod_diameter, eps)
-    tau_i = np.cross(l_i * u_i, -min_vec_ij)
-    tau_j = np.cross(l_j * u_j, min_vec_ij)
+    tau_i = np.cross(l_i * u_i, -f_ij)
+    tau_j = np.cross(l_j * u_j, f_ij)
 
     return f_ij, tau_i, tau_j

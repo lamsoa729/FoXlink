@@ -9,10 +9,11 @@ Description:
 
 import numpy as np
 # from scipy.integrate import dblquad
-from .me_helpers import dr_dt, convert_sol_to_geom, sol_print_out
+from .me_helpers import dr_dt, convert_sol_to_geom
 from .me_zrl_odes import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
                           dmu11_dt_zrl, dmu20_dt_zrl)
 from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl)
+from .rod_steric_forces import calc_wca_force_torque
 
 
 def get_zrl_moments(sol):
@@ -138,6 +139,82 @@ def evolver_zrl(sol,
     return dsol
 
 
+def evolver_zrl_wca(sol,
+                    gpara_i, gperp_i, grot_i,  # Friction coefficients
+                    gpara_j, gperp_j, grot_j,
+                    vo, fs, ko, c, ks, beta, L_i, L_j, rod_diameter):  # Other constants
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
+
+    @param sol: Solution vector to solve_ivp
+    @param gpara_i: Parallel drag coefficient of rod1
+    @param gperp_i: Perpendicular drag coefficient of rod1
+    @param grot_i: Rotational drag coefficient of rod1
+    @param gpara_j: Parallel drag coefficient of rod1
+    @param gperp_j: Perpendicular drag coefficient of rod1
+    @param grot_j: Rotational drag coefficient of rod1
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L_i: Length of rod_i
+    @param L_j: Length of rod_j
+    @param rod_diameter: Diameter of rods
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    # Define useful parameters for functions
+    r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+    r_ij = r_j - r_i
+    (rsqr, a_ij, a_ji, b,
+     q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i, L_j)
+    mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
+
+    # Get average force of crosslinkers on rod2
+    f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
+    # Get WCA steric forces and add them to crosslink forces
+    f_ij_wca, torque_i_wca, torque_j_wca = calc_wca_force_torque(
+        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, 1. / beta)
+
+    f_ij += f_ij_wca
+
+    # Evolution of rod positions
+    dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
+    dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
+    # Evolution of orientation vectors
+    du_i = (torque_i_wca / grot_i) + dui_dt_zrl(r_ij,
+                                                u_i, u_j, mu10, mu11,
+                                                a_ij, b, ks, grot_i)
+    du_j = (torque_j_wca / grot_j) + dui_dt_zrl(-1. * r_ij,
+                                                u_j, u_i, mu01, mu11,
+                                                a_ji, b, ks, grot_j)
+
+    # Characteristic walking rate
+    kappa = vo * ks / fs
+    # Evolution of zeroth moment
+    dmu00 = dmu00_dt_zrl(mu00, ko, q00)
+    # Evoultion of first moments
+    # TODO Double check this for accuracy
+    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10)
+    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, b, ko, vo, kappa, q01)
+    # Evolution of second moments
+    dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
+                         ko, vo, kappa, q11)
+    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20)
+    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, b, ko, vo, kappa, q02)
+    dsol = np.concatenate(
+        (dr_i, dr_j, du_i, du_j, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
+    # Check to make sure all values are finite
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError(
+            'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
+
+    return dsol
+
+
 def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
                      a_ij, a_ji, b,
                      q00, q10, q01, q11, q20, q02,  # Pre-computed values
@@ -185,159 +262,3 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
         raise RuntimeError(
             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
     return dsol
-
-# def evolver_zrl_ang(sol, mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
-#                     grot_i, grot_j,  # Friction coefficients
-#                     vo, fs, ko, c, ks, beta, L_i, L_j):
-#     """!Calculate all time derivatives necessary to solve the moment expansion
-#     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
-# bound to moving rods. d<var> is the time derivative of corresponding
-# variable
-
-#     @param u_i: Orientation unit vector of rod1
-#     @param u_j: Orientation unit vector of rod2
-#     @param mu00: Zeroth motor moment
-#     @param mu10: First motor moment of s1
-#     @param mu01: First motor moment of s2
-#     @param mu11: Second motor moment of s1 and s2
-#     @param mu20: Second motor moment of s1
-#     @param mu02: Second motor moment of s2
-#     @param gpara_i: Parallel drag coefficient of rod1
-#     @param gperp_i: Perpendicular drag coefficient of rod1
-#     @param grot_i: Rotational drag coefficient of rod1
-#     @param gpara_j: Parallel drag coefficient of rod1
-#     @param gperp_j: Perpendicular drag coefficient of rod1
-#     @param grot_j: Rotational drag coefficient of rod1
-#     @param vo: Velocity of motor when no force is applied
-#     @param fs: Stall force of motor ends
-#     @param ko: Turnover rate of motors
-#     @param c: Effective concentration of motors in solution
-#     @param ks: Motor spring constant
-#     @param beta: 1/(Boltzmann's constant * Temperature)
-#     @param L_i: Length of rod1
-#     @param L_j: Length of rod2
-#     @param fast: Flag on whether or not to use fast solving techniques
-#     @return: Time-derivatives of all time varying quantities in a flattened
-#              array
-#     """
-#     rod_change_arr = np.zeros(6)
-#     # Define useful parameters for functions
-#     rsqr = np.dot(r_ij, r_ij)
-#     a_ij = np.dot(r_ij, u_i)
-#     a_ji = -1. * np.dot(r_ij, u_j)
-#     b = np.dot(u_i, u_j)
-#     # Get average force of crosslinkers on rod2
-#     # f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
-#     # Evolution of rod positions
-#     # dr_i = dr_dt_zrl(-1. * f_ij, u_i, gpara_i, gperp_i)
-#     # dr_j = dr_dt_zrl(f_ij, u_j, gpara_j, gperp_j)
-#     # Evolution of orientation vectors
-#     du1 = du1_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
-#     du2 = du2_dt_zrl(r_ij, u_i, u_j, mu01, mu11, a_ji, b, ks, grot_j)
-#     # Evolution of zeroth moment
-#     dmu00 = dmu00_dt_zrl(mu00, rsqr, a_ij, a_ji, b,
-#                          vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     # Evoultion of first moments
-#     dmu10 = dmu10_dt_zrl(mu00, mu10, mu01,
-#                          rsqr, a_ij, a_ji, b,
-#                          vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dmu01 = dmu01_dt_zrl(mu00, mu10, mu01,
-#                          rsqr, a_ij, a_ji, b,
-#                          vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     # Evolution of second moments
-#     dmu11 = dmu11_dt_zrl(mu00, mu10, mu01, mu11, mu20, mu02, rsqr,
-#                          a_ij, a_ji, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dmu20 = dmu20_dt_zrl(mu00, mu10, mu01, mu11, mu20, mu02, rsqr,
-#                          a_ij, a_ji, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dmu02 = dmu02_dt_zrl(mu00, mu10, mu01, mu11, mu20, mu02, rsqr,
-#                          a_ij, a_ji, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dsol = np.concatenate(
-#         (rod_change_arr, du1, du2, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
-#     # Check to make sure all values are finite
-#     if not np.all(np.isfinite(dsol)):
-#         raise RuntimeError(
-#             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
-
-#     return dsol
-
-
-# def evolver_zrl_orient(r_i, r_j, u_i, u_j,  # Vectors
-#                        mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
-#                        gpara_i, gperp_i, grot_i,  # Friction coefficients
-#                        gpara_j, gperp_j, grot_j,
-#                        vo, fs, ko, c, ks, beta, L_i, L_j,  # Other constants
-#                        fast='fast'):
-#     """!Calculate all time derivatives necessary to solve the moment expansion
-#     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
-# bound to moving rods. d<var> is the time derivative of corresponding
-# variable
-
-#     @param u_i: Orientation unit vector of rod1
-#     @param u_j: Orientation unit vector of rod2
-#     @param mu00: Zeroth motor moment
-#     @param mu10: First motor moment of s1
-#     @param mu01: First motor moment of s2
-#     @param mu11: Second motor moment of s1 and s2
-#     @param mu20: Second motor moment of s1
-#     @param mu02: Second motor moment of s2
-#     @param gpara_i: Parallel drag coefficient of rod1
-#     @param gperp_i: Perpendicular drag coefficient of rod1
-#     @param grot_i: Rotational drag coefficient of rod1
-#     @param gpara_j: Parallel drag coefficient of rod1
-#     @param gperp_j: Perpendicular drag coefficient of rod1
-#     @param grot_j: Rotational drag coefficient of rod1
-#     @param vo: Velocity of motor when no force is applied
-#     @param fs: Stall force of motor ends
-#     @param ko: Turnover rate of motors
-#     @param c: Effective concentration of motors in solution
-#     @param ks: Motor spring constant
-#     @param beta: 1/(Boltzmann's constant * Temperature)
-#     @param L_i: Length of rod1
-#     @param L_j: Length of rod2
-#     @param fast: Flag on whether or not to use fast solving techniques
-#     @return: Time-derivatives of all time varying quantities in a flattened
-#              array
-#     """
-#     r_ij = r_j - r_i
-#     rsqr = np.dot(r_ij, r_ij)
-#     a_ij = np.dot(r_ij, u_i)
-#     a_ji = -1. * np.dot(r_ij, u_j)
-#     b = np.dot(u_i, u_j)
-#     orient_change_arr = np.zeros(6)
-#     # Define useful parameters for functions
-#     a_ij = np.dot(r_ij, u_i)
-#     a_ji = np.dot(r_ij, u_j)
-#     b = np.dot(u_i, u_j)
-#     # Get average force of crosslinkers on rod2
-#     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
-#     # Evolution of rod positions
-#     dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
-#     dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
-#     # Evolution of orientation vectors
-#     # du1 = du1_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
-#     # du2 = du2_dt_zrl(r_ij, u_i, u_j, mu01, mu11, a_ji, b, ks, grot_j)
-#     # Evolution of zeroth moment
-#     dmu00 = dmu00_dt_zrl(mu00, rsqr, a_ij, a_ji, b,
-#                          vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     # Evoultion of first moments
-#     dmu10 = dmu10_dt_zrl(mu00, mu10, mu01,
-#                          rsqr, a_ij, a_ji, b,
-#                          vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dmu01 = dmu01_dt_zrl(mu00, mu10, mu01,
-#                          rsqr, a_ij, a_ji, b,
-#                          vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     # Evolution of second moments
-#     dmu11 = dmu11_dt_zrl(mu00, mu10, mu01, mu11, mu20, mu02, rsqr,
-#                          a_ij, a_ji, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dmu20 = dmu20_dt_zrl(mu00, mu10, mu01, mu11, mu20, mu02, rsqr,
-#                          a_ij, a_ji, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dmu02 = dmu02_dt_zrl(mu00, mu10, mu01, mu11, mu20, mu02, rsqr,
-#                          a_ij, a_ji, b, vo, fs, ko, c, ks, beta, L_i, L_j, fast)
-#     dsol = np.concatenate(
-#         (dr_i, dr_j, orient_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
-#     # Check to make sure all values are finite
-#     if not np.all(np.isfinite(dsol)):
-#         raise RuntimeError(
-#             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
-
-#     return dsol
