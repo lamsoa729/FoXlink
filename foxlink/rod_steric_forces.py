@@ -12,7 +12,7 @@ from numba import jit, njit
 
 
 @jit
-def wca_force(dr, sigma, eps):
+def wca_force(dr, sigma, eps, f_cut=1000):
     """!Calculate the magnitude of the WCA force between points
 
     @param dr: Vector between from point i to point j
@@ -30,8 +30,8 @@ def wca_force(dr, sigma, eps):
     rcut = np.power(2.0, 1.0 / 6.0) * sigma
 
     # Impose force only if LJ potential is repulsive
-    f_mag = (24. * eps * sigma6 * r_inv6 * r_inv) * (
-        2. * sigma6 * r_inv6 - 1.) if r_mag < rcut else 0.
+    f_mag = np.clip(24. * eps * sigma6 * r_inv6 * r_inv * (
+        2. * sigma6 * r_inv6 - 1.), 0, f_cut) if r_mag < rcut else 0.
     return f_mag * u_vec
 
 
@@ -136,8 +136,7 @@ def find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j):
             l_i = match_sign(hL_i, l_i)
 
         min_vec_ij = r_ij - (l_i * u_i) + (l_j * u_j)
-        return l_i, l_j, min_vec_ij
-
+        return min_vec_ij, l_i, l_j
     # If neither l_i nor l_j is larger than there rods length just calculate
     # minimum distance using l_i and l_j
     min_vec_ij = r_ij - (l_i * u_i) + (l_j * u_j)

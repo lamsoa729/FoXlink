@@ -8,6 +8,7 @@ Description: Function that creates closures of ODE system evolvers
 """
 
 import numpy as np
+from .me_helpers import sol_print_out
 from .me_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_wca,
                               prep_zrl_evolver, get_zrl_moments)
 from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
@@ -70,6 +71,7 @@ def choose_me_evolver(sol_init, slvr):
 
             """
             # TODO Add verbose option
+            sol_print_out(sol)
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
@@ -80,7 +82,7 @@ def choose_me_evolver(sol_init, slvr):
                                    slvr.vo, slvr.fs, slvr.ko, slvr.co,
                                    slvr.ks, slvr.beta, slvr.L_i, slvr.L_j,
                                    slvr.rod_diam)
-        return evolver_zrl_closure
+        return evolver_zrl_wca_closure
 
     if slvr.ODE_type == 'zrl_stat':
         # Compute geometric terms that will not change
