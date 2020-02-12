@@ -8,7 +8,7 @@ Description:
 """
 
 import numpy as np
-from numba import jit
+from numba import jit, njit
 
 
 @jit
@@ -47,7 +47,6 @@ def match_sign(a, b):
     return abs(a) if b >= 0. else -abs(a)
 
 
-@jit
 def find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j):
     """!Find the minimum distance between two spherocylinders (i,j) and the
     points on the spherocylinders where that minimum distance occurs. Minimum
@@ -63,7 +62,7 @@ def find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j):
     point of minimum distance on rod i, point of minium distance rod j
 
     """
-    # Create scalar values for ease of computation
+    # Create scalar values for computational ease
     r_ij = r_j - r_i
     a_ij = np.dot(u_i, r_ij)
     a_ji = np.dot(u_j, -1. * r_ij)
@@ -84,7 +83,6 @@ def find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j):
     l_j_mag = abs(l_j)
 
     # Now take into account the fact that the line segments are finite length.
-
     # If the infinite lines are closest at points beyond the rod line segments.
     if l_i_mag > hL_i and l_j_mag > hL_j:
 

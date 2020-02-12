@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 from math import exp
-import foxlink.ME_helpers as MEH
+import foxlink.me_helpers as meh
 
 """@package docstring
 File: test_me_helpers.py

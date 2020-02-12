@@ -8,8 +8,8 @@ Description:
 """
 
 from scipy.integrate import dblquad
-import foxlink.ME_zrl_helpers as meh_zrl
-import foxlink.ME_gen_helpers as meh_gen
+import foxlink.me_zrl_helpers as meh_zrl
+import foxlink.me_gen_helpers as meh_gen
 import pytest
 
 
