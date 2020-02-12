@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: ME_gen_helpers.py
+File: me_gen_helpers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:

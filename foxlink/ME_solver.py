@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: ME_solver.py
+File: me_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -10,7 +10,7 @@ Description:
 import time
 import numpy as np
 from scipy.integrate import solve_ivp
-from .choose_ME_evolver import choose_ME_evolver
+from .choose_me_evolver import choose_me_evolver
 from .solver import Solver
 from .non_dimensionalizer import NonDimensionalizer
 
@@ -102,7 +102,7 @@ class MomentExpansionSolver(Solver):
 
         # Set solver once you set initial conditions
         # Add kwargs
-        self.ode_solver = choose_ME_evolver(self.sol_init, self)
+        self.ode_solver = choose_me_evolver(self.sol_init, self)
 
     def makeDataframe(self):
         """!Create data frame to be written out

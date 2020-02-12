@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """@package docstring
-File: ME_helpers.py
+File: me_helpers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -10,7 +10,7 @@ from numba import njit
 
 
 def convert_sol_to_geom(sol):
-    """ Convert solution array of ME_solver into 3D vectors
+    """ Convert solution array of me_solver into 3D vectors
     @param sol: Solution numpy array greater than 11 items long
 
     Examples

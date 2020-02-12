@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: ME_zrl_ODEs.py
+File: me_zrl_odes.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Class that contains the all ODEs relevant to solving the moment
@@ -9,7 +9,7 @@ expansion formalism of the Fokker-Planck equation for bound crosslinking motors.
 """
 from scipy.integrate import dblquad
 from numba import njit
-from .ME_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
+from .me_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
                              fast_zrl_src_kl)
 
 

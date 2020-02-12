@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: ME_gen_ODEs.py
+File: me_gen_odes.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -10,7 +10,7 @@ Description:
 from scipy.integrate import quad, dblquad
 import numpy as np
 from numba import njit
-from .ME_gen_helpers import (boltz_fact_gen, weighted_boltz_fact_gen,
+from .me_gen_helpers import (boltz_fact_gen, weighted_boltz_fact_gen,
                              avg_force_gen, avg_force_gen_2ord)
 
 

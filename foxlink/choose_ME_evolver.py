@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: choose_ME_evolver.py
+File: choose_me_evolver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Function that creates closures of ODE system evolvers
 """
 
 import numpy as np
-from .ME_helpers import convert_sol_to_geom, sol_print_out
-from .ME_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, prep_zrl_evolver,
+from .me_helpers import convert_sol_to_geom, sol_print_out
+from .me_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, prep_zrl_evolver,
                               get_zrl_moments)
-from .ME_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
+from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
 from .rod_motion_solver import get_rod_drag_coeff
 
 
-def choose_ME_evolver(sol_init, slvr):
+def choose_me_evolver(sol_init, slvr):
     """!Create a closure for ode solver
 
     @param sol: Array of time-dependent variables in the ODE

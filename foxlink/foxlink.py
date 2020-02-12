@@ -24,7 +24,7 @@ from .FP_OT_gen_motion_static_xlinks_solver import FPOpticalTrapGenMotionStaticX
 # Defined motion
 from .FP_gen_def_motion_motor_UW_solver import FPGenDefMotionMotorUWSolver
 # Moment expansion solvers
-from .ME_solver import MomentExpansionSolver
+from .me_solver import MomentExpansionSolver
 
 
 """@package docstring

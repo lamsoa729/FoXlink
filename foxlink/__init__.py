@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 """Top-level package for FoXlink."""
-# from .FP_analysis import FPAnalysis
 from .solver import Solver
 from .graphs import *
 

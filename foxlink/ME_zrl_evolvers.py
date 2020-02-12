@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: ME_zrl_ODEs.py
+File: me_zrl_evolvers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -9,10 +9,10 @@ Description:
 
 import numpy as np
 # from scipy.integrate import dblquad
-from .ME_helpers import dr_dt, convert_sol_to_geom, sol_print_out
-from .ME_zrl_ODEs import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
+from .me_helpers import dr_dt, convert_sol_to_geom, sol_print_out
+from .me_zrl_odes import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
                           dmu11_dt_zrl, dmu20_dt_zrl)
-from .ME_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl)
+from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl)
 
 
 def get_zrl_moments(sol):

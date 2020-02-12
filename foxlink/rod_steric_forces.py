@@ -32,3 +32,5 @@ def wca_force(dr, sigma, eps):
     fmag = 24. * eps * sigma6 * (r_inv6 * r_inv) * (2. * sigma6 * r_inv6 -
                                                     1.) if r_mag < rcut else 0.
     return fmag * u_vec
+
+# TODO: Torque function from WCA <11-02-20, ARL> #

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: ME_gen_me_evolvers.py
+File: me_gen_me_evolvers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -9,11 +9,11 @@ Description:
 
 import numpy as np
 from scipy.integrate import dblquad
-from .ME_helpers import dr_dt, convert_sol_to_geom
-from .ME_gen_helpers import (weighted_boltz_fact_gen,
+from .me_helpers import dr_dt, convert_sol_to_geom
+from .me_gen_helpers import (weighted_boltz_fact_gen,
                              boltz_fact_gen,
                              avg_force_gen_2ord)
-from .ME_gen_ODEs import (du_dt_gen_2ord, dmu00_dt_gen, dmu10_dt_gen_2ord,
+from .me_gen_odes import (du_dt_gen_2ord, dmu00_dt_gen, dmu10_dt_gen_2ord,
                           dmu11_dt_gen_2ord, dmu20_dt_gen_2ord)
 
 
