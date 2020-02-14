@@ -4,8 +4,8 @@ import numpy as np
 # from matplotlib.lines import Line2D
 
 from .analyzer import Analyzer, touch_group
-from .graphs import (fp_graph_all_data_2d, fp_graph_mts_xlink_distr_2d,
-                     fp_graph_stationary_runs_2d, fp_graph_moment_data_2d)
+from .graphs import (pde_graph_all_data_2d, pde_graph_mts_xlink_distr_2d,
+                     pde_graph_stationary_runs_2d, pde_graph_moment_data_2d)
 
 """@package docstring
 File: pde_analyzer.py
@@ -193,7 +193,7 @@ class PDEAnalyzer(Analyzer):
 
         """
         t0 = time.time()
-        gca_arts = fp_graph_all_data_2d(fig, axarr, n, self)
+        gca_arts = pde_graph_all_data_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
@@ -206,7 +206,7 @@ class PDEAnalyzer(Analyzer):
 
         """
         t0 = time.time()
-        gca_arts = fp_graph_mts_xlink_distr_2d(fig, axarr, n, self)
+        gca_arts = pde_graph_mts_xlink_distr_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
@@ -219,7 +219,7 @@ class PDEAnalyzer(Analyzer):
 
         """
         t0 = time.time()
-        gca_arts = fp_graph_stationary_runs_2d(fig, axarr, n, self)
+        gca_arts = pde_graph_stationary_runs_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
@@ -232,7 +232,7 @@ class PDEAnalyzer(Analyzer):
 
         """
         t0 = time.time()
-        gca_arts = fp_graph_moment_data_2d(fig, axarr, n, self)
+        gca_arts = pde_graph_moment_data_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts

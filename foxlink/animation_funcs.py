@@ -14,7 +14,7 @@ Description:
 """
 
 
-def makeAnimation(FPanal, writer=FFMpegWriter):
+def makeAnimation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO
 
@@ -41,25 +41,25 @@ def makeAnimation(FPanal, writer=FFMpegWriter):
                             fig.add_subplot(gs[2, 2]),
                             ])
         fig.suptitle(' ')
-        # FPanal.graphSlice(50, fig, axarr)
+        # pde_anal.graphSlice(50, fig, axarr)
         # plt.show()
-        nframes = FPanal.time.size
+        nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            FPanal.graphSlice,
+            pde_anal.graphSlice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
             blit=True)
     t0 = time.time()
-    param_dict = FPanal
+    param_dict = pde_anal
 
-    anim.save('{}.mp4'.format(FPanal.get_name()), writer=writer)
+    anim.save('{}.mp4'.format(pde_anal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
+def makeMinimalAnimation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO
 
@@ -78,22 +78,22 @@ def makeMinimalAnimation(FPanal, writer=FFMpegWriter):
         axarr = np.asarray([fig.add_subplot(gs[0, 0]),
                             fig.add_subplot(gs[0, 1]), ])
         fig.suptitle(' ')
-        nframes = FPanal.time.size
+        nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            FPanal.graphReducedSlice,
+            pde_anal.graphReducedSlice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_min.mp4'.format(FPanal.get_name()), writer=writer)
+    anim.save('{}_min.mp4'.format(pde_anal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def makeOrientAnimation(FPanal, writer=FFMpegWriter):
+def makeOrientAnimation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO
 
@@ -116,22 +116,22 @@ def makeOrientAnimation(FPanal, writer=FFMpegWriter):
                             fig.add_subplot(gs[1, 6:]),
                             ])
         fig.suptitle(' ')
-        nframes = FPanal.time.size
+        nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            FPanal.graphOrientSlice,
+            pde_anal.graphOrientSlice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_orient.mp4'.format(FPanal.get_name()), writer=writer)
+    anim.save('{}_orient.mp4'.format(pde_anal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def makeMomentAnimation(FPanal, writer=FFMpegWriter):
+def makeMomentAnimation(pde_anal, writer=FFMpegWriter):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void
@@ -157,22 +157,22 @@ def makeMomentAnimation(FPanal, writer=FFMpegWriter):
                             fig.add_subplot(gs[7:, 1]),
                             ])
         fig.suptitle(' ')
-        nframes = FPanal.time.size
+        nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            FPanal.graphMomentSlice,
+            pde_anal.graphMomentSlice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_moment.mp4'.format(FPanal.get_name()), writer=writer)
+    anim.save('{}_moment.mp4'.format(pde_anal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def makeMomentExpansionAnimation(MEanal, writer=FFMpegWriter):
+def makeMomentExpansionAnimation(me_anal, writer=FFMpegWriter):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void
@@ -197,17 +197,17 @@ def makeMomentExpansionAnimation(MEanal, writer=FFMpegWriter):
                             fig.add_subplot(gs[1, 2]),
                             ])
         fig.suptitle(' ')
-        nframes = MEanal.time.size
+        nframes = me_anal.time.size
         print(nframes)
         anim = FuncAnimation(
             fig,
-            MEanal.graphSlice,
+            me_anal.graphSlice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_ME.mp4'.format(MEanal.get_name()), writer=writer)
+    anim.save('{}_ME.mp4'.format(me_anal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
