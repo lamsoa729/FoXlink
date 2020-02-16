@@ -71,7 +71,7 @@ def choose_me_evolver(sol_init, slvr):
 
             """
             # TODO Add verbose option
-            sol_print_out(sol)
+            # sol_print_out(sol)
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)

@@ -30,8 +30,9 @@ def wca_force(dr, sigma, eps, f_cut=1000):
     rcut = np.power(2.0, 1.0 / 6.0) * sigma
 
     # Impose force only if LJ potential is repulsive
-    f_mag = np.clip(24. * eps * sigma6 * r_inv6 * r_inv * (
-        2. * sigma6 * r_inv6 - 1.), 0, f_cut) if r_mag < rcut else 0.
+    f_mag = 24. * eps * sigma6 * r_inv6 * r_inv * (
+        2. * sigma6 * r_inv6 - 1.) if r_mag < rcut else 0.
+    f_mag = f_mag if f_mag < f_cut else f_cut
     return f_mag * u_vec
 
 

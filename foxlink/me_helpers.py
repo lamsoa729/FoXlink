@@ -42,7 +42,7 @@ def sol_print_out(sol):
 
 
 @njit
-def dr_dt(F, u_i, gpara, gperp):
+def dr_dt(f_vec, u_i, gpara, gperp):
     """!Get the evolution of a rods postion given a force, orientation of rod,
     and drag coefficients.
 
@@ -53,19 +53,8 @@ def dr_dt(F, u_i, gpara, gperp):
     @param gperp: Perpendicular friction coefficient of rod
     @return: Time-derivative of the rod motion
 
-    Examples
-    -------------------------
-    >>> F = np.asarray([5.,0,0]) #
-    >>> u_i = F / np.linalg.norm(F)
-    >>> gpara, gperp = (.5, .4)
-    >>> dr_dt(F, u_i, gpara, gperp) == F/gpara
-    array([ True,  True,  True])
-    >>> # Now try with perpendicular force to orientation
-    >>> u_i = np.asarray([0,1.,0])
-    >>> dr_dt(F, u_i, gpara, gperp) == F/gperp
-    array([ True,  True,  True])
-
     """
-    mpara = 1. / gpara
-    mperp = 1. / gperp
-    return (u_i * (mpara - mperp) * np.dot(F, u_i)) + (mperp * F)
+    uu_mat = np.outer(u_i, u_i)
+    # Create mobility tensor for rod
+    mob_mat = np.linalg.inv((gpara - gperp) * uu_mat + gperp * np.eye(3))
+    return np.dot(mob_mat, f_vec)

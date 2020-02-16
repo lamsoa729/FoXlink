@@ -120,7 +120,7 @@ class MEAnalyzer(Analyzer):
     #  Graphing functions  #
     ########################
 
-    def graphSlice(self, n, fig, axarr):
+    def graph_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
         @param n: index of slice to graph
@@ -132,3 +132,31 @@ class MEAnalyzer(Analyzer):
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
+
+    def make_snapshot(self):
+        """!Make final snapshot of moment information graph
+        @return: void
+
+        """
+        fig = plt.figure(constrained_layout=True, figsize=(12, 8))
+        graph_stl = {
+            "axes.titlesize": 16,
+            "axes.labelsize": 13,
+            "xtick.labelsize": 13,
+            "ytick.labelsize": 13,
+            "font.size": 13
+        }
+        with plt.style.context(graph_stl):
+            plt.style.use(graph_stl)
+            gs = fig.add_gridspec(2, 3)
+            axarr = np.asarray([fig.add_subplot(gs[0, 0]),
+                                fig.add_subplot(gs[0, 1]),
+                                fig.add_subplot(gs[0, 2]),
+                                fig.add_subplot(gs[1, 0]),
+                                fig.add_subplot(gs[1, 1]),
+                                fig.add_subplot(gs[1, 2]),
+                                ])
+            fig.suptitle(' ')
+            self.graph_slice(-1, fig, axarr)
+
+        fig.savefig('{}_ME.png'.format(self.get_name()))

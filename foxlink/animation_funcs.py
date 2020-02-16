@@ -201,7 +201,7 @@ def makeMomentExpansionAnimation(me_anal, writer=FFMpegWriter):
         print(nframes)
         anim = FuncAnimation(
             fig,
-            me_anal.graphSlice,
+            me_anal.graph_slice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,

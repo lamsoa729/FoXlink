@@ -185,12 +185,10 @@ def evolver_zrl_wca(sol,
     dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
     dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
     # Evolution of orientation vectors
-    du_i = (torque_i_wca / grot_i) + dui_dt_zrl(r_ij,
-                                                u_i, u_j, mu10, mu11,
-                                                a_ij, b, ks, grot_i)
-    du_j = (torque_j_wca / grot_j) + dui_dt_zrl(-1. * r_ij,
-                                                u_j, u_i, mu01, mu11,
-                                                a_ji, b, ks, grot_j)
+    du_i = ((np.cross(torque_i_wca, u_i) / grot_i) +
+            dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i))
+    du_j = ((np.cross(torque_j_wca, u_j) / grot_j) +
+            dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j))
 
     # Characteristic walking rate
     kappa = vo * ks / fs

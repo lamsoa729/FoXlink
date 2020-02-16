@@ -163,6 +163,11 @@ class FoXlink(object):
                 makeOrientAnimation(analyzer, writer)
             elif self._opts.movie == 'moment':
                 makeMomentAnimation(analyzer, writer)
+
+        if self._opts.graph:
+            if self._opts.analysis == "ME":
+                analyzer.make_snapshot()
+
         analyzer.save()
 
 
