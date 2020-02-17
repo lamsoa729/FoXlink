@@ -5,24 +5,24 @@ from .animation_funcs import (makeAnimation, makeMinimalAnimation,
                               makeMomentExpansionAnimation)
 from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
-# from .FP_pass_ang_CN import FPPassiveAngCNSolver
+# from .pde_pass_ang_cn import pdePassiveAngcnSolver
 import argparse
 import sys
 import yaml
 
 # Import all solvers
 # Orient
-from .FP_gen_orient_static_xlinks_solver import FPGenOrientStaticXlinksSolver
-from .FP_gen_orient_motor_UW_solver import FPGenOrientMotorUWSolver
+from .pde_gen_orient_static_xlinks_solver import PDEGenOrientStaticXlinksSolver
+from .pde_gen_orient_motor_uw_solver import PDEGenOrientMotoruwSolver
 # Free motion solvers
-from .FP_gen_motion_static_xlinks_solver import FPGenMotionStaticXlinksSolver
-from .FP_gen_motion_pass_CN_solver import FPGenMotionPassCNSolver
-from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
+from .pde_gen_motion_static_xlinks_solver import PDEGenMotionStaticXlinksSolver
+from .pde_gen_motion_pass_cn_solver import PDEGenMotionPasscnSolver
+from .pde_gen_motion_motor_uw_solver import PDEGenMotionMotoruwSolver
 # Optical trap solvers
-from .FP_OT_gen_motion_motor_UW_solver import FPOpticalTrapGenMotionMotorUWSolver
-from .FP_OT_gen_motion_static_xlinks_solver import FPOpticalTrapGenMotionStaticXlinksSolver
+from .pde_ot_gen_motion_motor_uw_solver import PDEotGenMotionMotoruwSolver
+from .pde_ot_gen_motion_static_xlinks_solver import PDEotGenMotionStaticXlinksSolver
 # Defined motion
-from .FP_gen_def_motion_motor_UW_solver import FPGenDefMotionMotorUWSolver
+from .pde_gen_def_motion_motor_uw_solver import PDEGenDefMotionMotoruwSolver
 # Moment expansion solvers
 from .me_solver import MomentExpansionSolver
 
@@ -43,7 +43,7 @@ def parse_args():
     parser.add_argument("-v", "--verbose", action="store_true", default=False,
                         help=("Print out more text from simulations. "
                               "NOT IMPLEMENTED YET!"))  # TODO
-    parser.add_argument("-f", "--file", type=str, default="FP_params.yaml",
+    parser.add_argument("-f", "--file", type=str, default="params.yaml",
                         help=("Parameter file used to run FoXlink solver. "
                               "This should be a yaml parameter file if running a "
                               "simulation. If analyzing a file, this should be an "
@@ -138,7 +138,7 @@ class FoXlink(object):
         @return: void
 
         """
-        # analysis = FPAnalysis(self._opts.file)
+        # analysis = pdeAnalysis(self._opts.file)
         if self._opts.analysis:
             if self._opts.analysis == "ME":
                 analyzer = MEAnalyzer(self._opts.file, 'overwrite')
