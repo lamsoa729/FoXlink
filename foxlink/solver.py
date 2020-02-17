@@ -163,5 +163,6 @@ class Solver():
         "beta": 1.,  # Inverse temperature
         "viscosity": 0.00089,  # Viscosity of fluid filaments are in
         "initial_condition": 'empty',
-        "end_pause": False
+        "end_pause": False,
+        "steric_interactions": None,
     }

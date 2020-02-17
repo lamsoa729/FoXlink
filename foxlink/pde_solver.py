@@ -4,13 +4,14 @@
 File: pde_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description: Base FokkerPlanckSolver class for FoXlink
+Description: Base PDESolver class for FoXlink
 """
 
 import time
 import numpy as np
 from scipy import sparse
 from .solver import Solver
+from .rod_steric_forces import calc_wca_force_torque
 
 
 class PDESolver(Solver):
@@ -53,7 +54,7 @@ class PDESolver(Solver):
         @param pfile: parameter file for PDEs
 
         """
-        print("Init FokkerPlanckSolver ->", end=" ")
+        print("Init PDESolver ->", end=" ")
         Solver.__init__(self, pfile, pdict)
 
     def ParseParams(self):
@@ -124,6 +125,13 @@ class PDESolver(Solver):
 
         """
         self.makeSolutionGrid()
+        self.calc_rod_steric_interactions(np.asarray(self._params['R1_pos']),
+                                          np.asarray(self._params['R2_pos']),
+                                          np.asarray(self._params['R1_vec']),
+                                          np.asarray(self._params['R2_vec']),
+                                          self._params["L1"],
+                                          self._params["L2"],
+                                          self._params["rod_diameter"])
         if 'initial_condition' in self._params:
             if self._params['initial_condition'] == 'equil':
                 self.sgrid += self.src_mat / self._params['ko']
@@ -267,6 +275,20 @@ class PDESolver(Solver):
         for dim, label in zip(self._torque_dset.dims,
                               ['frame', 'rod', 'coord']):
             dim.label = label
+        self._steric_force_dset = self._interaction_grp.create_dataset(
+            'steric_force_data',
+            shape=(self._nframes, 2, 3),
+            dtype=np.float32)
+        for dim, label in zip(self._steric_force_dset.dims,
+                              ['frame', 'rod', 'coord']):
+            dim.label = label
+        self._steric_torque_dset = self._interaction_grp.create_dataset(
+            'steric_torque_data',
+            shape=(self._nframes, 2, 3),
+            dtype=np.float32)
+        for dim, label in zip(self._steric_torque_dset.dims,
+                              ['frame', 'rod', 'coord']):
+            dim.label = label
 
     def calcSourceMatrix(self):
         """Virtual functions for calculating source matrix
@@ -293,6 +315,25 @@ class PDESolver(Solver):
         print("calcTorqueMatrix not implemented. Torque matrix initialized with zeros.")
         self.t_mat = np.zeros((self.ns1, self.ns2, 3))
 
+    def calc_rod_steric_interactions(self, r_i, r_j, u_i, u_j, L_i, L_j, d):
+        """!TODO: Docstring for get_rod_steric_forces.
+        @return: TODO
+
+        """
+        steric_flag = self._params.get('steric_interactions', None)
+        eps = 1. / self._params['beta']
+        if steric_flag == 'wca':
+            (self.steric_force_j,
+             self.steric_torque_i,
+             self.steric_torque_j) = calc_wca_force_torque(
+                r_i, r_j, u_i, u_j, L_i, L_j, d, eps)
+            self.steric_force_i = -1. * self.steric_force_j
+        if steric_flag is None or steric_flag is "None":
+            self.steric_force_i = np.zeros(3)
+            self.steric_force_j = np.zeros(3)
+            self.steric_torque_i = np.zeros(3)
+            self.steric_torque_j = np.zeros(3)
+
     def clearInteractions(self):
         """!TODO: Docstring for clearInteractions.
         @return: TODO
@@ -302,6 +343,10 @@ class PDESolver(Solver):
         self.force2 = 0
         self.torque1 = 0
         self.torque2 = 0
+        self.steric_force_i = 0
+        self.steric_force_j = 0
+        self.steric_torque_i = 0
+        self.steric_torque_j = 0
         self.cleared = True
 
     def apply_dirichlet_bc(self, bc_val=0.):
@@ -329,5 +374,9 @@ class PDESolver(Solver):
             self._force_dset[i_step, 1] = self.force2
             self._torque_dset[i_step, 0] = self.torque1
             self._torque_dset[i_step, 1] = self.torque2
+            self._steric_force_dset[i_step, 0] = self.steric_force_i
+            self._steric_force_dset[i_step, 1] = self.steric_force_j
+            self._steric_torque_dset[i_step, 0] = self.steric_torque_i
+            self._steric_torque_dset[i_step, 1] = self.steric_torque_j
             self.written = True
         return i_step
