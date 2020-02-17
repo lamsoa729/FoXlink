@@ -1,17 +1,17 @@
 #!/usr/bin/env python
-from .FP_solver import FokkerPlanckSolver
-from .FP_initial_conditions import *
+from .pde_solver import PDESolver
+from .pde_initial_conditions import *
 
 
 """@package docstring
-File: FP_static_xlinks_solver.py
+File: pde_static_xlinks_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPStaticXlinksSolver(FokkerPlanckSolver):
+class PDEStaticXlinksSolver(PDESolver):
 
     """! Class to solve the evolution of static xlinks bind and unbinding from solution."""
 
@@ -19,11 +19,11 @@ class FPStaticXlinksSolver(FokkerPlanckSolver):
         """!Set parameters of PDE system
 
         @param pfile: TODO
-        @param name: TODO
+        @param pdict: TODO
 
         """
-        print("Init FPStaticSolver ->", end=" ")
-        FokkerPlanckSolver.__init__(self, pfile=pfile, pdict=pdict)
+        print("Init PDEStaticXlinksSolver ->", end=" ")
+        PDESolver.__init__(self, pfile=pfile, pdict=pdict)
 
     def Step(self):
         """!Step static solver forward in time using Strang splitting

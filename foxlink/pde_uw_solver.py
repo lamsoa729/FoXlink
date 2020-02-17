@@ -1,18 +1,16 @@
 #!/usr/bin/env python
-from .FP_solver import FokkerPlanckSolver
-from scipy import sparse
-import numpy as np
-
-
 """@package docstring
-File: FP_UW_solver.py
+File: pde_uw_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+from .pde_solver import PDESolver
+from scipy import sparse
+import numpy as np
 
 
-class FPUWSolver(FokkerPlanckSolver):
+class PDEUWSolver(PDESolver):
 
     """!Solve the Fokker-Planck equation for passive crosslinkers using the
     using the Crank-Nicholson method with 4 point laplacian.
@@ -25,8 +23,8 @@ class FPUWSolver(FokkerPlanckSolver):
         @param pdict: parameter dictionary if file is not given directly.
 
         """
-        print("Init FPUWSolver ->", end=" ")
-        FokkerPlanckSolver.__init__(self, pfile, pdict)
+        print("Init PDEUWSolver ->", end=" ")
+        PDESolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def makeDiagMats(self):

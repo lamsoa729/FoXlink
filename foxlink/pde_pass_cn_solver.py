@@ -1,21 +1,20 @@
 #!/usr/bin/env python
 import numpy as np
+from copy import deepcopy as dcp
 from scipy import sparse
 from scipy.sparse.linalg import inv
-from copy import deepcopy as dcp
-# from FP_helpers import *
-from .FP_CN_solver import FPCNSolver
+from .pde_cn_solver import PDECNSolver
 
 
 """@package docstring
-File:
+File: pde_pass_cn_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPPassiveCNSolver(FPCNSolver):
+class PDEPassiveCNSolver(PDECNSolver):
 
     """!Solve the Fokker-Planck equation for passive crosslinkers using the
     using the Crank-Nicholson method with 4 point laplacian.
@@ -28,8 +27,8 @@ class FPPassiveCNSolver(FPCNSolver):
         @param name: name to store data under
 
         """
-        print("Init FPPassiveCNSolver ->", end=" ")
-        FPCNSolver.__init__(self, pfile, pdict)
+        print("Init PDEPassiveCNSolver ->", end=" ")
+        PDECNSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def makeDiagMats(self):
@@ -108,11 +107,3 @@ class FPPassiveCNSolver(FPCNSolver):
         # Step 3b: Implicit step along s2 direction
         sgrid_bar = sparse.csc_matrix.dot(sgrid_bar, self.DsqrLeftInvT)
         return sgrid_bar
-
-
-##########################################
-if __name__ == "__main__":
-    pdes = FPPassiveCNSolver(sys.argv[1])
-    pdes.Run()
-    pdes.Save()
-    # pdes.Save('FP_pass_LF.pickle')

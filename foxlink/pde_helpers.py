@@ -6,10 +6,10 @@ from numba import jit, njit
 
 
 """@package docstring
-File: FP_helpers.py
+File: pde_helpers.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description: Helper functions for FP solver.
+Description: Helper functions for PDE solver.
 """
 
 

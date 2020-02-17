@@ -128,7 +128,7 @@ def graph_vs_time(ax, time, y, n=-1, color='b'):
 
 
 def graph_xl_dens(ax, psi, s1, s2, **kwargs):
-    """!Graph an instance in time of the crosslinker density for the FP equation
+    """!Graph an instance in time of the crosslinker density for the PDE
 
     @param psi: crosslinker density
     @param **kwargs: TODO

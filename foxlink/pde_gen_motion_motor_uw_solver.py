@@ -1,39 +1,37 @@
 #!/usr/bin/env python
-from .FP_gen_orient_motor_UW_solver import FPGenOrientMotorUWSolver
-from .rod_motion_solver import RodMotionSolver
-
-
 """@package docstring
-File: FP_gen_motion_motor_UW.py
+File: pde_gen_motion_motor_uw_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+from .pde_gen_orient_motor_uw_solver import PDEGenOrientMotorUWSolver
+from .rod_motion_solver import RodMotionSolver
 
 
-class FPGenMotionMotorUWSolver(RodMotionSolver, FPGenOrientMotorUWSolver):
+class PDEGenMotionMotorUWSolver(RodMotionSolver, PDEGenOrientMotorUWSolver):
 
-    """!Docstring for FPGenMotionMotorUWSolver. """
+    """!Docstring for PDEGenMotionMotorUWSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
-        ParseParams: FPGenOrientSolver
-        calcSourceMatrix: FPGenOrientSolver
-        calcForceMatrix: FPGenOrientSolver
-        calcTorqueMatrix: FPGenOrientSolver
-        calcVelocityMats: FPGenOrientMotorUWSolver
-        makeDiagMats: FPUWSolver
-        stepUW: FPUWSolver
+        ParseParams: PDEGenOrientSolver
+        calcSourceMatrix: PDEGenOrientSolver
+        calcForceMatrix: PDEGenOrientSolver
+        calcTorqueMatrix: PDEGenOrientSolver
+        calcVelocityMats: PDEGenOrientMotorUWSolver
+        makeDiagMats: PDEUWSolver
+        stepUW: PDEUWSolver
         Step: self
-        RodStep: FPGenMotionSolver
+        RodStep: PDEGenMotionSolver
 
         @param pfile: parameter file path
         @param name: name to store data under
 
         """
-        print("Init FPGenMotionMotorUWSolver ->", end=" ")
-        FPGenOrientMotorUWSolver.__init__(self, pfile, pdict)
+        print("Init PDEGenMotionMotorUWSolver ->", end=" ")
+        PDEGenOrientMotorUWSolver.__init__(self, pfile, pdict)
 
     def Step(self):
         """!Step both motor heads and rods in time
@@ -41,7 +39,7 @@ class FPGenMotionMotorUWSolver(RodMotionSolver, FPGenOrientMotorUWSolver):
 
         """
         # Update xlink positions
-        FPGenOrientMotorUWSolver.Step(self)
+        PDEGenOrientMotorUWSolver.Step(self)
         # Calculate new forces and torque
         self.calcInteractions()
 

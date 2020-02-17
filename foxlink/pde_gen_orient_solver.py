@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import numpy as np
-from .FP_solver import FokkerPlanckSolver
-from .FP_helpers import make_gen_source_mat, make_gen_force_mat, make_gen_torque_mat
-from .FP_initial_conditions import *
+from .pde_solver import PDESolver
+from .pde_helpers import make_gen_source_mat, make_gen_force_mat, make_gen_torque_mat
+from .pde_initial_conditions import *
 
 
 """@package docstring
-File: FP_gen_orient_solver.py
+File: pde_gen_orient_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
@@ -40,9 +40,9 @@ def reparameterize_rods(R1_pos, R2_pos, R1_vec, R2_vec):
     return r, a1, a2, b
 
 
-class FPGenOrientSolver(FokkerPlanckSolver):
+class PDEGenOrientSolver(PDESolver):
 
-    """!Docstring for FPGenOrientSolver. """
+    """!Docstring for PDEGenOrientSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
@@ -51,14 +51,14 @@ class FPGenOrientSolver(FokkerPlanckSolver):
         @param name: TODO
 
         """
-        print("Init FPGenOrientSolver ->", end=" ")
-        FokkerPlanckSolver.__init__(self, pfile=pfile, pdict=pdict)
+        print("Init PDEGenOrientSolver ->", end=" ")
+        PDESolver.__init__(self, pfile=pfile, pdict=pdict)
 
     def ParseParams(self):
         """! Parse parameters from file and add to member variables
         @return: void
         """
-        FokkerPlanckSolver.ParseParams(self)
+        PDESolver.ParseParams(self)
         # Rod center position vectors of
         self.R1_pos = np.asarray(self._params['R1_pos'])
         self.R2_pos = np.asarray(self._params['R2_pos'])
@@ -129,7 +129,7 @@ class FPGenOrientSolver(FokkerPlanckSolver):
         @return: TODO
 
         """
-        FokkerPlanckSolver.makeDataframe(self)
+        PDESolver.makeDataframe(self)
         # Track position and orientations of MTs
         self._R1_pos_dset = self._rod_grp.create_dataset(
             'R1_pos', shape=(self._nframes, 3))
@@ -146,7 +146,7 @@ class FPGenOrientSolver(FokkerPlanckSolver):
         @return: TODO
 
         """
-        i_step = FokkerPlanckSolver.Write(self)
+        i_step = PDESolver.Write(self)
         self.GenOrientWrite(i_step)
         return i_step
 

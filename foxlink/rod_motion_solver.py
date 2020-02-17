@@ -60,7 +60,7 @@ def get_rod_mob_mat(visc, L, d, R_vec):
 
 class RodMotionSolver(Solver):
 
-    """!Docstring for FPRodMotionSolver. """
+    """!Docstring for RodMotionSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of system

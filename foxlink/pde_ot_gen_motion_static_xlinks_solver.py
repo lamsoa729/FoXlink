@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: FP_OT_gen_motion_static_xlinks_solver.py
+File: pde_ot_gen_motion_static_xlinks_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 from .optical_trap_motion_solver import OpticalTrapMotionSolver
-from .FP_gen_motion_static_xlinks_solver import FPGenMotionStaticXlinksSolver
+from .pde_gen_motion_static_xlinks_solver import PDEGenMotionStaticXlinksSolver
 
 
-class FPOpticalTrapGenMotionStaticXlinksSolver(
-        OpticalTrapMotionSolver, FPGenMotionStaticXlinksSolver):
+class PDEOpticalTrapGenMotionStaticXlinksSolver(
+        OpticalTrapMotionSolver, PDEGenMotionStaticXlinksSolver):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
-        ParseParams: FPGenOrientSolver
-        calcSourceMat: FPGenOrientSolver
-        calcForceMat: FPGenOrientSolver
-        calcTorqueMat: FPGenOrientSolver
-        Step: FPGenMotionStaticXlinksSolver
+        ParseParams: PDEGenOrientSolver
+        calcSourceMat: PDEGenOrientSolver
+        calcForceMat: PDEGenOrientSolver
+        calcTorqueMat: PDEGenOrientSolver
+        Step: PDEGenMotionStaticXlinksSolver
         RodStep: OpticalTrapMotionSolver
         Write: self
         makeDataframe: self
@@ -29,8 +29,8 @@ class FPOpticalTrapGenMotionStaticXlinksSolver(
         @param pdict: dictionary of parameters
 
         """
-        print("Init FPOpticalTrapGenMotionStaticXlinksSolver ->", end=" ")
-        FPGenMotionStaticXlinksSolver.__init__(self, pfile, pdict)
+        print("Init PDEOpticalTrapGenMotionStaticXlinksSolver ->", end=" ")
+        PDEGenMotionStaticXlinksSolver.__init__(self, pfile, pdict)
         self.OTParseParams()
         self.calcOTInteractions(self.R1_pos,
                                 self.R2_pos,
@@ -42,10 +42,10 @@ class FPOpticalTrapGenMotionStaticXlinksSolver(
         @return: void, Create dataframe for output with optical trap data
 
         """
-        FPGenMotionStaticXlinksSolver.makeDataframe(self)
+        PDEGenMotionStaticXlinksSolver.makeDataframe(self)
         self.addOTDataframe()
 
     def Write(self):
-        i_step = FPGenMotionStaticXlinksSolver.Write(self)
+        i_step = PDEGenMotionStaticXlinksSolver.Write(self)
         self.OTWrite(i_step)
         return i_step

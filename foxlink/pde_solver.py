@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """@package docstring
-File: solver.py
+File: pde_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Base FokkerPlanckSolver class for FoXlink
@@ -13,7 +13,7 @@ from scipy import sparse
 from .solver import Solver
 
 
-class FokkerPlanckSolver(Solver):
+class PDESolver(Solver):
 
     """!Abstract class for solver objects. All PDE algorithms are implemented
     through these classes.

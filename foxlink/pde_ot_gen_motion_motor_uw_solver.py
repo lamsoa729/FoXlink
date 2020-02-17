@@ -1,29 +1,29 @@
 #!/usr/bin/env python
 from .optical_trap_motion_solver import OpticalTrapMotionSolver
-from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
+from .pde_gen_motion_motor_uw_solver import PDEGenMotionMotorUWSolver
 
 
 """@package docstring
-File: FP_OT_gen_motion_motor_UW_solver.py
+File: pde_ot_gen_motion_motor_uw_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPOpticalTrapGenMotionMotorUWSolver(
-        OpticalTrapMotionSolver, FPGenMotionMotorUWSolver):
+class PDEOpticalTrapGenMotionMotorUWSolver(
+        OpticalTrapMotionSolver, PDEGenMotionMotorUWSolver):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
-        ParseParams: FPGenOrientSolver
-        calcSourceMat: FPGenOrientSolver
-        calcForceMat: FPGenOrientSolver
-        calcTorqueMat: FPGenOrientSolver
-        calcVelocityMats: FPGenOrientMotorUWSolver
-        makeDiagMats: FPUWMotorSolver
-        stepUW: FPUWSolver
-        Step: FPGenMotionMotorUWSolver
+        ParseParams: PDEGenOrientSolver
+        calcSourceMat: PDEGenOrientSolver
+        calcForceMat: PDEGenOrientSolver
+        calcTorqueMat: PDEGenOrientSolver
+        calcVelocityMats: PDEGenOrientMotorUWSolver
+        makeDiagMats: PDEUWMotorSolver
+        stepUW: PDEUWSolver
+        Step: PDEGenMotionMotorUWSolver
         RodStep: OpticalTrapMotionSolver
         Write: self
         makeDataframe: self
@@ -32,8 +32,8 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         @param pdict: dictionary of parameters
 
         """
-        print("Init FPOpticalTrapGenMotionMotorUWSolver ->", end=" ")
-        FPGenMotionMotorUWSolver.__init__(self, pfile, pdict)
+        print("Init PDEOpticalTrapGenMotionMotorUWSolver ->", end=" ")
+        PDEGenMotionMotorUWSolver.__init__(self, pfile, pdict)
         self.OTParseParams()
         self.calcOTInteractions(self.R1_pos,
                                 self.R2_pos,
@@ -45,10 +45,10 @@ class FPOpticalTrapGenMotionMotorUWSolver(
         @return: void, Create dataframe for output with optical trap data
 
         """
-        FPGenMotionMotorUWSolver.makeDataframe(self)
+        PDEGenMotionMotorUWSolver.makeDataframe(self)
         self.addOTDataframe()
 
     def Write(self):
-        i_step = FPGenMotionMotorUWSolver.Write(self)
+        i_step = PDEGenMotionMotorUWSolver.Write(self)
         self.OTWrite(i_step)
         return i_step

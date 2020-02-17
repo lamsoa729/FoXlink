@@ -1,39 +1,39 @@
 #!/usr/bin/env python
-from .FP_motor_UW_solver import FPMotorUWSolver
-from .FP_gen_orient_solver import FPGenOrientSolver
-from .FP_helpers import make_force_dep_velocity_mat
+from .pde_motor_uw_solver import PDEMotorUWSolver
+from .pde_gen_orient_solver import PDEGenOrientSolver
+from .pde_helpers import make_force_dep_velocity_mat
 import numpy as np
 
 
 """@package docstring
-File: FP_gen_orient_motor_UW.py
+File: pde_gen_orient_motor_UW.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPGenOrientMotorUWSolver(FPMotorUWSolver, FPGenOrientSolver):
+class PDEGenOrientMotorUWSolver(PDEMotorUWSolver, PDEGenOrientSolver):
 
     """!    """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
-        ParseParams: FPGenOrientSolver
-        makeSourceMat: FPGenOrientSolver
-        makeForceMat: FPGenOrientSolver
-        makeTorueMat: FPGenOrientSolver
-        makeDiagMats: FPUWSolver
-        Step: FPUWMotorSolver
+        ParseParams: PDEGenOrientSolver
+        makeSourceMat: PDEGenOrientSolver
+        makeForceMat: PDEGenOrientSolver
+        makeTorueMat: PDEGenOrientSolver
+        makeDiagMats: PDEUWSolver
+        Step: PDEUWMotorSolver
         RodStep: None
 
         @param pfile: parameter file path
         @param pdict: parameter dictionary
 
         """
-        print("Init FPGenOrientMotorUWSolver ->", end=" ")
-        FPGenOrientSolver.__init__(self, pfile, pdict)
+        print("Init PDEGenOrientMotorUWSolver ->", end=" ")
+        PDEGenOrientSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
         # Since the rods do not move you only need to do this once
         self.calcVelocityMats()

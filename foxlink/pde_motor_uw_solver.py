@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-from .FP_UW_solver import FPUWSolver
+from .pde_uw_solver import PDEUWSolver
 
 """@package docstring
-File: FP_motor_UW_solver.py
+File: pde_motor_uw_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPMotorUWSolver(FPUWSolver):
+class PDEMotorUWSolver(PDEUWSolver):
 
     """!Solve the Fokker-Planck equation using force-dependent velocity relation
     and the upwind integration method.
@@ -23,8 +23,8 @@ class FPMotorUWSolver(FPUWSolver):
         @param pdict: parameter dictionary
 
         """
-        print("Init FPUWMotorSolver ->", end=" ")
-        FPUWSolver.__init__(self, pfile, pdict)
+        print("Init PDEMotorUWSolver ->", end=" ")
+        PDEUWSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def makeVelocityMats(self):

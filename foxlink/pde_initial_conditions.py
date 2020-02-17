@@ -1,18 +1,17 @@
 #!/usr/bin/env python
-import numpy as np
-from scipy import sparse
-
-
 """@package docstring
-File: FP_initial_conditions.py
+File: pde_initial_conditions.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Functions for initializing solver class solution grids
 """
 
+import numpy as np
+from scipy import sparse
+
 
 def C11Neumann(t, s1, s2, L1, L2, gamma, beta, C0=1., C11=1.0):
-    """! First eigenmode of the 2D diffusion equation with Neumann boundary conditions
+    """!First eigenmode of the 2D diffusion equation with Neumann boundary conditions
 
     @param t: Time
     @param s1: Distance in the first dimentsion
@@ -102,8 +101,3 @@ def CmnNeumannInit(solver, m=1, n=1, C0=1., Cmn=1.0):
             xl_dens[i, j] = CmnNeumann(
                 0, s1_arr[i], s2_arr[j], L1, L2, gamma, beta, m, n, C0, Cmn)
     return sparse.csc_matrix(xl_dens)
-
-
-##########################################
-if __name__ == "__main__":
-    print("Not implemented yet")

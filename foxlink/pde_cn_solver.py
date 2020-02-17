@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """@package docstring
-File: FP_CN_solver.py
+File: pde_cn_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Abstract xlink algorithm class implementing Crank-Nicolson solving algorithm.
 """
-from .FP_solver import FokkerPlanckSolver
+from .pde_solver import PDESolver
 
 
-class FPCNSolver(FokkerPlanckSolver):
+class PDECNSolver(PDESolver):
 
     """!Solve the Fokker-Planck equation for passive crosslinkers using the
     using the Crank-Nicholson method with 4 point laplacian.
@@ -21,8 +21,8 @@ class FPCNSolver(FokkerPlanckSolver):
         @param pdict: parameter dictionary if no parameter file path
 
         """
-        print("Init FPCNSolver ->", end=" ")
-        FokkerPlanckSolver.__init__(self, pfile, pdict)
+        print("Init PDECNSolver ->", end=" ")
+        PDESolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def makeDiagMats(self):

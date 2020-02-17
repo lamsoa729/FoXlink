@@ -1,41 +1,41 @@
 #!/usr/bin/env python
 from .gen_def_motion_solver import GenDefMotionSolver
-from .FP_gen_motion_motor_UW_solver import FPGenMotionMotorUWSolver
+from .pde_gen_motion_motor_uw_solver import PDEGenMotionMotorUWSolver
 
 """@package docstring
-File: FP_gen_def_motion_motor_UW_solver.py
+File: pde_gen_def_motion_motor_uw_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPGenDefMotionMotorUWSolver(
-        GenDefMotionSolver, FPGenMotionMotorUWSolver):
+class PDEGenDefMotionMotorUWSolver(
+        GenDefMotionSolver, PDEGenMotionMotorUWSolver):
 
-    """!Docstring for FPGenDefMotionMotorUWSolver. """
+    """!Docstring for PDEGenDefMotionMotorUWSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
-        ParseParams: FPGenOrientSolver
-        calcSourceMat: FPGenOrientSolver
-        calcForceMat: FPGenOrientSolver
-        calcTorqueMat: FPGenOrientSolver
-        calcVelocityMats: FPGenOrientMotorUWSolver
-        makeDiagMats: FPUWMotorSolver
-        stepUW: FPUWSolver
-        Step: FPGenMotionMotorUWSolver
+        ParseParams: PDEGenOrientSolver
+        calcSourceMat: PDEGenOrientSolver
+        calcForceMat: PDEGenOrientSolver
+        calcTorqueMat: PDEGenOrientSolver
+        calcVelocityMats: PDEGenOrientMotorUWSolver
+        makeDiagMats: PDEUWMotorSolver
+        stepUW: PDEUWSolver
+        Step: PDEGenMotionMotorUWSolver
         RodStep: GenDefMotionSolver
-        Write: FPGenOrientSolver
-        makeDataframe: FPGenOrientSolver
+        Write: PDEGenOrientSolver
+        makeDataframe: PDEGenOrientSolver
 
         @param pfile: parameter file path
         @param pdict: dictionary of parameters
 
         """
-        print("Init FPGenDefMotionMotorUWSolver ->", end=" ")
-        FPGenMotionMotorUWSolver.__init__(self, pfile, pdict)
+        print("Init PDEGenDefMotionMotorUWSolver ->", end=" ")
+        PDEGenMotionMotorUWSolver.__init__(self, pfile, pdict)
         self.DefMotionParseParams()
 
     def RodStep(self, *args, **kwargs):

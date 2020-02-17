@@ -1,32 +1,31 @@
 #!/usr/bin/env python
-from .FP_gen_motion_solver import FPGenMotionSolver
-from .FP_static_xlinks_solver import FPStaticXlinksSolver
-
-
 """@package docstring
-File: FP_gen_motion_static_xlinks.py
+File: pde_gen_motion_static_xlinks.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Solver class to calculate rod motion in a solution of crosslinks binding and unbinding.
 """
+from .pde_gen_motion_solver import PDEGenMotionSolver
+from .pde_static_xlinks_solver import PDEStaticXlinksSolver
 
 
-class FPGenMotionStaticXlinksSolver(FPGenMotionSolver, FPStaticXlinksSolver):
+class PDEGenMotionStaticXlinksSolver(
+        PDEGenMotionSolver, PDEStaticXlinksSolver):
 
     """Solver class to calculate rod motion in a solution of crosslinks binding and unbinding."""
 
     def __init__(self, pfile=None, pdict=None):
-        """Initialize FPGenMotionStaticXlinks solver using FPGenMotionSolver"""
-        print("Init FPGenMotionStaticXlinks ->", end=" ")
-        FPGenMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
+        """Initialize PDEGenMotionStaticXlinks solver using PDEGenMotionSolver"""
+        print("Init PDEGenMotionStaticXlinks ->", end=" ")
+        PDEGenMotionSolver.__init__(self, pfile=pfile, pdict=pdict)
 
     def Step(self):
-        """Step forward in time with FPStaticStep and then use FPGenMotionSolver to step the change the position of rods.
+        """Step forward in time with PDEStaticStep and then use PDEGenMotionSolver to step the change the position of rods.
         @return: void, steps the sgrid, R1_pos, R1_vec, R2_pos, R2_vec. Calculates forces and torques.
 
         """
         # Update xlink positions
-        FPStaticXlinksSolver.Step(self)
+        PDEStaticXlinksSolver.Step(self)
         self.calcForceMatrix()
         self.calcTorqueMatrix()
         # Update rod positions

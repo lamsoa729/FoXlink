@@ -1,19 +1,19 @@
 #!/usr/bin/env python
-from .FP_gen_orient_solver import FPGenOrientSolver
+from .pde_gen_orient_solver import PDEGenOrientSolver
 from .rod_motion_solver import RodMotionSolver
 
 
 """@package docstring
-File: FP_gen_motion_Solver.py
+File: pde_gen_motion_Solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Combination class of general orientation solver and rod motion solver
 """
 
 
-class FPGenMotionSolver(FPGenOrientSolver, RodMotionSolver):
+class PDEGenMotionSolver(PDEGenOrientSolver, RodMotionSolver):
 
-    """Docstring for FPGenMotionSolver. """
+    """Docstring for PDEGenMotionSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
@@ -22,5 +22,5 @@ class FPGenMotionSolver(FPGenOrientSolver, RodMotionSolver):
         @param pdict: TODO
 
         """
-        print("Init FPGenMotionSolver ->", end=" ")
-        FPGenOrientSolver.__init__(self, pfile=pfile, pdict=pdict)
+        print("Init PDEGenMotionSolver ->", end=" ")
+        PDEGenOrientSolver.__init__(self, pfile=pfile, pdict=pdict)

@@ -1,41 +1,44 @@
 #!/usr/bin/env python
-from .FP_gen_motion_solver import FPGenMotionSolver
-from .FP_pass_CN_solver import FPPassiveCNSolver
+from .pde_gen_motion_solver import PDEGenMotionSolver
+from .pde_pass_cn_solver import PDEPassiveCNSolver
 
 """@package docstring
-File: FP_gen_motion_pass_CN_solver.py
+File: pde_gen_motion_pass_cn_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
 
 
-class FPGenMotionPassCNSolver(FPGenMotionSolver, FPPassiveCNSolver):
+class PDEGenMotionPassCNSolver(PDEGenMotionSolver, PDEPassiveCNSolver):
 
-    """A PDE solver that incorporates diffusion and rod motion solved by Crank-Nicolson method for crosslink diffusion and forward Euler method for rod motion."""
+    """A PDE solver that incorporates diffusion and rod motion solved by
+    Crank-Nicolson method for crosslink diffusion and forward Euler
+    method for rod motion."""
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
-        Note: parameter file needs viscosity, and xlink diffusion in order to run
+        Note: parameter file needs viscosity and xlink diffusion in order to run
 
         @param pfile: TODO
-        @param name: TODO
+        @param pdict: TODO
 
         """
-        print("Init FPGenMotionPassCNSolver ->", end=" ")
-        FPGenMotionSolver.__init__(self, pfile, pdict)
+        print("Init PDEGenMotionPassCNSolver ->", end=" ")
+        PDEGenMotionSolver.__init__(self, pfile, pdict)
         self.makeDiagMats()
 
     def Step(self):
-        """Step forward in time with FPPassiveCN.Step and then use FPGenMotionSolver to step the change the position of rods.
+        """Step forward in time with PDEPassiveCN.Step and then use PDEGenMotionSolver to step the change the position of rods.
         @return: TODO
 
         """
         # Update xlink positions
-        FPPassiveCNSolver.Step(self)
+        PDEPassiveCNSolver.Step(self)
         # Calculate new forces and torque
         self.calcForceMatrix()
         self.calcTorqueMatrix()
         # Update rod positions and recalculate source matrices
         self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec = self.RodStep(
-            self.force1, self.force2, self.torque, self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
+            self.force1, self.force2, self.torque1, self.torque2,
+            self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)

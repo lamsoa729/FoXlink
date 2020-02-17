@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-from .rod_motion_solver import RodMotionSolver
-from .optical_trap_types import *
-
 """@package docstring
 File: optical_trap_motion_solver.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+from .rod_motion_solver import RodMotionSolver
+from .optical_trap_types import (OpticalTrapOscillator,)
+
 
 import numpy as np
 
 
 class OpticalTrapMotionSolver(RodMotionSolver):
 
-    """!Docstring for FPGenOpticalTrapMotionSolver. """
+    """!Docstring for PDEGenOpticalTrapMotionSolver. """
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
@@ -161,7 +161,7 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @return: TODO
 
         """
-        i_step = FPRodMotionSolver.Write(self)
+        i_step = RodMotionSolver.Write(self)
         self.OTWrite(i_step)
         return i_step
 
