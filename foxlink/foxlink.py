@@ -5,7 +5,6 @@ from .animation_funcs import (makeAnimation, makeMinimalAnimation,
                               makeMomentExpansionAnimation)
 from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
-# from .pde_pass_ang_cn import pdePassiveAngcnSolver
 import argparse
 import sys
 import yaml
@@ -13,16 +12,16 @@ import yaml
 # Import all solvers
 # Orient
 from .pde_gen_orient_static_xlinks_solver import PDEGenOrientStaticXlinksSolver
-from .pde_gen_orient_motor_uw_solver import PDEGenOrientMotoruwSolver
+from .pde_gen_orient_motor_uw_solver import PDEGenOrientMotorUWSolver
 # Free motion solvers
 from .pde_gen_motion_static_xlinks_solver import PDEGenMotionStaticXlinksSolver
-from .pde_gen_motion_pass_cn_solver import PDEGenMotionPasscnSolver
-from .pde_gen_motion_motor_uw_solver import PDEGenMotionMotoruwSolver
+from .pde_gen_motion_pass_cn_solver import PDEGenMotionPassCNSolver
+from .pde_gen_motion_motor_uw_solver import PDEGenMotionMotorUWSolver
 # Optical trap solvers
-from .pde_ot_gen_motion_motor_uw_solver import PDEotGenMotionMotoruwSolver
-from .pde_ot_gen_motion_static_xlinks_solver import PDEotGenMotionStaticXlinksSolver
+from .pde_ot_gen_motion_motor_uw_solver import PDEOpticalTrapGenMotionMotorUWSolver
+from .pde_ot_gen_motion_static_xlinks_solver import PDEOpticalTrapGenMotionStaticXlinksSolver
 # Defined motion
-from .pde_gen_def_motion_motor_uw_solver import PDEGenDefMotionMotoruwSolver
+from .pde_gen_def_motion_motor_uw_solver import PDEGenDefMotionMotorUWSolver
 # Moment expansion solvers
 from .me_solver import MomentExpansionSolver
 
