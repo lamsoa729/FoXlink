@@ -48,6 +48,24 @@ def convert_size_units(d, ax, reference='y'):
     return d * (length / value_range)
 
 
+def get_max_min_ends(r_i, r_j, u_i, u_j, L_i, L_j):
+    """!TODO: Docstring for get_max_min_ends.
+
+    @param r_i: TODO
+    @param r_j: TODO
+    @param u_i: TODO
+    @param u_j: TODO
+    @param L_i: TODO
+    @param L_j: TODO
+    @return: TODO
+
+    """
+    return [np.amax(0.5 * L_i * u_i + r_i), np.amin(0.5 * L_i * u_i + r_i),
+            np.amax(-.5 * L_i * u_i + r_i), np.amin(-.5 * L_i * u_i + r_i),
+            np.amax(0.5 * L_j * u_j + r_j), np.amin(0.5 * L_j * u_j + r_j),
+            np.amax(-.5 * L_j * u_j + r_j), np.amin(-.5 * L_j * u_j + r_j)]
+
+
 class LineDataUnits(Line2D):
     def __init__(self, *args, **kwargs):
         _lw_data = kwargs.pop("linewidth", 1)
@@ -167,43 +185,14 @@ def graph_2d_rod_moment_diagram(ax, anal, n=-1):
     u_j_arr = anal.R2_vec
     mu00_max = np.amax(anal.mu00)
 
-    # if anal.OT1_pos is not None:
-    #     ot1 = Circle((anal.OT1_pos[n, 1], anal.OT1_pos[n, 2]),
-    #                  3 * lw, color='y', alpha=.5)
-    #     mtip1 = Circle((-.5 * L_i * u1[1] + r_i[1], -.5 * L_i * u1[2] + r_i[2]),
-    #                    lw, color='b', zorder=4)
-    #     ax.add_patch(ot1)
-    #     ax.add_patch(mtip1)
-
-    # if anal.OT2_pos is not None:
-    #     ot2 = Circle((anal.OT2_pos[n, 1], anal.OT2_pos[n, 2]),
-    #                  3 * lw, color='y', alpha=.5)
-    #     mtip2 = Circle((-.5 * L_j * u2[1] + r_j[1], -.5 * L_j * u2[2] + r_j[2]),
-    #                    lw, color='b', zorder=4)
-    #     ax.add_patch(ot2)
-    #     ax.add_patch(mtip2)
-
     # Get all extreme positions of tips in the first dimension to maintain
     # consistent graphing size
-    x_ends = [np.amax(0.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-              np.amin(0.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-              np.amax(-.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-              np.amin(-.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-              np.amax(0.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1]),
-              np.amin(0.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1]),
-              np.amax(-.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1]),
-              np.amin(-.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1])]
-
+    x_ends = get_max_min_ends(
+        r_i_arr[:, 1], r_j_arr[:, 1], u_i_arr[:, 1], u_j_arr[:, 1], L_i, L_j)
     # Get all extreme positions of tips in the second dimension to maintain
     # consistent graphing size
-    y_ends = [np.amax(0.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-              np.amin(0.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-              np.amax(-.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-              np.amin(-.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-              np.amax(0.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2]),
-              np.amin(0.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2]),
-              np.amax(-.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2]),
-              np.amin(-.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2])]
+    y_ends = get_max_min_ends(
+        r_i_arr[:, 2], r_j_arr[:, 2], u_i_arr[:, 2], u_j_arr[:, 2], L_i, L_j)
 
     max_x = max(x_ends + y_ends)
     max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
@@ -297,25 +286,12 @@ def graph_2d_rod_diagram(ax, anal, n=-1):
 
         # Get all extreme positions of tips in the first dimension to maintain
         # consistent graphing size
-        x_ends = [np.amax(0.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-                  np.amin(0.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-                  np.amax(-.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-                  np.amin(-.5 * L_i * u_i_arr[:, 1] + r_i_arr[:, 1]),
-                  np.amax(0.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1]),
-                  np.amin(0.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1]),
-                  np.amax(-.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1]),
-                  np.amin(-.5 * L_j * u_j_arr[:, 1] + r_j_arr[:, 1])]
-
+        x_ends = get_max_min_ends(
+            r_i_arr[:, 1], r_j_arr[:, 1], u_i_arr[:, 1], u_j_arr[:, 1], L_i, L_j)
         # Get all extreme positions of tips in the second dimension to maintain
         # consistent graphing size
-        y_ends = [np.amax(0.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-                  np.amin(0.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-                  np.amax(-.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-                  np.amin(-.5 * L_i * u_i_arr[:, 2] + r_i_arr[:, 2]),
-                  np.amax(0.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2]),
-                  np.amin(0.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2]),
-                  np.amax(-.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2]),
-                  np.amin(-.5 * L_j * u_j_arr[:, 2] + r_j_arr[:, 2])]
+        y_ends = get_max_min_ends(
+            r_i_arr[:, 2], r_j_arr[:, 2], u_i_arr[:, 2], u_j_arr[:, 2], L_i, L_j)
 
         max_x = max(x_ends + y_ends)
         max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
