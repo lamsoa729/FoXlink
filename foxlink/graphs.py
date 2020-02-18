@@ -48,6 +48,10 @@ def convert_size_units(d, ax, reference='y'):
     return d * (length / value_range)
 
 
+def xlink_end_pos(r_vec, u_vec, s):
+    return (r_vec + (u_vec * s))
+
+
 def get_max_min_ends(r_i, r_j, u_i, u_j, L_i, L_j):
     """!TODO: Docstring for get_max_min_ends.
 
@@ -166,62 +170,6 @@ def graph_xl_dens(ax, psi, s1, s2, **kwargs):
     return c
 
 
-def graph_2d_rod_moment_diagram(ax, anal, n=-1):
-    """!TODO: Docstring for graph_2d_rod_diagram.
-
-    @param ax: TODO
-    @param anal: TODO
-    @param n: TODO
-    @return: TODO
-
-    """
-    params = anal._params
-    L_i = params["L1"]
-    L_j = params["L2"]
-    rod_diam = params['rod_diameter']
-    r_i_arr = anal.R1_pos
-    r_j_arr = anal.R2_pos
-    u_i_arr = anal.R1_vec
-    u_j_arr = anal.R2_vec
-    mu00_max = np.amax(anal.mu00)
-
-    # Get all extreme positions of tips in the first dimension to maintain
-    # consistent graphing size
-    x_ends = get_max_min_ends(
-        r_i_arr[:, 1], r_j_arr[:, 1], u_i_arr[:, 1], u_j_arr[:, 1], L_i, L_j)
-    # Get all extreme positions of tips in the second dimension to maintain
-    # consistent graphing size
-    y_ends = get_max_min_ends(
-        r_i_arr[:, 2], r_j_arr[:, 2], u_i_arr[:, 2], u_j_arr[:, 2], L_i, L_j)
-
-    max_x = max(x_ends + y_ends)
-    max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
-    min_x = min(x_ends + y_ends)
-    min_x = min_x * 1.25 if min_x < 0 else .75 * min_x
-
-    # Make a square box always
-    max_y = max_x
-    min_y = min_x
-
-    ax.set_xlim(min_x, max_x)
-    ax.set_ylim(min_y, max_y)
-    ax.set_xlabel(r'x (nm)')
-    ax.set_ylabel(r'y (nm)')
-
-    cb = draw_moment_rod(ax, r_i_arr[n], u_i_arr[n], L_i, rod_diam,
-                         anal.mu00[n], anal.mu10[n], anal.mu20[n],
-                         num_max=mu00_max)
-    cb = draw_moment_rod(ax, r_j_arr[n], u_j_arr[n], L_j, rod_diam,
-                         anal.mu00[n], anal.mu01[n], anal.mu02[n],
-                         num_max=mu00_max)
-
-    labels = ["MT$_1$", "MT$_2$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
-    # if anal.OT1_pos is not None or anal.OT2_pos is not None:
-    #     labels += ["Optical trap", "Bead"]
-    ax.legend(labels, loc="upper right")
-    return cb
-
-
 def graph_2d_rod_diagram(ax, anal, n=-1):
     """!TODO: Docstring for graph_2d_rod_diagram.
 
@@ -310,6 +258,97 @@ def graph_2d_rod_diagram(ax, anal, n=-1):
         # if anal.OT1_pos is not None or anal.OT2_pos is not None:
         #     labels += ["Optical trap", "Bead"]
         ax.legend(labels, loc="upper right")
+
+
+def graph_2d_rod_pde_diagram(ax, anal, n=-1):
+    """!TODO: Docstring for graph_2d_rod_diagram.
+
+    @param ax: TODO
+    @param anal: TODO
+    @param n: TODO
+    @return: TODO
+
+    """
+    graph_2d_rod_diagram(ax, anal, n)
+    L_i = anal._params["L1"]
+    L_j = anal._params["L2"]
+    rod_diam = anal._params['rod_diameter']
+    r_i = anal.R1_pos[n]
+    r_j = anal.R2_pos[n]
+    u_i = anal.R1_vec[n]
+    u_j = anal.R2_vec[n]
+    xl_distr = anal.xl_distr[:, :, n]
+
+    N, M = int(L_i / rod_diam) + 1, int(L_j / rod_diam) + 1
+    a, b = int(xl_distr.shape[0] / N), int(xl_distr.shape[1] / M)
+
+    # s_i = anal.s1.reshape(N, a).mean(axis=1)
+    # s_j = anal.s2.reshape(M, b).mean(axis=1)
+    s_i = np.arange(-.5 * (L_i + rod_diam), .5 * (L_i + rod_diam), rod_diam)
+    s_j = np.arange(-.5 * (L_j + rod_diam), .5 * (L_j + rod_diam), rod_diam)
+    xl_distr_coarse = xl_distr.reshape(N, a, M, b)
+    xl_distr_coarse = xl_distr_coarse.sum(axis=(1, 3))
+    for index, val in np.ndenumerate(xl_distr_coarse):
+        e_i = xlink_end_pos(r_i, u_i, s_i[index[0]])
+        e_j = xlink_end_pos(r_j, u_j, s_j[index[1]])
+        #print(e_i, e_j)
+        draw_xlink(ax, e_i, e_j, alpha=np.clip(val * 50, 0, 1))
+
+
+def graph_2d_rod_moment_diagram(ax, anal, n=-1):
+    """!TODO: Docstring for graph_2d_rod_diagram.
+
+    @param ax: TODO
+    @param anal: TODO
+    @param n: TODO
+    @return: TODO
+
+    """
+    params = anal._params
+    L_i = params["L1"]
+    L_j = params["L2"]
+    rod_diam = params['rod_diameter']
+    r_i_arr = anal.R1_pos
+    r_j_arr = anal.R2_pos
+    u_i_arr = anal.R1_vec
+    u_j_arr = anal.R2_vec
+    mu00_max = np.amax(anal.mu00)
+
+    # Get all extreme positions of tips in the first dimension to maintain
+    # consistent graphing size
+    x_ends = get_max_min_ends(
+        r_i_arr[:, 1], r_j_arr[:, 1], u_i_arr[:, 1], u_j_arr[:, 1], L_i, L_j)
+    # Get all extreme positions of tips in the second dimension to maintain
+    # consistent graphing size
+    y_ends = get_max_min_ends(
+        r_i_arr[:, 2], r_j_arr[:, 2], u_i_arr[:, 2], u_j_arr[:, 2], L_i, L_j)
+
+    max_x = max(x_ends + y_ends)
+    max_x = max_x * 1.25 if max_x > 0 else .75 * max_x
+    min_x = min(x_ends + y_ends)
+    min_x = min_x * 1.25 if min_x < 0 else .75 * min_x
+
+    # Make a square box always
+    max_y = max_x
+    min_y = min_x
+
+    ax.set_xlim(min_x, max_x)
+    ax.set_ylim(min_y, max_y)
+    ax.set_xlabel(r'x (nm)')
+    ax.set_ylabel(r'y (nm)')
+
+    cb = draw_moment_rod(ax, r_i_arr[n], u_i_arr[n], L_i, rod_diam,
+                         anal.mu00[n], anal.mu10[n], anal.mu20[n],
+                         num_max=mu00_max)
+    cb = draw_moment_rod(ax, r_j_arr[n], u_j_arr[n], L_j, rod_diam,
+                         anal.mu00[n], anal.mu01[n], anal.mu02[n],
+                         num_max=mu00_max)
+
+    labels = ["MT$_1$", "MT$_2$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
+    # if anal.OT1_pos is not None or anal.OT2_pos is not None:
+    #     labels += ["Optical trap", "Bead"]
+    ax.legend(labels, loc="upper right")
+    return cb
 
 
 def me_graph_all_data_2d(fig, axarr, n, me_anal):
@@ -655,7 +694,7 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
             del artist
 
     # Draw rods
-    graph_2d_rod_diagram(axarr[0], pde_anal, n)
+    graph_2d_rod_pde_diagram(axarr[0], pde_anal, n)
 
     # Make density plot
     c = graph_xl_dens(axarr[1],
