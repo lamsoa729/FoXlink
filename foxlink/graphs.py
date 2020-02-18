@@ -91,7 +91,9 @@ def draw_xlink(ax, e_i, e_j, lw=10, color='k', alpha=.5):
 
 def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
                     mu00, mu10, mu20, num_max=50.):
-    cmap = mpl.cm.get_cmap('viridis')
+    cb = mpl.cm.ScalarMappable(
+        mpl.colors.Normalize(0, num_max), 'viridis')
+    draw_rod(ax, r_vec, u_vec, L, rod_diam, color=cb.to_rgba(mu00))
     scaled_mu10 = mu10 / mu00 if mu00 else 0
     mu10_loc = RegularPolygon((r_vec[1] + scaled_mu10 * u_vec[1],
                                r_vec[2] + scaled_mu10 * u_vec[2]),
@@ -110,7 +112,7 @@ def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
                                zorder=4)
     ax.add_patch(mu10_loc)
     ax.add_patch(mu20_bar)
-    draw_rod(ax, r_vec, u_vec, L, rod_diam, color=cmap(mu00 / num_max))
+    return cb
 
 
 def graph_vs_time(ax, time, y, n=-1, color='b'):
@@ -217,17 +219,18 @@ def graph_2d_rod_moment_diagram(ax, anal, n=-1):
     ax.set_xlabel(r'x (nm)')
     ax.set_ylabel(r'y (nm)')
 
-    draw_moment_rod(ax, r_i_arr[n], u_i_arr[n], L_i, rod_diam,
-                    anal.mu00[n], anal.mu10[n], anal.mu20[n],
-                    num_max=mu00_max)
-    draw_moment_rod(ax, r_j_arr[n], u_j_arr[n], L_j, rod_diam,
-                    anal.mu00[n], anal.mu01[n], anal.mu02[n],
-                    num_max=mu00_max)
+    cb = draw_moment_rod(ax, r_i_arr[n], u_i_arr[n], L_i, rod_diam,
+                         anal.mu00[n], anal.mu10[n], anal.mu20[n],
+                         num_max=mu00_max)
+    cb = draw_moment_rod(ax, r_j_arr[n], u_j_arr[n], L_j, rod_diam,
+                         anal.mu00[n], anal.mu01[n], anal.mu02[n],
+                         num_max=mu00_max)
 
-    labels = ["MT$_1$", "MT$_2$", "Plus-end"]
+    labels = ["MT$_1$", "MT$_2$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
     # if anal.OT1_pos is not None or anal.OT2_pos is not None:
     #     labels += ["Optical trap", "Bead"]
     ax.legend(labels, loc="upper right")
+    return cb
 
 
 def graph_2d_rod_diagram(ax, anal, n=-1):
@@ -374,10 +377,12 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
     axarr[5].set_ylim(np.amin(mu_kl), np.amax(mu_kl))
 
     # Draw rods
-    graph_2d_rod_diagram(axarr[0], me_anal, n)
+    # graph_2d_rod_diagram(axarr[0], me_anal, n)
+    cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
 
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
+        fig.colorbar(cb, ax=axarr[0])
         me_anal.init_flag = False
 
     # Graph rod center separations

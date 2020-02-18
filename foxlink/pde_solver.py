@@ -328,11 +328,13 @@ class PDESolver(Solver):
              self.steric_torque_j) = calc_wca_force_torque(
                 r_i, r_j, u_i, u_j, L_i, L_j, d, eps)
             self.steric_force_i = -1. * self.steric_force_j
-        if steric_flag is None or steric_flag is "None":
+            return
+        if steric_flag is None or steric_flag == "None":
             self.steric_force_i = np.zeros(3)
             self.steric_force_j = np.zeros(3)
             self.steric_torque_i = np.zeros(3)
             self.steric_torque_j = np.zeros(3)
+            return
 
     def clearInteractions(self):
         """!TODO: Docstring for clearInteractions.
