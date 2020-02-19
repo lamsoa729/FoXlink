@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from matplotlib.animation import FFMpegWriter
-from .animation_funcs import (makeAnimation, makeMinimalAnimation,
-                              makeOrientAnimation, makeMomentAnimation,
+from .animation_funcs import (make_animation, make_minimal_pde_animation,
+                              make_orient_pde_animation, make_moment_pde_animation,
                               make_moment_expansion_animation)
 from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
@@ -152,18 +152,21 @@ class FoXlink(object):
                 fps=25, metadata=dict(
                     artist='Me'), bitrate=1800)
             if self._opts.analysis == "ME":
+                analyzer.graph_type = self._opts.movie
                 make_moment_expansion_animation(analyzer, writer)
             elif self._opts.movie == 'all':
-                makeAnimation(analyzer, writer)
+                make_animation(analyzer, writer)
             elif self._opts.movie == 'min':
-                makeMinimalAnimation(analyzer, writer)
+                make_minimal_pde_animation(analyzer, writer)
             elif self._opts.movie == 'orient':
-                makeOrientAnimation(analyzer, writer)
+                make_orient_pde_animation(analyzer, writer)
             elif self._opts.movie == 'moment':
-                makeMomentAnimation(analyzer, writer)
+                make_moment_pde_animation(analyzer, writer)
 
         if self._opts.graph:
             if self._opts.analysis == "ME":
+                analyzer.make_snapshot()
+                analyzer.graph_type = 'min'
                 analyzer.make_snapshot()
 
         analyzer.save()

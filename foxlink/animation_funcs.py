@@ -14,7 +14,7 @@ Description:
 """
 
 
-def makeAnimation(pde_anal, writer=FFMpegWriter):
+def make_animation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO
 
@@ -41,8 +41,6 @@ def makeAnimation(pde_anal, writer=FFMpegWriter):
                             fig.add_subplot(gs[2, 2]),
                             ])
         fig.suptitle(' ')
-        # pde_anal.graphSlice(50, fig, axarr)
-        # plt.show()
         nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
@@ -59,7 +57,7 @@ def makeAnimation(pde_anal, writer=FFMpegWriter):
     print("Movie saved in: ", t1 - t0)
 
 
-def makeMinimalAnimation(pde_anal, writer=FFMpegWriter):
+def make_minimal_pde_animation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO
 
@@ -93,7 +91,7 @@ def makeMinimalAnimation(pde_anal, writer=FFMpegWriter):
     print("Movie saved in: ", t1 - t0)
 
 
-def makeOrientAnimation(pde_anal, writer=FFMpegWriter):
+def make_orient_pde_animation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO
 
@@ -131,7 +129,7 @@ def makeOrientAnimation(pde_anal, writer=FFMpegWriter):
     print("Movie saved in: ", t1 - t0)
 
 
-def makeMomentAnimation(pde_anal, writer=FFMpegWriter):
+def make_moment_pde_animation(pde_anal, writer=FFMpegWriter):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void
