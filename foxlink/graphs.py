@@ -260,7 +260,7 @@ def graph_2d_rod_diagram(ax, anal, n=-1):
         ax.legend(labels, loc="upper right")
 
 
-def graph_2d_rod_pde_diagram(ax, anal, n=-1):
+def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
     """!TODO: Docstring for graph_2d_rod_diagram.
 
     @param ax: TODO
@@ -292,7 +292,7 @@ def graph_2d_rod_pde_diagram(ax, anal, n=-1):
         e_i = xlink_end_pos(r_i, u_i, s_i[index[0]])
         e_j = xlink_end_pos(r_j, u_j, s_j[index[1]])
         #print(e_i, e_j)
-        draw_xlink(ax, e_i, e_j, alpha=np.clip(val * 50, 0, 1))
+        draw_xlink(ax, e_i, e_j, alpha=np.clip(val * scale / (a * b), 0, 1))
 
 
 def graph_2d_rod_moment_diagram(ax, anal, n=-1):
@@ -392,12 +392,15 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
     axarr[5].set_ylim(np.amin(mu_kl), np.amax(mu_kl))
 
     # Draw rods
-    # graph_2d_rod_diagram(axarr[0], me_anal, n)
-    cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
+    if me_anal.graph_type == 'min':
+        graph_2d_rod_diagram(axarr[0], me_anal, n)
+    else:
+        cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
 
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
-        fig.colorbar(cb, ax=axarr[0])
+        if me_anal.graph_type == 'min':
+            fig.colorbar(cb, ax=axarr[0])
         me_anal.init_flag = False
 
     # Graph rod center separations
@@ -694,7 +697,8 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
             del artist
 
     # Draw rods
-    graph_2d_rod_pde_diagram(axarr[0], pde_anal, n)
+    graph_2d_rod_pde_diagram(axarr[0], pde_anal, n,
+                             scale=1. / (pde_anal.max_dens_val))
 
     # Make density plot
     c = graph_xl_dens(axarr[1],

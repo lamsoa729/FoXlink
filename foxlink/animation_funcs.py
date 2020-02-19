@@ -172,7 +172,7 @@ def makeMomentAnimation(pde_anal, writer=FFMpegWriter):
     print("Movie saved in: ", t1 - t0)
 
 
-def makeMomentExpansionAnimation(me_anal, writer=FFMpegWriter):
+def make_moment_expansion_animation(me_anal, writer=FFMpegWriter):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void

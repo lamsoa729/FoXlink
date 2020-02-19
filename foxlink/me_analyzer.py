@@ -30,6 +30,7 @@ class MEAnalyzer(Analyzer):
 
         """
         Analyzer.__init__(self, filename, analysis_type)
+        self.movie_type = 'all'
 
     def collect_data_arrays(self):
         """!Store data arrays in member variables
@@ -159,4 +160,4 @@ class MEAnalyzer(Analyzer):
             fig.suptitle(' ')
             self.graph_slice(-1, fig, axarr)
 
-        fig.savefig('{}_ME.png'.format(self.get_name()))
+        fig.savefig('{}_{}.png'.format(self.get_name(), self.graph_type))
