@@ -152,6 +152,7 @@ class FoXlink(object):
                 fps=25, metadata=dict(
                     artist='Me'), bitrate=1800)
             if self._opts.analysis == "ME":
+                analyzer.graph_type = self._opts.movie
                 make_moment_expansion_animation(analyzer, writer)
             elif self._opts.movie == 'all':
                 makeAnimation(analyzer, writer)

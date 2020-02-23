@@ -396,10 +396,9 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
         graph_2d_rod_diagram(axarr[0], me_anal, n)
     else:
         cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
-
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
-        if me_anal.graph_type == 'min':
+        if me_anal.graph_type == 'all':
             fig.colorbar(cb, ax=axarr[0])
         me_anal.init_flag = False
 
