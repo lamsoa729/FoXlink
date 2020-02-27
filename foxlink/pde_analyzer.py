@@ -27,6 +27,19 @@ class PDEAnalyzer(Analyzer):
         @param analysis_type: What kind of analysis ot run on data file
         """
         Analyzer.__init__(self, filename, analysis_type)
+        self.mu00 = []  # Array of crosslinker number vs time
+        self.mu10 = []  # Array of crosslinker polarity vs time
+        self.mu01 = []  # Array of crosslinker polarity vs time
+        self.mu11 = []  # Array of crosslinker asymmetry vs time
+        self.mu20 = []  # Array of crosslinker variance vs time
+        self.mu02 = []  # Array of crosslinker variance vs time
+
+        self.Bj0 = []
+        self.Bi0 = []
+        self.Bj1 = []
+        self.Bi1 = []
+        self.Bj2 = []
+        self.Bi2 = []
 
     def collect_data_arrays(self):
         """!Store data arrays in member variables
@@ -36,8 +49,8 @@ class PDEAnalyzer(Analyzer):
         Analyzer.collect_data_arrays(self)
         # What kind of motion of microtubules
 
-        self.s1 = np.asarray(self._h5_data['/rod_data/s1'])
-        self.s2 = np.asarray(self._h5_data['/rod_data/s2'])
+        self.s_i = np.asarray(self._h5_data['/rod_data/s1'])
+        self.s_j = np.asarray(self._h5_data['/rod_data/s2'])
 
         if '/OT_data' in self._h5_data:
             self.OT1_pos = self._h5_data['/OT_data/OT1_pos']
@@ -48,14 +61,6 @@ class PDEAnalyzer(Analyzer):
 
         self.xl_distr = self._h5_data['/xl_data/xl_distr']
         # self.makexl_densArrs()
-        self.mu00 = []  # Array of crosslinker number vs time
-        self.mu10 = []  # Array of crosslinker number vs time
-        self.mu01 = []  # Array of crosslinker number vs time
-        self.mu01 = []  # Array of crosslinker number vs time
-        self.mu11 = []  # Array of crosslinker number vs time
-        self.mu20 = []  # Array of crosslinker number vs time
-        self.mu02 = []  # Array of crosslinker number vs time
-        self.torque_arr = []  # Array of torque by crosslinker vs time
 
         # Max concentration of crosslinkers
         self.max_dens_val = np.amax(self.xl_distr)
@@ -104,8 +109,8 @@ class PDEAnalyzer(Analyzer):
         """
         ds = float(self._params["ds"])
         ds_sqr = ds * ds
-        s1 = self.s1
-        s2 = self.s2
+        s_i = self.s_i
+        s_j = self.s_j
 
         # Zeroth moment (number of crosslinkers)
         if 'zeroth_moment' not in xl_analysis_grp:
@@ -122,13 +127,13 @@ class PDEAnalyzer(Analyzer):
         # First moments
         if 'first_moments' not in xl_analysis_grp:
             if analysis_type != 'load':
-                self.mu10 = np.einsum('ijn,i->n', self.xl_distr, s1) * ds_sqr
-                self.mu01 = np.einsum('ijn,j->n', self.xl_distr, s2) * ds_sqr
+                self.mu10 = np.einsum('ijn,i->n', self.xl_distr, s_i) * ds_sqr
+                self.mu01 = np.einsum('ijn,j->n', self.xl_distr, s_j) * ds_sqr
                 self.first_mom_dset = xl_analysis_grp.create_dataset(
                     'first_moments', data=np.stack((self.mu10, self.mu01), axis=-1),
                     dtype=np.float32)
-                self.first_mom_dset.attrs['columns'] = ['s1 moment',
-                                                        's2 moment']
+                self.first_mom_dset.attrs['columns'] = ['s_i moment',
+                                                        's_j moment']
             else:
                 print('--- The first moments not analyzed or stored. ---')
         else:
@@ -140,18 +145,18 @@ class PDEAnalyzer(Analyzer):
         if 'second_moments' not in xl_analysis_grp:
             if analysis_type != 'load':
                 self.mu11 = np.einsum(
-                    'ijn,i,j->n', self.xl_distr, s1, s2) * ds_sqr
+                    'ijn,i,j->n', self.xl_distr, s_i, s_j) * ds_sqr
                 self.mu20 = np.einsum(
-                    'ijn,i->n', self.xl_distr, s1 * s1) * ds_sqr
+                    'ijn,i->n', self.xl_distr, s_i * s_i) * ds_sqr
                 self.mu02 = np.einsum(
-                    'ijn,j->n', self.xl_distr, s2 * s2) * ds_sqr
+                    'ijn,j->n', self.xl_distr, s_j * s_j) * ds_sqr
                 self.second_mom_dset = xl_analysis_grp.create_dataset(
                     'second_moments',
                     data=np.stack((self.mu11, self.mu20, self.mu02), axis=-1),
                     dtype=np.float32)
-                self.second_mom_dset.attrs['columns'] = ['s1*s2 moment',
-                                                         's1^2 moment',
-                                                         's2^2 moment']
+                self.second_mom_dset.attrs['columns'] = ['s_i*s_j moment',
+                                                         's_i^2 moment',
+                                                         's_j^2 moment']
             else:
                 print('--- The second moments not analyzed or stored. ---')
         else:
@@ -159,6 +164,68 @@ class PDEAnalyzer(Analyzer):
             self.mu11 = np.asarray(self.second_mom_dset)[:, 0]
             self.mu20 = np.asarray(self.second_mom_dset)[:, 1]
             self.mu02 = np.asarray(self.second_mom_dset)[:, 2]
+
+    def xl_boundary_analysis(self, xl_analysis_grp, analysis_type='analyze'):
+        """!TODO: Docstring for xl_boundary_analysis.
+        @return: TODO
+
+        """
+        L_i = float(self._params["L1"])
+        L_j = float(self._params["L2"])
+        ds = float(self._params["ds"])
+        ds_sqr = ds * ds
+        s_i = self.s_i
+        s_j = self.s_j
+        # if 'zeroth_boundary_terms' not in xl_analysis_grp:
+        #     if analysis_type != 'load':
+        #         self.mu00 = np.sum(self.xl_distr, axis=(0, 1)) * ds_sqr
+        #         self.zero_mom_dset = xl_analysis_grp.create_dataset(
+        #             'zeroth_moment', data=self.mu00, dtype=np.float32)
+        #     else:
+        #         print('--- The zeroth moment not analyzed or stored. ---')
+        # else:
+        #     self.zero_mom_dset = xl_analysis_grp['zeroth_moment']
+        #     self.mu00 = np.asarray(self.zero_mom_dset)
+
+        # # First moments
+        # if 'first_boundary_terms' not in xl_analysis_grp:
+        #     if analysis_type != 'load':
+        #         self.mu10 = np.einsum('ijn,i->n', self.xl_distr, s_i) * ds_sqr
+        #         self.mu01 = np.einsum('ijn,j->n', self.xl_distr, s_j) * ds_sqr
+        #         self.first_mom_dset = xl_analysis_grp.create_dataset(
+        #             'first_moments', data=np.stack((self.mu10, self.mu01), axis=-1),
+        #             dtype=np.float32)
+        #         self.first_mom_dset.attrs['columns'] = ['s_i moment',
+        #                                                 's_j moment']
+        #     else:
+        #         print('--- The first moments not analyzed or stored. ---')
+        # else:
+        #     self.first_mom_dset = xl_analysis_grp['first_moments']
+        #     self.mu10 = np.asarray(self.first_mom_dset)[:, 0]
+        #     self.mu01 = np.asarray(self.first_mom_dset)[:, 1]
+        # # Second moments calculations
+        # if 'second_boundary_terms' not in xl_analysis_grp:
+        #     if analysis_type != 'load':
+        #         self.mu11 = np.einsum(
+        #             'ijn,i,j->n', self.xl_distr, s_i, s_j) * ds_sqr
+        #         self.mu20 = np.einsum(
+        #             'ijn,i->n', self.xl_distr, s_i * s_i) * ds_sqr
+        #         self.mu02 = np.einsum(
+        #             'ijn,j->n', self.xl_distr, s_j * s_j) * ds_sqr
+        #         self.second_mom_dset = xl_analysis_grp.create_dataset(
+        #             'second_moments',
+        #             data=np.stack((self.mu11, self.mu20, self.mu02), axis=-1),
+        #             dtype=np.float32)
+        #         self.second_mom_dset.attrs['columns'] = ['s_i*s_j moment',
+        #                                                  's_i^2 moment',
+        #                                                  's_j^2 moment']
+        #     else:
+        #         print('--- The second moments not analyzed or stored. ---')
+        # else:
+        #     self.second_mom_dset = xl_analysis_grp['second_moments']
+        #     self.mu11 = np.asarray(self.second_mom_dset)[:, 0]
+        #     self.mu20 = np.asarray(self.second_mom_dset)[:, 1]
+        #     self.mu02 = np.asarray(self.second_mom_dset)[:, 2]
 
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
@@ -183,7 +250,6 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
-
 
     def graphSlice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time

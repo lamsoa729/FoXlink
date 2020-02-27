@@ -357,9 +357,7 @@ class PDESolver(Solver):
 
         """
         self.sgrid[:, 0] *= bc_val
-        self.sgrid[:, -1] *= bc_val
         self.sgrid[0, :] *= bc_val
-        self.sgrid[-1, :] *= bc_val
 
     def Write(self):
         """!Write current step in algorithm into data frame

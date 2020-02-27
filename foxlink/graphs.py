@@ -151,7 +151,7 @@ def graph_vs_time(ax, time, y, n=-1, color='b'):
     return s
 
 
-def graph_xl_dens(ax, psi, s1, s2, **kwargs):
+def graph_xl_dens(ax, psi, s_i, s_j, **kwargs):
     """!Graph an instance in time of the crosslinker density for the PDE
 
     @param psi: crosslinker density
@@ -159,14 +159,14 @@ def graph_xl_dens(ax, psi, s1, s2, **kwargs):
     @return: TODO
 
     """
-    s1 = np.asarray(s1)
-    s2 = np.asarray(s2)
+    s_i = np.asarray(s_i)
+    s_j = np.asarray(s_j)
     psi = np.transpose(np.asarray(psi))
     if "max_dens_val" in kwargs:
         max_val = kwargs["max_dens_val"]
-        c = ax.pcolormesh(s1, s2, psi, vmin=0, vmax=max_val)
+        c = ax.pcolormesh(s_i, s_j, psi, vmin=0, vmax=max_val)
     else:
-        c = ax.pcolormesh(s1, s2, psi)
+        c = ax.pcolormesh(s_i, s_j, psi)
     return c
 
 
@@ -254,7 +254,7 @@ def graph_2d_rod_diagram(ax, anal, n=-1):
         ax.set_ylim(min_y, max_y)
         ax.set_xlabel(r'x (nm)')
         ax.set_ylabel(r'y (nm)')
-        labels = ["MT$_1$", "MT$_2$", "Plus-end"]
+        labels = ["MT$_i$", "MT$_j$", "Plus-end"]
         # if anal.OT1_pos is not None or anal.OT2_pos is not None:
         #     labels += ["Optical trap", "Bead"]
         ax.legend(labels, loc="upper right")
@@ -282,8 +282,8 @@ def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
     N, M = int(L_i / rod_diam) + 1, int(L_j / rod_diam) + 1
     a, b = int(xl_distr.shape[0] / N), int(xl_distr.shape[1] / M)
 
-    # s_i = anal.s1.reshape(N, a).mean(axis=1)
-    # s_j = anal.s2.reshape(M, b).mean(axis=1)
+    # s_i = anal.s_i.reshape(N, a).mean(axis=1)
+    # s_j = anal.s_j.reshape(M, b).mean(axis=1)
     s_i = np.arange(-.5 * (L_i + rod_diam), .5 * (L_i + rod_diam), rod_diam)
     s_j = np.arange(-.5 * (L_j + rod_diam), .5 * (L_j + rod_diam), rod_diam)
     xl_distr_coarse = xl_distr.reshape(N, a, M, b)
@@ -344,10 +344,10 @@ def graph_2d_rod_moment_diagram(ax, anal, n=-1):
                          anal.mu00[n], anal.mu01[n], anal.mu02[n],
                          num_max=mu00_max)
 
-    labels = ["MT$_1$", "MT$_2$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
+    # labels = ["MT$_i$", "MT$_j$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
     # if anal.OT1_pos is not None or anal.OT2_pos is not None:
     #     labels += ["Optical trap", "Bead"]
-    ax.legend(labels, loc="upper right")
+    # ax.legend(labels, loc="upper right")
     return cb
 
 
@@ -396,10 +396,9 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
         graph_2d_rod_diagram(axarr[0], me_anal, n)
     else:
         cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
-
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
-        if me_anal.graph_type == 'min':
+        if me_anal.graph_type == 'all':
             fig.colorbar(cb, ax=axarr[0])
         me_anal.init_flag = False
 
@@ -453,9 +452,9 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
 
     # Init axis labels and ranges
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_1$ $s_1$ (nm)')
+        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_2$ $s_2$ (nm)')
+        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
@@ -509,8 +508,8 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
     # Make crosslinker density plot
     c = graph_xl_dens(axarr[1],
                       pde_anal.xl_distr[:, :, n],
-                      pde_anal.s1,
-                      pde_anal.s2,
+                      pde_anal.s_i,
+                      pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
     if pde_anal.init_flag:
         axarr[0].set_aspect(1.0)
@@ -550,13 +549,13 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
     # Legend information
     axarr[2].legend(["N({:.2f}) = {:.1f}".format(
         pde_anal.time[n], pde_anal.mu00[n])])
-    axarr[3].legend([r"F$_1$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+    axarr[3].legend([r"F$_i$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.force_arr[n, 0]),
-                     r"F$_2$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+                     r"F$_j$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.force_arr[n, 1])])
-    axarr[4].legend([r"$T_1$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+    axarr[4].legend([r"$T_i$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.torque_arr[n, 0]),
-                     r"$T_2$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+                     r"$T_j$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.torque_arr[n, 1])])
     axarr[5].legend([r"$\mu^{{1,0}}$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                               pde_anal.mu10[n]),
@@ -586,9 +585,9 @@ def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
 
     # Init axis labels and ranges
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_1$ $s_1$ (nm)')
+        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_2$ $s_2$ (nm)')
+        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
@@ -630,8 +629,8 @@ def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
     # Make crosslinker density plot
     c = graph_xl_dens(axarr[1],
                       pde_anal.xl_distr[:, :, n],
-                      pde_anal.s1,
-                      pde_anal.s2,
+                      pde_anal.s_i,
+                      pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
     if pde_anal.init_flag:
         axarr[0].set_aspect(1.0)
@@ -676,13 +675,13 @@ def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
                                                               pde_anal.mu20[n]),
                      r"$\mu^{{0,2}}$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                               pde_anal.mu02[n])])
-    axarr[5].legend([r"F$_1$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+    axarr[5].legend([r"F$_i$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.force_arr[n, 0]),
-                     r"F$_2$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+                     r"F$_j$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.force_arr[n, 1])])
-    axarr[6].legend([r"$T_1$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+    axarr[6].legend([r"$T_i$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.torque_arr[n, 0]),
-                     r"$T_2$({:.2f}) = {:.1f}".format(pde_anal.time[n],
+                     r"$T_j$({:.2f}) = {:.1f}".format(pde_anal.time[n],
                                                       pde_anal.torque_arr[n, 1])])
     return fig.gca().lines + fig.gca().collections
 
@@ -703,13 +702,13 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
     # Make density plot
     c = graph_xl_dens(axarr[1],
                       pde_anal.xl_distr[:, :, n],
-                      pde_anal.s1,
-                      pde_anal.s2,
+                      pde_anal.s_i,
+                      pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_1$ $s_1$ (nm)')
+        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_2$ $s_2$ (nm)')
+        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
 
     if pde_anal.init_flag:
         axarr[0].set_aspect(1.0)
@@ -740,13 +739,13 @@ def pde_graph_stationary_runs_2d(fig, axarr, n, pde_anal):
     # Make density plot
     c = graph_xl_dens(axarr[1],
                       pde_anal.xl_distr[:, :, n],
-                      pde_anal.s1,
-                      pde_anal.s2,
+                      pde_anal.s_i,
+                      pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_1$ $s_1$ (nm)')
+        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_2$ $s_2$ (nm)')
+        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
