@@ -251,7 +251,7 @@ class PDEAnalyzer(Analyzer):
 #  Graphing functions  #
 ########################
 
-    def graphSlice(self, n, fig, axarr):
+    def graph_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
         @param n: index of slice to graph
@@ -264,7 +264,7 @@ class PDEAnalyzer(Analyzer):
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
-    def graphReducedSlice(self, n, fig, axarr):
+    def graph_reduced_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
         @param n: index of slice to graph
@@ -277,7 +277,7 @@ class PDEAnalyzer(Analyzer):
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
-    def graphOrientSlice(self, n, fig, axarr):
+    def graph_orient_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
         @param n: index of slice to graph
@@ -290,7 +290,7 @@ class PDEAnalyzer(Analyzer):
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
-    def graphMomentSlice(self, n, fig, axarr):
+    def graph_moment_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
 
         @param n: index of slice to graph

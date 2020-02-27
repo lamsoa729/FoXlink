@@ -291,7 +291,7 @@ def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
     for index, val in np.ndenumerate(xl_distr_coarse):
         e_i = xlink_end_pos(r_i, u_i, s_i[index[0]])
         e_j = xlink_end_pos(r_j, u_j, s_j[index[1]])
-        #print(e_i, e_j)
+        # print(e_i, e_j)
         draw_xlink(ax, e_i, e_j, alpha=np.clip(val * scale / (a * b), 0, 1))
 
 
@@ -398,7 +398,13 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
         cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
+
+
+<< << << < Updated upstream
         if me_anal.graph_type == 'all':
+== == == =
+        if me_anal.graph_type != 'min':
+>>>>>> > Stashed changes
             fig.colorbar(cb, ax=axarr[0])
         me_anal.init_flag = False
 

@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+"""@package docstring
+File: foxlink.py
+Author: Adam Lamson
+Email: adam.lamson@colorado.edu
+Description: Main control program for FoXlink PDE solver. Parses arguments using
+argsparse. Type foxlink -h for help and main actions.
+"""
 from matplotlib.animation import FFMpegWriter
 from .animation_funcs import (make_animation, make_minimal_pde_animation,
                               make_orient_pde_animation, make_moment_pde_animation,
@@ -24,15 +31,6 @@ from .pde_ot_gen_motion_static_xlinks_solver import PDEOpticalTrapGenMotionStati
 from .pde_gen_def_motion_motor_uw_solver import PDEGenDefMotionMotorUWSolver
 # Moment expansion solvers
 from .me_solver import MomentExpansionSolver
-
-
-"""@package docstring
-File: foxlink.py
-Author: Adam Lamson
-Email: adam.lamson@colorado.edu
-Description: Main control program for FoXlink PDE solver. Parses arguments using
-argsparse. Type foxlink -h for help and main actions.
-"""
 
 
 def parse_args():
@@ -166,6 +164,7 @@ class FoXlink(object):
         if self._opts.graph:
             if self._opts.analysis == "ME":
                 analyzer.make_snapshot()
+                analyzer.init_flag = True
                 analyzer.graph_type = 'min'
                 analyzer.make_snapshot()
 

@@ -44,7 +44,7 @@ def make_animation(pde_anal, writer=FFMpegWriter):
         nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            pde_anal.graphSlice,
+            pde_anal.graph_slice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
@@ -79,7 +79,7 @@ def make_minimal_pde_animation(pde_anal, writer=FFMpegWriter):
         nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            pde_anal.graphReducedSlice,
+            pde_anal.graph_reduced_slice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
@@ -117,7 +117,7 @@ def make_orient_pde_animation(pde_anal, writer=FFMpegWriter):
         nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            pde_anal.graphOrientSlice,
+            pde_anal.graph_orient_slice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
@@ -158,7 +158,7 @@ def make_moment_pde_animation(pde_anal, writer=FFMpegWriter):
         nframes = pde_anal.time.size
         anim = FuncAnimation(
             fig,
-            pde_anal.graphMomentSlice,
+            pde_anal.graph_moment_slice,
             frames=np.arange(nframes),
             fargs=(fig, axarr),
             interval=50,
