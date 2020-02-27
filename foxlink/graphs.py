@@ -170,8 +170,8 @@ def graph_xl_dens(ax, psi, s_i, s_j, **kwargs):
     return c
 
 
-def graph_jd_rod_diagram(ax, anal, n=-1):
-    """!TODO: Docstring for graph_jd_rod_diagram.
+def graph_2d_rod_diagram(ax, anal, n=-1):
+    """!TODO: Docstring for graph_2d_rod_diagram.
 
     @param ax: TODO
     @param anal: TODO
@@ -260,8 +260,8 @@ def graph_jd_rod_diagram(ax, anal, n=-1):
         ax.legend(labels, loc="upper right")
 
 
-def graph_jd_rod_pde_diagram(ax, anal, n=-1, scale=50):
-    """!TODO: Docstring for graph_jd_rod_diagram.
+def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
+    """!TODO: Docstring for graph_2d_rod_diagram.
 
     @param ax: TODO
     @param anal: TODO
@@ -269,7 +269,7 @@ def graph_jd_rod_pde_diagram(ax, anal, n=-1, scale=50):
     @return: TODO
 
     """
-    graph_jd_rod_diagram(ax, anal, n)
+    graph_2d_rod_diagram(ax, anal, n)
     L_i = anal._params["L1"]
     L_j = anal._params["L2"]
     rod_diam = anal._params['rod_diameter']
@@ -295,8 +295,8 @@ def graph_jd_rod_pde_diagram(ax, anal, n=-1, scale=50):
         draw_xlink(ax, e_i, e_j, alpha=np.clip(val * scale / (a * b), 0, 1))
 
 
-def graph_jd_rod_moment_diagram(ax, anal, n=-1):
-    """!TODO: Docstring for graph_jd_rod_diagram.
+def graph_2d_rod_moment_diagram(ax, anal, n=-1):
+    """!TODO: Docstring for graph_2d_rod_diagram.
 
     @param ax: TODO
     @param anal: TODO
@@ -351,7 +351,7 @@ def graph_jd_rod_moment_diagram(ax, anal, n=-1):
     return cb
 
 
-def me_graph_all_data_jd(fig, axarr, n, me_anal):
+def me_graph_all_data_2d(fig, axarr, n, me_anal):
     # Clean up if lines on axis object to speed up movie making
     if not me_anal.init_flag:
         for ax in axarr.flatten():
@@ -393,9 +393,9 @@ def me_graph_all_data_jd(fig, axarr, n, me_anal):
 
     # Draw rods
     if me_anal.graph_type == 'min':
-        graph_jd_rod_diagram(axarr[0], me_anal, n)
+        graph_2d_rod_diagram(axarr[0], me_anal, n)
     else:
-        cb = graph_jd_rod_moment_diagram(axarr[0], me_anal, n)
+        cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
         if me_anal.graph_type == 'all':
@@ -441,7 +441,7 @@ def me_graph_all_data_jd(fig, axarr, n, me_anal):
     return fig.gca().lines + fig.gca().collections
 
 
-def pde_graph_all_data_jd(fig, axarr, n, pde_anal):
+def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
     # Clean up if lines
     if not pde_anal.init_flag:
         for ax in axarr.flatten():
@@ -503,7 +503,7 @@ def pde_graph_all_data_jd(fig, axarr, n, pde_anal):
                           np.amax(pde_anal.mu02)))
 
     # Draw rods
-    graph_jd_rod_diagram(axarr[0], pde_anal, n)
+    graph_2d_rod_diagram(axarr[0], pde_anal, n)
 
     # Make crosslinker density plot
     c = graph_xl_dens(axarr[1],
@@ -574,7 +574,7 @@ def pde_graph_all_data_jd(fig, axarr, n, pde_anal):
     return fig.gca().lines + fig.gca().collections
 
 
-def pde_graph_moment_data_jd(fig, axarr, n, pde_anal):
+def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
     # Clean up if lines
     if not pde_anal.init_flag:
         for ax in axarr.flatten():
@@ -624,7 +624,7 @@ def pde_graph_moment_data_jd(fig, axarr, n, pde_anal):
                       np.amax(pde_anal.torque_arr))
 
     # Draw rods
-    graph_jd_rod_diagram(axarr[0], pde_anal, n)
+    graph_2d_rod_diagram(axarr[0], pde_anal, n)
 
     # Make crosslinker density plot
     c = graph_xl_dens(axarr[1],
@@ -686,7 +686,7 @@ def pde_graph_moment_data_jd(fig, axarr, n, pde_anal):
     return fig.gca().lines + fig.gca().collections
 
 
-def pde_graph_mts_xlink_distr_jd(fig, axarr, n, pde_anal):
+def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
     # Clean up if lines
     if not pde_anal.init_flag:
         for ax in axarr.flatten():
@@ -696,7 +696,7 @@ def pde_graph_mts_xlink_distr_jd(fig, axarr, n, pde_anal):
             del artist
 
     # Draw rods
-    graph_jd_rod_pde_diagram(axarr[0], pde_anal, n,
+    graph_2d_rod_pde_diagram(axarr[0], pde_anal, n,
                              scale=1. / (pde_anal.max_dens_val))
 
     # Make density plot
@@ -724,7 +724,7 @@ def pde_graph_mts_xlink_distr_jd(fig, axarr, n, pde_anal):
     return fig.gca().lines + fig.gca().collections
 
 
-def pde_graph_stationary_runs_jd(fig, axarr, n, pde_anal):
+def pde_graph_stationary_runs_2d(fig, axarr, n, pde_anal):
     # Clean up if lines
     if not pde_anal.init_flag:
         for ax in axarr.flatten():
@@ -734,7 +734,7 @@ def pde_graph_stationary_runs_jd(fig, axarr, n, pde_anal):
             del artist
 
     # Draw rods
-    graph_jd_rod_diagram(axarr[0], pde_anal, n)
+    graph_2d_rod_diagram(axarr[0], pde_anal, n)
 
     # Make density plot
     c = graph_xl_dens(axarr[1],
