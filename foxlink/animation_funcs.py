@@ -208,6 +208,8 @@ def make_moment_expansion_animation(me_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_ME.mp4'.format(me_anal.get_name()), writer=writer)
+    anim.save(
+        '{}_ME_{}.mp4'.format(me_anal.get_name(), me_anal.graph_type),
+        writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)

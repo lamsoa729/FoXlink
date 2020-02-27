@@ -56,5 +56,6 @@ def dr_dt(f_vec, u_i, gpara, gperp):
     """
     uu_mat = np.outer(u_i, u_i)
     # Create mobility tensor for rod
-    mob_mat = np.linalg.inv((gpara - gperp) * uu_mat + gperp * np.eye(3))
+    mob_mat = np.ascontiguousarray(
+        np.linalg.inv((gpara - gperp) * uu_mat + gperp * np.eye(3)))
     return np.dot(mob_mat, f_vec)
