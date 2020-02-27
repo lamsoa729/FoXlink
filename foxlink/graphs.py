@@ -399,14 +399,9 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
 
-
-<< << << < Updated upstream
-        if me_anal.graph_type == 'all':
-== == == =
-        if me_anal.graph_type != 'min':
->>>>>> > Stashed changes
-            fig.colorbar(cb, ax=axarr[0])
-        me_anal.init_flag = False
+    if me_anal.graph_type == 'all':
+        fig.colorbar(cb, ax=axarr[0])
+    me_anal.init_flag = False
 
     # Graph rod center separations
     graph_vs_time(axarr[1], me_anal.time, me_anal.dR_arr, n)
