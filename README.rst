@@ -46,6 +46,12 @@ Foxlink revolves around mulit-inheritance  to quickly create and combine PDE sol
 
 .. code-block:: foxlink -f FP_params.yaml
 
+Naming conventions
+------------------
+* snake_case for all methods and functions
+* CamelCase for all classes
+* Geometric factors for filament is defined by paper. Recognize which filament
+  by placing _<filament id> e.g. center position of filament i = r_i
 
 Credits
 -------
