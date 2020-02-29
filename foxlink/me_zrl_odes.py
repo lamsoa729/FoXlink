@@ -41,7 +41,8 @@ def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i):
 
 
 @njit
-def dmu00_dt_zrl(mu00, ko, q00=0):
+def dmu00_dt_zrl(mu00, ko, q00=0, vo=0, a_ij=0, a_ji=0, b=0,
+                 kappa=0, hL_i=0, hL_j=0, B_j0=0, B_j1=0, B_i0=0, B_i1=0):
     """!Calculate the time-derivative of the zeroth moment of the zero rest
     length crosslinkers bound to rods.
 
@@ -51,20 +52,15 @@ def dmu00_dt_zrl(mu00, ko, q00=0):
     @return: Time derivative of the zeroth moment of motors
 
     """
-    # # Partition function
-    # if q00 is None:
-    #     q00, e = dblquad(boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    #                      lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    #                      args=[rsqr, a_ij, a_ji, b, ks, beta])
-    # elif q00 == 'fast':
-    #     q00 = fast_zrl_src_full_kl(
-    #         L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
-
-    return ko * (q00 - mu00)
+    return ko * (q00 - mu00) + ((-vo + kappa * (hL_i - a_ji)) * B_j0
+                                - (kappa * b * B_j1)
+                                (-vo + kappa * (hL_j - a_ij)) * B_i0
+                                - (kappa * b * B_i1))
 
 
 @njit
-def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0):
+def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0, a_ji=0,
+                 hL_i=0, hL_j=0, B_j0=0, B_j1=0, B_i1=0, B_i2=0):
     """!Calculate the time-derivative of the first moment(s1) of the zero rest
     length crosslinkers bound to rods.
 
@@ -79,19 +75,11 @@ def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0):
     @return: Time derivative of the first(s1) moment of motors
 
     """
-    # Partition function
-    # if q10 is None:
-    #     q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    #                      lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    #                      args=[1, 0, rsqr, a_ij, a_ji, b, ks, beta],)
-    # elif q10 == 'fast':
-    #     # q10 = fast_zrl_src_full_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=0)
-    #     # Make coordinate transformation
-    #     q10 = fast_zrl_src_full_kl(
-    #         L_j, L_i, rsqr, -a_ji, -a_ij, b, ks, beta, k=0, l=1)
-    # Characteristic walking rate
     return ((ko * q10) + ((vo + kappa * a_ij) * mu00) - ((ko + kappa) * mu10)
-            + (kappa * b * mu01))
+            + (kappa * b * mu01)
+            + hL_i * (kappa * (hL_i - a_ij) - vo) * B_j0
+            - kappa * b * hL_i * B_j1
+            + (kappa * (hL_j - a_ji) - vo) * B_i1 - kappa * b * B_i2)
 
 
 @njit
