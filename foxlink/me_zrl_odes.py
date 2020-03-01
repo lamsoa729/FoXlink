@@ -83,45 +83,39 @@ def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0, a_ji=0,
 
 
 @njit
-def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                 ko, vo, kappa, q11=0):
+def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b, ko, vo, kappa,
+                 q11=0, hL_i=0, hL_j=0, B_j1=0, B_j2=0, B_i1=0, B_i2=0):
     """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
-    length crosslinkers bound to rods.
+     length crosslinkers bound to rods.
 
-    @param mu10: First motor moment of s1
-    @param mu01: First motor moment of s2
-    @param mu11: Second motor moment of s1 and s2
-    @param mu20: Second motor moment of s1
-    @param mu02: Second motor moment of s2
-    @param a_ij: Dot product of u_i and r_ij
-    @param a_ji: Dot product of u_j and r_ij
-    @param b: Dot product of u_i and u_j
-    @param vo: Velocity of motor when no force is applied
-    @param fs: Stall force of motor ends
-    @param ko: Turnover rate of motors
-    @param c: Effective concentration of motors in solution
-    @param ks: Motor spring constant
-    @param beta: 1/(Boltzmann's constant * Temperature)
-    @param L_i: Length of rod1
-    @param L_j: Length of rod2
-    @return: Time derivative of the second(s1,s2) moment of motors
+     @param mu10: First motor moment of s1
+     @param mu01: First motor moment of s2
+     @param mu11: Second motor moment of s1 and s2
+     @param mu20: Second motor moment of s1
+     @param mu02: Second motor moment of s2
+     @param a_ij: Dot product of u_i and r_ij
+     @param a_ji: Dot product of u_j and r_ij
+     @param b: Dot product of u_i and u_j
+     @param vo: Velocity of motor when no force is applied
+     @param fs: Stall force of motor ends
+     @param ko: Turnover rate of motors
+     @param c: Effective concentration of motors in solution
+     @param ks: Motor spring constant
+     @param beta: 1/(Boltzmann's constant * Temperature)
+     @param L_i: Length of rod1
+     @param L_j: Length of rod2
+     @return: Time derivative of the second(s1,s2) moment of motors
 
-    """
-    # Partition function
-    # if q11 is None:
-    #     q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    #                      lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    #                      args=[1, 1, rsqr, a_ij, a_ji, b, ks, beta])
-    # elif q11 == 'fast':
-    #     q11 = fast_zrl_src_full_kl(
-    #         L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
-    # Characteristic walking rate
-    return ((ko * q11) + ((vo + kappa * a_ji) * mu10) + ((vo + kappa * a_ij) * mu01)
-            - ((ko + 2. * kappa) * mu11) + (kappa * b * (mu20 + mu02)))
+     """
+    return ((ko * q11) + (vo + kappa * a_ji) * mu10 + (vo + kappa * a_ij) * mu01
+            - (ko + 2. * kappa) * mu11 + kappa * b * (mu20 + mu02)
+            + hL_i * ((kappa * (hL_i - a_ij) - vo) * B_j1 - b * kappa * B_j2)
+            + hL_j * ((kappa * (hL_j - a_ji) - vo) * B_i1 - b * kappa * B_i2))
 
 
 @njit
-def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20='fast'):
+def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20=0, a_ji=0,
+                 hL_i=0, hL_j=0, B_j0=0, B_j1=0, B_i2=0, B_i3=0):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -136,15 +130,29 @@ def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20='fast'):
     @return: Time derivative of the second(s1^2) moment of motors
 
     """
-    # Partition function
-    # if q20 is None:
-    #     q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    #                      lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    #                      args=[2, 0, rsqr, a_ij, a_ji, b, ks, beta])
-    # elif q20 == 'fast':
-    #     # q20 = fast_zrl_src_full_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=2, l=0)
-    #     # Make coordinate transformation
-    #     q20 = fast_zrl_src_full_kl(
-    #         L_j, L_i, rsqr, -a_ji, -a_ij, b, ks, beta, k=0, l=2)
-    return ((ko * q20) + (2. * (vo + kappa * a_ij) * mu10)
-            + (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu20))
+    return ((ko * q20) + 2. * (vo + kappa * a_ij) * mu10
+            + (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu20)
+            + (hL_i**2) * (kappa * (hL_i - a_ij) - vo) * B_j0
+            - kappa * b * (hL_i**2) * B_j1
+            + (kappa * (hL_j - a_ji) - vo) * B_i2 - kappa * b * B_i3)
+
+
+def dBl_j_dt_zrl(l, Bl_prev_j, Bl_j, s_i, vo, ko, kappa,
+                 Ql_j=0, a_ij=0, a_ji=0, b=0):
+    """!TODO: Docstring for dBl_j_dt_zrl.
+
+    @param l: TODO
+    @param Bl_prev_j: TODO
+    @param Bl_j: TODO
+    @param s_i: TODO
+    @param vo: TODO
+    @param ko: TODO
+    @param kappa: TODO
+    @param a_ij: TODO
+    @param a_ji: TODO
+    @param b: TODO
+    @return: TODO
+
+    """
+    return (ko * Ql_j + l * (vo + kappa * (a_ji + b * s_i)) * Bl_prev_j
+            - (ko + kappa * (l - 1.)) * Bl_j)
