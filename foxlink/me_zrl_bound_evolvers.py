@@ -26,8 +26,7 @@ def get_zrl_moments_and_boundary_terms(sol):
     @return: Moments of the solution vector
 
     """
-    # return sol[12:18].tolist()
-    pass
+    return sol[12:24].tolist()
 
 
 def get_Qj_params(s_i, L_j, a_ji, b, ks, beta):
@@ -58,40 +57,47 @@ def prep_zrl_boundary_evolver(sol, c, ks, beta, L_i, L_j):
     Q_i2 = c * fast_zrl_src_integrand_l2(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
     return (rsqr, a_ij, a_ji, b,
             q00, q10, q01, q11, q20, q02,
-            Q_j0, Q_j1, Q_j2, Q_i0, Q_i1, Q_i2)
+            Q_j0, Q_i0, Q_j1, Q_i1, Q_j2, Q_i2)
 
-# def evolver_zrl_bound(sol,
-#                 gpara_i, gperp_i, grot_i,  # Friction coefficients
-#                 gpara_j, gperp_j, grot_j,
-#                 vo, fs, ko, c, ks, beta, L_i, L_j):  # Other constants
-#     """!Calculate all time derivatives necessary to solve the moment expansion
-#     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
-# bound to moving rods. d<var> is the time derivative of corresponding
-# variable
 
-#     @param sol: Solution vector to solve_ivp
-#     @param gpara_i: Parallel drag coefficient of rod1
-#     @param gperp_i: Perpendicular drag coefficient of rod1
-#     @param grot_i: Rotational drag coefficient of rod1
-#     @param gpara_j: Parallel drag coefficient of rod1
-#     @param gperp_j: Perpendicular drag coefficient of rod1
-#     @param grot_j: Rotational drag coefficient of rod1
-#     @param vo: Velocity of motor when no force is applied
-#     @param fs: Stall force of motor ends
-#     @param ko: Turnover rate of motors
-#     @param c: Effective concentration of motors in solution
-#     @param ks: Motor spring constant
-#     @param beta: 1/(Boltzmann's constant * Temperature)
-#     @param L_i: Length of rod1
-#     @param L_j: Length of rod2
-#     @param fast: Flag on whether or not to use fast solving techniques
-#     @return: Time-derivatives of all time varying quantities in a flattened
-#              array
-#     """
-#     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
-#     r_ij = r_j - r_i
-#     (rsqr, a_ij, a_ji, b,
-#      q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i, L_j)
-#     mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
+def evolver_zrl_bound(sol,
+                      gpara_i, gperp_i, grot_i,  # Friction coefficients
+                      gpara_j, gperp_j, grot_j,
+                      vo, fs, ko, c, ks, beta, L_i, L_j):  # Other constants
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+bound to moving rods. d<var> is the time derivative of corresponding
+variable
+
+    @param sol: Solution vector to solve_ivp
+    @param gpara_i: Parallel drag coefficient of rod1
+    @param gperp_i: Perpendicular drag coefficient of rod1
+    @param grot_i: Rotational drag coefficient of rod1
+    @param gpara_j: Parallel drag coefficient of rod1
+    @param gperp_j: Perpendicular drag coefficient of rod1
+    @param grot_j: Rotational drag coefficient of rod1
+    @param vo: Velocity of motor when no force is applied
+    @param fs: Stall force of motor ends
+    @param ko: Turnover rate of motors
+    @param c: Effective concentration of motors in solution
+    @param ks: Motor spring constant
+    @param beta: 1/(Boltzmann's constant * Temperature)
+    @param L_i: Length of rod1
+    @param L_j: Length of rod2
+    @param fast: Flag on whether or not to use fast solving techniques
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+    r_ij = r_j - r_i
+    (rsqr, a_ij, a_ji, b,
+     q00, q10, q01, q11, q20, q02,
+     Q_j0, Q_i0, Q_j1, Q_i1, Q_j2, Q_i2) = prep_zrl_boundary_evolver(
+        sol, c, ks, beta, L_i, L_j)
+    (mu00, mu10, mu01, mu11, mu20, mu02,
+     Q_j0, Q_i0, Q_j1, Q_i1, Q_j2, Q_i2) = get_zrl_moments_and_boundary_terms(sol)
+
+    dsol = 0
+    return dsol
 
 ##########################################
