@@ -41,8 +41,8 @@ def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i):
 
 
 @njit
-def dmu00_dt_zrl(mu00, ko, q00=0, vo=0, a_ij=0, a_ji=0, b=0,
-                 kappa=0, hL_i=0, hL_j=0, B_j0=0, B_j1=0, B_i0=0, B_i1=0):
+def dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
+                 q00=0, B0_j=0, B0_i=0, B1_j=0, B1_i=0):
     """!Calculate the time-derivative of the zeroth moment of the zero rest
     length crosslinkers bound to rods.
 
@@ -52,15 +52,16 @@ def dmu00_dt_zrl(mu00, ko, q00=0, vo=0, a_ij=0, a_ji=0, b=0,
     @return: Time derivative of the zeroth moment of motors
 
     """
-    return ko * (q00 - mu00) + ((-vo + kappa * (hL_i - a_ji)) * B_j0
-                                - (kappa * b * B_j1)
-                                (-vo + kappa * (hL_j - a_ij)) * B_i0
-                                - (kappa * b * B_i1))
+    return ko * (q00 - mu00) + ((-vo + kappa * (hL_i - a_ji)) * B0_j
+                                - (kappa * b * B1_j)
+                                (-vo + kappa * (hL_j - a_ij)) * B0_i
+                                - (kappa * b * B1_i))
 
 
 @njit
-def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0, a_ji=0,
-                 hL_i=0, hL_j=0, B_j0=0, B_j1=0, B_i1=0, B_i2=0):
+def dmu10_dt_zrl(mu00, mu10, mu01,
+                 a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
+                 q10=0, B0_j=0, B1_j=0, B1_i=0, B2_i=0):
     """!Calculate the time-derivative of the first moment(s1) of the zero rest
     length crosslinkers bound to rods.
 
@@ -77,14 +78,15 @@ def dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10=0, a_ji=0,
     """
     return ((ko * q10) + ((vo + kappa * a_ij) * mu00) - ((ko + kappa) * mu10)
             + (kappa * b * mu01)
-            + hL_i * (kappa * (hL_i - a_ij) - vo) * B_j0
-            - kappa * b * hL_i * B_j1
-            + (kappa * (hL_j - a_ji) - vo) * B_i1 - kappa * b * B_i2)
+            + hL_i * (kappa * (hL_i - a_ij) - vo) * B0_j
+            - kappa * b * hL_i * B1_j
+            + (kappa * (hL_j - a_ji) - vo) * B1_i - kappa * b * B2_i)
 
 
 @njit
-def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b, ko, vo, kappa,
-                 q11=0, hL_i=0, hL_j=0, B_j1=0, B_j2=0, B_i1=0, B_i2=0):
+def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02,
+                 a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
+                 q11=0, B1_j=0, B1_i=0, B2_j=0, B2_i=0):
     """!Calculate the time-derivative of the second moment(s1,s2) of zero rest
      length crosslinkers bound to rods.
 
@@ -109,13 +111,13 @@ def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b, ko, vo, kappa,
      """
     return ((ko * q11) + (vo + kappa * a_ji) * mu10 + (vo + kappa * a_ij) * mu01
             - (ko + 2. * kappa) * mu11 + kappa * b * (mu20 + mu02)
-            + hL_i * ((kappa * (hL_i - a_ij) - vo) * B_j1 - b * kappa * B_j2)
-            + hL_j * ((kappa * (hL_j - a_ji) - vo) * B_i1 - b * kappa * B_i2))
+            + hL_i * ((kappa * (hL_i - a_ij) - vo) * B1_j - b * kappa * B2_j)
+            + hL_j * ((kappa * (hL_j - a_ji) - vo) * B1_i - b * kappa * B2_i))
 
 
 @njit
 def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20=0, a_ji=0,
-                 hL_i=0, hL_j=0, B_j0=0, B_j1=0, B_i2=0, B_i3=0):
+                 hL_i=0, hL_j=0, B0_j=0, B1_j=0, B2_i=0, B_i3=0):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -132,13 +134,13 @@ def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20=0, a_ji=0,
     """
     return ((ko * q20) + 2. * (vo + kappa * a_ij) * mu10
             + (2. * kappa * b * mu11) - ((ko + 2. * kappa) * mu20)
-            + (hL_i**2) * (kappa * (hL_i - a_ij) - vo) * B_j0
-            - kappa * b * (hL_i**2) * B_j1
-            + (kappa * (hL_j - a_ji) - vo) * B_i2 - kappa * b * B_i3)
+            + (hL_i**2) * (kappa * (hL_i - a_ij) - vo) * B0_j
+            - kappa * b * (hL_i**2) * B1_j
+            + (kappa * (hL_j - a_ji) - vo) * B2_i - kappa * b * B_i3)
 
 
-def dBl_j_dt_zrl(l, Bl_prev_j, Bl_j, s_i, vo, ko, kappa,
-                 Ql_j=0, a_ij=0, a_ji=0, b=0):
+def dBl_j_dt_zrl(l, Bl_prev_j, Bl_j, a_ij, a_ji, b, s_i, vo, ko, kappa,
+                 Ql_j=0):
     """!TODO: Docstring for dBl_j_dt_zrl.
 
     @param l: TODO

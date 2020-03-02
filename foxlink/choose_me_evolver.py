@@ -104,7 +104,7 @@ def choose_me_evolver(sol_init, slvr):
             mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
             # sol_print_out(sol)
             return evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
-                                    a_ij, a_ji, b,
+                                    a_ij, a_ji, b, slvr.L_i, slvr.L_j,
                                     q00, q10, q01, q11, q20, q02,
                                     slvr.vo, slvr.fs, slvr.ko, slvr.ks)  # Other parameters
         return evolver_zrl_stat_closure

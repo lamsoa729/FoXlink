@@ -101,6 +101,7 @@ def evolver_zrl(sol,
              array
     """
     # Define useful parameters for functions
+    hL_i, hL_j = (.5 * L_i, .5 * L_j)
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
     (rsqr, a_ij, a_ji, b,
@@ -119,16 +120,21 @@ def evolver_zrl(sol,
     # Characteristic walking rate
     kappa = vo * ks / fs
     # Evolution of zeroth moment
-    dmu00 = dmu00_dt_zrl(mu00, ko, q00)
+    kappa = vo * ks / fs
+    # Evolution of zeroth moment
+    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
     # Evoultion of first moments
-    # TODO Double check this for accuracy
-    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10)
-    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, b, ko, vo, kappa, q01)
+    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q10)
+    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q01)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                         ko, vo, kappa, q11)
-    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20)
-    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, b, ko, vo, kappa, q02)
+                         hL_j, hL_i, ko, vo, kappa, q11)
+    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q20)
+    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q02)
     dsol = np.concatenate(
         (dr_i, dr_j, du_i, du_j, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
@@ -168,6 +174,7 @@ def evolver_zrl_wca(sol,
     """
     # Define useful parameters for functions
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+    hL_i, hL_j = (.5 * L_i, .5 * L_j)
     r_ij = r_j - r_i
     (rsqr, a_ij, a_ji, b,
      q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i, L_j)
@@ -193,16 +200,19 @@ def evolver_zrl_wca(sol,
     # Characteristic walking rate
     kappa = vo * ks / fs
     # Evolution of zeroth moment
-    dmu00 = dmu00_dt_zrl(mu00, ko, q00)
+    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
     # Evoultion of first moments
-    # TODO Double check this for accuracy
-    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10)
-    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, b, ko, vo, kappa, q01)
+    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q10)
+    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q01)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                         ko, vo, kappa, q11)
-    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20)
-    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, b, ko, vo, kappa, q02)
+                         hL_j, hL_i, ko, vo, kappa, q11)
+    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q20)
+    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q02)
     dsol = np.concatenate(
         (dr_i, dr_j, du_i, du_j, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
@@ -214,7 +224,7 @@ def evolver_zrl_wca(sol,
 
 
 def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
-                     a_ij, a_ji, b,
+                     a_ij, a_ji, b, L_i, L_j,
                      q00, q10, q01, q11, q20, q02,  # Pre-computed values
                      vo, fs, ko, ks):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
@@ -238,21 +248,25 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
     @return: Time-derivatives of all time varying quantities in a flattened
              array
     """
-    # print(mu00)
+    hL_i, hL_j = (.5 * L_i, .5 * L_j)
     # Define useful parameters for functions
     rod_change_arr = np.zeros(12)
     # Characteristic walking rate
     kappa = vo * ks / fs
     # Evolution of zeroth moment
-    dmu00 = dmu00_dt_zrl(mu00, ko, q00)
+    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
     # Evoultion of first moments
-    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, b, ko, vo, kappa, q10)
-    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, b, ko, vo, kappa, q01)
+    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q10)
+    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q01)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                         ko, vo, kappa, q11)
-    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20)
-    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, b, ko, vo, kappa, q02)
+                         hL_j, hL_i, ko, vo, kappa, q11)
+    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q20)
+    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q02)
     dsol = np.concatenate(
         (rod_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
     # Check to make sure all values are finite
