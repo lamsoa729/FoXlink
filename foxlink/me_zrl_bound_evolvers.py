@@ -112,19 +112,21 @@ variable
     # Characteristic walking rate
     kappa = vo * ks / fs
     # Evolution of zeroth moment
-    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
+    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00,
+                         B0_j, B0_i, B1_j, B1_i)
     # Evoultion of first moments
     dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q10)
+                         ko, vo, kappa, q10, B0_j, B1_j, B1_i, B2_i)
     dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q01)
+                         ko, vo, kappa, q01, B0_i, B1_i, B1_j, B2_j)
     # Evolution of second moments
     dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                         hL_j, hL_i, ko, vo, kappa, q11)
+                         hL_j, hL_i, ko, vo, kappa, q11, B1_j, B1_i, B2_j, B2_i)
     dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q20)
+                         ko, vo, kappa, q20, B0_j, B1_j, B2_i, 0)
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q02)
+                         ko, vo, kappa, q02, B0_i, B1_i, B2_j, 0)
+
     # Evolution of boundary condtions
     dB0_j = dBl_j_dt_zrl(0., 0., B0_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
                          Q0_j)

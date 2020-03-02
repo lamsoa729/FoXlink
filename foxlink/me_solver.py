@@ -92,7 +92,7 @@ class MomentExpansionSolver(Solver):
         """!Set the initial conditions for the system of ODEs
         @return: void
         """
-        self.sol_init = np.zeros(18)
+        self.sol_init = np.zeros(24)
         # Set all geometric variables
         self.sol_init[:12] = np.concatenate(
             (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))
@@ -134,7 +134,7 @@ class MomentExpansionSolver(Solver):
 
         self.Write()
 
-    def makeRodDataSet(self):
+    def make_rod_dataset(self):
         """!Initialize dataframe with empty rod configuration data
         @return: void
 
@@ -148,19 +148,28 @@ class MomentExpansionSolver(Solver):
         self._R2_vec_dset = self._rod_grp.create_dataset(
             'R2_vec', data=self.sol.y[9: 12, :].T)
 
-    def makeXLMomentDataSet(self):
+    def make_xl_moment_dataset(self):
         """!Initialize dataframe with empty crosslinker moment data
         @return: void
 
         """
-        self._rho_dset = self._xl_grp.create_dataset('zeroth_moment',
+        self._mu0_dset = self._xl_grp.create_dataset('zeroth_moment',
                                                      data=self.sol.y[12, :].T,
                                                      dtype=np.float32)
-        self._P_dset = self._xl_grp.create_dataset('first_moments',
-                                                   data=self.sol.y[13: 15, :].T,
-                                                   dtype=np.float32)
-        self._mu_dset = self._xl_grp.create_dataset('second_moments',
-                                                    data=self.sol.y[15:, :].T,
+        self._mu1_dset = self._xl_grp.create_dataset('first_moments',
+                                                     data=self.sol.y[13: 15, :].T,
+                                                     dtype=np.float32)
+        self._mu2_dset = self._xl_grp.create_dataset('second_moments',
+                                                     data=self.sol.y[15:18, :].T,
+                                                     dtype=np.float32)
+        self._B0_dset = self._xl_grp.create_dataset('zeroth_boundary_terms',
+                                                    data=self.sol.y[18:20, :].T,
+                                                    dtype=np.float32)
+        self._B1_dset = self._xl_grp.create_dataset('first_boundary_terms',
+                                                    data=self.sol.y[20:22, :].T,
+                                                    dtype=np.float32)
+        self._B2_dset = self._xl_grp.create_dataset('second_boundary_terms',
+                                                    data=self.sol.y[22:24, :].T,
                                                     dtype=np.float32)
 
     def Write(self):
@@ -169,8 +178,8 @@ class MomentExpansionSolver(Solver):
 
         """
         self.redimensionalize()
-        self.makeXLMomentDataSet()
-        self.makeRodDataSet()
+        self.make_xl_moment_dataset()
+        self.make_rod_dataset()
         # Store how long the simulation took
         self._h5_data.attrs['cpu_time'] = self.cpu_time
 
@@ -223,11 +232,15 @@ class MomentExpansionSolver(Solver):
 
         """
         # Redimensionalize rod positions
-        self.sol.y[: 6, :] = self.non_dimmer.dim_val(
-            self.sol.y[: 6, :], ['length'])
+        self.sol.y[:6, :] = self.non_dimmer.dim_val(self.sol.y[:6, :],
+                                                    ['length'])
         # Redimensionalize first moments
-        self.sol.y[13: 15, :] = self.non_dimmer.dim_val(self.sol.y[13: 15, :],
-                                                        ['length'])
+        self.sol.y[13:15, :] = self.non_dimmer.dim_val(self.sol.y[13: 15, :],
+                                                       ['length'])
         # Redimensionalize second moments
-        self.sol.y[15:, :] = self.non_dimmer.dim_val(self.sol.y[15:, :],
-                                                     ['length'], [2])
+        self.sol.y[15:18, :] = self.non_dimmer.dim_val(self.sol.y[15:18, :],
+                                                       ['length'], [2])
+        self.sol.y[20:22, :] = self.non_dimmer.dim_val(self.sol.y[20:22, :],
+                                                       ['length'])
+        self.sol.y[22:24, :] = self.non_dimmer.dim_val(self.sol.y[22:24, :],
+                                                       ['length'], [2])
