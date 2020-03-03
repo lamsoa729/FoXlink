@@ -34,12 +34,14 @@ class PDEAnalyzer(Analyzer):
         self.mu20 = []  # Array of crosslinker variance vs time
         self.mu02 = []  # Array of crosslinker variance vs time
 
-        self.Bj0 = []
-        self.Bi0 = []
-        self.Bj1 = []
-        self.Bi1 = []
-        self.Bj2 = []
-        self.Bi2 = []
+        self.B0_j = []
+        self.B0_i = []
+        self.B1_j = []
+        self.B1_i = []
+        self.B2_j = []
+        self.B2_i = []
+        self.B3_j = []
+        self.B3_i = []
 
     def collect_data_arrays(self):
         """!Store data arrays in member variables
@@ -176,56 +178,79 @@ class PDEAnalyzer(Analyzer):
         ds_sqr = ds * ds
         s_i = self.s_i
         s_j = self.s_j
-        # if 'zeroth_boundary_terms' not in xl_analysis_grp:
-        #     if analysis_type != 'load':
-        #         self.mu00 = np.sum(self.xl_distr, axis=(0, 1)) * ds_sqr
-        #         self.zero_mom_dset = xl_analysis_grp.create_dataset(
-        #             'zeroth_moment', data=self.mu00, dtype=np.float32)
-        #     else:
-        #         print('--- The zeroth moment not analyzed or stored. ---')
-        # else:
-        #     self.zero_mom_dset = xl_analysis_grp['zeroth_moment']
-        #     self.mu00 = np.asarray(self.zero_mom_dset)
+        # Zeroth boundary term analysis
+        if 'zeroth_boundary_terms' not in xl_analysis_grp:
+            if analysis_type != 'load':
+                self.B0_j = np.sum(self.xl_distr[-1, :, :], axis=0) * ds
+                self.B0_i = np.sum(self.xl_distr[:, -1, :], axis=0) * ds
+                self.zeroth_bterm_dset = xl_analysis_grp.create_dataset(
+                    'zeroth_boundary_terms',
+                    data=np.stack((self.B0_j, self.B0_i), axis=-1),
+                    dtype=np.float32)
+                self.zeroth_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
+                                                           'Boundary integral over s_i']
+            else:
+                print('--- The zeroth boundary term not analyzed or stored. ---')
+        else:
+            self.zeroth_bterm_dset = xl_analysis_grp['zeroth_boundary_terms']
+            self.B0_j = np.asarray(self.zeroth_bterm_dset)[:, 0]
+            self.B0_i = np.asarray(self.zeroth_bterm_dset)[:, 1]
 
-        # # First moments
-        # if 'first_boundary_terms' not in xl_analysis_grp:
-        #     if analysis_type != 'load':
-        #         self.mu10 = np.einsum('ijn,i->n', self.xl_distr, s_i) * ds_sqr
-        #         self.mu01 = np.einsum('ijn,j->n', self.xl_distr, s_j) * ds_sqr
-        #         self.first_mom_dset = xl_analysis_grp.create_dataset(
-        #             'first_moments', data=np.stack((self.mu10, self.mu01), axis=-1),
-        #             dtype=np.float32)
-        #         self.first_mom_dset.attrs['columns'] = ['s_i moment',
-        #                                                 's_j moment']
-        #     else:
-        #         print('--- The first moments not analyzed or stored. ---')
-        # else:
-        #     self.first_mom_dset = xl_analysis_grp['first_moments']
-        #     self.mu10 = np.asarray(self.first_mom_dset)[:, 0]
-        #     self.mu01 = np.asarray(self.first_mom_dset)[:, 1]
-        # # Second moments calculations
-        # if 'second_boundary_terms' not in xl_analysis_grp:
-        #     if analysis_type != 'load':
-        #         self.mu11 = np.einsum(
-        #             'ijn,i,j->n', self.xl_distr, s_i, s_j) * ds_sqr
-        #         self.mu20 = np.einsum(
-        #             'ijn,i->n', self.xl_distr, s_i * s_i) * ds_sqr
-        #         self.mu02 = np.einsum(
-        #             'ijn,j->n', self.xl_distr, s_j * s_j) * ds_sqr
-        #         self.second_mom_dset = xl_analysis_grp.create_dataset(
-        #             'second_moments',
-        #             data=np.stack((self.mu11, self.mu20, self.mu02), axis=-1),
-        #             dtype=np.float32)
-        #         self.second_mom_dset.attrs['columns'] = ['s_i*s_j moment',
-        #                                                  's_i^2 moment',
-        #                                                  's_j^2 moment']
-        #     else:
-        #         print('--- The second moments not analyzed or stored. ---')
-        # else:
-        #     self.second_mom_dset = xl_analysis_grp['second_moments']
-        #     self.mu11 = np.asarray(self.second_mom_dset)[:, 0]
-        #     self.mu20 = np.asarray(self.second_mom_dset)[:, 1]
-        #     self.mu02 = np.asarray(self.second_mom_dset)[:, 2]
+        if 'first_boundary_terms' not in xl_analysis_grp:
+            if analysis_type != 'load':
+                self.B1_j = np.einsum('jn,j->n', self.xl_distr[-1], s_j) * ds
+                self.B1_i = np.einsum(
+                    'in,i->n', self.xl_distr[:, -1, :], s_i) * ds
+                self.first_bterm_dset = xl_analysis_grp.create_dataset(
+                    'first_boundary_terms',
+                    data=np.stack((self.B1_j, self.B1_i), axis=-1),
+                    dtype=np.float32)
+                self.first_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
+                                                          'Boundary integral over s_i']
+            else:
+                print('--- The first boundary term not analyzed or stored. ---')
+        else:
+            self.first_bterm_dset = xl_analysis_grp['first_boundary_terms']
+            self.B1_j = np.asarray(self.first_bterm_dset)[:, 0]
+            self.B1_i = np.asarray(self.first_bterm_dset)[:, 1]
+
+        if 'second_boundary_terms' not in xl_analysis_grp:
+            if analysis_type != 'load':
+                self.B2_j = np.einsum(
+                    'jn,j->n', self.xl_distr[-1], s_j * s_j) * ds
+                self.B2_i = np.einsum(
+                    'in,i->n', self.xl_distr[:, -1, :], s_i * s_i) * ds
+                self.second_bterm_dset = xl_analysis_grp.create_dataset(
+                    'second_boundary_terms',
+                    data=np.stack((self.B2_j, self.B2_i), axis=-1),
+                    dtype=np.float32)
+                self.second_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
+                                                           'Boundary integral over s_i']
+            else:
+                print('--- The second boundary term not analyzed or stored. ---')
+        else:
+            self.second_bterm_dset = xl_analysis_grp['second_boundary_terms']
+            self.B2_j = np.asarray(self.second_bterm_dset)[:, 0]
+            self.B2_i = np.asarray(self.second_bterm_dset)[:, 1]
+
+        if 'third_boundary_terms' not in xl_analysis_grp:
+            if analysis_type != 'load':
+                self.B3_j = np.einsum(
+                    'jn,j->n', self.xl_distr[-1], s_j * s_j * s_j) * ds
+                self.B3_i = np.einsum(
+                    'in,i->n', self.xl_distr[:, -1, :], s_i * s_i * s_i) * ds
+                self.third_bterm_dset = xl_analysis_grp.create_dataset(
+                    'third_boundary_terms',
+                    data=np.stack((self.B3_j, self.B3_i), axis=-1),
+                    dtype=np.float32)
+                self.third_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
+                                                          'Boundary integral over s_i']
+            else:
+                print('--- The second boundary term not analyzed or stored. ---')
+        else:
+            self.third_bterm_dset = xl_analysis_grp['third_boundary_terms']
+            self.B3_j = np.asarray(self.third_bterm_dset)[:, 0]
+            self.B3_i = np.asarray(self.third_bterm_dset)[:, 1]
 
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
@@ -250,6 +275,7 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
+
 
     def graph_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
