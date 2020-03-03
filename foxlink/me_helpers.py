@@ -37,8 +37,9 @@ def sol_print_out(sol):
     r1, r2, u1, u2 = convert_sol_to_geom(sol)
     print("Step-> r1:", r1, ", r2:", r2, ", u1:", u1, ", u2:", u2)
     print("       mu00:{}, mu10:{}, mu01:{}, mu11:{}, mu20:{}, mu02:{}".format(
-        sol[12], sol[13], sol[14],
-        sol[15], sol[16], sol[17]))
+        sol[12], sol[13], sol[14], sol[15], sol[16], sol[17]))
+    print("       B0_j:{}, B0_i:{}, B1_j:{}, B1_i:{}, B2_j:{}, B2_i:{}".format(
+        sol[18], sol[19], sol[20], sol[21], sol[22], sol[23]))
 
 
 @njit

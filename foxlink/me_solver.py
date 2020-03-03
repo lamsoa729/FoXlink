@@ -92,7 +92,7 @@ class MomentExpansionSolver(Solver):
         """!Set the initial conditions for the system of ODEs
         @return: void
         """
-        self.sol_init = np.zeros(24)
+        self.sol_init = np.zeros(26)
         # Set all geometric variables
         self.sol_init[:12] = np.concatenate(
             (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))
@@ -171,6 +171,9 @@ class MomentExpansionSolver(Solver):
         self._B2_dset = self._xl_grp.create_dataset('second_boundary_terms',
                                                     data=self.sol.y[22:24, :].T,
                                                     dtype=np.float32)
+        self._B3_dset = self._xl_grp.create_dataset('third_boundary_terms',
+                                                    data=self.sol.y[24:26, :].T,
+                                                    dtype=np.float32)
 
     def Write(self):
         """!Write out data
@@ -193,8 +196,8 @@ class MomentExpansionSolver(Solver):
         #                 'length': self._params['fs'] / self._params['ks'],
         #                 'energy': 1. / self._params['beta']}
         non_dim_dict = {'time': 1.,
-                        # 'length': max(self._params['L1'], self._params['L2']),
-                        'length': 1.,
+                        'length': max(self._params['L1'], self._params['L2']),
+                        # 'length': 1.,
                         'energy': 1.}
         non_dimmer = NonDimensionalizer(**non_dim_dict)
         # non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
@@ -244,3 +247,5 @@ class MomentExpansionSolver(Solver):
                                                        ['length'])
         self.sol.y[22:24, :] = self.non_dimmer.dim_val(self.sol.y[22:24, :],
                                                        ['length'], [2])
+        self.sol.y[24:26, :] = self.non_dimmer.dim_val(self.sol.y[24:26, :],
+                                                       ['length'], [3])

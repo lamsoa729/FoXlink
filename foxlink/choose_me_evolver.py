@@ -75,12 +75,13 @@ def choose_me_evolver(sol_init, slvr):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
+            # sol_print_out(sol)
             return evolver_zrl_bound(sol,
                                      gpara_i, gperp_i, grot_i,  # Friction coefficients
                                      gpara_j, gperp_j, grot_j,
                                      slvr.vo, slvr.fs, slvr.ko, slvr.co,
                                      slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
-        return evolver_zrl_closure
+        return evolver_zrl_bound_closure
 
     if slvr.ODE_type == 'zrl_wca':
         # Get drag coefficients

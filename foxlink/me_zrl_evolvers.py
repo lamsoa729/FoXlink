@@ -135,8 +135,8 @@ def evolver_zrl(sol,
                          ko, vo, kappa, q20)
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q02)
-    dsol = np.concatenate(
-        (dr_i, dr_j, du_i, du_j, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
+    dsol = np.concatenate((dr_i, dr_j, du_i, du_j,
+                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 6))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
@@ -213,8 +213,8 @@ def evolver_zrl_wca(sol,
                          ko, vo, kappa, q20)
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q02)
-    dsol = np.concatenate(
-        (dr_i, dr_j, du_i, du_j, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
+    dsol = np.concatenate((dr_i, dr_j, du_i, du_j,
+                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 6))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
@@ -268,7 +268,7 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q02)
     dsol = np.concatenate(
-        (rod_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]))
+        (rod_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 6))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(

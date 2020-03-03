@@ -117,6 +117,25 @@ def semi_anti_deriv_boltz_2(L, sigma, A):
 
 
 @njit
+def semi_anti_deriv_boltz_3(L, sigma, A):
+    """!Fast calculation of the s_j integral of the source term for the second
+    moment.
+
+    @param L: minus or plus end of bound
+    @param s_i: location along the first rod
+    @param sigma: sqrt(2 kBT/crosslinker spring constant)
+    @param A: a2 - b*s_i
+    @return: One term in the anti-derivative of the boltzman factor integrated over s_j
+
+    """
+    B = (L + A) / sigma
+    return (-.25 * sigma) * ((2. * sigma * (A * A - A * L + L * L + sigma * sigma)
+                              * np.exp(-1. * B * B))
+                             + ((2. * A * A) + 3. * (sigma * sigma))
+                             * A * SQRT_PI * erf(B))
+
+
+@njit
 def fast_zrl_src_integrand_l0(
         s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
@@ -192,6 +211,30 @@ def fast_zrl_src_integrand_l2(
     # ((s_i * (s_i - 2. * a1)) - (A * A)) / (sigma * sigma))
     I_m = semi_anti_deriv_boltz_2(-.5 * L_j, sigma, A)
     I_p = semi_anti_deriv_boltz_2(.5 * L_j, sigma, A)
+    return pre_fact * (I_p - I_m)
+
+
+def fast_zrl_src_integrand_l3(
+        s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
+    """!TODO: Docstring for fast_zrl_src_integrand_k0.
+
+    @param s_i: TODO
+    @param L_j: TODO
+    @param rsqr: TODO
+    @param a_ij: TODO
+    @param a_ji: TODO
+    @param b: TODO
+    @param sigma: TODO
+    @param k: TODO
+    @return: TODO
+
+    """
+    A = -1. * (a_ji + (b * s_i))
+    exponent = -1. * (rsqr + s_i * (s_i - 2. * a_ij) -
+                      (A * A)) / (sigma * sigma)
+    pre_fact = np.power(s_i, k) * np.exp(exponent)
+    I_m = semi_anti_deriv_boltz_3(-.5 * L_j, sigma, A)
+    I_p = semi_anti_deriv_boltz_3(.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
 
 

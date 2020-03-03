@@ -42,7 +42,7 @@ def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i):
 
 @njit
 def dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
-                 q00=0, B0_j=0, B0_i=0, B1_j=0, B1_i=0):
+                 q00=0, B0_j=0., B0_i=0., B1_j=0., B1_i=0.):
     """!Calculate the time-derivative of the zeroth moment of the zero rest
     length crosslinkers bound to rods.
 
@@ -54,7 +54,7 @@ def dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
     """
     return ko * (q00 - mu00) + ((-vo + kappa * (hL_i - a_ji)) * B0_j
                                 - (kappa * b * B1_j)
-                                (-vo + kappa * (hL_j - a_ij)) * B0_i
+                                + (-vo + kappa * (hL_j - a_ij)) * B0_i
                                 - (kappa * b * B1_i))
 
 
@@ -139,6 +139,7 @@ def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20=0, a_ji=0,
             + (kappa * (hL_j - a_ji) - vo) * B2_i - kappa * b * B3_i)
 
 
+@njit
 def dBl_j_dt_zrl(l, Bl_prev_j, Bl_j, a_ij, a_ji, b, s_i, vo, ko, kappa,
                  Ql_j=0):
     """!TODO: Docstring for dBl_j_dt_zrl.
