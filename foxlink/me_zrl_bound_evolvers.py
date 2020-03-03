@@ -101,15 +101,15 @@ variable
         sol, c, ks, beta, L_i, L_j)
     (mu00, mu10, mu01, mu11, mu20, mu02,
      B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i) = get_zrl_moments_and_boundary_terms(sol)
-    if mu00 < 0.:
-        mu00 = 0.
-        # sol[12] = 0.
-    if mu20 < 0.:
-        mu20 = 0.
-        # sol[16] = 0.
-    if mu02 < 0.:
-        mu02 = 0.
-        # sol[17] = 0.
+    # if mu00 < 0.:
+    #     mu00 = 0.
+    #     # sol[12] = 0.
+    # if mu20 < 0.:
+    #     mu20 = 0.
+    #     # sol[16] = 0.
+    # if mu02 < 0.:
+    #     mu02 = 0.
+    #     # sol[17] = 0.
 
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)

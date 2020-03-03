@@ -157,5 +157,6 @@ def dBl_j_dt_zrl(l, Bl_prev_j, Bl_j, a_ij, a_ji, b, s_i, vo, ko, kappa,
     @return: TODO
 
     """
-    return (ko * Ql_j + l * (vo + kappa * (a_ji + b * s_i)) * Bl_prev_j
-            - (ko + kappa * (l - 1.)) * Bl_j)
+    # return (ko * Ql_j + l * (vo + kappa * (a_ji + b * s_i)) * Bl_prev_j
+    # - (ko + kappa * (l - 1.)) * Bl_j)
+    return -ko * (Ql_j - Bl_j)
