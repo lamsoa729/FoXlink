@@ -75,7 +75,7 @@ def choose_me_evolver(sol_init, slvr):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
-            # sol_print_out(sol)
+            sol_print_out(sol)
             return evolver_zrl_bound(sol,
                                      gpara_i, gperp_i, grot_i,  # Friction coefficients
                                      gpara_j, gperp_j, grot_j,

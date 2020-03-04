@@ -15,52 +15,11 @@ from .me_zrl_odes import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
 from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_integrand_l0,
                              fast_zrl_src_integrand_l1,
                              fast_zrl_src_integrand_l2,
-                             fast_zrl_src_integrand_l3)
+                             fast_zrl_src_integrand_l3,
+                             prep_zrl_bound_evolver,
+                             get_zrl_moments_and_boundary_terms)
 from .rod_steric_forces import calc_wca_force_torque
 from .me_zrl_evolvers import prep_zrl_evolver
-
-
-def get_zrl_moments_and_boundary_terms(sol):
-    """!Get the moments from the solution vector of solve_ivp
-
-    @param sol: Solution vector
-    @return: Moments of the solution vector
-
-    """
-    return sol[12:26].tolist()
-
-
-def get_Qj_params(s_i, L_j, a_ji, b, ks, beta):
-    hL_j = .5 * L_j
-    sigma = np.sqrt(2. / (ks * beta))
-    A_j = -1. * (a_ji + (b * s_i))
-    return hL_j, sigma, A_j
-
-
-def prep_zrl_bound_evolver(sol, c, ks, beta, L_i, L_j):
-    """!TODO: Docstring for prep_zrl_stat_evolver.
-
-    @param arg1: TODO
-    @return: TODO
-
-    """
-    (rsqr, a_ij, a_ji, b,
-     q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks,
-                                                      beta, L_i, L_j)
-
-    hL_j, sigma, A_j = get_Qj_params(.5 * L_i, L_j, a_ji, b, ks, beta)
-    hL_i, sigma, A_i = get_Qj_params(hL_j, L_i, a_ij, b, ks, beta)
-    Q0_j = c * fast_zrl_src_integrand_l0(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
-    Q0_i = c * fast_zrl_src_integrand_l0(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
-    Q1_j = c * fast_zrl_src_integrand_l1(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
-    Q1_i = c * fast_zrl_src_integrand_l1(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
-    Q2_j = c * fast_zrl_src_integrand_l2(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
-    Q2_i = c * fast_zrl_src_integrand_l2(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
-    Q3_j = c * fast_zrl_src_integrand_l3(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
-    Q3_i = c * fast_zrl_src_integrand_l3(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
-    return (rsqr, a_ij, a_ji, b,
-            q00, q10, q01, q11, q20, q02,
-            Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i)
 
 
 def evolver_zrl_bound(sol,
@@ -101,15 +60,15 @@ variable
         sol, c, ks, beta, L_i, L_j)
     (mu00, mu10, mu01, mu11, mu20, mu02,
      B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i) = get_zrl_moments_and_boundary_terms(sol)
-    # if mu00 < 0.:
-    #     mu00 = 0.
-    #     # sol[12] = 0.
-    # if mu20 < 0.:
-    #     mu20 = 0.
-    #     # sol[16] = 0.
-    # if mu02 < 0.:
-    #     mu02 = 0.
-    #     # sol[17] = 0.
+    if mu00 < 0.:
+        mu00 = 0.
+        # sol[12] = 0.
+    if mu20 < 0.:
+        mu20 = 0.
+        # sol[16] = 0.
+    if mu02 < 0.:
+        mu02 = 0.
+        # sol[17] = 0.
 
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)

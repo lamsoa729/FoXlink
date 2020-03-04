@@ -11,66 +11,12 @@ import numpy as np
 # from scipy.integrate import dblquad
 from .me_helpers import dr_dt, convert_sol_to_geom
 from .me_zrl_odes import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
-                          dmu11_dt_zrl, dmu20_dt_zrl)
-from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl)
+                          dmu11_dt_zrl, dmu20_dt_zrl, dBl_j_dt_zrl)
+from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl,
+                             prep_zrl_bound_evolver, prep_zrl_evolver,
+                             get_zrl_moments,
+                             get_zrl_moments_and_boundary_terms)
 from .rod_steric_forces import calc_wca_force_torque
-
-
-def get_zrl_moments(sol):
-    """!Get the moments from the solution vector of solve_ivp
-
-    @param sol: Solution vector
-    @return: Moments of the solution vector
-
-    """
-    return sol[12:18].tolist()
-
-
-def prep_zrl_evolver(sol, c, ks, beta, L_i, L_j):
-    """!TODO: Docstring for prep_zrl_stat_evolver.
-
-    @param arg1: TODO
-    @return: TODO
-
-    """
-    r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
-    r_ij = r_j - r_i
-    rsqr = np.dot(r_ij, r_ij)
-    a_ij = np.dot(r_ij, u_i)
-    a_ji = -1. * np.dot(r_ij, u_j)
-    b = np.dot(u_i, u_j)
-
-    q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=0, l=0)
-    # q00, e = dblquad(boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    #                  lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    #                  args=[rsqr, a_ij, a_ji, b, ks, beta])
-    q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji,
-                              a_ij, b, ks, beta, k=0, l=1)
-    # q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    # args=[1, 0, rsqr, a_ij, a_ji, b, ks, beta],)
-    q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=0, l=1)
-    # q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    # args=[0, 1, rsqr, a_ij, a_ji, b, ks, beta])
-    q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=1, l=1)
-    # q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    # args=[1, 1, rsqr, a_ij, a_ji, b, ks, beta])
-    q20 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji,
-                              a_ij, b, ks, beta, k=0, l=2)
-    # q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    # args=[2, 0, rsqr, a_ij, a_ji, b, ks, beta])
-    q02 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=0, l=2)
-    # q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
-    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
-    # args=[0, 2, rsqr, a_ij, a_ji, b, ks, beta])
-    return rsqr, a_ij, a_ji, b, q00, q10, q01, q11, q20, q02
 
 
 def evolver_zrl(sol,
@@ -104,9 +50,16 @@ def evolver_zrl(sol,
     hL_i, hL_j = (.5 * L_i, .5 * L_j)
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
+    # (rsqr, a_ij, a_ji, b,
+    # q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i,
+    # L_j)
+    # mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
     (rsqr, a_ij, a_ji, b,
-     q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i, L_j)
-    mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
+     q00, q10, q01, q11, q20, q02,
+     Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i) = prep_zrl_bound_evolver(
+        sol, c, ks, beta, L_i, L_j)
+    (mu00, mu10, mu01, mu11, mu20, mu02,
+     B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i) = get_zrl_moments_and_boundary_terms(sol)
 
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
@@ -135,13 +88,30 @@ def evolver_zrl(sol,
                          ko, vo, kappa, q20)
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q02)
+    # Evolution of boundary condtions
+    dB0_j = dBl_j_dt_zrl(0., 0., B0_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q0_j)
+    dB0_i = dBl_j_dt_zrl(0., 0., B0_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q0_i)
+    dB1_j = dBl_j_dt_zrl(1., B0_j, B1_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q1_j)
+    dB1_i = dBl_j_dt_zrl(1., B0_i, B1_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q1_i)
+    dB2_j = dBl_j_dt_zrl(2., B1_j, B2_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q2_j)
+    dB2_i = dBl_j_dt_zrl(2., B1_i, B2_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q2_i)
+    dB3_j = dBl_j_dt_zrl(3., B2_j, B3_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q3_j)
+    dB3_i = dBl_j_dt_zrl(3., B2_i, B3_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q3_i)
     dsol = np.concatenate((dr_i, dr_j, du_i, du_j,
-                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 6))
+                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02,
+                            dB0_j, dB0_i, dB1_j, dB1_i, dB2_j, dB2_i, dB3_j, dB3_i]))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
-
     return dsol
 
 

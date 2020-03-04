@@ -6,11 +6,31 @@ Email: adam.lamson@colorado.edu
 Description:
 """
 
+import numpy as np
 from math import erf
 from numba import njit
 from scipy.integrate import quad
-import numpy as np
+from .me_helpers import convert_sol_to_geom
 
+
+def get_zrl_moments(sol):
+    """!Get the moments from the solution vector of solve_ivp
+
+    @param sol: Solution vector
+    @return: Moments of the solution vector
+
+    """
+    return sol[12:18].tolist()
+
+
+def get_zrl_moments_and_boundary_terms(sol):
+    """!Get the moments from the solution vector of solve_ivp
+
+    @param sol: Solution vector
+    @return: Moments of the solution vector
+
+    """
+    return sol[12:26].tolist()
 
 ###################################
 #  Boltzmann factor calculations  #
@@ -264,6 +284,90 @@ def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
     q, e = quad(integrand, -.5 * L_i, .5 * L_i,
                 args=(L_j, rsqr, a_ij, a_ji, b, sigma, k))
     return q
+
+########################################
+#  Preparation functions for evolvers  #
+########################################
+
+
+def get_Qj_params(s_i, L_j, a_ji, b, ks, beta):
+    hL_j = .5 * L_j
+    sigma = np.sqrt(2. / (ks * beta))
+    A_j = -1. * (a_ji + (b * s_i))
+    return hL_j, sigma, A_j
+
+
+def prep_zrl_evolver(sol, c, ks, beta, L_i, L_j):
+    """!TODO: Docstring for prep_zrl_stat_evolver.
+
+    @param arg1: TODO
+    @return: TODO
+
+    """
+    r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+    r_ij = r_j - r_i
+    rsqr = np.dot(r_ij, r_ij)
+    a_ij = np.dot(r_ij, u_i)
+    a_ji = -1. * np.dot(r_ij, u_j)
+    b = np.dot(u_i, u_j)
+
+    q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
+                              a_ji, b, ks, beta, k=0, l=0)
+    # q00, e = dblquad(boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    #                  lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    #                  args=[rsqr, a_ij, a_ji, b, ks, beta])
+    q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji,
+                              a_ij, b, ks, beta, k=0, l=1)
+    # q10, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[1, 0, rsqr, a_ij, a_ji, b, ks, beta],)
+    q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
+                              a_ji, b, ks, beta, k=0, l=1)
+    # q01, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[0, 1, rsqr, a_ij, a_ji, b, ks, beta])
+    q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
+                              a_ji, b, ks, beta, k=1, l=1)
+    # q11, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[1, 1, rsqr, a_ij, a_ji, b, ks, beta])
+    q20 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji,
+                              a_ij, b, ks, beta, k=0, l=2)
+    # q20, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[2, 0, rsqr, a_ij, a_ji, b, ks, beta])
+    q02 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
+                              a_ji, b, ks, beta, k=0, l=2)
+    # q02, e = dblquad(weighted_boltz_fact_zrl, -.5 * L_i, .5 * L_i,
+    # lambda s2: -.5 * L_j, lambda s2: .5 * L_j,
+    # args=[0, 2, rsqr, a_ij, a_ji, b, ks, beta])
+    return rsqr, a_ij, a_ji, b, q00, q10, q01, q11, q20, q02
+
+
+def prep_zrl_bound_evolver(sol, c, ks, beta, L_i, L_j):
+    """!TODO: Docstring for prep_zrl_stat_evolver.
+
+    @param arg1: TODO
+    @return: TODO
+
+    """
+    (rsqr, a_ij, a_ji, b,
+     q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks,
+                                                      beta, L_i, L_j)
+
+    hL_j, sigma, A_j = get_Qj_params(.5 * L_i, L_j, a_ji, b, ks, beta)
+    hL_i, sigma, A_i = get_Qj_params(hL_j, L_i, a_ij, b, ks, beta)
+    Q0_j = c * fast_zrl_src_integrand_l0(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
+    Q0_i = c * fast_zrl_src_integrand_l0(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
+    Q1_j = c * fast_zrl_src_integrand_l1(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
+    Q1_i = c * fast_zrl_src_integrand_l1(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
+    Q2_j = c * fast_zrl_src_integrand_l2(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
+    Q2_i = c * fast_zrl_src_integrand_l2(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
+    Q3_j = c * fast_zrl_src_integrand_l3(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
+    Q3_i = c * fast_zrl_src_integrand_l3(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
+    return (rsqr, a_ij, a_ji, b,
+            q00, q10, q01, q11, q20, q02,
+            Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i)
 
 
 @njit
