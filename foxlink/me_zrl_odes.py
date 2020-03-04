@@ -116,8 +116,8 @@ def dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02,
 
 
 @njit
-def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20=0, a_ji=0,
-                 hL_i=0, hL_j=0, B0_j=0, B1_j=0, B2_i=0, B3_i=0):
+def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
+                 q20=0, B0_j=0, B1_j=0, B2_i=0, B3_i=0):
     """!Calculate the time-derivative of the second moment(s1^2) of zero rest
     length crosslinkers bound to rods.
 
@@ -137,6 +137,18 @@ def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, b, ko, vo, kappa, q20=0, a_ji=0,
             + (hL_i**2) * (kappa * (hL_i - a_ij) - vo) * B0_j
             - kappa * b * (hL_i**2) * B1_j
             + (kappa * (hL_j - a_ji) - vo) * B2_i - kappa * b * B3_i)
+
+
+@njit
+def dmukl_dt_zrl(k, l, mu_k_lm1, mu_km1_l, mu_kl, mu_kp1_lm1, mu_km1_lp1,
+                 a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, qkl=0,
+                 Bl_j=0, Blp1_j=0, Bk_i=0, Bkp1_i=0):
+    return ((ko * qkl) + l * (vo + kappa * a_ij) * mu_k_lm1
+            + k * (vo + kappa * a_ji) * mu_km1_l
+            - (ko + (k + l) * kappa) * mu_kl
+            + kappa * b * (mu_kp1_lm1 + mu_km1_lp1)
+            + hL_i * ((kappa * (hL_i - a_ij) - vo) * Bl_j - b * kappa * Blp1_j)
+            + hL_j * ((kappa * (hL_j - a_ji) - vo) * Bk_i - b * kappa * Bkp1_i))
 
 
 @njit
