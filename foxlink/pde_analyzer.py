@@ -192,17 +192,23 @@ class PDEAnalyzer(Analyzer):
         # Zeroth boundary term analysis
         if 'zeroth_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
-                self.B0_j = np.sum(self.xl_distr[-1, :, :], axis=0) * ds
-                self.B0_i = np.sum(self.xl_distr[:, -1, :], axis=0) * ds
-                self.dBds0_j = ((self.B0_j - np.sum(self.xl_distr[-2, :, :],
-                                                    axis=0) * ds) / ds)
-                self.dBds0_i = ((self.B0_i - np.sum(self.xl_distr[:, -2, :],
-                                                    axis=0) * ds) / ds)
+                self.B0_j = np.sum(self.xl_distr[-2, :, :], axis=0) * ds
+                self.B0_i = np.sum(self.xl_distr[:, -2, :], axis=0) * ds
+                B0_jp1 = np.sum(self.xl_distr[-1, :, :], axis=0) * ds
+                B0_jm1 = np.sum(self.xl_distr[-3, :, :], axis=0) * ds
+                B0_ip1 = np.sum(self.xl_distr[:, -1, :], axis=0) * ds
+                B0_im1 = np.sum(self.xl_distr[:, -3, :], axis=0) * ds
+
+                self.dBds0_j = (B0_jp1 - B0_jm1) * (.5 / ds)
+                self.dBds0_i = (B0_ip1 - B0_im1) * (.5 / ds)
+                self.d2Bds0_j = (B0_jp1 - 2. * self.B0_j + B0_jm1) / ds_sqr
+                self.d2Bds0_i = (B0_jp1 - 2. * self.B0_j + B0_jm1) / ds_sqr
 
                 self.zeroth_bterm_dset = xl_analysis_grp.create_dataset(
                     'zeroth_boundary_terms',
                     data=np.stack((self.B0_j, self.B0_i,
-                                   self.dBds0_j, self.dBds0_i), axis=-1),
+                                   self.dBds0_j, self.dBds0_i,
+                                   self.d2Bds0_j, self.d2Bds0_i), axis=-1),
                     dtype=np.float32)
                 self.zeroth_bterm_dset.attrs['columns'] = [
                     'Boundary integral over s_j',
@@ -217,20 +223,28 @@ class PDEAnalyzer(Analyzer):
             self.B0_i = np.asarray(self.zeroth_bterm_dset)[:, 1]
             self.dBds0_j = np.asarray(self.zeroth_bterm_dset)[:, 2]
             self.dBds0_i = np.asarray(self.zeroth_bterm_dset)[:, 3]
+            self.d2Bds0_j = np.asarray(self.zeroth_bterm_dset)[:, 4]
+            self.d2Bds0_i = np.asarray(self.zeroth_bterm_dset)[:, 5]
 
         if 'first_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
-                self.B1_j = np.einsum('jn,j->n', self.xl_distr[-1], s_j) * ds
+                self.B1_j = np.einsum('jn,j->n', self.xl_distr[-2], s_j) * ds
                 self.B1_i = np.einsum(
-                    'in,i->n', self.xl_distr[:, -1, :], s_i) * ds
-                self.dBds1_j = (
-                    (self.B1_j - np.einsum('jn,j->n', self.xl_distr[-2], s_j) * ds) / ds)
-                self.dBds1_i = (
-                    (self.B1_i - np.einsum('in,i->n', self.xl_distr[:, -2, :], s_i) * ds) / ds)
+                    'in,i->n', self.xl_distr[:, -2], s_i) * ds
+                B1_jp1 = np.einsum('jn,j->n', self.xl_distr[-1], s_j) * ds
+                B1_jm1 = np.einsum('jn,j->n', self.xl_distr[-3], s_j) * ds
+                B1_ip1 = np.einsum('in,i->n', self.xl_distr[:, -1], s_i) * ds
+                B1_im1 = np.einsum('in,i->n', self.xl_distr[:, -3], s_i) * ds
+
+                self.dBds1_j = (B1_jp1 - B1_jm1) * (.5 / ds)
+                self.dBds1_i = (B1_ip1 - B1_im1) * (.5 / ds)
+                self.d2Bds1_j = (B1_jp1 - 2. * self.B1_j + B1_jm1) / ds_sqr
+                self.d2Bds1_i = (B1_ip1 - 2. * self.B1_i + B1_im1) / ds_sqr
                 self.first_bterm_dset = xl_analysis_grp.create_dataset(
                     'first_boundary_terms',
                     data=np.stack((self.B1_j, self.B1_i,
-                                   self.dBds1_j, self.dBds1_i), axis=-1),
+                                   self.dBds1_j, self.dBds1_i,
+                                   self.d2Bds1_j, self.d2Bds1_i), axis=-1),
                     dtype=np.float32)
                 self.first_bterm_dset.attrs['columns'] = [
                     'Boundary integral over s_j',
@@ -245,6 +259,8 @@ class PDEAnalyzer(Analyzer):
             self.B1_i = np.asarray(self.first_bterm_dset)[:, 1]
             self.dBds1_j = np.asarray(self.first_bterm_dset)[:, 2]
             self.dBds1_i = np.asarray(self.first_bterm_dset)[:, 3]
+            self.d2Bds1_j = np.asarray(self.first_bterm_dset)[:, 4]
+            self.d2Bds1_i = np.asarray(self.first_bterm_dset)[:, 5]
 
         if 'second_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
@@ -252,14 +268,24 @@ class PDEAnalyzer(Analyzer):
                     'jn,j->n', self.xl_distr[-1], s_j * s_j) * ds
                 self.B2_i = np.einsum(
                     'in,i->n', self.xl_distr[:, -1, :], s_i * s_i) * ds
-                self.dBds2_j = (
-                    (self.B2_j - np.einsum('jn,j->n', self.xl_distr[-2], s_j * s_j) * ds) / ds)
-                self.dBds2_i = (
-                    (self.B2_i - np.einsum('in,i->n', self.xl_distr[:, -2, :], s_i * s_i) * ds) / ds)
+                B2_jp1 = np.einsum(
+                    'jn,j->n', self.xl_distr[-1], s_j * s_j) * ds
+                B2_jm1 = np.einsum(
+                    'jn,j->n', self.xl_distr[-3], s_j * s_j) * ds
+                B2_ip1 = np.einsum(
+                    'in,i->n', self.xl_distr[:, -1], s_i * s_i) * ds
+                B2_im1 = np.einsum(
+                    'in,i->n', self.xl_distr[:, -3], s_i * s_i) * ds
+
+                self.dBds2_j = (B2_jp1 - B2_jm1) * (.5 / ds)
+                self.dBds2_i = (B2_ip1 - B2_im1) * (.5 / ds)
+                self.d2Bds2_j = (B2_jp1 - 2. * self.B2_j + B2_jm1) / ds_sqr
+                self.d2Bds2_i = (B2_ip1 - 2. * self.B2_i + B2_im1) / ds_sqr
                 self.second_bterm_dset = xl_analysis_grp.create_dataset(
                     'second_boundary_terms',
                     data=np.stack((self.B2_j, self.B2_i,
-                                   self.dBds2_j, self.dBds2_i), axis=-1),
+                                   self.dBds2_j, self.dBds2_i,
+                                   self.d2Bds2_j, self.d2Bds2_i), axis=-1),
                     dtype=np.float32)
                 self.second_bterm_dset.attrs['columns'] = [
                     'Boundary integral over s_j',
@@ -274,6 +300,8 @@ class PDEAnalyzer(Analyzer):
             self.B2_i = np.asarray(self.second_bterm_dset)[:, 1]
             self.dBds2_j = np.asarray(self.second_bterm_dset)[:, 2]
             self.dBds2_i = np.asarray(self.second_bterm_dset)[:, 3]
+            self.d2Bds2_j = np.asarray(self.second_bterm_dset)[:, 4]
+            self.d2Bds2_i = np.asarray(self.second_bterm_dset)[:, 5]
 
         if 'third_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
@@ -281,13 +309,23 @@ class PDEAnalyzer(Analyzer):
                     'jn,j->n', self.xl_distr[-1], s_j * s_j * s_j) * ds
                 self.B3_i = np.einsum(
                     'in,i->n', self.xl_distr[:, -1, :], s_i * s_i * s_i) * ds
-                self.dBds3_j = (
-                    (self.B3_j - np.einsum('jn,j->n', self.xl_distr[-2], s_j * s_j * s_j) * ds) / ds)
-                self.dBds3_i = (
-                    (self.B3_i - np.einsum('in,i->n', self.xl_distr[:, -2, :], s_i * s_i * s_i) * ds) / ds)
+                B3_jp1 = np.einsum(
+                    'jn,j->n', self.xl_distr[-1], s_j * s_j * s_j) * ds
+                B3_jm1 = np.einsum(
+                    'jn,j->n', self.xl_distr[-3], s_j * s_j * s_j) * ds
+                B3_ip1 = np.einsum(
+                    'in,i->n', self.xl_distr[:, -1], s_i * s_i * s_i) * ds
+                B3_im1 = np.einsum(
+                    'in,i->n', self.xl_distr[:, -3], s_i * s_i * s_i) * ds
+
+                self.dBds3_j = (B3_jp1 - B2_jm1) * (.5 / ds)
+                self.dBds3_i = (B3_ip1 - B2_im1) * (.5 / ds)
+                self.d2Bds3_j = (B3_jp1 - 2. * self.B3_j + B3_jm1) / ds_sqr
+                self.d2Bds3_i = (B3_ip1 - 2. * self.B3_i + B3_im1) / ds_sqr
                 self.third_bterm_dset = xl_analysis_grp.create_dataset(
                     'third_boundary_terms',
                     data=np.stack((self.B3_j, self.B3_i,
+                                   self.dBds3_j, self.dBds3_i,
                                    self.dBds3_j, self.dBds3_i), axis=-1),
                     dtype=np.float32)
                 self.third_bterm_dset.attrs['columns'] = [
@@ -303,6 +341,8 @@ class PDEAnalyzer(Analyzer):
             self.B3_i = np.asarray(self.third_bterm_dset)[:, 1]
             self.dBds3_j = np.asarray(self.third_bterm_dset)[:, 2]
             self.dBds3_i = np.asarray(self.third_bterm_dset)[:, 3]
+            self.d2Bds3_j = np.asarray(self.third_bterm_dset)[:, 4]
+            self.d2Bds3_i = np.asarray(self.third_bterm_dset)[:, 5]
 
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
@@ -327,7 +367,6 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
-
 
     def graph_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
