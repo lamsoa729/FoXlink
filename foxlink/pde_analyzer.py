@@ -50,6 +50,15 @@ class PDEAnalyzer(Analyzer):
         self.dBds2_i = []
         self.dBds3_j = []
         self.dBds3_i = []
+
+        self.d2Bds0_j = []
+        self.d2Bds0_i = []
+        self.d2Bds1_j = []
+        self.d2Bds1_i = []
+        self.d2Bds2_j = []
+        self.d2Bds2_i = []
+        self.d2Bds3_j = []
+        self.d2Bds3_i = []
         Analyzer.__init__(self, filename, analysis_type)
 
     def collect_data_arrays(self):
@@ -326,7 +335,7 @@ class PDEAnalyzer(Analyzer):
                     'third_boundary_terms',
                     data=np.stack((self.B3_j, self.B3_i,
                                    self.dBds3_j, self.dBds3_i,
-                                   self.dBds3_j, self.dBds3_i), axis=-1),
+                                   self.d2Bds3_j, self.d2Bds3_i), axis=-1),
                     dtype=np.float32)
                 self.third_bterm_dset.attrs['columns'] = [
                     'Boundary integral over s_j',
