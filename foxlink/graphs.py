@@ -460,14 +460,12 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
     axarr[2].set_xlim(left=0, right=pde_anal.time[-1])
-    axarr[2].set_ylim(np.amin(pde_anal.mu00),
-                      np.amax(pde_anal.mu00))
+    axarr[2].set_ylim(np.amin(pde_anal.mu00), np.amax(pde_anal.mu00))
 
     axarr[3].set_xlabel(r'Time (sec)')
     axarr[3].set_ylabel(r'Total crosslinker force (pN)')
     axarr[3].set_xlim(left=0, right=pde_anal.time[-1])
-    axarr[3].set_ylim(np.amin(pde_anal.force_arr),
-                      np.amax(pde_anal.force_arr))
+    axarr[3].set_ylim(np.amin(pde_anal.force_arr), np.amax(pde_anal.force_arr))
 
     axarr[4].set_xlabel(r'Time (sec)')
     axarr[4].set_ylabel(r'Total crosslinker torque (pN*nm)')

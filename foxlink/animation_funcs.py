@@ -50,7 +50,6 @@ def make_animation(pde_anal, writer=FFMpegWriter):
             interval=50,
             blit=True)
     t0 = time.time()
-    param_dict = pde_anal
 
     anim.save('{}.mp4'.format(pde_anal.get_name()), writer=writer)
     t1 = time.time()

@@ -26,7 +26,6 @@ class PDEAnalyzer(Analyzer):
         @param filename: Name of file to be analyzed
         @param analysis_type: What kind of analysis ot run on data file
         """
-        Analyzer.__init__(self, filename, analysis_type)
         self.mu00 = []  # Array of crosslinker number vs time
         self.mu10 = []  # Array of crosslinker polarity vs time
         self.mu01 = []  # Array of crosslinker polarity vs time
@@ -42,6 +41,16 @@ class PDEAnalyzer(Analyzer):
         self.B2_i = []
         self.B3_j = []
         self.B3_i = []
+
+        self.dBds0_j = []
+        self.dBds0_i = []
+        self.dBds1_j = []
+        self.dBds1_i = []
+        self.dBds2_j = []
+        self.dBds2_i = []
+        self.dBds3_j = []
+        self.dBds3_i = []
+        Analyzer.__init__(self, filename, analysis_type)
 
     def collect_data_arrays(self):
         """!Store data arrays in member variables
@@ -93,6 +102,8 @@ class PDEAnalyzer(Analyzer):
 
         xl_analysis_grp = touch_group(analysis_grp, 'xl_analysis')
         self.xl_moment_analysis(xl_analysis_grp)
+
+        self.xl_boundary_analysis(xl_analysis_grp)
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp)
@@ -183,36 +194,57 @@ class PDEAnalyzer(Analyzer):
             if analysis_type != 'load':
                 self.B0_j = np.sum(self.xl_distr[-1, :, :], axis=0) * ds
                 self.B0_i = np.sum(self.xl_distr[:, -1, :], axis=0) * ds
+                self.dBds0_j = ((self.B0_j - np.sum(self.xl_distr[-2, :, :],
+                                                    axis=0) * ds) / ds)
+                self.dBds0_i = ((self.B0_i - np.sum(self.xl_distr[:, -2, :],
+                                                    axis=0) * ds) / ds)
+
                 self.zeroth_bterm_dset = xl_analysis_grp.create_dataset(
                     'zeroth_boundary_terms',
-                    data=np.stack((self.B0_j, self.B0_i), axis=-1),
+                    data=np.stack((self.B0_j, self.B0_i,
+                                   self.dBds0_j, self.dBds0_i), axis=-1),
                     dtype=np.float32)
-                self.zeroth_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
-                                                           'Boundary integral over s_i']
+                self.zeroth_bterm_dset.attrs['columns'] = [
+                    'Boundary integral over s_j',
+                    'Boundary integral over s_i',
+                    'Derivative of boundary term over s_i',
+                    'Derivative of boundary term over s_j']
             else:
                 print('--- The zeroth boundary term not analyzed or stored. ---')
         else:
             self.zeroth_bterm_dset = xl_analysis_grp['zeroth_boundary_terms']
             self.B0_j = np.asarray(self.zeroth_bterm_dset)[:, 0]
             self.B0_i = np.asarray(self.zeroth_bterm_dset)[:, 1]
+            self.dBds0_j = np.asarray(self.zeroth_bterm_dset)[:, 2]
+            self.dBds0_i = np.asarray(self.zeroth_bterm_dset)[:, 3]
 
         if 'first_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
                 self.B1_j = np.einsum('jn,j->n', self.xl_distr[-1], s_j) * ds
                 self.B1_i = np.einsum(
                     'in,i->n', self.xl_distr[:, -1, :], s_i) * ds
+                self.dBds1_j = (
+                    (self.B1_j - np.einsum('jn,j->n', self.xl_distr[-2], s_j) * ds) / ds)
+                self.dBds1_i = (
+                    (self.B1_i - np.einsum('in,i->n', self.xl_distr[:, -2, :], s_i) * ds) / ds)
                 self.first_bterm_dset = xl_analysis_grp.create_dataset(
                     'first_boundary_terms',
-                    data=np.stack((self.B1_j, self.B1_i), axis=-1),
+                    data=np.stack((self.B1_j, self.B1_i,
+                                   self.dBds1_j, self.dBds1_i), axis=-1),
                     dtype=np.float32)
-                self.first_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
-                                                          'Boundary integral over s_i']
+                self.first_bterm_dset.attrs['columns'] = [
+                    'Boundary integral over s_j',
+                    'Boundary integral over s_i',
+                    'Derivative of boundary term over s_i',
+                    'Derivative of boundary term over s_j']
             else:
                 print('--- The first boundary term not analyzed or stored. ---')
         else:
             self.first_bterm_dset = xl_analysis_grp['first_boundary_terms']
             self.B1_j = np.asarray(self.first_bterm_dset)[:, 0]
             self.B1_i = np.asarray(self.first_bterm_dset)[:, 1]
+            self.dBds1_j = np.asarray(self.first_bterm_dset)[:, 2]
+            self.dBds1_i = np.asarray(self.first_bterm_dset)[:, 3]
 
         if 'second_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
@@ -220,18 +252,28 @@ class PDEAnalyzer(Analyzer):
                     'jn,j->n', self.xl_distr[-1], s_j * s_j) * ds
                 self.B2_i = np.einsum(
                     'in,i->n', self.xl_distr[:, -1, :], s_i * s_i) * ds
+                self.dBds2_j = (
+                    (self.B2_j - np.einsum('jn,j->n', self.xl_distr[-2], s_j * s_j) * ds) / ds)
+                self.dBds2_i = (
+                    (self.B2_i - np.einsum('in,i->n', self.xl_distr[:, -2, :], s_i * s_i) * ds) / ds)
                 self.second_bterm_dset = xl_analysis_grp.create_dataset(
                     'second_boundary_terms',
-                    data=np.stack((self.B2_j, self.B2_i), axis=-1),
+                    data=np.stack((self.B2_j, self.B2_i,
+                                   self.dBds2_j, self.dBds2_i), axis=-1),
                     dtype=np.float32)
-                self.second_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
-                                                           'Boundary integral over s_i']
+                self.second_bterm_dset.attrs['columns'] = [
+                    'Boundary integral over s_j',
+                    'Boundary integral over s_i',
+                    'Derivative of boundary term over s_i',
+                    'Derivative of boundary term over s_j']
             else:
                 print('--- The second boundary term not analyzed or stored. ---')
         else:
             self.second_bterm_dset = xl_analysis_grp['second_boundary_terms']
             self.B2_j = np.asarray(self.second_bterm_dset)[:, 0]
             self.B2_i = np.asarray(self.second_bterm_dset)[:, 1]
+            self.dBds2_j = np.asarray(self.second_bterm_dset)[:, 2]
+            self.dBds2_i = np.asarray(self.second_bterm_dset)[:, 3]
 
         if 'third_boundary_terms' not in xl_analysis_grp:
             if analysis_type != 'load':
@@ -239,18 +281,28 @@ class PDEAnalyzer(Analyzer):
                     'jn,j->n', self.xl_distr[-1], s_j * s_j * s_j) * ds
                 self.B3_i = np.einsum(
                     'in,i->n', self.xl_distr[:, -1, :], s_i * s_i * s_i) * ds
+                self.dBds3_j = (
+                    (self.B3_j - np.einsum('jn,j->n', self.xl_distr[-2], s_j * s_j * s_j) * ds) / ds)
+                self.dBds3_i = (
+                    (self.B3_i - np.einsum('in,i->n', self.xl_distr[:, -2, :], s_i * s_i * s_i) * ds) / ds)
                 self.third_bterm_dset = xl_analysis_grp.create_dataset(
                     'third_boundary_terms',
-                    data=np.stack((self.B3_j, self.B3_i), axis=-1),
+                    data=np.stack((self.B3_j, self.B3_i,
+                                   self.dBds3_j, self.dBds3_i), axis=-1),
                     dtype=np.float32)
-                self.third_bterm_dset.attrs['columns'] = ['Boundary integral over s_j',
-                                                          'Boundary integral over s_i']
+                self.third_bterm_dset.attrs['columns'] = [
+                    'Boundary integral over s_j',
+                    'Boundary integral over s_i',
+                    'Derivative of boundary term over s_i',
+                    'Derivative of boundary term over s_j']
             else:
-                print('--- The second boundary term not analyzed or stored. ---')
+                print('--- The third boundary term not analyzed or stored. ---')
         else:
             self.third_bterm_dset = xl_analysis_grp['third_boundary_terms']
             self.B3_j = np.asarray(self.third_bterm_dset)[:, 0]
             self.B3_i = np.asarray(self.third_bterm_dset)[:, 1]
+            self.dBds3_j = np.asarray(self.third_bterm_dset)[:, 2]
+            self.dBds3_i = np.asarray(self.third_bterm_dset)[:, 3]
 
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
