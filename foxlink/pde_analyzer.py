@@ -26,39 +26,6 @@ class PDEAnalyzer(Analyzer):
         @param filename: Name of file to be analyzed
         @param analysis_type: What kind of analysis ot run on data file
         """
-        self.mu00 = []  # Array of crosslinker number vs time
-        self.mu10 = []  # Array of crosslinker polarity vs time
-        self.mu01 = []  # Array of crosslinker polarity vs time
-        self.mu11 = []  # Array of crosslinker asymmetry vs time
-        self.mu20 = []  # Array of crosslinker variance vs time
-        self.mu02 = []  # Array of crosslinker variance vs time
-
-        self.B0_j = []
-        self.B0_i = []
-        self.B1_j = []
-        self.B1_i = []
-        self.B2_j = []
-        self.B2_i = []
-        self.B3_j = []
-        self.B3_i = []
-
-        self.dBds0_j = []
-        self.dBds0_i = []
-        self.dBds1_j = []
-        self.dBds1_i = []
-        self.dBds2_j = []
-        self.dBds2_i = []
-        self.dBds3_j = []
-        self.dBds3_i = []
-
-        self.d2Bds0_j = []
-        self.d2Bds0_i = []
-        self.d2Bds1_j = []
-        self.d2Bds1_i = []
-        self.d2Bds2_j = []
-        self.d2Bds2_i = []
-        self.d2Bds3_j = []
-        self.d2Bds3_i = []
         Analyzer.__init__(self, filename, analysis_type)
 
     def collect_data_arrays(self):

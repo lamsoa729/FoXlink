@@ -38,6 +38,40 @@ class Analyzer():
         @param filename: Name of file to be analyzed
         @param analysis_type: What kind of analysis ot run on data file
         """
+        self.mu00 = []  # Array of motor number vs time
+        self.mu10 = []  # Array of motor polarity vs time
+        self.mu01 = []  # Array of motor polarity vs time
+        self.mu11 = []  # Array of motor asymmetry vs time
+        self.mu20 = []  # Array of motor variance vs time
+        self.mu02 = []  # Array of motor variance vs time
+
+        self.B0_j = []
+        self.B0_i = []
+        self.B1_j = []
+        self.B1_i = []
+        self.B2_j = []
+        self.B2_i = []
+        self.B3_j = []
+        self.B3_i = []
+
+        self.dBds0_j = []
+        self.dBds0_i = []
+        self.dBds1_j = []
+        self.dBds1_i = []
+        self.dBds2_j = []
+        self.dBds2_i = []
+        self.dBds3_j = []
+        self.dBds3_i = []
+
+        self.d2Bds0_j = []
+        self.d2Bds0_i = []
+        self.d2Bds1_j = []
+        self.d2Bds1_i = []
+        self.d2Bds2_j = []
+        self.d2Bds2_i = []
+        self.d2Bds3_j = []
+        self.d2Bds3_i = []
+
         self._filename = filename
         self._h5_data, self._params = self.load()
 
@@ -223,3 +257,22 @@ class Analyzer():
             else:
                 start_time = index_arr[0]
         return start_time
+
+    def create_distr_approx_func(self):
+        """!Create a function that will approximate the motor distribution
+        @return: Bivariate gaussian distribution approximation
+
+        """
+        sig_i = np.sqrt(self.mu20 - (self.mu10**2))
+        sig_j = np.sqrt(self.mu02 - (self.mu01**2))
+        nu = self.mu11 - (self.mu10 * self.mu01)
+        A = self.mu00
+        pre_fact = A / (2. * np.pi * sig_i * sig_j * np.sqrt(1. - (nu * nu)))
+
+        def gauss_distr_approx_func(self, s_i, s_j, n=-1):
+            x = (s_i - self.mu10[n]) / sig_i[n]
+            y = (s_j - self.mu01[n]) / sig_j[n]
+            denom = 1. / ((nu[n] * nu[n]) - 1)
+            return pre_fact[n] * np.exp((x * x + y * y
+                                         - 2. * nu[n] * x * y) * denom)
+        return gauss_distr_approx_func
