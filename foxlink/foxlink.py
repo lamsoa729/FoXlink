@@ -9,7 +9,8 @@ argsparse. Type foxlink -h for help and main actions.
 from matplotlib.animation import FFMpegWriter
 from .animation_funcs import (make_animation, make_minimal_pde_animation,
                               make_orient_pde_animation, make_moment_pde_animation,
-                              make_moment_expansion_animation, make_distr_pde_animation)
+                              make_moment_expansion_animation, make_distr_pde_animation,
+                              make_moment_distr_animation)
 from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
 import argparse
@@ -152,7 +153,7 @@ class FoXlink(object):
             if self._opts.analysis == "ME":
                 analyzer.graph_type = self._opts.movie
                 if self._opts.movie == 'distr':
-                    print("Not implemented yet")
+                    make_moment_distr_animation(analyzer, writer)
                 else:
                     make_moment_expansion_animation(analyzer, writer)
             elif self._opts.movie == 'all':

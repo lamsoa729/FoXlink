@@ -14,7 +14,7 @@ import time
 
 from .analyzer import Analyzer, touch_group
 
-from .graphs import me_graph_all_data_2d
+from .graphs import me_graph_all_data_2d, me_graph_distr_data_2d
 
 
 class MEAnalyzer(Analyzer):
@@ -56,6 +56,26 @@ class MEAnalyzer(Analyzer):
         self.mu11 = mu_kl[:, 0]
         self.mu20 = mu_kl[:, 1]
         self.mu02 = mu_kl[:, 2]
+
+        self.xl_distr_func = self.create_distr_approx_func()
+        hL_i = .5 * self._params["L1"]
+        hL_j = .5 * self._params["L2"]
+        L_i = self._params["L1"]
+        L_j = self._params["L2"]
+        ds = self._params["ds"]
+        ns_i = int(L_i / ds) + 2
+        ns_j = int(L_j / ds) + 2
+        self.s_i = np.linspace(0, ds * (ns_i - 1), ns_i) - hL_i
+        self.s_j = np.linspace(0, ds * (ns_j - 1), ns_j) - hL_j
+
+        s_j_grid, s_i_grid = np.meshgrid(self.s_j, self.s_i)
+
+        self.xl_distr = np.zeros(
+            (self.s_i.size, self.s_j.size, self.time.size))
+        for i in range(self.time.size):
+            self.xl_distr[:, :, i] = self.xl_distr_func(s_i_grid, s_j_grid, i)
+        self.max_dens_val = np.amax(self.xl_distr)
+        print('Max density: ', self.max_dens_val)
 
     ########################
     #  Analysis functions  #
@@ -130,6 +150,19 @@ class MEAnalyzer(Analyzer):
         """
         t0 = time.time()
         gca_arts = me_graph_all_data_2d(fig, axarr, n, self)
+        t1 = time.time()
+        print("Graph ", n, "made in: ", t1 - t0)
+        return gca_arts
+
+    def graph_distr_slice(self, n, fig, axarr):
+        """!Graph the solution Psi at a specific time
+
+        @param n: index of slice to graph
+        @return: void
+
+        """
+        t0 = time.time()
+        gca_arts = me_graph_distr_data_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts

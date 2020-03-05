@@ -442,6 +442,104 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
     return fig.gca().lines + fig.gca().collections
 
 
+def me_graph_distr_data_2d(fig, axarr, n, me_anal):
+    # Clean up if lines on axis object to speed up movie making
+    if not me_anal.init_flag:
+        for ax in axarr.flatten():
+            ax.clear()
+        for artist in fig.gca().lines + fig.gca().collections:
+            artist.remove()
+            del artist
+
+    # Draw rods
+    if me_anal.graph_type == 'min':
+        graph_2d_rod_diagram(axarr[0], me_anal, n)
+    else:
+        cb0 = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
+
+    cb1 = graph_xl_dens(axarr[1],
+                        me_anal.xl_distr[:, :, n],
+                        me_anal.s_i,
+                        me_anal.s_j,
+                        max_dens_val=me_anal.max_dens_val)
+
+    # Graph rod center separations
+    axarr[3].set_xlabel(r'Time (sec)')
+    axarr[3].set_ylabel('Distance between fils \n centers of mass (nm)')
+    axarr[3].set_xlim(left=0, right=me_anal.time[-1])
+    axarr[3].set_ylim(np.amin(me_anal.dR_arr),
+                      np.amax(me_anal.dR_arr))
+    graph_vs_time(axarr[3], me_anal.time, me_anal.dR_arr, n)
+
+    # Graph angle between rod orientations
+    axarr[4].set_xlabel(r'Time (sec)')
+    axarr[4].set_ylabel('Angle between fil \n orientation vectors (rad)')
+    axarr[4].set_xlim(left=0, right=me_anal.time[-1])
+    axarr[4].set_ylim(np.nanmin(me_anal.phi_arr),
+                      np.nanmax(me_anal.phi_arr))
+    graph_vs_time(axarr[4], me_anal.time, me_anal.phi_arr, n)
+
+    # Graph zeroth moment aka number of crosslinkers
+    axarr[2].set_xlabel(r'Time (sec)')
+    axarr[2].set_ylabel(r'Crosslinker number')
+    axarr[2].set_xlim(left=0, right=me_anal.time[-1])
+    axarr[2].set_ylim(np.amin(me_anal.mu00),
+                      np.amax(me_anal.mu00))
+    graph_vs_time(axarr[2], me_anal.time, me_anal.mu00, n)
+
+    # Graph first moments of crosslink distribution
+    p_n = np.stack((me_anal.mu10, me_anal.mu01))
+    axarr[5].set_xlabel(r'Time (sec)')
+    axarr[5].set_ylabel(r'First moments (nm)')
+    axarr[5].set_xlim(left=0, right=me_anal.time[-1])
+    axarr[5].set_ylim(np.amin(p_n), np.amax(p_n))
+    graph_vs_time(axarr[5], me_anal.time, me_anal.mu10, n,
+                  color='tab:green')
+    graph_vs_time(axarr[5], me_anal.time, me_anal.mu01, n,
+                  color='tab:purple')
+
+    # Graph second moments of crosslinker distribution
+    mu_kl = np.stack((me_anal.mu11, me_anal.mu20, me_anal.mu02))
+    axarr[8].set_xlabel(r'Time (sec)')
+    axarr[8].set_ylabel(r'Second moments (nm$^2$)')
+    axarr[8].set_xlim(left=0, right=me_anal.time[-1])
+    axarr[8].set_ylim(np.amin(mu_kl), np.amax(mu_kl))
+    graph_vs_time(axarr[8], me_anal.time, me_anal.mu11, n,
+                  color='b')
+    graph_vs_time(axarr[8], me_anal.time, me_anal.mu20, n,
+                  color='tab:green')
+    graph_vs_time(axarr[8], me_anal.time, me_anal.mu02, n,
+                  color='tab:purple')
+
+    if me_anal.init_flag:
+        axarr[0].set_aspect(1.0)
+        axarr[1].set_aspect(1.0)
+        fig.colorbar(cb1, ax=axarr[1])
+
+        if me_anal.graph_type != 'min':
+            fig.colorbar(cb0, ax=axarr[0])
+        me_anal.init_flag = False
+
+    # Legend information
+    # axarr[1].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(
+    #     me_anal.time[n], me_anal.dR_arr[n])])
+    # axarr[2].legend([r"$\phi$({:.2f}) = {:.1f} rad".format(
+    #     me_anal.time[n], me_anal.phi_arr[n])])
+    # axarr[3].legend([r"N({:.2f})={:.1f}".format(
+    #     me_anal.time[n], me_anal.mu00[n])])
+    # axarr[4].legend([r"$\mu^{{1,0}}$({:.2f}) = {:.1f}".format(me_anal.time[n],
+    #                                                           me_anal.mu10[n]),
+    #                  r"$\mu^{{0,1}}$({:.2f}) = {:.1f}".format(me_anal.time[n],
+    #                                                           me_anal.mu01[n])])
+    # axarr[5].legend([r"$\mu^{{1,1}}$({:.2f}) = {:.1f}".format(me_anal.time[n],
+    #                                                           me_anal.mu11[n]),
+    #                  r"$\mu^{{2,0}}$({:.2f}) = {:.1f}".format(me_anal.time[n],
+    #                                                           me_anal.mu20[n]),
+    #                  r"$\mu^{{0,2}}$({:.2f}) = {:.1f}".format(me_anal.time[n],
+    #                                                           me_anal.mu02[n])])
+    return fig.gca().lines + fig.gca().collections
+
+
 def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
     # Clean up if lines
     if not pde_anal.init_flag:

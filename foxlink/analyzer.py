@@ -264,19 +264,29 @@ class Analyzer():
 
         """
         A = self.mu00
+
         sig_i = np.nan_to_num(
             np.sqrt((self.mu20 / A) - (self.mu10**2) / (A * A)))
+        print("sig_i")
+        print(sig_i)
         sig_j = np.nan_to_num(
             np.sqrt((self.mu02 / A) - (self.mu01**2) / (A * A)))
+        print("sig_j")
+        print(sig_j)
         nu = np.nan_to_num(
             (self.mu11 / A - (self.mu10 * self.mu01) / (A * A)) / (sig_i * sig_j))
+        nu = np.clip(nu, -.9999999999999999, .999999999999999999)
+        print("nu")
+        print(nu)
         pre_fact = np.nan_to_num(
-            A / (2. * np.pi * sig_i * sig_j * np.sqrt(1. - (nu * nu))))
+            A / (2. * np.pi * sig_i * sig_j * np.sqrt(1. - (nu * nu))), nan=0, posinf=0)
+        print("pre_fact")
+        print(pre_fact)
+        denom = np.nan_to_num(1. / ((nu * nu) - 1.), nan=0, posinf=0)
 
         def gauss_distr_approx_func(s_i, s_j, n=-1):
             x = np.nan_to_num((s_i - (self.mu10[n] / A[n])) / sig_i[n])
             y = np.nan_to_num((s_j - (self.mu01[n] / A[n])) / sig_j[n])
-            denom = np.nan_to_num(1. / ((nu[n] * nu[n]) - 1.))
-            return pre_fact[n] * np.exp((x * x + y * y
-                                         - 2. * nu[n] * x * y) * denom)
+            return np.nan_to_num(pre_fact[n] * np.exp(
+                (x * x + y * y - 2. * nu[n] * x * y) * denom[n]), posinf=0, nan=0)
         return gauss_distr_approx_func
