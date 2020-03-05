@@ -254,7 +254,7 @@ def graph_2d_rod_diagram(ax, anal, n=-1):
         ax.set_ylim(min_y, max_y)
         ax.set_xlabel(r'x (nm)')
         ax.set_ylabel(r'y (nm)')
-        labels = ["MT$_i$", "MT$_j$", "Plus-end"]
+        labels = ["fil$_i$", "fil$_j$", "Plus-end"]
         # if anal.OT1_pos is not None or anal.OT2_pos is not None:
         #     labels += ["Optical trap", "Bead"]
         ax.legend(labels, loc="upper right")
@@ -344,7 +344,7 @@ def graph_2d_rod_moment_diagram(ax, anal, n=-1):
                          anal.mu00[n], anal.mu01[n], anal.mu02[n],
                          num_max=mu00_max)
 
-    # labels = ["MT$_i$", "MT$_j$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
+    # labels = ["fil$_i$", "fil$_j$", "Plus-end", r"$\mu^{{10}}$", r"$\mu^{{20}}$"]
     # if anal.OT1_pos is not None or anal.OT2_pos is not None:
     #     labels += ["Optical trap", "Bead"]
     # ax.legend(labels, loc="upper right")
@@ -361,13 +361,13 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
             del artist
 
     axarr[1].set_xlabel(r'Time (sec)')
-    axarr[1].set_ylabel('Distance between MTs \n centers of mass (nm)')
+    axarr[1].set_ylabel('Distance between fils \n centers of mass (nm)')
     axarr[1].set_xlim(left=0, right=me_anal.time[-1])
     axarr[1].set_ylim(np.amin(me_anal.dR_arr),
                       np.amax(me_anal.dR_arr))
 
     axarr[2].set_xlabel(r'Time (sec)')
-    axarr[2].set_ylabel('Angle between MT \n orientation vectors (rad)')
+    axarr[2].set_ylabel('Angle between fil \n orientation vectors (rad)')
     axarr[2].set_xlim(left=0, right=me_anal.time[-1])
     axarr[2].set_ylim(np.nanmin(me_anal.phi_arr),
                       np.nanmax(me_anal.phi_arr))
@@ -453,9 +453,9 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
 
     # Init axis labels and ranges
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
@@ -480,13 +480,13 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
                       max(np.amax(pde_anal.mu10), np.amax(pde_anal.mu01)))
 
     axarr[6].set_xlabel(r'Time (sec)')
-    axarr[6].set_ylabel('Distance between MTs \n centers of mass (nm)')
+    axarr[6].set_ylabel('Distance between fils \n centers of mass (nm)')
     axarr[6].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[6].set_ylim(np.amin(pde_anal.dR_arr),
                       np.amax(pde_anal.dR_arr))
 
     axarr[7].set_xlabel(r'Time (sec)')
-    axarr[7].set_ylabel('Angle between MT \n orientation vectors (rad)')
+    axarr[7].set_ylabel('Angle between fil \n orientation vectors (rad)')
     axarr[7].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[7].set_ylim(np.nanmin(pde_anal.phi_arr),
                       np.nanmax(pde_anal.phi_arr))
@@ -584,9 +584,9 @@ def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
 
     # Init axis labels and ranges
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
@@ -705,9 +705,9 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
                       pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     if pde_anal.init_flag:
         axarr[0].set_aspect(1.0)
@@ -742,9 +742,9 @@ def pde_graph_stationary_runs_2d(fig, axarr, n, pde_anal):
                       pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
     axarr[1].set_xlabel(
-        'Head distance from \n center of MT$_i$ $s_i$ (nm)')
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
     axarr[1].set_ylabel(
-        'Head distance from \n center of MT$_j$ $s_j$ (nm)')
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
     axarr[2].set_ylabel(r'Crosslinker number')
@@ -782,6 +782,63 @@ def pde_graph_stationary_runs_2d(fig, axarr, n, pde_anal):
 
     return fig.gca().lines + fig.gca().collections
 
+
 ######################################
 #  Crosslinker distribution moments  #
 ######################################
+
+def pde_graph_recreate_xlink_distr_2d(fig, axarr, n, pde_anal):
+    # Clean up if lines
+    if not pde_anal.init_flag:
+        for ax in axarr.flatten():
+            ax.clear()
+        for artist in fig.gca().lines + fig.gca().collections:
+            artist.remove()
+            del artist
+
+    # Draw rods
+    graph_2d_rod_pde_diagram(axarr[0], pde_anal, n,
+                             scale=1. / (pde_anal.max_dens_val))
+
+    # Make a function of a recreated distribution
+
+    # Make density plot
+    cb1 = graph_xl_dens(axarr[1],
+                        pde_anal.xl_distr[:, :, n],
+                        pde_anal.s_i,
+                        pde_anal.s_j,
+                        max_dens_val=pde_anal.max_dens_val)
+    # Make recreation of distribution
+    xl_distr_rec_func = pde_anal.create_distr_approx_func()
+    s_j_grid, s_i_grid = np.meshgrid(pde_anal.s_j, pde_anal.s_i)
+    xl_distr_rec = xl_distr_rec_func(s_i_grid, s_j_grid, n)
+    cb2 = graph_xl_dens(axarr[2],
+                        xl_distr_rec,
+                        pde_anal.s_i,
+                        pde_anal.s_j,
+                        max_dens_val=pde_anal.max_dens_val)
+
+    axarr[1].set_xlabel(
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
+    axarr[1].set_ylabel(
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
+    axarr[2].set_xlabel(
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
+    axarr[2].set_ylabel(
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
+
+    if pde_anal.init_flag:
+        fig.colorbar(cb1, ax=axarr[1])
+        fig.colorbar(cb2, ax=axarr[2])
+        axarr[0].set_aspect(1.0)
+        axarr[1].set_aspect(1.0)
+        axarr[2].set_aspect(1.0)
+
+        pde_anal.init_flag = False
+    axarr[0].text(.05, .95, "Time = {:.2f} sec".format(pde_anal.time[n]),
+                  horizontalalignment='left',
+                  verticalalignment='bottom',
+                  transform=axarr[0].transAxes)
+
+    # pde_anal.time[n])], facecolor='inherit')
+    return fig.gca().lines + fig.gca().collections

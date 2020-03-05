@@ -263,16 +263,16 @@ class Analyzer():
         @return: Bivariate gaussian distribution approximation
 
         """
-        sig_i = np.sqrt(self.mu20 - (self.mu10**2))
-        sig_j = np.sqrt(self.mu02 - (self.mu01**2))
-        nu = self.mu11 - (self.mu10 * self.mu01)
         A = self.mu00
+        sig_i = np.sqrt((self.mu20 / A) - (self.mu10**2) / (A * A))
+        sig_j = np.sqrt((self.mu02 / A) - (self.mu01**2) / (A * A))
+        nu = (self.mu11 / A - (self.mu10 * self.mu01) / (A * A)) / (sig_i * sig_j)
         pre_fact = A / (2. * np.pi * sig_i * sig_j * np.sqrt(1. - (nu * nu)))
 
-        def gauss_distr_approx_func(self, s_i, s_j, n=-1):
-            x = (s_i - self.mu10[n]) / sig_i[n]
-            y = (s_j - self.mu01[n]) / sig_j[n]
-            denom = 1. / ((nu[n] * nu[n]) - 1)
+        def gauss_distr_approx_func(s_i, s_j, n=-1):
+            x = (s_i - (self.mu10[n] / A[n])) / sig_i[n]
+            y = (s_j - (self.mu01[n] / A[n])) / sig_j[n]
+            denom = 1. / ((nu[n] * nu[n]) - 1.)
             return pre_fact[n] * np.exp((x * x + y * y
                                          - 2. * nu[n] * x * y) * denom)
         return gauss_distr_approx_func

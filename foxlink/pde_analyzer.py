@@ -5,7 +5,8 @@ import numpy as np
 
 from .analyzer import Analyzer, touch_group
 from .graphs import (pde_graph_all_data_2d, pde_graph_mts_xlink_distr_2d,
-                     pde_graph_stationary_runs_2d, pde_graph_moment_data_2d)
+                     pde_graph_stationary_runs_2d, pde_graph_moment_data_2d,
+                     pde_graph_recreate_xlink_distr_2d)
 
 """@package docstring
 File: pde_analyzer.py
@@ -392,6 +393,19 @@ class PDEAnalyzer(Analyzer):
         """
         t0 = time.time()
         gca_arts = pde_graph_moment_data_2d(fig, axarr, n, self)
+        t1 = time.time()
+        print("Graph ", n, "made in: ", t1 - t0)
+        return gca_arts
+
+    def graph_distr_slice(self, n, fig, axarr):
+        """!Graph the solution Psi at a specific time
+
+        @param n: index of slice to graph
+        @return: void
+
+        """
+        t0 = time.time()
+        gca_arts = pde_graph_recreate_xlink_distr_2d(fig, axarr, n, self)
         t1 = time.time()
         print("Graph ", n, "made in: ", t1 - t0)
         return gca_arts
