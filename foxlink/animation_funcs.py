@@ -90,6 +90,42 @@ def make_minimal_pde_animation(pde_anal, writer=FFMpegWriter):
     print("Movie saved in: ", t1 - t0)
 
 
+def make_distr_pde_animation(pde_anal, writer=FFMpegWriter):
+    """!Make animation of time slices
+    @return: TODO
+
+    """
+    graph_stl = {
+        "axes.titlesize": 18,
+        "axes.labelsize": 15,
+        "xtick.labelsize": 15,
+        "ytick.labelsize": 15,
+        "font.size": 18
+    }
+    with plt.style.context(graph_stl):
+        plt.style.use(graph_stl)
+        fig = plt.figure(figsize=(18, 5), constrained_layout=True)
+        gs = fig.add_gridspec(1, 3)
+        axarr = np.asarray([fig.add_subplot(gs[0, 0]),
+                            fig.add_subplot(gs[0, 1]),
+                            fig.add_subplot(gs[0, 2]), ])
+
+        fig.suptitle(' ')
+        nframes = pde_anal.time.size
+        anim = FuncAnimation(
+            fig,
+            pde_anal.graph_distr_slice,
+            frames=np.arange(nframes),
+            fargs=(fig, axarr),
+            interval=50,
+            blit=True)
+    t0 = time.time()
+
+    anim.save('{}_distr.mp4'.format(pde_anal.get_name()), writer=writer)
+    t1 = time.time()
+    print("Movie saved in: ", t1 - t0)
+
+
 def make_orient_pde_animation(pde_anal, writer=FFMpegWriter):
     """!Make animation of time slices
     @return: TODO

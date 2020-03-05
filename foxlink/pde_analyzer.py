@@ -398,7 +398,8 @@ class PDEAnalyzer(Analyzer):
         return gca_arts
 
     def graph_distr_slice(self, n, fig, axarr):
-        """!Graph the solution Psi at a specific time
+        """!Graph the solution Psi and a recreated distribution at a specific
+        time
 
         @param n: index of slice to graph
         @return: void
