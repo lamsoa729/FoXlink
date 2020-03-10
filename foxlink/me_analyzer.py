@@ -29,6 +29,7 @@ class MEAnalyzer(Analyzer):
         @param analysis_type: What kind of analysis ot run on data file
 
         """
+        self.xl_distr_flag = False
         Analyzer.__init__(self, filename, analysis_type)
         self.graph_type = 'all'
 
@@ -57,26 +58,6 @@ class MEAnalyzer(Analyzer):
         self.mu20 = mu_kl[:, 1]
         self.mu02 = mu_kl[:, 2]
 
-        self.xl_distr_func = self.create_distr_approx_func()
-        hL_i = .5 * self._params["L1"]
-        hL_j = .5 * self._params["L2"]
-        L_i = self._params["L1"]
-        L_j = self._params["L2"]
-        ds = self._params["ds"]
-        ns_i = int(L_i / ds) + 2
-        ns_j = int(L_j / ds) + 2
-        self.s_i = np.linspace(0, ds * (ns_i - 1), ns_i) - hL_i
-        self.s_j = np.linspace(0, ds * (ns_j - 1), ns_j) - hL_j
-
-        s_j_grid, s_i_grid = np.meshgrid(self.s_j, self.s_i)
-
-        self.xl_distr = np.zeros(
-            (self.s_i.size, self.s_j.size, self.time.size))
-        for i in range(self.time.size):
-            self.xl_distr[:, :, i] = self.xl_distr_func(s_i_grid, s_j_grid, i)
-        self.max_dens_val = np.amax(self.xl_distr)
-        print('Max density: ', self.max_dens_val)
-
     ########################
     #  Analysis functions  #
     ########################
@@ -99,6 +80,7 @@ class MEAnalyzer(Analyzer):
         interact_analysis_grp = touch_group(analysis_grp,
                                             'interaction_analysis')
         self.force_analysis(interact_analysis_grp)
+        self.torque_analysis(interact_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
@@ -114,7 +96,7 @@ class MEAnalyzer(Analyzer):
         @return: TODO
 
         """
-        if 'force' not in interaction_grp:
+        if 'force_vector' not in interaction_grp:
             if analysis_type != 'load':
                 ks = self._params['ks']
                 self.dR_vec_arr = np.subtract(self.R2_pos, self.R1_pos)
@@ -136,6 +118,74 @@ class MEAnalyzer(Analyzer):
             self.force_vec_arr = np.asarray(self.force_vec_dset)
             self.force_mag_dset = interaction_grp['force_magnitude']
             self.force_arr = np.asarray(self.force_mag_dset)
+
+    def torque_analysis(self, interaction_grp, analysis_type='analyze'):
+        """!TODO: Docstring for ForceInteractionAnalysis.
+
+        @param grp: TODO
+        @return: TODO
+
+        """
+        if 'torque_vector' not in interaction_grp:
+            if analysis_type != 'load':
+                u_i = self.R1_vec
+                u_j = self.R2_vec
+                r_ij = np.subtract(self.R2_pos, self.R1_pos)
+                a_ij = np.einsum('ij,ij->i', u_i, r_ij)
+                a_ji = np.einsum('ij,ij->i', u_j, -1. * r_ij)
+                b_ij = np.einsum('ij,ij->i', u_i, u_j)
+                ks = self._params['ks']
+                # self.dR_vec_arr = np.subtract(self.R2_pos, self.R1_pos)
+                torque_i = ks * (
+                    np.multiply(r_ij - np.multiply(a_ij[:, None], u_i),
+                                self.mu10[:, None])
+                    + np.multiply(u_j - np.multiply(b_ij[:, None], u_i),
+                                  self.mu11[:, None]))
+                torque_j = ks * (
+                    np.multiply(-1. * r_ij - np.multiply(a_ji[:, None], u_j),
+                                self.mu01[:, None])
+                    + np.multiply(u_i - np.multiply(b_ij[:, None], u_j),
+                                  self.mu11[:, None]))
+                self.torque_vec_arr = np.stack((torque_i, torque_j), axis=-2)
+                self.torque_vec_dset = interaction_grp.create_dataset(
+                    'torque_vector', data=self.torque_vec_arr, dtype=np.float32)
+
+                self.torque_arr = np.linalg.norm(self.torque_vec_arr, axis=-1)
+                self.torque_mag_dset = interaction_grp.create_dataset(
+                    'torque_magnitude', data=self.torque_arr, dtype=np.float32)
+            else:
+                print('--- The torque on rods not analyzed or stored. ---')
+        else:
+            self.torque_vec_dset = interaction_grp['torque_vector']
+            self.torque_vec_arr = np.asarray(self.torque_vec_dset)
+            self.torque_mag_dset = interaction_grp['torque_magnitude']
+            self.torque_arr = np.asarray(self.torque_mag_dset)
+
+    def make_xl_distr(self):
+        """!Make distribution from moment expansion
+        @return: TODO
+
+        """
+        self.xl_distr_func = self.create_distr_approx_func()
+        hL_i = .5 * self._params["L1"]
+        hL_j = .5 * self._params["L2"]
+        L_i = self._params["L1"]
+        L_j = self._params["L2"]
+        ds = self._params["ds"]
+        ns_i = int(L_i / ds) + 2
+        ns_j = int(L_j / ds) + 2
+        self.s_i = np.linspace(0, ds * (ns_i - 1), ns_i) - hL_i
+        self.s_j = np.linspace(0, ds * (ns_j - 1), ns_j) - hL_j
+
+        s_j_grid, s_i_grid = np.meshgrid(self.s_j, self.s_i)
+
+        self.xl_distr = np.zeros(
+            (self.s_i.size, self.s_j.size, self.time.size))
+        for i in range(self.time.size):
+            self.xl_distr[:, :, i] = self.xl_distr_func(s_i_grid, s_j_grid, i)
+        self.max_dens_val = np.amax(self.xl_distr)
+        print('Max density: ', self.max_dens_val)
+        self.xl_distr_flag = True
 
     ########################
     #  Graphing functions  #
@@ -161,6 +211,9 @@ class MEAnalyzer(Analyzer):
         @return: void
 
         """
+        if not self.xl_distr_flag:
+            self.make_xl_distr()
+
         t0 = time.time()
         gca_arts = me_graph_distr_data_2d(fig, axarr, n, self)
         t1 = time.time()
