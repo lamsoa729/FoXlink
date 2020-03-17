@@ -282,7 +282,7 @@ class Analyzer():
             A / (2. * np.pi * sig_i * sig_j * np.sqrt(1. - (nu * nu))), nan=0, posinf=0)
         print("pre_fact")
         print(pre_fact)
-        denom = np.nan_to_num(1. / ((nu * nu) - 1.), nan=0, posinf=0)
+        denom = np.nan_to_num(.5 / ((nu * nu) - 1.), nan=0, posinf=0)
 
         def gauss_distr_approx_func(s_i, s_j, n=-1):
             x = np.nan_to_num((s_i - (self.mu10[n] / A[n])) / sig_i[n])

@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from math import exp
-from foxlink.FP_helpers import make_force_dep_velocity_mat, boltz_fact_mat
+from foxlink.pde_helpers import make_force_dep_velocity_mat, boltz_fact_mat
 
 
 """@package docstring

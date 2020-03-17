@@ -37,9 +37,11 @@ def test_find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j, exp_results):
     ([2., 0, 0], 1., 1., [0, 0, 0]),
     ([1., 0, 0], 1., 1., [24., 0, 0]),
     ([1., 0, 0], 1., 2., [48., 0, 0]),
-    ([.1, 0, 0], 1., 1., [479999760000000., 0, 0]),
+    # ([.1, 0, 0], 1., 1., [479999760000000., 0, 0]),
+    ([.1, 0, 0], 1., 1., [1000, 0, 0]),
 ])
 def test_wca_force(dr, sigma, eps, exp_val):
     dr = np.asarray(dr)
     f_vec = wca_force(dr, sigma, eps)
-    assert np.array_equal(f_vec, np.asarray(exp_val))
+    exp_val = np.asarray(exp_val)
+    assert np.isclose(f_vec, exp_val).all()
