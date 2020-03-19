@@ -79,8 +79,8 @@ class PDEAnalyzer(Analyzer):
 
         xl_analysis_grp = touch_group(analysis_grp, 'xl_analysis')
         self.xl_moment_analysis(xl_analysis_grp)
-
         self.xl_boundary_analysis(xl_analysis_grp)
+        # TODO: Add xl_stretch_analysis <19-03-20, ARL> #
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp)
