@@ -196,22 +196,6 @@ def spring_torque_ang(s1, s2, phi, ks, ho):
 
 
 @jit
-def calc_alpha_ang(s1, s2, phi, ks, ho, beta):
-    """!Calculate the exponent of the crosslinker's boltzmans factor
-
-    @param s1: TODO
-    @param s2: TODO
-    @param phi: TODO
-    @param k: TODO
-    @param ho: TODO
-    @param beta: TODO
-    @return: TODO
-
-    """
-    return -.5 * beta * (spring_force_ang(s1, s2, phi, ks, ho)**2) / ks
-
-
-@jit
 def boltz_fact_ang(s1, s2, phi, ks, ho, beta):
     """!TODO: Calculate the boltzmann factor for a given configuration
 
