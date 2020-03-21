@@ -286,7 +286,7 @@ def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
     # s_j = anal.s_j.reshape(M, b).mean(axis=1)
     s_i = np.arange(-.5 * (L_i + rod_diam), .5 * (L_i + rod_diam), rod_diam)
     s_j = np.arange(-.5 * (L_j + rod_diam), .5 * (L_j + rod_diam), rod_diam)
-    xl_distr_coarse = xl_distr.reshape(N, a, M, b)
+    xl_distr_coarse = xl_distr[:a * N, :b * M].reshape(N, a, M, b)
     xl_distr_coarse = xl_distr_coarse.sum(axis=(1, 3))
     for index, val in np.ndenumerate(xl_distr_coarse):
         e_i = xlink_end_pos(r_i, u_i, s_i[index[0]])

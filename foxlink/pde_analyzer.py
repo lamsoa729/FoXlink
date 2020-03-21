@@ -7,6 +7,7 @@ from .analyzer import Analyzer, touch_group
 from .graphs import (pde_graph_all_data_2d, pde_graph_mts_xlink_distr_2d,
                      pde_graph_stationary_runs_2d, pde_graph_moment_data_2d,
                      pde_graph_recreate_xlink_distr_2d)
+from .pde_helpers import make_gen_stretch_mat
 
 """@package docstring
 File: pde_analyzer.py
@@ -78,9 +79,9 @@ class PDEAnalyzer(Analyzer):
         t0 = time.time()
 
         xl_analysis_grp = touch_group(analysis_grp, 'xl_analysis')
-        self.xl_moment_analysis(xl_analysis_grp)
-        self.xl_boundary_analysis(xl_analysis_grp)
-        # TODO: Add xl_stretch_analysis <19-03-20, ARL> #
+        self.xl_moment_analysis(xl_analysis_grp, analysis_type)
+        self.xl_boundary_analysis(xl_analysis_grp, analysis_type)
+        self.xl_stretch_distr_analysis(xl_analysis_grp, analysis_type)
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp)
@@ -321,6 +322,56 @@ class PDEAnalyzer(Analyzer):
             self.d2Bds3_j = np.asarray(self.third_bterm_dset)[:, 4]
             self.d2Bds3_i = np.asarray(self.third_bterm_dset)[:, 5]
 
+    def xl_stretch_distr_analysis(self, xl_analysis_grp, analysis_type='load'):
+        """!TODO: Docstring for xl_stretch_distr_analysis.
+
+        @param xl_analysis_grp: TODO
+        @param analysis_type: TODO
+        @return: TODO
+
+        """
+        nframes = self.time.size
+        distr_size = self.xl_distr[:, :, 0].size
+        flat_distr_arrs = np.zeros((nframes, distr_size))
+        flat_h_arrs = np.zeros((nframes, distr_size))
+        s_i = self.s_i
+        s_j = self.s_j
+        step = .1
+        if 'xl_h_distr' not in xl_analysis_grp:
+            if analysis_type != 'load':
+                for t in range(nframes):
+                    r_i = self.R1_pos[t]
+                    r_j = self.R2_pos[t]
+                    u_i = self.R1_vec[t]
+                    u_j = self.R2_vec[t]
+                    distr = self.xl_distr[:, :, t]
+
+                    stretch_mat = np.linalg.norm(
+                        make_gen_stretch_mat(
+                            s_i, s_j, u_i, u_j, r_j - r_i, 1.), axis=2)
+                    flat_distr_arrs[t] = np.round(distr.flatten(), 9)
+                    flat_h_arrs[t] = stretch_mat.flatten()
+
+                flat_h_arrs = np.ma.masked_where(
+                    flat_distr_arrs == 0., flat_h_arrs)
+                flat_distr_arrs = np.ma.masked_values(flat_distr_arrs, 0)
+                max_h = np.amax(flat_h_arrs)
+                bin_edges = np.arange(0, max_h + 2 * step, step)
+                bin_width = (bin_edges[1] - bin_edges[0])
+
+                self.h_distr = np.zeros((nframes, bin_edges.size - 1))
+                for t in range(nframes):
+                    self.h_distr[t] = np.histogram(
+                        flat_h_arrs[t], bin_edges, weights=flat_distr_arrs[t])[0]
+                self.h_distr_dset = xl_analysis_grp.create_dataset(
+                    'xl_stretch_distr', data=self.h_distr)
+                self.h_distr_dset.attrs['bin_edges'] = bin_edges
+
+            else:
+                print('--- The stretch distribution not analyzed or stored. ---')
+        else:
+            self.h_distr_dset = xl_analysis_grp['xl_stretch_distr']
+
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
         are oscillating traps
@@ -344,6 +395,7 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
+
 
     def graph_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
