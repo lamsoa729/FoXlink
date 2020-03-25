@@ -84,7 +84,7 @@ class PDEAnalyzer(Analyzer):
         self.xl_stretch_distr_analysis(xl_analysis_grp, analysis_type)
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
-        self.rod_geometry_analysis(rod_analysis_grp)
+        self.rod_geometry_analysis(rod_analysis_grp, analysis_type)
 
         # if '/OT_data' in self._h5_data:
         # self.ot_analysis()
