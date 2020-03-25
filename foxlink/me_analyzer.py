@@ -130,22 +130,16 @@ class MEAnalyzer(Analyzer):
             if analysis_type != 'load':
                 u_i = self.R1_vec
                 u_j = self.R2_vec
-                r_ij = np.subtract(self.R2_pos, self.R1_pos)
-                a_ij = np.einsum('ij,ij->i', u_i, r_ij)
-                a_ji = np.einsum('ij,ij->i', u_j, -1. * r_ij)
-                b_ij = np.einsum('ij,ij->i', u_i, u_j)
+                r_ij = self.R2_pos - self.R1_pos
+                ui_x_uj = np.cross(u_i, u_j, axis=-1)
+                ui_x_rij = np.cross(u_i, r_ij, axis=-1)
+                uj_x_rij = np.cross(u_j, r_ij, axis=-1)
                 ks = self._params['ks']
                 # self.dR_vec_arr = np.subtract(self.R2_pos, self.R1_pos)
-                torque_i = ks * (
-                    np.multiply(r_ij - np.multiply(a_ij[:, None], u_i),
-                                self.mu10[:, None])
-                    + np.multiply(u_j - np.multiply(b_ij[:, None], u_i),
-                                  self.mu11[:, None]))
-                torque_j = ks * (
-                    np.multiply(-1. * r_ij - np.multiply(a_ji[:, None], u_j),
-                                self.mu01[:, None])
-                    + np.multiply(u_i - np.multiply(b_ij[:, None], u_j),
-                                  self.mu11[:, None]))
+                torque_i = ks * (self.mu10[:, None] * ui_x_rij +
+                                 self.mu11[:, None] * ui_x_uj)
+                torque_j = -ks * (self.mu01[:, None] * uj_x_rij +
+                                  self.mu11[:, None] * ui_x_uj)
                 self.torque_vec_arr = np.stack((torque_i, torque_j), axis=-2)
                 self.torque_vec_dset = interaction_grp.create_dataset(
                     'torque_vector', data=self.torque_vec_arr, dtype=np.float32)

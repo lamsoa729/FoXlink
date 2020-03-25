@@ -337,7 +337,7 @@ class PDEAnalyzer(Analyzer):
         s_i = self.s_i
         s_j = self.s_j
         step = .1
-        if 'xl_h_distr' not in xl_analysis_grp:
+        if 'xl_stretch_distr' not in xl_analysis_grp:
             if analysis_type != 'load':
                 for t in range(nframes):
                     r_i = self.R1_pos[t]
