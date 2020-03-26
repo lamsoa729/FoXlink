@@ -51,12 +51,41 @@ def rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
     (gpara_i, gperp_i, grot_i, gpara_j, gperp_j, grot_j) = fric_coeff
     (rsqr, a_ij, a_ji, b) = scalar_geom
 
+    # Evolution of position vectors
     dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
     dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
     # Evolution of orientation vectors
     du_i = dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
     du_j = dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j)
     return (dr_i, dr_j, du_i, du_j)
+
+
+def calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params):
+    (rsqr, a_ij, a_ji, b) = scalar_geom
+    vo = params['vo']
+    ks = params['ks']
+    fs = params['fs']
+    ko = params['ko']
+    hL_i = .5 * params['L1']
+    hL_j = .5 * params['L2']
+    kappa = vo * ks / fs
+
+    # Evolution of zeroth moment
+    dmu00 = dmu00_dt_zrl(mu_kl[0], a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
+                         q_arr[0])
+    # Evoultion of first moments
+    dmu10 = dmu10_dt_zrl(mu_kl[0], mu_kl[1], mu_kl[2], a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q_arr[1])
+    dmu01 = dmu10_dt_zrl(mu_kl[0], mu_kl[2], mu_kl[1], a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q_arr[2])
+    # Evolution of second moments
+    dmu11 = dmu11_dt_zrl(mu_kl[1], mu_kl[2], mu_kl[3], mu_kl[4], mu_kl[5],
+                         a_ij, a_ji, b, hL_j, hL_i, ko, vo, kappa, q_arr[3])
+    dmu20 = dmu20_dt_zrl(mu_kl[1], mu_kl[3], mu_kl[4], a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q_arr[4])
+    dmu02 = dmu20_dt_zrl(mu_kl[2], mu_kl[3], mu_kl[5], a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q_arr[5])
+    return [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]
 
 ################################
 #  Moment evolution functions  #
@@ -160,27 +189,6 @@ def dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
             + (hL_i**2) * (kappa * (hL_i - a_ij) - vo) * B0_j
             - kappa * b * (hL_i**2) * B1_j
             + (kappa * (hL_j - a_ji) - vo) * B2_i - kappa * b * B3_i)
-
-
-def calc_moment_derivs_zrl(scalar_geom, mu_kl, q_arr,
-                           hL_i, hL_j, ko, vo, fs, ks):
-    (rsqr, a_ij, a_ji, b) = scalar_geom
-    kappa = vo * ks / fs
-    dmu00 = dmu00_dt_zrl(mu_kl[0], a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
-                         q_arr[0])
-    # Evoultion of first moments
-    dmu10 = dmu10_dt_zrl(mu_kl[0], mu_kl[1], mu_kl[2], a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q_arr[1])
-    dmu01 = dmu10_dt_zrl(mu_kl[0], mu_kl[2], mu_kl[1], a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q_arr[2])
-    # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(mu_kl[1], mu_kl[2], mu_kl[3], mu_kl[4], mu_kl[5],
-                         a_ij, a_ji, b, hL_j, hL_i, ko, vo, kappa, q11)
-    dmu20 = dmu20_dt_zrl(mu_kl[1], mu_kl[3], mu_kl[4], a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q20)
-    dmu02 = dmu20_dt_zrl(mu_kl[2], mu_kl[3], mu_kl[5], a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q02)
-    return [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]
 
 
 @njit

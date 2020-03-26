@@ -22,10 +22,7 @@ from .rod_steric_forces import calc_wca_force_torque
 from .me_zrl_evolvers import prep_zrl_evolver
 
 
-def evolver_zrl_bound(sol,
-                      gpara_i, gperp_i, grot_i,  # Friction coefficients
-                      gpara_j, gperp_j, grot_j,
-                      vo, fs, ko, c, ks, beta, L_i, L_j):  # Other constants
+def evolver_zrl_bound(sol, fric_coeff, params):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
 bound to moving rods. d<var> is the time derivative of corresponding

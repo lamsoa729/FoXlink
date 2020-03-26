@@ -31,11 +31,6 @@ def choose_me_evolver(sol_init, slvr):
         fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
                       get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
 
-        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-        #     slvr.visc, slvr.L_i, slvr.rod_diam)
-        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-        #     slvr.visc, slvr.L_j, slvr.rod_diam)
-
         def evolver_zrl_closure(t, sol):
             """!Define the function of an ODE solver with zero length
             crosslinking proteins and moving rods.
@@ -57,10 +52,6 @@ def choose_me_evolver(sol_init, slvr):
         # Get drag coefficients
         fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
                       get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
-        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-        # slvr.visc, slvr.L_i, slvr.rod_diam)
-        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-        # slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_bound_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -77,18 +68,12 @@ def choose_me_evolver(sol_init, slvr):
 
             sol_print_out(sol)
             return evolver_zrl_bound(sol, fric_coeff, slvr._params)
-            # slvr.vo, slvr.fs, slvr.ko, slvr.co,
-            # slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
         return evolver_zrl_bound_closure
 
     if slvr.ODE_type == 'zrl_wca':
         # Get drag coefficients
         fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
                       get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
-        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-        #     slvr.visc, slvr.L_i, slvr.rod_diam)
-        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-        #     slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_wca_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -125,8 +110,9 @@ def choose_me_evolver(sol_init, slvr):
             """
             # TODO Add verbose option
             # sol_print_out(sol)
-            mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
-            return evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
+            mu_kl = get_zrl_moments(sol)
+            # mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
+            return evolver_zrl_stat(mu_kl,
                                     a_ij, a_ji, b, q00, q10, q01, q11, q20, q02,)  # Other parameters
         return evolver_zrl_stat_closure
 
