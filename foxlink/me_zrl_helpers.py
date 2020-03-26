@@ -30,7 +30,7 @@ def get_zrl_moments_and_boundary_terms(sol):
     @return: Moments of the solution vector
 
     """
-    return sol[12:26].tolist()
+    return (sol[12:18].tolist(), sol[18:26].tolist())
 
 ###################################
 #  Boltzmann factor calculations  #

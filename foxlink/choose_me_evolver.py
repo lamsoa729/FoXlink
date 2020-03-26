@@ -28,10 +28,13 @@ def choose_me_evolver(sol_init, slvr):
 
     if slvr.ODE_type == 'zrl':
         # Get drag coefficients
-        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam)
-        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L_j, slvr.rod_diam)
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+
+        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_i, slvr.rod_diam)
+        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -47,20 +50,17 @@ def choose_me_evolver(sol_init, slvr):
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
-
-            return evolver_zrl(sol,
-                               gpara_i, gperp_i, grot_i,  # Friction coefficients
-                               gpara_j, gperp_j, grot_j,
-                               slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                               slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
+            return evolver_zrl(sol, fric_coeff, slvr._params)
         return evolver_zrl_closure
 
     if slvr.ODE_type == 'zrl_bound':
         # Get drag coefficients
-        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam)
-        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L_j, slvr.rod_diam)
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+        # slvr.visc, slvr.L_i, slvr.rod_diam)
+        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+        # slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_bound_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -76,19 +76,19 @@ def choose_me_evolver(sol_init, slvr):
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
             sol_print_out(sol)
-            return evolver_zrl_bound(sol,
-                                     gpara_i, gperp_i, grot_i,  # Friction coefficients
-                                     gpara_j, gperp_j, grot_j,
-                                     slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                     slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
+            return evolver_zrl_bound(sol, fric_coeff, slvr._params)
+            # slvr.vo, slvr.fs, slvr.ko, slvr.co,
+            # slvr.ks, slvr.beta, slvr.L_i, slvr.L_j)
         return evolver_zrl_bound_closure
 
     if slvr.ODE_type == 'zrl_wca':
         # Get drag coefficients
-        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam)
-        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L_j, slvr.rod_diam)
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_i, slvr.rod_diam)
+        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_wca_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -105,12 +105,7 @@ def choose_me_evolver(sol_init, slvr):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
-            return evolver_zrl_wca(sol,
-                                   gpara_i, gperp_i, grot_i,  # Friction coefficients
-                                   gpara_j, gperp_j, grot_j,
-                                   slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                   slvr.ks, slvr.beta, slvr.L_i, slvr.L_j,
-                                   slvr.rod_diam)
+            return evolver_zrl_wca(sol, fric_coeff, slvr._params)
         return evolver_zrl_wca_closure
 
     if slvr.ODE_type == 'zrl_stat':
@@ -131,18 +126,17 @@ def choose_me_evolver(sol_init, slvr):
             # TODO Add verbose option
             # sol_print_out(sol)
             mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
-            # sol_print_out(sol)
             return evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
-                                    a_ij, a_ji, b, slvr.L_i, slvr.L_j,
-                                    q00, q10, q01, q11, q20, q02,
-                                    slvr.vo, slvr.fs, slvr.ko, slvr.ks)  # Other parameters
+                                    a_ij, a_ji, b, q00, q10, q01, q11, q20, q02,)  # Other parameters
         return evolver_zrl_stat_closure
 
     if slvr.ODE_type == 'gen_2ord':
-        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam)
-        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L_j, slvr.rod_diam)
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_i, slvr.rod_diam)
+        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def me_evolver_gen_2ord_closure(t, sol):
             if not np.all(np.isfinite(sol)):
@@ -152,20 +146,20 @@ def choose_me_evolver(sol_init, slvr):
 
             sol[6:9] /= np.linalg.norm(sol[6:9])
             sol[9:12] /= np.linalg.norm(sol[9:12])
-            return me_evolver_gen_2ord(sol,
-                                       gpara_i, gperp_i, grot_i,
-                                       gpara_j, gperp_j, grot_j,
-                                       slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                       slvr.ks, slvr.ho, slvr.beta,
-                                       slvr.L_i, slvr.L_j)
+            return me_evolver_gen_2ord(sol, fric_coeff, slvr._params)
+            # slvr.vo, slvr.fs, slvr.ko, slvr.co,
+            # slvr.ks, slvr.ho, slvr.beta,
+            # slvr.L_i, slvr.L_j)
 
         return me_evolver_gen_2ord_closure
 
     if slvr.ODE_type == 'gen_orient_2ord':
-        gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam)
-        gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
-            slvr.visc, slvr.L_j, slvr.rod_diam)
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+        # gpara_i, gperp_i, grot_i = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_i, slvr.rod_diam)
+        # gpara_j, gperp_j, grot_j = get_rod_drag_coeff(
+        #     slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def me_evolver_gen_orient_2ord_closure(t, sol):
             if not np.all(np.isfinite(sol)):
@@ -173,11 +167,12 @@ def choose_me_evolver(sol_init, slvr):
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
             print("sol({}):".format(t), sol)
 
-            return me_evolver_gen_orient_2ord(sol, gpara_i, gperp_i, grot_i,
-                                              gpara_j, gperp_j, grot_j,
-                                              slvr.vo, slvr.fs, slvr.ko, slvr.co,
-                                              slvr.ks, slvr.ho, slvr.beta,
-                                              slvr.L_i, slvr.L_j)
+            return me_evolver_gen_orient_2ord(sol, fric_coeff, slvr._params)
+            #                        gpara_i, gperp_i, grot_i,
+            #                        gpara_j, gperp_j, grot_j,
+            #                        slvr.vo, slvr.fs, slvr.ko, slvr.co,
+            #                        slvr.ks, slvr.ho, slvr.beta,
+            #                        slvr.L_i, slvr.L_j)
         return me_evolver_gen_orient_2ord_closure
 
     raise IOError('{} not a defined ODE equation for foxlink.')

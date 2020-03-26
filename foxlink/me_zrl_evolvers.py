@@ -15,25 +15,19 @@ from .me_zrl_odes import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
 from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl,
                              prep_zrl_bound_evolver, prep_zrl_evolver,
                              get_zrl_moments,
-                             get_zrl_moments_and_boundary_terms)
+                             get_zrl_moments_and_boundary_terms,
+                             rod_geom_derivs_zrl)
 from .rod_steric_forces import calc_wca_force_torque
 
 
-def evolver_zrl(sol,
-                gpara_i, gperp_i, grot_i,  # Friction coefficients
-                gpara_j, gperp_j, grot_j,
+def evolver_zrl(sol, fric_coeff,
                 vo, fs, ko, c, ks, beta, L_i, L_j):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
 
     @param sol: Solution vector to solve_ivp
-    @param gpara_i: Parallel drag coefficient of rod1
-    @param gperp_i: Perpendicular drag coefficient of rod1
-    @param grot_i: Rotational drag coefficient of rod1
-    @param gpara_j: Parallel drag coefficient of rod1
-    @param gperp_j: Perpendicular drag coefficient of rod1
-    @param grot_j: Rotational drag coefficient of rod1
+    @param fric_coeff: friction coefficients of rod
     @param vo: Velocity of motor when no force is applied
     @param fs: Stall force of motor ends
     @param ko: Turnover rate of motors
@@ -50,29 +44,32 @@ def evolver_zrl(sol,
     hL_i, hL_j = (.5 * L_i, .5 * L_j)
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
+
     # (rsqr, a_ij, a_ji, b,
     # q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i,
     # L_j)
     # mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
     (rsqr, a_ij, a_ji, b,
      q00, q10, q01, q11, q20, q02,
-     Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i) = prep_zrl_bound_evolver(
-        sol, c, ks, beta, L_i, L_j)
-    (mu00, mu10, mu01, mu11, mu20, mu02,
-     B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i) = get_zrl_moments_and_boundary_terms(sol)
+     Q0_j, Q0_i, Q1_j, Q1_i,
+     Q2_j, Q2_i, Q3_j, Q3_i) = prep_zrl_bound_evolver(sol, c, ks, beta, L_i, L_j)
+    (mu_kl, B_terms) = get_zrl_moments_and_boundary_terms(sol)
+
+    scalar_geom = (rsqr, a_ij, a_ji, b)
 
     # Get average force of crosslinkers on rod2
-    f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
+    f_ij = avg_force_zrl(r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks)
+    dgeom = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j, scalar_geom,
+                                mu_kl, fric_coeff, ks)
+
     # Evolution of rod positions
-    dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
-    dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
-    # Evolution of orientation vectors
-    du_i = dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
-    du_j = dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j)
+    # dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
+    # dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
+    # # Evolution of orientation vectors
+    # du_i = dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
+    # du_j = dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j)
 
     # Characteristic walking rate
-    kappa = vo * ks / fs
-    # Evolution of zeroth moment
     kappa = vo * ks / fs
     # Evolution of zeroth moment
     dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
@@ -105,7 +102,7 @@ def evolver_zrl(sol,
                          Q3_j)
     dB3_i = dBl_j_dt_zrl(3., B2_i, B3_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
                          Q3_i)
-    dsol = np.concatenate((dr_i, dr_j, du_i, du_j,
+    dsol = np.concatenate((dgeom,
                            [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02,
                             dB0_j, dB0_i, dB1_j, dB1_i, dB2_j, dB2_i, dB3_j, dB3_i]))
     # Check to make sure all values are finite
@@ -115,9 +112,7 @@ def evolver_zrl(sol,
     return dsol
 
 
-def evolver_zrl_wca(sol,
-                    gpara_i, gperp_i, grot_i,  # Friction coefficients
-                    gpara_j, gperp_j, grot_j,
+def evolver_zrl_wca(sol, fric_coeff,
                     vo, fs, ko, c, ks, beta, L_i, L_j, rod_diameter):  # Other constants
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
@@ -148,12 +143,12 @@ def evolver_zrl_wca(sol,
     r_ij = r_j - r_i
     (rsqr, a_ij, a_ji, b,
      q00, q10, q01, q11, q20, q02) = prep_zrl_evolver(sol, c, ks, beta, L_i, L_j)
-    mu00, mu10, mu01, mu11, mu20, mu02 = get_zrl_moments(sol)
+    mu_kl = get_zrl_moments(sol)
+    scalar_geom = (rsqr, a_ij, a_ji, b)
 
     # Get average force of crosslinkers on rod2
-    f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
+    f_ij = avg_force_zrl(r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks)
     # Get WCA steric forces and add them to crosslink forces
-    # eps_scale = 1.
     eps_scale = 1.
     f_ij_wca, torque_i_wca, torque_j_wca = calc_wca_force_torque(
         r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps_scale / beta, fcut=1e22)
@@ -161,14 +156,11 @@ def evolver_zrl_wca(sol,
     f_ij += f_ij_wca
 
     # Evolution of rod positions
-    dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
-    dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
-    # Evolution of orientation vectors
-    du_i = ((np.cross(torque_i_wca, u_i) / grot_i) +
-            dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i))
-    du_j = ((np.cross(torque_j_wca, u_j) / grot_j) +
-            dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j))
+    dgeom = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j, scalar_geom,
+                                mu_kl, fric_coeff, ks)
 
+    dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr,
+                                    hL_i, hL_j, ko, vo, fs, ks)
     # Characteristic walking rate
     kappa = vo * ks / fs
     # Evolution of zeroth moment
