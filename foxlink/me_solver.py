@@ -127,7 +127,8 @@ class MomentExpansionSolver(Solver):
 
         t0 = time.time()
         self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init,
-                             t_eval=self.t_eval, method=self.method)
+                             t_eval=self.t_eval, method=self.method,)
+        # min_step=self.dt, atol=1e-6)
         self.cpu_time = time.time() - t0
         print(
             r" --- Total simulation time {:.4f} seconds ---".format(self.cpu_time))

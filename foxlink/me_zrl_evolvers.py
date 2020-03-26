@@ -153,8 +153,10 @@ def evolver_zrl_wca(sol,
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
     # Get WCA steric forces and add them to crosslink forces
+    # eps_scale = 1.
+    eps_scale = 1.
     f_ij_wca, torque_i_wca, torque_j_wca = calc_wca_force_torque(
-        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, 1. / beta)
+        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps_scale / beta, fcut=1e22)
 
     f_ij += f_ij_wca
 
@@ -184,7 +186,7 @@ def evolver_zrl_wca(sol,
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q02)
     dsol = np.concatenate((dr_i, dr_j, du_i, du_j,
-                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 6))
+                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 8))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
@@ -238,7 +240,7 @@ def evolver_zrl_stat(mu00, mu10, mu01, mu11, mu20, mu02,  # Moments
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q02)
     dsol = np.concatenate(
-        (rod_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 6))
+        (rod_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 8))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
