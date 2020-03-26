@@ -146,7 +146,8 @@ def find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j):
     return min_vec_ij, l_i, l_j
 
 
-def calc_wca_force_torque(r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps):
+def calc_wca_force_torque(r_i, r_j, u_i, u_j, L_i, L_j,
+                          rod_diameter, eps, fcut=1000):
     """!Calculate and return the forces and torques on two spherocylinders (i,j).
 
     @param r_i: TODO
@@ -162,7 +163,7 @@ def calc_wca_force_torque(r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps):
     """
     min_vec_ij, l_i, l_j = find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j)
 
-    f_ij = wca_force(min_vec_ij, rod_diameter, eps)
+    f_ij = wca_force(min_vec_ij, rod_diameter, eps, fcut)
     tau_i = np.cross(l_i * u_i, -f_ij)
     tau_j = np.cross(l_j * u_j, f_ij)
 

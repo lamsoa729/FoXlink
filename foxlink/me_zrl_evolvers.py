@@ -153,8 +153,10 @@ def evolver_zrl_wca(sol,
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks)
     # Get WCA steric forces and add them to crosslink forces
+    # eps_scale = 1.
+    eps_scale = 1.
     f_ij_wca, torque_i_wca, torque_j_wca = calc_wca_force_torque(
-        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, 1. / beta)
+        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps_scale / beta, fcut=1e22)
 
     f_ij += f_ij_wca
 
