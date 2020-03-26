@@ -76,7 +76,11 @@ def evolver_zrl_wca(sol, fric_coeff, params):
     r_ij = r_j - r_i
     (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)
     mu_kl = get_zrl_moments(sol)
+
+    L_i, L_j = params['L1'], params['L2']
     ks = params['ks']
+    beta = params['beta']
+    rod_diameter = params['rod_diameter']
 
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks)
@@ -91,25 +95,13 @@ def evolver_zrl_wca(sol, fric_coeff, params):
     dgeom = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j, scalar_geom,
                                 mu_kl, fric_coeff, ks)
 
+    # Add WCA torque to ith filament
+    dgeom[2] += np.cross(torque_i_wca, u_i)
+    dgeom[3] += np.cross(torque_j_wca, u_j)
+
     dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
-    # Characteristic walking rate
-    kappa = vo * ks / fs
-    # Evolution of zeroth moment
-    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
-    # Evoultion of first moments
-    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q10)
-    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q01)
-    # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                         hL_j, hL_i, ko, vo, kappa, q11)
-    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q20)
-    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q02)
-    dsol = np.concatenate((dr_i, dr_j, du_i, du_j,
-                           [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 8))
+
+    dsol = np.concatenate(dgeom, dmu_kl, [0] * 8)
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(

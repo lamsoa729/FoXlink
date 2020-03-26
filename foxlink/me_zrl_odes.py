@@ -57,7 +57,7 @@ def rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
     # Evolution of orientation vectors
     du_i = dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
     du_j = dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j)
-    return (dr_i, dr_j, du_i, du_j)
+    return [dr_i, dr_j, du_i, du_j]
 
 
 def calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params):
