@@ -366,14 +366,14 @@ def prep_zrl_bound_evolver(sol, params):
 def avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks):
     """!Find the average force of zero rest length (zrl) crosslinkers on rods
 
-    @param r12: Vector from the center of mass of rod1 to the center of mass of rod2
-    @param u1: Orientation unit vector of rod1
-    @param u2: Orientation unit vector of rod2
-    @param rho: Zeroth motor moment
-    @param P1: First motor moment of s_i
-    @param P2: First motor moment of s_j
+    @param r_ij: Vector from the center of mass of rod1 to the center of mass of rod2
+    @param u_i: Orientation unit vector of rod1
+    @param u_j: Orientation unit vector of rod2
+    @param mu00: Zeroth motor moment
+    @param mu10: First motor moment of s_i
+    @param mu01: First motor moment of s_j
     @param ks: motor spring constant
-    return: Vector of force from rod1 on rod2
+    return: Vector of force from rod i on rod j
 
     """
     return -ks * (r_ij * mu00 + mu01 * u_j - mu10 * u_i)

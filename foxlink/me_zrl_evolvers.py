@@ -10,9 +10,7 @@ Description:
 import numpy as np
 # from scipy.integrate import dblquad
 from .me_helpers import dr_dt, convert_sol_to_geom
-from .me_zrl_odes import (dui_dt_zrl, dmu00_dt_zrl, dmu10_dt_zrl,
-                          dmu11_dt_zrl, dmu20_dt_zrl, dBl_j_dt_zrl,
-                          rod_geom_derivs_zrl, calc_moment_derivs_zrl,
+from .me_zrl_odes import (rod_geom_derivs_zrl, calc_moment_derivs_zrl,
                           calc_boundary_derivs_zrl)
 from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl,
                              prep_zrl_bound_evolver, prep_zrl_evolver,
@@ -115,44 +113,18 @@ def evolver_zrl_stat(mu_kl, scalar_geom, q_arr, params):
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
 
-    @param mu00: Zeroth motor moment
-    @param mu10: First motor moment of s1
-    @param mu01: First motor moment of s2
-    @param mu11: Second motor moment of s1 and s2
-    @param mu20: Second motor moment of s1
-    @param mu02: Second motor moment of s2
-    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM (r_ij)
-    @param a_ij: Dot product of u_i and r_ij
-    @param a_ji: Dot product of u_j and r_ij
-    @param b: Dot product of u_i and u_j
-    @param vo: Velocity of motor when no force is applied
-    @param fs: Stall force of motor ends
-    @param ko: Turnover rate of motors
-    @param ks: Motor spring constant
+    @param mu_kl: Zeroth motor moment
+    @param scalar_geom: First motor moment of s1
+    @param q_arr: First motor moment of s2
+    @param params: Second motor moment of s1 and s2
     @return: Time-derivatives of all time varying quantities in a flattened
              array
     """
-    hL_i, hL_j = (.5 * L_i, .5 * L_j)
-    # Define useful parameters for functions
     rod_change_arr = np.zeros(12)
-    # Characteristic walking rate
-    kappa = vo * ks / fs
-    # Evolution of zeroth moment
-    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa, q00)
-    # Evoultion of first moments
-    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q10)
-    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q01)
-    # Evolution of second moments
-    dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
-                         hL_j, hL_i, ko, vo, kappa, q11)
-    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
-                         ko, vo, kappa, q20)
-    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
-                         ko, vo, kappa, q02)
-    dsol = np.concatenate(
-        (rod_change_arr, [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02], [0] * 8))
+    dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
+    dB_terms = np.zeros(8)
+
+    dsol = np.concatenate((rod_change_arr, dmu_kl, dB_terms))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(

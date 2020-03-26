@@ -87,6 +87,70 @@ def calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params):
                          ko, vo, kappa, q_arr[5])
     return [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]
 
+
+def calc_moment_derivs_zrl_B_terms(mu_kl, scalar_geom, q_arr, B_terms, params):
+    (rsqr, a_ij, a_ji, b) = scalar_geom
+    vo = params['vo']
+    ks = params['ks']
+    fs = params['fs']
+    ko = params['ko']
+    hL_i = .5 * params['L1']
+    hL_j = .5 * params['L2']
+    kappa = vo * ks / fs
+    mu00, mu10, mu01, mu11, mu20, mu02 = mu_kl
+    B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i = B_terms
+    # Evolution of zeroth moment
+
+    dmu00 = dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
+                         q_arr[0], B0_j, B0_i, B1_j, B1_i)
+    # Evoultion of first moments
+    dmu10 = dmu10_dt_zrl(mu00, mu10, mu01, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q_arr[1], B0_j, B1_j, B1_i, B2_i)
+    dmu01 = dmu10_dt_zrl(mu00, mu01, mu10, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q_arr[2], B0_i, B1_i, B1_j, B2_j)
+    # Evolution of second moments
+    dmu11 = dmu11_dt_zrl(mu10, mu01, mu11, mu20, mu02, a_ij, a_ji, b,
+                         hL_j, hL_i, ko, vo, kappa, q_arr[3],
+                         B1_j, B1_i, B2_j, B2_i)
+    dmu20 = dmu20_dt_zrl(mu10, mu11, mu20, a_ij, a_ji, b, hL_i, hL_j,
+                         ko, vo, kappa, q_arr[4], B0_j, B1_j, B2_i, B3_i)
+    dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
+                         ko, vo, kappa, q_arr[5], B0_i, B1_i, B2_j, B3_j)
+    return [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]
+
+
+def calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params):
+    (rsqr, a_ij, a_ji, b) = scalar_geom
+    B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i = B_terms
+    Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i = Q_arr
+    vo = params['vo']
+    ks = params['ks']
+    fs = params['fs']
+    ko = params['ko']
+    hL_i = .5 * params['L1']
+    hL_j = .5 * params['L2']
+    kappa = vo * ks / fs
+
+    dB0_j = dBl_j_dt_zrl(0., 0., B0_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q0_j)
+    dB0_i = dBl_j_dt_zrl(0., 0., B0_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q0_i)
+    dB1_j = dBl_j_dt_zrl(1., B0_j, B1_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q1_j)
+    dB1_i = dBl_j_dt_zrl(1., B0_i, B1_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q1_i)
+    dB2_j = dBl_j_dt_zrl(2., B1_j, B2_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q2_j)
+    dB2_i = dBl_j_dt_zrl(2., B1_i, B2_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q2_i)
+    dB3_j = dBl_j_dt_zrl(3., B2_j, B3_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,
+                         Q3_j)
+    dB3_i = dBl_j_dt_zrl(3., B2_i, B3_i, a_ji, a_ij, b, hL_j, vo, ko, kappa,
+                         Q3_i)
+
+    return [dB0_j, dB0_i, dB1_j, dB1_i, dB2_j, dB2_i, dB3_j, dB3_i]
+
+
 ################################
 #  Moment evolution functions  #
 ################################
