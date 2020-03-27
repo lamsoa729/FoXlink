@@ -307,7 +307,7 @@ def prep_zrl_evolver(sol, params):
     """
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     c = params['co']
-    L_i, L_j = params['L1'], params['L2']
+    L_i, L_j = params['L_i'], params['L_j']
     ks = params['ks']
     beta = params['beta']
 
@@ -329,7 +329,7 @@ def prep_zrl_evolver(sol, params):
                               a_ij, b, ks, beta, k=0, l=2)
     q02 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
                               a_ji, b, ks, beta, k=0, l=2)
-    return [rsqr, a_ij, a_ji, b], [q00, q10, q01, q11, q20, q02]
+    return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11, q20, q02)
 
 
 def prep_zrl_bound_evolver(sol, params):
@@ -341,7 +341,7 @@ def prep_zrl_bound_evolver(sol, params):
 
     """
     c = params['co']
-    L_i, L_j = params['L1'], params['L2']
+    L_i, L_j = params['L_i'], params['L_j']
     ks = params['ks']
     beta = params['beta']
 
@@ -359,7 +359,7 @@ def prep_zrl_bound_evolver(sol, params):
     Q3_j = c * fast_zrl_src_integrand_l3(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
     Q3_i = c * fast_zrl_src_integrand_l3(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
     return (scalar_geom, q_arr,
-            [Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i])
+            (Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i))
 
 
 @njit

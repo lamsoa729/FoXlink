@@ -36,7 +36,6 @@ def dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i):
                             * mu10 + (u_j - (b * u_i)) * mu11)
 
 
-@njit
 def rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
                         scalar_geom, mu_kl_arr, fric_coeff, ks):
     """!TODO: Docstring for rod_derivs.
@@ -57,7 +56,7 @@ def rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
     # Evolution of orientation vectors
     du_i = dui_dt_zrl(r_ij, u_i, u_j, mu10, mu11, a_ij, b, ks, grot_i)
     du_j = dui_dt_zrl(-1. * r_ij, u_j, u_i, mu01, mu11, a_ji, b, ks, grot_j)
-    return [dr_i, dr_j, du_i, du_j]
+    return (dr_i, dr_j, du_i, du_j)
 
 
 def calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params):
@@ -66,8 +65,8 @@ def calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params):
     ks = params['ks']
     fs = params['fs']
     ko = params['ko']
-    hL_i = .5 * params['L1']
-    hL_j = .5 * params['L2']
+    hL_i = .5 * params['L_i']
+    hL_j = .5 * params['L_j']
     kappa = vo * ks / fs
 
     # Evolution of zeroth moment
@@ -85,7 +84,7 @@ def calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params):
                          ko, vo, kappa, q_arr[4])
     dmu02 = dmu20_dt_zrl(mu_kl[2], mu_kl[3], mu_kl[5], a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q_arr[5])
-    return [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]
+    return (dmu00, dmu10, dmu01, dmu11, dmu20, dmu02)
 
 
 def calc_moment_derivs_zrl_B_terms(mu_kl, scalar_geom, q_arr, B_terms, params):
@@ -94,8 +93,8 @@ def calc_moment_derivs_zrl_B_terms(mu_kl, scalar_geom, q_arr, B_terms, params):
     ks = params['ks']
     fs = params['fs']
     ko = params['ko']
-    hL_i = .5 * params['L1']
-    hL_j = .5 * params['L2']
+    hL_i = .5 * params['L_i']
+    hL_j = .5 * params['L_j']
     kappa = vo * ks / fs
     mu00, mu10, mu01, mu11, mu20, mu02 = mu_kl
     B0_j, B0_i, B1_j, B1_i, B2_j, B2_i, B3_j, B3_i = B_terms
@@ -116,7 +115,7 @@ def calc_moment_derivs_zrl_B_terms(mu_kl, scalar_geom, q_arr, B_terms, params):
                          ko, vo, kappa, q_arr[4], B0_j, B1_j, B2_i, B3_i)
     dmu02 = dmu20_dt_zrl(mu01, mu11, mu02, a_ji, a_ij, b, hL_j, hL_i,
                          ko, vo, kappa, q_arr[5], B0_i, B1_i, B2_j, B3_j)
-    return [dmu00, dmu10, dmu01, dmu11, dmu20, dmu02]
+    return (dmu00, dmu10, dmu01, dmu11, dmu20, dmu02)
 
 
 def calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params):
@@ -127,8 +126,8 @@ def calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params):
     ks = params['ks']
     fs = params['fs']
     ko = params['ko']
-    hL_i = .5 * params['L1']
-    hL_j = .5 * params['L2']
+    hL_i = .5 * params['L_i']
+    hL_j = .5 * params['L_j']
     kappa = vo * ks / fs
 
     dB0_j = dBl_j_dt_zrl(0., 0., B0_j, a_ij, a_ji, b, hL_i, vo, ko, kappa,

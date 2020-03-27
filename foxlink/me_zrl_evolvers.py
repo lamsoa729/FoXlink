@@ -31,7 +31,7 @@ def evolver_zrl(sol, fric_coeff, params):
              array
     """
     # Define useful parameters for functions
-    hL_i, hL_j = (.5 * params['L1'], .5 * params['L2'])
+    hL_i, hL_j = (.5 * params['L_i'], .5 * params['L_j'])
     ks = params['ks']
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
@@ -50,7 +50,7 @@ def evolver_zrl(sol, fric_coeff, params):
     # Evolution of boundary condtions
     dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
 
-    dsol = np.concatenate(dgeom, dmu_kl, dB_terms)
+    dsol = np.concatenate((*dgeom, dmu_kl, dB_terms))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
@@ -75,31 +75,33 @@ def evolver_zrl_wca(sol, fric_coeff, params):
     (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)
     mu_kl = get_zrl_moments(sol)
 
-    L_i, L_j = params['L1'], params['L2']
+    L_i, L_j = params['L_i'], params['L_j']
     ks = params['ks']
     beta = params['beta']
-    rod_diameter = params['rod_diameter']
+    rod_diameter = params['rod_diam']
 
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks)
     # Get WCA steric forces and add them to crosslink forces
     eps_scale = 1.
     f_ij_wca, torque_i_wca, torque_j_wca = calc_wca_force_torque(
-        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps_scale / beta, fcut=1e22)
+        r_i, r_j, u_i, u_j, L_i, L_j, rod_diameter, eps_scale / beta, fcut=1e10)
 
     f_ij += f_ij_wca
 
     # Evolution of rod positions
-    dgeom = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j, scalar_geom,
-                                mu_kl, fric_coeff, ks)
+    dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
+                                                 scalar_geom, mu_kl, fric_coeff, ks)
 
     # Add WCA torque to ith filament
-    dgeom[2] += np.cross(torque_i_wca, u_i)
-    dgeom[3] += np.cross(torque_j_wca, u_j)
+    du_i += np.cross(torque_i_wca, u_i) / fric_coeff[2]
+    du_j += np.cross(torque_j_wca, u_j) / fric_coeff[5]
 
     dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
 
-    dsol = np.concatenate(dgeom, dmu_kl, [0] * 8)
+    B_terms = np.zeros(8)
+
+    dsol = np.concatenate((dr_i, dr_j, du_i, du_j, dmu_kl, B_terms))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(

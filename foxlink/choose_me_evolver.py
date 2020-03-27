@@ -46,7 +46,7 @@ def choose_me_evolver(sol_init, slvr):
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
-            return evolver_zrl(sol, fric_coeff, slvr._params)
+            return evolver_zrl(sol, fric_coeff, slvr.__dict__)
         return evolver_zrl_closure
 
     if slvr.ODE_type == 'zrl_bound':
@@ -68,7 +68,7 @@ def choose_me_evolver(sol_init, slvr):
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
             sol_print_out(sol)
-            return evolver_zrl_bound(sol, fric_coeff, slvr._params)
+            return evolver_zrl_bound(sol, fric_coeff, slvr.__dict__)
         return evolver_zrl_bound_closure
 
     if slvr.ODE_type == 'zrl_wca':
@@ -91,12 +91,12 @@ def choose_me_evolver(sol_init, slvr):
                 raise RuntimeError(
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
 
-            return evolver_zrl_wca(sol, fric_coeff, slvr._params)
+            return evolver_zrl_wca(sol, fric_coeff, slvr.__dict__)
         return evolver_zrl_wca_closure
 
     if slvr.ODE_type == 'zrl_stat':
         # Compute geometric terms that will not change
-        scalar_geom, q_arr = prep_zrl_evolver(sol_init, slvr._params)
+        scalar_geom, q_arr = prep_zrl_evolver(sol_init, slvr.__dict__)
 
         def evolver_zrl_stat_closure(t, sol):
             """!Define the function of an ODE solver with zero rest length
@@ -110,7 +110,7 @@ def choose_me_evolver(sol_init, slvr):
             # TODO Add verbose option
             # sol_print_out(sol)
             mu_kl = get_zrl_moments(sol)
-            return evolver_zrl_stat(mu_kl, scalar_geom, q_arr, slvr._params)
+            return evolver_zrl_stat(mu_kl, scalar_geom, q_arr, slvr.__dict__)
         return evolver_zrl_stat_closure
 
     if slvr.ODE_type == 'gen_2ord':
@@ -125,7 +125,7 @@ def choose_me_evolver(sol_init, slvr):
 
             sol[6:9] /= np.linalg.norm(sol[6:9])
             sol[9:12] /= np.linalg.norm(sol[9:12])
-            return me_evolver_gen_2ord(sol, fric_coeff, slvr._params)
+            return me_evolver_gen_2ord(sol, fric_coeff, slvr.__dict__)
 
         return me_evolver_gen_2ord_closure
 
@@ -139,7 +139,7 @@ def choose_me_evolver(sol_init, slvr):
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
             print("sol({}):".format(t), sol)
 
-            return me_evolver_gen_orient_2ord(sol, fric_coeff, slvr._params)
+            return me_evolver_gen_orient_2ord(sol, fric_coeff, slvr.__dict__)
         return me_evolver_gen_orient_2ord_closure
 
     raise IOError('{} not a defined ODE equation for foxlink.')

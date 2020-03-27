@@ -33,7 +33,7 @@ variable
              array
     """
     # Define useful parameters for functions
-    hL_i, hL_j = (.5 * params['L1'], .5 * params['L2'])
+    hL_i, hL_j = (.5 * params['L_i'], .5 * params['L_j'])
     ks = params['ks']
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
