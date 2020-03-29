@@ -45,18 +45,18 @@ def weighted_bivariate_gauss(
 
 
 @njit
-def convert_moments_to_gauss_vars(mu00, mu10, mu01, mu11, mu20, mu02):
+def convert_moments_to_gauss_vars(mu_kl):
     """!TODO: Docstring for convert_to_gauss_vars.
 
     @param arg1: TODO
     @return: TODO
 
     """
-    (mu10_bar, mu01_bar, mu11_bar, mu20_bar, mu02_bar) = (mu10 / mu00,
-                                                          mu01 / mu00,
-                                                          mu11 / mu00,
-                                                          mu20 / mu00,
-                                                          mu02 / mu00)
+    (mu10_bar, mu01_bar, mu11_bar, mu20_bar, mu02_bar) = (mu_kl[1] / mu_kl[0],
+                                                          mu_kl[2] / mu_kl[0],
+                                                          mu_kl[3] / mu_kl[0],
+                                                          mu_kl[4] / mu_kl[0],
+                                                          mu_kl[5] / mu_kl[0])
     sigma_i = np.sqrt(mu20_bar - (mu10_bar * mu10_bar))
     sigma_j = np.sqrt(mu02_bar - (mu01_bar * mu01_bar))
     nu = (mu11_bar - (mu10_bar * mu01_bar)) / (sigma_i * sigma_j)
@@ -206,18 +206,12 @@ def fast_gauss_integrand_l2(
     return pre_fact * (I_p - I_m)
 
 
-def fast_gauss_moment_kl(L_i, L_j, mu00, mu10, mu01,
-                         mu11, mu20, mu02, k=0, l=0):
+def fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0):
     """!TODO: Docstring for fast_zrl_src_kl
 
     @param L_i:
     @param L_j:
-    @param mu00:
-    @param mu10:
-    @param mu01:
-    @param mu11:
-    @param mu20:
-    @param mu02:
+    @param mu_kl: List of moments
     @param k:
     @param l:
     @return: TODO
@@ -234,12 +228,11 @@ def fast_gauss_moment_kl(L_i, L_j, mu00, mu10, mu01,
             "{}-order derivatives have not been implemented for fast source solver.".format(l))
     (mu10_bar, mu01_bar,
      sigma_i, sigma_j,
-     nu, gamma) = convert_moments_to_gauss_vars(mu00, mu10, mu01,
-                                                mu11, mu20, mu02)
+     nu, gamma) = convert_moments_to_gauss_vars(mu_kl)
     upper_bound = (0.5 * L_i - mu10_bar) / sigma_i
     lower_bound = (-.5 * L_i - mu10_bar) / sigma_i
-    mukl, e = quad(integrand, lower_bound, upper_bound,
-                   args=(L_j, sigma_i, sigma_j, mu10_bar, mu01_bar, nu, gamma,
-                         k),
-                   epsrel=1e-8)
-    return (np.sqrt(.5) * mu00 * gamma / np.pi) * mukl
+    mukl_gauss, e = quad(integrand, lower_bound, upper_bound,
+                         args=(L_j, sigma_i, sigma_j, mu10_bar, mu01_bar,
+                               nu, gamma, k),
+                         epsrel=1e-8)
+    return (np.sqrt(.5) * mu_kl[0] * gamma / np.pi) * mukl_gauss

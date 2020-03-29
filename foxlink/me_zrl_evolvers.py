@@ -15,7 +15,7 @@ from .me_zrl_odes import (rod_geom_derivs_zrl, calc_moment_derivs_zrl,
 from .me_zrl_helpers import (avg_force_zrl, fast_zrl_src_kl,
                              prep_zrl_bound_evolver, prep_zrl_evolver,
                              get_zrl_moments,
-                             get_zrl_moments_and_boundary_terms)
+                             get_zrl_moments_and_boundary_terms, get_mu_kl_eff)
 from .rod_steric_forces import calc_wca_force_torque
 
 
@@ -43,6 +43,50 @@ def evolver_zrl(sol, fric_coeff, params):
     f_ij = avg_force_zrl(r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks)
     dgeom = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j, scalar_geom,
                                 mu_kl, fric_coeff, ks)
+
+    # Moment evolution
+    dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
+
+    # Evolution of boundary condtions
+    dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
+
+    dsol = np.concatenate((*dgeom, dmu_kl, dB_terms))
+    # Check to make sure all values are finite
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError(
+            'Infinity or NaN thrown in ODE solver derivatives. '
+            'Current derivatives', dsol)
+    return dsol
+
+
+def evolver_bvg_zrl(sol, fric_coeff, params):
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
+
+    @param sol: Solution vector to solve_ivp
+    @param fric_coeff: friction coefficients of rod
+    @param params: Constant parameters of the simulation
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    # Define useful parameters for functions
+    hL_i, hL_j = (.5 * params['L_i'], .5 * params['L_j'])
+    ks = params['ks']
+    r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+    r_ij = r_j - r_i
+
+    (scalar_geom, q_arr, Q_arr) = prep_zrl_bound_evolver(sol, params)
+    (mu_kl, B_terms) = get_zrl_moments_and_boundary_terms(sol)
+    # Get effective mu_kl to calculate forces and torques. This will simulate
+    # walking off the end of rods
+    mu_kl_eff = get_mu_kl_eff(mu_kl, params)
+
+    # Get average force of crosslinkers on rod2
+    f_ij = avg_force_zrl(r_ij, u_i, u_j,
+                         mu_kl_eff[0], mu_kl_eff[1], mu_kl_eff[2], ks)
+    dgeom = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j, scalar_geom,
+                                mu_kl_eff, fric_coeff, ks)
 
     # Moment evolution
     dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)

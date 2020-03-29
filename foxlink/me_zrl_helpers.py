@@ -11,6 +11,7 @@ from math import erf
 from numba import njit
 from scipy.integrate import quad
 from .me_helpers import convert_sol_to_geom
+from .bivariate_gauss_helpers import fast_gauss_moment_kl
 
 
 def get_zrl_moments(sol):
@@ -31,6 +32,30 @@ def get_zrl_moments_and_boundary_terms(sol):
 
     """
     return (sol[12:18].tolist(), sol[18:26].tolist())
+
+
+def get_mu_kl_eff(mu_kl, params):
+    """!TODO: Docstring for get_mu_kl_eff.
+
+    @param mu_kl: TODO
+    @param params: TODO
+    @return: TODO
+
+    """
+    L_i = params['L_i']
+    L_j = params['L_j']
+    # Create a list for moments where asymetric terms are reversed
+    mu_lk = [mu_kl[0], mu_kl[2], mu_kl[1], mu_kl[3], mu_kl[5], mu_kl[4]]
+
+    # Create effective moments to return
+    mu00 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0)
+    mu10 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=1)
+    mu01 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=1)
+    mu11 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=1, l=1)
+    mu20 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=2)
+    mu02 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=2)
+
+    return (mu00, mu10, mu01, mu11, mu20, mu02)
 
 ###################################
 #  Boltzmann factor calculations  #
