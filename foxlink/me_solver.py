@@ -67,6 +67,9 @@ class MomentExpansionSolver(Solver):
         self.R1_vec /= np.linalg.norm(self.R1_vec)
         self.R2_vec /= np.linalg.norm(self.R2_vec)
 
+        # Check to see if steric forces should be used
+        self.steric_flag = self._params.get('steric_interactions', None)
+
         print("R1_vec = ", self.R1_vec)
         print("R2_vec = ", self.R2_vec)
 
