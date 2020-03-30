@@ -59,7 +59,7 @@ def evolver_zrl(sol, fric_coeff, params):
     return dsol
 
 
-def evolver_bvg_zrl(sol, fric_coeff, params):
+def evolver_zrl_bvg(sol, fric_coeff, params):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (zrl) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable

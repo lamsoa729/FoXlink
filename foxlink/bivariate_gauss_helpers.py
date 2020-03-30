@@ -44,7 +44,6 @@ def weighted_bivariate_gauss(
     return np.power(s_i, k) * np.power(s_j, l) * distr
 
 
-@njit
 def convert_moments_to_gauss_vars(mu_kl):
     """!TODO: Docstring for convert_to_gauss_vars.
 
@@ -52,6 +51,8 @@ def convert_moments_to_gauss_vars(mu_kl):
     @return: TODO
 
     """
+    if mu_kl[0] <= 0:
+        return [0] * 6
     (mu10_bar, mu01_bar, mu11_bar, mu20_bar, mu02_bar) = (mu_kl[1] / mu_kl[0],
                                                           mu_kl[2] / mu_kl[0],
                                                           mu_kl[3] / mu_kl[0],
@@ -59,7 +60,18 @@ def convert_moments_to_gauss_vars(mu_kl):
                                                           mu_kl[5] / mu_kl[0])
     sigma_i = np.sqrt(mu20_bar - (mu10_bar * mu10_bar))
     sigma_j = np.sqrt(mu02_bar - (mu01_bar * mu01_bar))
+    print(sigma_i)
+    if sigma_i <= 0 or np.isnan(sigma_i):
+        sigma_i = 1e-12
+    if sigma_j <= 0 or np.isnan(sigma_j):
+        sigma_j = 1e-12
+
     nu = (mu11_bar - (mu10_bar * mu01_bar)) / (sigma_i * sigma_j)
+    if nu >= 1.:
+        nu = 1. - 1e-12
+    elif nu <= -1.:
+        nu = 1e-12 - 1.
+
     gamma = 1. / np.sqrt(2. * (1. - nu * nu))
     return (mu10_bar, mu01_bar, sigma_i, sigma_j, nu, gamma)
 
@@ -77,6 +89,8 @@ def semi_anti_deriv_gauss_0(s_i, s_j, sigma_j, mu01, nu, gamma):
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
+    if gamma == 0.:
+        return 0.
     s = (s_j - nu * s_i) * gamma
     return (.5 * SQRT_PI / gamma) * erf(s)
 
@@ -94,6 +108,8 @@ def semi_anti_deriv_gauss_1(s_i, s_j, sigma_j, mu01, nu, gamma):
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
+    if gamma == 0.:
+        return 0.
     s = (s_j - nu * s_i) * gamma
     return ((-sigma_j * np.exp(-1. * s * s)
              + (SQRT_PI * gamma) * (mu01 + sigma_j * nu * s_i) * erf(s))
@@ -113,6 +129,8 @@ def semi_anti_deriv_gauss_2(s_i, s_j, sigma_j, mu01, nu, gamma):
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
+    if gamma == 0.:
+        return 0.
     g2 = gamma * gamma
     s = (s_j - nu * s_i) * gamma
     return ((-2. * gamma * sigma_j * (s_j + nu * s_i) * np.exp(-1. * s * s)
@@ -206,7 +224,7 @@ def fast_gauss_integrand_l2(
     return pre_fact * (I_p - I_m)
 
 
-def fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0):
+def fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0, index=0):
     """!TODO: Docstring for fast_zrl_src_kl
 
     @param L_i:
@@ -229,6 +247,7 @@ def fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0):
     (mu10_bar, mu01_bar,
      sigma_i, sigma_j,
      nu, gamma) = convert_moments_to_gauss_vars(mu_kl)
+
     upper_bound = (0.5 * L_i - mu10_bar) / sigma_i
     lower_bound = (-.5 * L_i - mu10_bar) / sigma_i
     mukl_gauss, e = quad(integrand, lower_bound, upper_bound,

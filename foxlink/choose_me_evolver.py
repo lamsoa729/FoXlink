@@ -10,7 +10,8 @@ Description: Function that creates closures of ODE system evolvers
 import numpy as np
 from .me_helpers import sol_print_out
 from .me_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_wca,
-                              prep_zrl_evolver, get_zrl_moments)
+                              evolver_zrl_bvg, prep_zrl_evolver,
+                              get_zrl_moments)
 from .me_zrl_odes import calc_moment_derivs_zrl
 from .me_zrl_bound_evolvers import evolver_zrl_bound
 from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
@@ -48,6 +49,28 @@ def choose_me_evolver(sol_init, slvr):
                     'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
             return evolver_zrl(sol, fric_coeff, slvr.__dict__)
         return evolver_zrl_closure
+
+    if slvr.ODE_type == 'zrl_bvg':
+        # Get drag coefficients
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+
+        def evolver_zrl_bvg_closure(t, sol):
+            """!Define the function of an ODE solver with zero length
+            crosslinking proteins and moving rods.
+
+            @param t: Time array
+            @param sol: Solution array
+            @return: Function to ODE zrl
+
+            """
+            # TODO Add verbose option
+            # sol_print_out(sol)
+            if not np.all(np.isfinite(sol)):
+                raise RuntimeError(
+                    'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+            return evolver_zrl_bvg(sol, fric_coeff, slvr.__dict__)
+        return evolver_zrl_bvg_closure
 
     if slvr.ODE_type == 'zrl_bound':
         # Get drag coefficients

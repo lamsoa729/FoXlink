@@ -42,20 +42,22 @@ def get_mu_kl_eff(mu_kl, params):
     @return: TODO
 
     """
+    if mu_kl[0] <= 0:
+        return [0] * 6
     L_i = params['L_i']
     L_j = params['L_j']
     # Create a list for moments where asymetric terms are reversed
     mu_lk = [mu_kl[0], mu_kl[2], mu_kl[1], mu_kl[3], mu_kl[5], mu_kl[4]]
 
     # Create effective moments to return
-    mu00 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0)
-    mu10 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=1)
-    mu01 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=1)
-    mu11 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=1, l=1)
-    mu20 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=2)
-    mu02 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=2)
+    mu00 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0, index=0)
+    mu10 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=1, index=2)
+    mu01 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=1, index=2)
+    mu11 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=1, l=1, index=3)
+    mu20 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=2, index=5)
+    mu02 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=2, index=5)
 
-    return (mu00, mu10, mu01, mu11, mu20, mu02)
+    return [mu00, mu10, mu01, mu11, mu20, mu02]
 
 ###################################
 #  Boltzmann factor calculations  #
