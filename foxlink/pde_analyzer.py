@@ -17,6 +17,18 @@ Description: File containing classes to analyze data, make movies, and create gr
 """
 
 
+def normalize(vec, axis=-1):
+    """!TODO: Docstring for normalize.
+
+    @param vec: TODO
+    @param axis: TODO
+    @return: TODO
+
+    """
+    norm = np.linalg.norm(vec, axis=axis)
+    return np.divide(vec, norm, out=np.zeros_like(vec), where=norm != 0)
+
+
 class PDEAnalyzer(Analyzer):
 
     """!Analyze Fokker-Planck equation code"""
@@ -371,6 +383,72 @@ class PDEAnalyzer(Analyzer):
                 print('--- The stretch distribution not analyzed or stored. ---')
         else:
             self.h_distr_dset = xl_analysis_grp['xl_stretch_distr']
+
+    def xl_work_analysis(self, xl_analysis_grp, analysis_type='analyze'):
+        """!TODO: Docstring for xl_work_analysis.
+
+        @param xl_analysis_grp: TODO
+        @param analysis_type: TODO
+        @return: TODO
+
+        """
+        if 'xl_lin_work' not in xl_analysis_grp:
+            if analysis_type != 'load':
+                # Linear work
+                dr_i = np.zeros(self.R1_pos.shape)
+                dr_i[1:] = self.R1_pos[1:] - self.R1_pos[:-1]
+                f_i = self._h5_data['/interaction_data/force_data'][:, 0, :]
+                self.dwl_i = np.zeros(self.R1_pos.shape[0])
+                self.dwl_i[1:] = np.einsum('ij,ij->i', dr_i[1:], f_i[:-1])
+
+                dr_j = np.zeros(self.R2_pos.shape)
+                dr_j[1:] = self.R2_pos[1:] - self.R2_pos[:-1]
+                f_j = self._h5_data['/interaction_data/force_data'][:, 0, :]
+                self.dwl_j = np.zeros(self.R2_pos.shape[0])
+                self.dwl_j[1:] = np.einsum('ij,ij->i', dr_j[1:], f_j[:-1])
+
+                # Rotational work
+                dtheta_i_vec = np.zeros(self.R1_vec.shape)
+                dtheta_i_vec[1:] = normalize(
+                    np.cross(self.R1_vec[:-1], self.R1_vec[1:]))
+                dtheta_i_vec[1:] *= np.arccos(
+                    np.einsum('ij,ij->i', self.R1_vec[1:], self.R1_vec[:-1])
+                )[:, None]
+                tau_i = self._h5_data['/interaction_data/torque_data'][:, 0, :]
+                self.dwr_i = np.zeros(self.R1_vec.shape[0])
+                self.dwr_i[1:] = np.einsum('ij,ij->i',
+                                           dtheta_i_vec[1:], tau_i[:-1])
+
+                dtheta_j_vec = np.zeros(self.R2_vec.shape)
+                dtheta_j_vec[1:] = normalize(
+                    np.cross(self.R2_vec[:-1], self.R2_vec[1:]))
+                dtheta_i_vec[1:] *= np.arccos(np.einsum('ij,ij->i',
+                                                        self.R1_vec[1:],
+                                                        self.R1_vec[:-1])
+                                              )[:, None]
+                tau_j = self._h5_data['/interaction_data/torque_data'][:, 1, :]
+                self.dwr_j = np.zeros(self.R2_vec.shape[0])
+                self.dwr_j[1:] = np.einsum('ij,ij->i',
+                                           dtheta_j_vec[1:], tau_j[:-1])
+
+                self.xl_lin_work_dset = xl_analysis_grp.create_dataset(
+                    'xl_linear_work', data=np.stack((self.dwl_i, self.dwl_j),
+                                                    axis=-1),
+                    dtype=np.float32)
+                self.xl_rot_work_dset = xl_analysis_grp.create_dataset(
+                    'xl_linear_work', data=np.stack((self.dwr_i, self.dwr_j),
+                                                    axis=-1),
+                    dtype=np.float32)
+
+            else:
+                print('--- The motor work not analyzed or stored. ---')
+        else:
+            self.xl_lin_work_dset = xl_analysis_grp['xl_linear_work']
+            self.xl_rot_work_dset = xl_analysis_grp['xl_rotational_work']
+            self.dwl_i = self.xl_lin_work_dset[:, 0]
+            self.dwl_j = self.xl_lin_work_dset[:, 1]
+            self.dwr_i = self.xl_rot_work_dset[:, 0]
+            self.dwr_j = self.xl_rot_work_dset[:, 1]
 
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
