@@ -15,6 +15,7 @@ import time
 from .analyzer import Analyzer, touch_group
 
 from .graphs import me_graph_all_data_2d, me_graph_distr_data_2d
+from .me_zrl_helpers import get_mu_kl_eff
 
 
 class MEAnalyzer(Analyzer):
@@ -73,6 +74,8 @@ class MEAnalyzer(Analyzer):
         """
         analysis_grp = Analyzer.analyze(self, analysis_type)
         t0 = time.time()
+
+        self.effective_moment_analysis(analysis_grp, analysis_type)
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp)
@@ -154,6 +157,34 @@ class MEAnalyzer(Analyzer):
             self.torque_vec_arr = np.asarray(self.torque_vec_dset)
             self.torque_mag_dset = interaction_grp['torque_magnitude']
             self.torque_arr = np.asarray(self.torque_mag_dset)
+
+    def effective_moment_analysis(self, analysis_grp, analysis_type='analyze'):
+        """!TODO: Docstring for effective_moment_analysis.
+
+        @param analysis_grp: TODO
+        @param analysis_type: TODO
+        @return: TODO
+
+        """
+        if 'moments_eff' not in analysis_grp:
+            if analysis_type != 'load':
+                self.mu_kl_eff = np.zeros((self.time.size, 6))
+                self._params['L_i'] = self._params['L1']
+                self._params['L_j'] = self._params['L2']
+                for i in range(self.time.size):
+                    mu_kl = [self.mu00[i], self.mu10[i], self.mu01[i],
+                             self.mu11[i], self.mu20[i], self.mu02[i]]
+
+                    self.mu_kl_eff[i] = np.asarray(
+                        get_mu_kl_eff(mu_kl, self._params))
+
+                self.moments_eff_dset = analysis_grp.create_dataset(
+                    'moments_eff', data=self.mu_kl_eff, dtype=np.float32)
+            else:
+                print('--- The effective motor moments not analyzed or stored. ---')
+        else:
+            self.moments_eff_dset = analysis_grp['moments_eff']
+            self.mu_kl_eff = self.moments_eff_dset[...]
 
     def make_xl_distr(self):
         """!Make distribution from moment expansion

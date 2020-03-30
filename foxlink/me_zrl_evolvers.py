@@ -57,7 +57,8 @@ def evolver_zrl(sol, fric_coeff, params):
     dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
                                                  scalar_geom, mu_kl,
                                                  fric_coeff, ks)
-    # Add WCA torques if they exist to ith filament
+
+    # Add WCA torques if they exist to filament orientations
     du_i += np.cross(torque_i_wca, u_i) / fric_coeff[2]
     du_j += np.cross(torque_j_wca, u_j) / fric_coeff[5]
 
@@ -102,6 +103,8 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
     # Get average force of crosslinkers on rod2
     f_ij = avg_force_zrl(r_ij, u_i, u_j,
                          mu_kl_eff[0], mu_kl_eff[1], mu_kl_eff[2], ks)
+
+    # Get steric forces and torques if they exist
     torque_i_wca, torque_j_wca = (np.zeros(3), np.zeros(3))
     if params['steric_flag'] == 'wca':
         # Get WCA steric forces and add them to crosslink forces
@@ -116,7 +119,7 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
                                                  scalar_geom, mu_kl_eff,
                                                  fric_coeff, ks)
 
-    # Add WCA torques if they exist to ith filament
+    # Add WCA torques if they exist to filament orientations
     du_i += np.cross(torque_i_wca, u_i) / fric_coeff[2]
     du_j += np.cross(torque_j_wca, u_j) / fric_coeff[5]
 
@@ -124,9 +127,9 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
     dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
 
     # Evolution of boundary condtions
-    dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
+    # dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
 
-    dsol = np.concatenate((dr_i, dr_j, du_i, du_j, dmu_kl, dB_terms))
+    dsol = np.concatenate((dr_i, dr_j, du_i, du_j, dmu_kl, [0] * 8))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(

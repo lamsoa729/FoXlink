@@ -60,13 +60,19 @@ def convert_moments_to_gauss_vars(mu_kl):
                                                           mu_kl[5] / mu_kl[0])
     sigma_i = np.sqrt(mu20_bar - (mu10_bar * mu10_bar))
     sigma_j = np.sqrt(mu02_bar - (mu01_bar * mu01_bar))
-    print(sigma_i)
-    if sigma_i <= 0 or np.isnan(sigma_i):
-        sigma_i = 1e-12
-    if sigma_j <= 0 or np.isnan(sigma_j):
-        sigma_j = 1e-12
+    # print(sigma_i, end=", ")
+    if sigma_i <= 0:
+        sigma_i = 1e-6
+    elif np.isnan(sigma_i):
+        sigma_i = -1  # ERROR
+
+    if sigma_j <= 0:
+        sigma_j = 1e-6
+    elif np.isnan(sigma_j):
+        sigma_j = -1  # ERROR
 
     nu = (mu11_bar - (mu10_bar * mu01_bar)) / (sigma_i * sigma_j)
+    # print(nu)
     if nu >= 1.:
         nu = 1. - 1e-12
     elif nu <= -1.:
@@ -247,6 +253,9 @@ def fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0, index=0):
     (mu10_bar, mu01_bar,
      sigma_i, sigma_j,
      nu, gamma) = convert_moments_to_gauss_vars(mu_kl)
+    if sigma_i <= 0 or sigma_j <= 0:
+        # mu_kl does not satisfy requirements of moments e.g. mu_10**2 > mu_20
+        return mu_kl[index]
 
     upper_bound = (0.5 * L_i - mu10_bar) / sigma_i
     lower_bound = (-.5 * L_i - mu10_bar) / sigma_i

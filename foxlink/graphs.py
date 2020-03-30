@@ -137,7 +137,7 @@ def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
     return cb
 
 
-def graph_vs_time(ax, time, y, n=-1, color='b'):
+def graph_vs_time(ax, time, y, n=-1, color='b', fillstyle='full'):
     """!TODO: Docstring for graph_vs_t.
 
     @param ax: TODO
@@ -147,7 +147,8 @@ def graph_vs_time(ax, time, y, n=-1, color='b'):
     @return: TODO
 
     """
-    s = ax.scatter(time[:n], y[:n], c=color)
+    s = ax.plot(time[:n], y[:n], c=color, marker='o',
+                fillstyle=fillstyle, linestyle='')
     return s
 
 
@@ -407,13 +408,22 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
     graph_vs_time(axarr[1], me_anal.time, me_anal.dR_arr, n)
     # Graph angle between rod orientations
     graph_vs_time(axarr[2], me_anal.time, me_anal.phi_arr, n)
+
     # Graph zeroth moment aka number of crosslinkers
     graph_vs_time(axarr[3], me_anal.time, me_anal.mu00, n)
+    graph_vs_time(axarr[3], me_anal.time,
+                  me_anal.mu_kl_eff[:, 0], n, fillstyle='none')
+
     # Graph first moments of crosslink distribution
     graph_vs_time(axarr[4], me_anal.time, me_anal.mu10, n,
                   color='tab:green')
     graph_vs_time(axarr[4], me_anal.time, me_anal.mu01, n,
                   color='tab:purple')
+    graph_vs_time(axarr[4], me_anal.time, me_anal.mu_kl_eff[:, 1], n,
+                  color='tab:green', fillstyle='none')
+    graph_vs_time(axarr[4], me_anal.time, me_anal.mu_kl_eff[:, 2], n,
+                  color='tab:purple', fillstyle='none')
+
     # Graph second moments of crosslinker distribution
     graph_vs_time(axarr[5], me_anal.time, me_anal.mu11, n,
                   color='b')
@@ -421,6 +431,12 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
                   color='tab:green')
     graph_vs_time(axarr[5], me_anal.time, me_anal.mu02, n,
                   color='tab:purple')
+    graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 3], n,
+                  color='b', fillstyle='none')
+    graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 4], n,
+                  color='tab:green', fillstyle='none')
+    graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 5], n,
+                  color='tab:purple', fillstyle='none')
 
     # Legend information
     axarr[1].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(
@@ -452,10 +468,7 @@ def me_graph_distr_data_2d(fig, axarr, n, me_anal):
             del artist
 
     # Draw rods
-    if me_anal.graph_type == 'min':
-        graph_2d_rod_diagram(axarr[0], me_anal, n)
-    else:
-        cb0 = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
+    graph_2d_rod_diagram(axarr[0], me_anal, n)
 
     cb1 = graph_xl_dens(axarr[1],
                         me_anal.xl_distr[:, :, n],
@@ -486,6 +499,9 @@ def me_graph_distr_data_2d(fig, axarr, n, me_anal):
     axarr[2].set_ylim(np.amin(me_anal.mu00),
                       np.amax(me_anal.mu00))
     graph_vs_time(axarr[2], me_anal.time, me_anal.mu00, n)
+    if me_anal._params['ODE_type'] == 'zrl_bvg':
+        graph_vs_time(axarr[2], me_anal.time, me_anal.mu_kl_eff[:, 0],
+                      n, fillstyle='none')
 
     # Graph first moments of crosslink distribution
     p_n = np.stack((me_anal.mu10, me_anal.mu01))
@@ -497,6 +513,11 @@ def me_graph_distr_data_2d(fig, axarr, n, me_anal):
                   color='tab:green')
     graph_vs_time(axarr[5], me_anal.time, me_anal.mu01, n,
                   color='tab:purple')
+    if me_anal._params['ODE_type'] == 'zrl_bvg':
+        graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 1], n,
+                      color='tab:green', fillstyle='none')
+        graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 2], n,
+                      color='tab:purple', fillstyle='none')
 
     # Graph second moments of crosslinker distribution
     mu_kl = np.stack((me_anal.mu11, me_anal.mu20, me_anal.mu02))
@@ -510,15 +531,19 @@ def me_graph_distr_data_2d(fig, axarr, n, me_anal):
                   color='tab:green')
     graph_vs_time(axarr[8], me_anal.time, me_anal.mu02, n,
                   color='tab:purple')
+    if me_anal._params['ODE_type'] == 'zrl_bvg':
+        graph_vs_time(axarr[8], me_anal.time, me_anal.mu_kl_eff[:, 3], n,
+                      color='b', fillstyle='none')
+        graph_vs_time(axarr[8], me_anal.time, me_anal.mu_kl_eff[:, 4], n,
+                      color='tab:green', fillstyle='none')
+        graph_vs_time(axarr[8], me_anal.time, me_anal.mu_kl_eff[:, 5], n,
+                      color='tab:purple', fillstyle='none')
 
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
         axarr[1].set_aspect(1.0)
         fig.colorbar(cb1, ax=axarr[1])
-
-        if me_anal.graph_type != 'min':
-            fig.colorbar(cb0, ax=axarr[0])
-        me_anal.init_flag = False
+    me_anal.init_flag = False
 
     # Legend information
     # axarr[1].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(

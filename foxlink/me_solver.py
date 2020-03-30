@@ -77,19 +77,14 @@ class MomentExpansionSolver(Solver):
         self._nframes = self.t_eval.size
 
         # Set integration method for solver
-        if 'method' in self._params:
-            self.method = self._params['method']
-        else:
-            self.method = 'LSODA'
-            self._params['method'] = self.method
-        print(self.method)
+        self.method = self._params.get('method', 'LSODA')
+        self._params['method'] = self.method
+        print("Solving method = ", self.method)
 
         # Specify the ODE type
-        if 'ODE_type' in self._params:
-            self.ODE_type = self._params['ODE_type']
-        else:
-            self.ODE_type = 'zrl'
-            self._params['ODE_type'] = self.ODE_type
+        self.ODE_type = self._params.get('ODE_type', 'zrl')
+        self._params['ODE_type'] = self.ODE_type
+        print("ODE type = ", self.ODE_type)
 
     def setInitialConditions(self):
         """!Set the initial conditions for the system of ODEs
