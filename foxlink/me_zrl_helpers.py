@@ -406,7 +406,6 @@ def avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks):
     return -ks * (r_ij * mu00 + mu01 * u_j - mu10 * u_i)
 
 
-@njit
 def avg_torque_zrl(r_ij, u_i, u_j, mu10, mu11, ks):
     """!Find the average torque of zero rest length (zrl) crosslinkers on filament i by j
 

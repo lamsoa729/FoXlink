@@ -37,7 +37,6 @@ def evolver_zrl(sol, fric_coeff, params):
     ks = params['ks']
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
-    steric_flag = params.get('steric_interactions', None)
 
     # (scalar_geom, q_arr, Q_arr) = prep_zrl_bound_evolver(sol, params)
     (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)

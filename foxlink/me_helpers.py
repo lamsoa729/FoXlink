@@ -62,7 +62,6 @@ def dr_dt(f_vec, u_vec, gpara, gperp):
     return np.dot(mob_mat, f_vec)
 
 
-@njit
 def du_dt(tau_vec, u_vec, grot):
     """!Get the evolution of a rods postion given a force, orientation of rod,
     and drag coefficients.
@@ -77,7 +76,6 @@ def du_dt(tau_vec, u_vec, grot):
     return np.cross(tau_vec, u_vec) / grot
 
 
-@njit
 def rod_geom_derivs(f_ij, tau_i, tau_j, u_i, u_j, fric_coeff):
     """!TODO: Docstring for rod_derivs.
 

@@ -146,7 +146,7 @@ def find_sphero_min_dist(r_i, r_j, u_i, u_j, L_i, L_j):
     return min_vec_ij, l_i, l_j
 
 
-def get_min_dist_uvec(r_ij, u_i, u_j):
+def get_min_dist_vec(r_ij, u_i, u_j):
     """!TODO: Docstring for get_min_dist_vec.
 
     @param r_ij: TODO
@@ -168,7 +168,7 @@ def get_min_dist_uvec(r_ij, u_i, u_j):
     l_j = (a_ji + a_ij * b) / (1. - (b * b))
     m_vec = r_ij + (l_j * u_j - l_i * u_i)
 
-    return m_vec / np.linalg.norm(m_vec)
+    return m_vec
 
 
 def calc_wca_force_torque(r_i, r_j, u_i, u_j, L_i, L_j,

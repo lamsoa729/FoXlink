@@ -13,7 +13,7 @@ from scipy.integrate import solve_ivp
 from .choose_me_evolver import choose_me_evolver
 from .solver import Solver
 from .non_dimensionalizer import NonDimensionalizer
-from .rod_steric_forces import get_min_dist_uvec
+from .rod_steric_forces import get_min_dist_vec
 
 
 class MomentExpansionSolver(Solver):
@@ -70,10 +70,10 @@ class MomentExpansionSolver(Solver):
 
         # Check to see if steric forces should be used
         self.steric_flag = self._params.get('steric_interactions', None)
-        self.constr_vec = np.zeros(3)
         if self.steric_flag == 'constrained':
-            self.constr_vec = get_min_dist_uvec(self.R2_pos - self.R2_pos,
-                                                self.R1_vec, self.R2_vec)
+            self.constr_vec = get_min_dist_vec(self.R2_pos - self.R1_pos,
+                                               self.R1_vec, self.R2_vec)
+            self.constr_vec /= np.linalg.norm(self.constr_vec)
 
         print("R1_vec = ", self.R1_vec)
         print("R2_vec = ", self.R2_vec)
