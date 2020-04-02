@@ -162,7 +162,7 @@ def get_min_dist_vec(r_ij, u_i, u_j):
     # If filaments are parallel or anti-parallel, multiple solutions exist for
     # locations but vector remains the same.
     if abs(b) >= 1.:
-        return (r_ij - a_ij * u_i)
+        return r_ij - a_ij * u_i
 
     l_i = (a_ij + a_ji * b) / (1. - (b * b))
     l_j = (a_ji + a_ij * b) / (1. - (b * b))

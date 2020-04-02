@@ -101,6 +101,10 @@ class RodMotionSolver(Solver):
         tau_i = torque1 + self.steric_torque_i
         tau_j = torque2 + self.steric_torque_j
 
+        if self.steric_flag == 'constrained':
+            # TODO: Work on this tomorrow <02-04-20, ARL> #
+            pass
+
         if (np.any(f_i) or np.any(f_j) or np.any(tau_i) or np.any(tau_j)):
             # Get the mobility matrices and rotational drag coefficient
             mob_mat1, g_rot1 = get_rod_mob_mat(visc, L_i, d, u_i)

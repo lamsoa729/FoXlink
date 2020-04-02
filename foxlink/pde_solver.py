@@ -320,16 +320,16 @@ class PDESolver(Solver):
         @return: TODO
 
         """
-        steric_flag = self._params.get('steric_interactions', None)
+        self.steric_flag = self._params.get('steric_interactions', None)
         eps = 1. / self._params['beta']
-        if steric_flag == 'wca':
+        if self.steric_flag == 'wca':
             (self.steric_force_j,
              self.steric_torque_i,
              self.steric_torque_j) = calc_wca_force_torque(
                 r_i, r_j, u_i, u_j, L_i, L_j, d, eps)
             self.steric_force_i = -1. * self.steric_force_j
             return
-        if steric_flag is None or steric_flag == "None":
+        if self.steric_flag is None or self.steric_flag == "None":
             self.steric_force_i = np.zeros(3)
             self.steric_force_j = np.zeros(3)
             self.steric_torque_i = np.zeros(3)
