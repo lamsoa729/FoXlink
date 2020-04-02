@@ -59,7 +59,11 @@ def evolver_zrl(sol, fric_coeff, params):
         tau_i += torque_i_wca
         tau_j += torque_j_wca
     elif params['steric_flag'] == 'constrained':
-        pass
+        u_m = params['constr_vec']  # Get min dist vector of carrier lines
+        f_ij -= np.dot(f_ij, u_m) * u_m  # Min dist component from force
+        tau_i = np.dot(tau_i, u_m) * u_m  # Torque only around min dist vector
+        tau_j = np.dot(tau_j, u_m) * u_m  # Torque only around min dist vector
+
     # dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
         # scalar_geom, mu_kl,
         # fric_coeff, ks)
@@ -110,12 +114,12 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
     # This will simulate walking off the end of rods
     mu_kl_eff = get_mu_kl_eff(mu_kl, params)
 
-    # Get average force of crosslinkers on rod2
+    # Get average force of crosslinkers on rod_j and both torques.
     f_ij = avg_force_zrl(r_ij, u_i, u_j,
                          mu_kl_eff[0], mu_kl_eff[1], mu_kl_eff[2], ks)
+    tau_i = avg_torque_zrl(r_ij, u_i, u_j, mu_kl_eff[1], mu_kl_eff[3], ks)
+    tau_j = avg_torque_zrl(-r_ij, u_j, u_i, mu_kl_eff[2], mu_kl_eff[3], ks)
 
-    # Get steric forces and torques if they exist
-    torque_i_wca, torque_j_wca = (np.zeros(3), np.zeros(3))
     if params['steric_flag'] == 'wca':
         # Get WCA steric forces and add them to crosslink forces
         eps_scale = 1.
@@ -124,16 +128,23 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
             params['L_i'], params['L_j'], params['rod_diam'],
             eps_scale / params['beta'], fcut=1e10)
         f_ij += f_ij_wca
+        tau_i += torque_i_wca
+        tau_j += torque_j_wca
     elif params['steric_flag'] == 'constrained':
-        pass
+        u_m = params['constr_vec']  # Get min dist vector of carrier lines
+        f_ij -= np.dot(f_ij, u_m) * u_m  # Min dist component from force
+        tau_i = np.dot(tau_i, u_m) * u_m  # Torque only around min dist vector
+        tau_j = np.dot(tau_j, u_m) * u_m  # Torque only around min dist vector
 
-    dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
-                                                 scalar_geom, mu_kl_eff,
-                                                 fric_coeff, ks)
+    # dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
+    #                                              scalar_geom, mu_kl_eff,
+    #                                              fric_coeff, ks)
+    dr_i, dr_j, du_i, du_j = rod_geom_derivs(f_ij, tau_i, tau_j,
+                                             u_i, u_j, fric_coeff)
 
-    # Add WCA torques if they exist to filament orientations
-    du_i += np.cross(torque_i_wca, u_i) / fric_coeff[2]
-    du_j += np.cross(torque_j_wca, u_j) / fric_coeff[5]
+    # # Add WCA torques if they exist to filament orientations
+    # du_i += np.cross(torque_i_wca, u_i) / fric_coeff[2]
+    # du_j += np.cross(torque_j_wca, u_j) / fric_coeff[5]
 
     # Moment evolution
     dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
