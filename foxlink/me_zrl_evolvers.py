@@ -39,7 +39,8 @@ def evolver_zrl(sol, fric_coeff, params):
     r_ij = r_j - r_i
     steric_flag = params.get('steric_interactions', None)
 
-    (scalar_geom, q_arr, Q_arr) = prep_zrl_bound_evolver(sol, params)
+    # (scalar_geom, q_arr, Q_arr) = prep_zrl_bound_evolver(sol, params)
+    (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)
     (mu_kl, B_terms) = get_zrl_moments_and_boundary_terms(sol)
 
     # Get average force of crosslinkers on rod_j
@@ -53,6 +54,8 @@ def evolver_zrl(sol, fric_coeff, params):
         f_ij_wca, torque_i_wca, torque_j_wca = calc_wca_force_torque(
             r_i, r_j, u_i, u_j, L_i, L_j, rod_diam, eps_scale / beta, fcut=1e10)
         f_ij += f_ij_wca
+    elif params['steric_flag'] == 'constrained':
+        pass
 
     dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
                                                  scalar_geom, mu_kl,
@@ -66,7 +69,8 @@ def evolver_zrl(sol, fric_coeff, params):
     dmu_kl = calc_moment_derivs_zrl(mu_kl, scalar_geom, q_arr, params)
 
     # Evolution of boundary condtions
-    dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
+    # dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
+    dB_terms = np.zeros(8)
 
     dsol = np.concatenate((dr_i, dr_j, du_i, du_j, dmu_kl, dB_terms))
     # Check to make sure all values are finite
@@ -93,7 +97,8 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     r_ij = r_j - r_i
 
-    (scalar_geom, q_arr, Q_arr) = prep_zrl_bound_evolver(sol, params)
+    # (scalar_geom, q_arr, Q_arr) = prep_zrl_bound_evolver(sol, params)
+    (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)
     (mu_kl, B_terms) = get_zrl_moments_and_boundary_terms(sol)
 
     # Get effective mu_kl to calculate forces and torques.
@@ -114,6 +119,8 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
             params['L_i'], params['L_j'], params['rod_diam'],
             eps_scale / params['beta'], fcut=1e10)
         f_ij += f_ij_wca
+    elif params['steric_flag'] == 'constrained':
+        pass
 
     dr_i, dr_j, du_i, du_j = rod_geom_derivs_zrl(f_ij, r_ij, u_i, u_j,
                                                  scalar_geom, mu_kl_eff,
@@ -128,8 +135,9 @@ def evolver_zrl_bvg(sol, fric_coeff, params):
 
     # Evolution of boundary condtions
     # dB_terms = calc_boundary_derivs_zrl(B_terms, scalar_geom, Q_arr, params)
+    dB_terms = np.zeros(8)
 
-    dsol = np.concatenate((dr_i, dr_j, du_i, du_j, dmu_kl, [0] * 8))
+    dsol = np.concatenate((dr_i, dr_j, du_i, du_j, dmu_kl, dB_terms))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
