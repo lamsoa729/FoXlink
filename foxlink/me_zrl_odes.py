@@ -11,7 +11,7 @@ from scipy.integrate import dblquad
 from numba import njit
 from .me_zrl_helpers import (boltz_fact_zrl, weighted_boltz_fact_zrl,
                              fast_zrl_src_kl)
-from .me_helpers import dr_dt
+from .me_helpers import dr_dt, du_dt
 
 
 @njit

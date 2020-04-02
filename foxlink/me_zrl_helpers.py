@@ -404,3 +404,20 @@ def avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks):
 
     """
     return -ks * (r_ij * mu00 + mu01 * u_j - mu10 * u_i)
+
+
+@njit
+def avg_torque_zrl(r_ij, u_i, u_j, mu10, mu11, ks):
+    """!Find the average torque of zero rest length (zrl) crosslinkers on filament i by j
+
+    @param r_ij: Vector from the center of mass of rod1 to the center of mass of rod2
+    @param u_i: Orientation unit vector of rod1
+    @param u_j: Orientation unit vector of rod2
+    @param mu00: Zeroth motor moment
+    @param mu10: First motor moment of s_i
+    @param mu01: First motor moment of s_j
+    @param ks: motor spring constant
+    return: Vector of force from rod i on rod j
+
+    """
+    return ks * (np.cross(u_i, r_ij) * mu10 + np.cross(u_i, u_j) * mu11)

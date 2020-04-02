@@ -43,20 +43,56 @@ def sol_print_out(sol):
 
 
 @njit
-def dr_dt(f_vec, u_i, gpara, gperp):
+def dr_dt(f_vec, u_vec, gpara, gperp):
     """!Get the evolution of a rods postion given a force, orientation of rod,
     and drag coefficients.
 
 
-    @param F: Average force exerted on rod
-    @param u_i: Orientation vector of rod
+    @param f_vec: Average force exerted on rod
+    @param u_vec: Orientation vector of rod
     @param gpara: Parallel friction coefficient of rod
     @param gperp: Perpendicular friction coefficient of rod
     @return: Time-derivative of the rod motion
 
     """
-    uu_mat = np.outer(u_i, u_i)
+    uu_mat = np.outer(u_vec, u_vec)
     # Create mobility tensor for rod
     mob_mat = np.ascontiguousarray(
         np.linalg.inv((gpara - gperp) * uu_mat + gperp * np.eye(3)))
     return np.dot(mob_mat, f_vec)
+
+
+@njit
+def du_dt(tau_vec, u_vec, grot):
+    """!Get the evolution of a rods postion given a force, orientation of rod,
+    and drag coefficients.
+
+
+    @param tau_vec: Total torque exerted on rod
+    @param u_vec: Orientation vector of rod
+    @param grot: Rotational friction coefficient of rod
+    @return: Time-derivative of the rod rotation
+
+    """
+    return np.cross(tau_vec, u_vec) / grot
+
+
+@njit
+def rod_geom_derivs(f_ij, tau_i, tau_j, u_i, u_j, fric_coeff):
+    """!TODO: Docstring for rod_derivs.
+
+    @param r_ij: TODO
+    @param u_i: TODO
+    @param u_j: TODO
+    @return: TODO
+
+    """
+    (gpara_i, gperp_i, grot_i, gpara_j, gperp_j, grot_j) = fric_coeff
+
+    # Evolution of position vectors
+    dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
+    dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
+    # Evolution of orientation vectors
+    du_i = du_dt(tau_i, u_i, grot_i)
+    du_j = du_dt(tau_j, u_j, grot_j)
+    return (dr_i, dr_j, du_i, du_j)
