@@ -17,7 +17,7 @@ Description: File containing classes to analyze data, make movies, and create gr
 """
 
 
-def normalize(vec, axis=-1):
+def normalize(vec):
     """!TODO: Docstring for normalize.
 
     @param vec: TODO
@@ -25,8 +25,9 @@ def normalize(vec, axis=-1):
     @return: TODO
 
     """
-    norm = np.linalg.norm(vec, axis=axis)
-    return np.divide(vec, norm, out=np.zeros_like(vec), where=norm != 0)
+    norm = np.linalg.norm(vec, axis=-1)
+    return np.divide(vec, norm[:, None],
+                     out=np.zeros_like(vec), where=norm[:, None] != 0)
 
 
 class PDEAnalyzer(Analyzer):
@@ -93,6 +94,7 @@ class PDEAnalyzer(Analyzer):
         xl_analysis_grp = touch_group(analysis_grp, 'xl_analysis')
         self.xl_moment_analysis(xl_analysis_grp, analysis_type)
         self.xl_boundary_analysis(xl_analysis_grp, analysis_type)
+        self.xl_work_analysis(xl_analysis_grp, analysis_type)
         self.xl_stretch_distr_analysis(xl_analysis_grp, analysis_type)
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
@@ -392,7 +394,7 @@ class PDEAnalyzer(Analyzer):
         @return: TODO
 
         """
-        if 'xl_lin_work' not in xl_analysis_grp:
+        if 'xl_linear_work' not in xl_analysis_grp:
             if analysis_type != 'load':
                 # Linear work
                 dr_i = np.zeros(self.R1_pos.shape)
@@ -403,7 +405,7 @@ class PDEAnalyzer(Analyzer):
 
                 dr_j = np.zeros(self.R2_pos.shape)
                 dr_j[1:] = self.R2_pos[1:] - self.R2_pos[:-1]
-                f_j = self._h5_data['/interaction_data/force_data'][:, 0, :]
+                f_j = self._h5_data['/interaction_data/force_data'][:, 1, :]
                 self.dwl_j = np.zeros(self.R2_pos.shape[0])
                 self.dwl_j[1:] = np.einsum('ij,ij->i', dr_j[1:], f_j[:-1])
 
@@ -422,9 +424,9 @@ class PDEAnalyzer(Analyzer):
                 dtheta_j_vec = np.zeros(self.R2_vec.shape)
                 dtheta_j_vec[1:] = normalize(
                     np.cross(self.R2_vec[:-1], self.R2_vec[1:]))
-                dtheta_i_vec[1:] *= np.arccos(np.einsum('ij,ij->i',
-                                                        self.R1_vec[1:],
-                                                        self.R1_vec[:-1])
+                dtheta_j_vec[1:] *= np.arccos(np.einsum('ij,ij->i',
+                                                        self.R2_vec[1:],
+                                                        self.R2_vec[:-1])
                                               )[:, None]
                 tau_j = self._h5_data['/interaction_data/torque_data'][:, 1, :]
                 self.dwr_j = np.zeros(self.R2_vec.shape[0])
@@ -432,12 +434,12 @@ class PDEAnalyzer(Analyzer):
                                            dtheta_j_vec[1:], tau_j[:-1])
 
                 self.xl_lin_work_dset = xl_analysis_grp.create_dataset(
-                    'xl_linear_work', data=np.stack((self.dwl_i, self.dwl_j),
-                                                    axis=-1),
+                    'xl_linear_work',
+                    data=np.stack((self.dwl_i, self.dwl_j), axis=-1),
                     dtype=np.float32)
                 self.xl_rot_work_dset = xl_analysis_grp.create_dataset(
-                    'xl_linear_work', data=np.stack((self.dwr_i, self.dwr_j),
-                                                    axis=-1),
+                    'xl_rotational_work',
+                    data=np.stack((self.dwr_i, self.dwr_j), axis=-1),
                     dtype=np.float32)
 
             else:
