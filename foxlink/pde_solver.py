@@ -11,7 +11,7 @@ import time
 import numpy as np
 from scipy import sparse
 from .solver import Solver
-from .rod_steric_forces import calc_wca_force_torque
+from .rod_steric_forces import calc_wca_force_torque, get_min_dist_vec
 
 
 class PDESolver(Solver):
@@ -107,6 +107,10 @@ class PDESolver(Solver):
                   "using twrite to calculate number of steps between write out.")
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
+
+        # Check to see if steric forces should be used
+        self.steric_flag = self._params.get('steric_interactions', None)
+
         # Make time array. Set extra space for initial condition
         self.time = np.linspace(0, self.nt, self.nsteps + 1)
         self._nframes = len(self.time[::self.nwrite])
@@ -320,7 +324,6 @@ class PDESolver(Solver):
         @return: TODO
 
         """
-        self.steric_flag = self._params.get('steric_interactions', None)
         eps = 1. / self._params['beta']
         if self.steric_flag == 'wca':
             (self.steric_force_j,
@@ -329,12 +332,12 @@ class PDESolver(Solver):
                 r_i, r_j, u_i, u_j, L_i, L_j, d, eps)
             self.steric_force_i = -1. * self.steric_force_j
             return
-        if self.steric_flag is None or self.steric_flag == "None":
-            self.steric_force_i = np.zeros(3)
-            self.steric_force_j = np.zeros(3)
-            self.steric_torque_i = np.zeros(3)
-            self.steric_torque_j = np.zeros(3)
-            return
+
+        self.steric_force_i = np.zeros(3)
+        self.steric_force_j = np.zeros(3)
+        self.steric_torque_i = np.zeros(3)
+        self.steric_torque_j = np.zeros(3)
+        return
 
     def clearInteractions(self):
         """!TODO: Docstring for clearInteractions.

@@ -3,6 +3,7 @@ import numpy as np
 from .pde_solver import PDESolver
 from .pde_helpers import make_gen_source_mat, make_gen_force_mat, make_gen_torque_mat
 from .pde_initial_conditions import *
+from .rod_steric_forces import get_min_dist_vec
 
 
 """@package docstring
@@ -70,6 +71,15 @@ class PDEGenOrientSolver(PDESolver):
         # Make sure to renormalize
         self.R1_vec /= np.linalg.norm(self.R1_vec)
         self.R2_vec /= np.linalg.norm(self.R2_vec)
+        if self.steric_flag == 'constrained':
+            R1_vec = np.asarray(self._params['R1_vec'])
+            R2_vec = np.asarray(self._params['R2_vec'])
+            # Make sure to renormalize
+            R1_vec /= np.linalg.norm(self.R1_vec)
+            R2_vec /= np.linalg.norm(self.R2_vec)
+            self.constr_vec = get_min_dist_vec(self.R2_pos - self.R1_pos,
+                                               self.R1_vec, self.R2_vec)
+            self.constr_vec /= np.linalg.norm(self.constr_vec)
 
         print("R1_vec = ", self.R1_vec)
         print("R2_vec = ", self.R2_vec)

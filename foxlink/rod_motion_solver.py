@@ -102,8 +102,13 @@ class RodMotionSolver(Solver):
         tau_j = torque2 + self.steric_torque_j
 
         if self.steric_flag == 'constrained':
-            # TODO: Work on this tomorrow <02-04-20, ARL> #
-            pass
+            u_m = self.constr_vec  # Get min dist vector of carrier lines
+            f_i -= np.dot(f_i, u_m) * u_m  # Min dist component from force
+            f_j -= np.dot(f_j, u_m) * u_m  # Min dist component from force
+            # Torque only around min dist vector
+            tau_i = np.dot(tau_i, u_m) * u_m
+            # Torque only around min dist vector
+            tau_j = np.dot(tau_j, u_m) * u_m
 
         if (np.any(f_i) or np.any(f_j) or np.any(tau_i) or np.any(tau_j)):
             # Get the mobility matrices and rotational drag coefficient
