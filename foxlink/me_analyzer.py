@@ -84,6 +84,7 @@ class MEAnalyzer(Analyzer):
                                             'interaction_analysis')
         self.force_analysis(interact_analysis_grp)
         self.torque_analysis(interact_analysis_grp)
+        self.xl_work_analysis(interact_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
