@@ -1,4 +1,4 @@
-# RodGeometryAnalysiusr/bin/env python
+#!/usr/bin/env python
 """@package docstring
 File: analyzer.py
 Author: Adam Lamson
@@ -12,6 +12,18 @@ import numpy as np
 # from matplotlib.lines import Line2D
 import h5py
 import yaml
+
+
+def normalize(vec):
+    """!TODO: Docstring for normalize.
+
+    @param vec: TODO
+    @return: TODO
+
+    """
+    norm = np.linalg.norm(vec, axis=-1)
+    return np.divide(vec, norm[:, None],
+                     out=np.zeros_like(vec), where=norm[:, None] != 0)
 
 
 def touch_group(parent, grp_name):

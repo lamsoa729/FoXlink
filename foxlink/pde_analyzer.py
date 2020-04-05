@@ -3,7 +3,7 @@ import time
 import numpy as np
 # from matplotlib.lines import Line2D
 
-from .analyzer import Analyzer, touch_group
+from .analyzer import Analyzer, touch_group, normalize
 from .graphs import (pde_graph_all_data_2d, pde_graph_mts_xlink_distr_2d,
                      pde_graph_stationary_runs_2d, pde_graph_moment_data_2d,
                      pde_graph_recreate_xlink_distr_2d)
@@ -15,19 +15,6 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: File containing classes to analyze data, make movies, and create graphs from passive PDE runs
 """
-
-
-def normalize(vec):
-    """!TODO: Docstring for normalize.
-
-    @param vec: TODO
-    @param axis: TODO
-    @return: TODO
-
-    """
-    norm = np.linalg.norm(vec, axis=-1)
-    return np.divide(vec, norm[:, None],
-                     out=np.zeros_like(vec), where=norm[:, None] != 0)
 
 
 class PDEAnalyzer(Analyzer):
@@ -396,30 +383,38 @@ class PDEAnalyzer(Analyzer):
         """
         if 'xl_linear_work' not in xl_analysis_grp:
             if analysis_type != 'load':
-                # Linear work
+                # Linear work calculations
                 dr_i = np.zeros(self.R1_pos.shape)
                 dr_i[1:] = self.R1_pos[1:] - self.R1_pos[:-1]
                 f_i = self._h5_data['/interaction_data/force_data'][:, 0, :]
                 self.dwl_i = np.zeros(self.R1_pos.shape[0])
-                self.dwl_i[1:] = np.einsum('ij,ij->i', dr_i[1:], f_i[:-1])
+                # Use trapezoid rule for numerical integration
+                self.dwl_i[1:] = .5 * (np.einsum('ij,ij->i', dr_i[1:], f_i[:-1]) +
+                                       np.einsum('ij,ij->i', dr_i[1:], f_i[1:]))
 
                 dr_j = np.zeros(self.R2_pos.shape)
                 dr_j[1:] = self.R2_pos[1:] - self.R2_pos[:-1]
                 f_j = self._h5_data['/interaction_data/force_data'][:, 1, :]
                 self.dwl_j = np.zeros(self.R2_pos.shape[0])
-                self.dwl_j[1:] = np.einsum('ij,ij->i', dr_j[1:], f_j[:-1])
+                # Use trapezoid rule for numerical integration
+                self.dwl_j[1:] = .5 * (np.einsum('ij,ij->i', dr_j[1:], f_j[:-1]) +
+                                       np.einsum('ij,ij->i', dr_j[1:], f_j[1:]))
 
-                # Rotational work
+                # Rotational work calculations
                 dtheta_i_vec = np.zeros(self.R1_vec.shape)
+                # Get the direction of small rotation
                 dtheta_i_vec[1:] = normalize(
                     np.cross(self.R1_vec[:-1], self.R1_vec[1:]))
+                # Get amplitude of small rotation
                 dtheta_i_vec[1:] *= np.arccos(
                     np.einsum('ij,ij->i', self.R1_vec[1:], self.R1_vec[:-1])
                 )[:, None]
                 tau_i = self._h5_data['/interaction_data/torque_data'][:, 0, :]
                 self.dwr_i = np.zeros(self.R1_vec.shape[0])
-                self.dwr_i[1:] = np.einsum('ij,ij->i',
-                                           dtheta_i_vec[1:], tau_i[:-1])
+                # Use trapezoid rule for numerical integration
+                self.dwr_i[1:] = .5 * (
+                    np.einsum('ij,ij->i', dtheta_i_vec[1:], tau_i[:-1]) +
+                    np.einsum('ij,ij->i', dtheta_i_vec[1:], tau_i[1:]))
 
                 dtheta_j_vec = np.zeros(self.R2_vec.shape)
                 dtheta_j_vec[1:] = normalize(
@@ -430,8 +425,9 @@ class PDEAnalyzer(Analyzer):
                                               )[:, None]
                 tau_j = self._h5_data['/interaction_data/torque_data'][:, 1, :]
                 self.dwr_j = np.zeros(self.R2_vec.shape[0])
-                self.dwr_j[1:] = np.einsum('ij,ij->i',
-                                           dtheta_j_vec[1:], tau_j[:-1])
+                self.dwr_j[1:] = .5 * (
+                    np.einsum('ij,ij->i', dtheta_j_vec[1:], tau_j[:-1]) +
+                    np.einsum('ij,ij->i', dtheta_j_vec[1:], tau_j[1:]))
 
                 self.xl_lin_work_dset = xl_analysis_grp.create_dataset(
                     'xl_linear_work',
