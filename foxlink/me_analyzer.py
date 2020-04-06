@@ -75,9 +75,6 @@ class MEAnalyzer(Analyzer):
         analysis_grp = Analyzer.analyze(self, analysis_type)
         t0 = time.time()
 
-        self.effective_moment_analysis(analysis_grp, analysis_type)
-        self.xl_work_analysis(analysis_grp)
-
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp)
 
@@ -85,6 +82,9 @@ class MEAnalyzer(Analyzer):
                                             'interaction_analysis')
         self.force_analysis(interact_analysis_grp)
         self.torque_analysis(interact_analysis_grp)
+
+        self.effective_moment_analysis(analysis_grp, analysis_type)
+        self.xl_work_analysis(analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
