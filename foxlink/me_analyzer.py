@@ -76,6 +76,7 @@ class MEAnalyzer(Analyzer):
         t0 = time.time()
 
         self.effective_moment_analysis(analysis_grp, analysis_type)
+        self.xl_work_analysis(analysis_grp)
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp)
@@ -84,7 +85,6 @@ class MEAnalyzer(Analyzer):
                                             'interaction_analysis')
         self.force_analysis(interact_analysis_grp)
         self.torque_analysis(interact_analysis_grp)
-        self.xl_work_analysis(interact_analysis_grp)
 
         # if '/OT_data' in self._h5_data:
         # self.OTAnalysis()
@@ -159,7 +159,7 @@ class MEAnalyzer(Analyzer):
             self.torque_mag_dset = interaction_grp['torque_magnitude']
             self.torque_arr = np.asarray(self.torque_mag_dset)
 
-    def xl_work_analysis(self, interaction_grp, analysis_type='analyze'):
+    def xl_work_analysis(self, analysis_grp, analysis_type='analyze'):
         """!TODO: Docstring for xl_work_analysis.
 
         @param xl_analysis_grp: TODO
@@ -167,7 +167,7 @@ class MEAnalyzer(Analyzer):
         @return: TODO
 
         """
-        if 'xl_linear_work' not in interaction_grp:
+        if 'xl_linear_work' not in analysis_grp:
             if analysis_type != 'load':
                 # Linear work calculations
                 dr_i = np.zeros(self.R1_pos.shape)
@@ -215,11 +215,11 @@ class MEAnalyzer(Analyzer):
                     np.einsum('ij,ij->i', dtheta_j_vec[1:], tau_j[:-1]) +
                     np.einsum('ij,ij->i', dtheta_j_vec[1:], tau_j[1:]))
 
-                self.xl_lin_work_dset = interaction_grp.create_dataset(
+                self.xl_lin_work_dset = analysis_grp.create_dataset(
                     'xl_linear_work',
                     data=np.stack((self.dwl_i, self.dwl_j), axis=-1),
                     dtype=np.float32)
-                self.xl_rot_work_dset = interaction_grp.create_dataset(
+                self.xl_rot_work_dset = analysis_grp.create_dataset(
                     'xl_rotational_work',
                     data=np.stack((self.dwr_i, self.dwr_j), axis=-1),
                     dtype=np.float32)
@@ -227,8 +227,8 @@ class MEAnalyzer(Analyzer):
             else:
                 print('--- The motor work not analyzed or stored. ---')
         else:
-            self.xl_lin_work_dset = interaction_grp['xl_linear_work']
-            self.xl_rot_work_dset = interaction_grp['xl_rotational_work']
+            self.xl_lin_work_dset = analysis_grp['xl_linear_work']
+            self.xl_rot_work_dset = analysis_grp['xl_rotational_work']
             self.dwl_i = self.xl_lin_work_dset[:, 0]
             self.dwl_j = self.xl_lin_work_dset[:, 1]
             self.dwr_i = self.xl_rot_work_dset[:, 0]

@@ -185,7 +185,7 @@ class Analyzer():
                 print('--- The rod center separation not analyzed or stored. ---')
         else:
             self.rod_sep_dset = rod_analysis_grp['center_separation']
-            self.dR_arr = np.asarray(self.rod_sep_dset)
+            self.dR_arr = self.rod_sep_dset[...]
         # Analyze angle between rods at teach time step
         if 'angle_between' not in rod_analysis_grp:
             if analysis_type != 'load':
