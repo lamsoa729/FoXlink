@@ -157,8 +157,6 @@ class PDESolver(Solver):
         self.ns1 = int(L1 / ds) + 2
         self.ns2 = int(L2 / ds) + 2
 
-        # FIXME This maintains proper spacing but I should check this with
-        #       someone who understands methods better
         self._params["L1"] = ds * (self.ns1 - 2)
         self._params["L2"] = ds * (self.ns2 - 2)
 
