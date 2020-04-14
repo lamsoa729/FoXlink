@@ -89,6 +89,7 @@ class PDEAnalyzer(Analyzer):
                 np.dot(self.R1_vec[-1], self.R2_vec[-1]) == -1. and
                 np.dot(self.R1_vec[-1], self.R2_pos[-1] - self.R1_pos[-1]) == 0):
             xl_analysis_grp.attrs['error'] = self.xl_measure_error()
+            print("Analyzed error: ", xl_analysis_grp.attrs['error'])
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp, analysis_type)
@@ -458,7 +459,7 @@ class PDEAnalyzer(Analyzer):
         sol = self.xl_distr[:-1, :-1, -1]
         y = np.linalg.norm(self.R2_pos[-1] - self.R1_pos[-1])
         ds = self._params['ds']
-        S_i, S_j = np.meshgrid(self.s_i, self.s_j, indexing='ij')
+        S_i, S_j = np.meshgrid(self.s_i[:-1], self.s_j[:-1], indexing='ij')
         sol_comp = pde_steady_state_antipara(S_i, S_j, y, self._params)
 
         comp = np.absolute(sol - sol_comp)
