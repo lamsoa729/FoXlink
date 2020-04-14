@@ -8,6 +8,7 @@ from .graphs import (pde_graph_all_data_2d, pde_graph_mts_xlink_distr_2d,
                      pde_graph_stationary_runs_2d, pde_graph_moment_data_2d,
                      pde_graph_recreate_xlink_distr_2d)
 from .pde_helpers import make_gen_stretch_mat
+from .pde_steady_state import pde_steady_state_antipara
 
 """@package docstring
 File: pde_analyzer.py
@@ -83,6 +84,11 @@ class PDEAnalyzer(Analyzer):
         self.xl_boundary_analysis(xl_analysis_grp, analysis_type)
         self.xl_work_analysis(xl_analysis_grp, analysis_type)
         self.xl_stretch_distr_analysis(xl_analysis_grp, analysis_type)
+        # Analyze error if antiparallel requirements are met
+        if (self._params['solver_type'] == 'PDEGenOrientMotorUWSolver' and
+                np.dot(self.R1_vec[-1], self.R2_vec[-1]) == -1. and
+                np.dot(self.R1_vec[-1], self.R2_pos[-1] - self.R1_pos[-1]) == 0):
+            xl_analysis_grp.attrs['error'] = self.xl_measure_error()
 
         rod_analysis_grp = touch_group(analysis_grp, 'rod_analysis')
         self.rod_geometry_analysis(rod_analysis_grp, analysis_type)
@@ -448,6 +454,16 @@ class PDEAnalyzer(Analyzer):
             self.dwr_i = self.xl_rot_work_dset[:, 0]
             self.dwr_j = self.xl_rot_work_dset[:, 1]
 
+    def xl_measure_error(self):
+        sol = self.xl_distr[:-1, :-1, -1]
+        y = np.linalg.norm(self.R2_pos[-1] - self.R1_pos[-1])
+        ds = self._params['ds']
+        S_i, S_j = np.meshgrid(self.s_i, self.s_j, indexing='ij')
+        sol_comp = pde_steady_state_antipara(S_i, S_j, y, self._params)
+
+        comp = np.absolute(sol - sol_comp)
+        return np.sum(comp) * ds * ds
+
     def ot_analysis(self):
         """!Analyze data for optically trapped rods, especially if they
         are oscillating traps
@@ -471,7 +487,6 @@ class PDEAnalyzer(Analyzer):
 ########################
 #  Graphing functions  #
 ########################
-
 
     def graph_slice(self, n, fig, axarr):
         """!Graph the solution Psi at a specific time
