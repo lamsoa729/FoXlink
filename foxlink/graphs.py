@@ -99,7 +99,7 @@ def draw_rod(ax, r_vec, u_vec, L, rod_diam, color='tab:green'):
                          color=color, clip_on=False, )
 
     tip = Circle((r_vec[1] + .5 * L * u_vec[1], r_vec[2] + .5 * L * u_vec[2]),
-                 .5 * rod_diam, color='r', zorder=3)
+                 .5 * rod_diam, color='b', zorder=3)
     ax.add_patch(tip)
     ax.add_line(line)
 
@@ -115,25 +115,27 @@ def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
                     mu00, mu10, mu20, num_max=50.):
     cb = mpl.cm.ScalarMappable(
         mpl.colors.Normalize(0, num_max), 'viridis')
-    draw_rod(ax, r_vec, u_vec, L, rod_diam, color=cb.to_rgba(mu00))
+    draw_rod(ax, r_vec, u_vec, L, rod_diam)
     scaled_mu10 = mu10 / mu00 if mu00 else 0
     mu10_loc = RegularPolygon((r_vec[1] + scaled_mu10 * u_vec[1],
                                r_vec[2] + scaled_mu10 * u_vec[2]),
-                              5, rod_diam, zorder=3)
-    mu20_dist = np.sqrt(mu20 / mu00) if mu00 else 0
+                              5, rod_diam, color=cb.to_rgba(mu00), zorder=3)
+    variance = (mu20 / mu00) - (scaled_mu10**2) if mu00 > 1e-3 else 0.
+
+    sigma_dist = np.sqrt(variance) if variance >= 1e-3 else 0.
     # mu20_ellipse = Ellipse((r_vec[1], r_vec[2]), mu20_dist*2., rod_diam,
     # angle=np.arctan(u_vec[2]/u_vec[1]), zorder=4, fill=False)
-    mu20_bar = FancyArrowPatch((r_vec[1] - mu20_dist * u_vec[1],
-                                r_vec[2] - mu20_dist * u_vec[2]),
-                               (r_vec[1] + mu20_dist * u_vec[1],
-                                r_vec[2] + mu20_dist * u_vec[2]),
-                               arrowstyle=ArrowStyle(
-                                   '|-|', widthA=convert_size_units(.5 * rod_diam, ax),
-                                   widthB=convert_size_units(.5 *
-                                                             rod_diam, ax)),
-                               zorder=4)
+    sigma_bar = FancyArrowPatch(
+        (r_vec[1] + (scaled_mu10 - sigma_dist) * u_vec[1],
+         r_vec[2] + (scaled_mu10 - sigma_dist) * u_vec[2]),
+        (r_vec[1] + (scaled_mu10 + sigma_dist) * u_vec[1],
+         r_vec[2] + (scaled_mu10 + sigma_dist) * u_vec[2]),
+        arrowstyle=ArrowStyle('|-|',
+                              widthA=convert_size_units(.5 * rod_diam, ax),
+                              widthB=convert_size_units(.5 * rod_diam, ax)),
+        zorder=4)
     ax.add_patch(mu10_loc)
-    ax.add_patch(mu20_bar)
+    ax.add_patch(sigma_bar)
     return cb
 
 
@@ -293,7 +295,8 @@ def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
         e_i = xlink_end_pos(r_i, u_i, s_i[index[0]])
         e_j = xlink_end_pos(r_j, u_j, s_j[index[1]])
         # print(e_i, e_j)
-        draw_xlink(ax, e_i, e_j, alpha=np.clip(val * scale / (a * b), 0, 1))
+        draw_xlink(ax, e_i, e_j, color='r',
+                   alpha=np.clip(val * scale / (a * b), 0, 1))
 
 
 def graph_2d_rod_moment_diagram(ax, anal, n=-1):
@@ -397,11 +400,12 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
         graph_2d_rod_diagram(axarr[0], me_anal, n)
     else:
         cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
+
     if me_anal.init_flag:
         axarr[0].set_aspect(1.0)
+        if me_anal.graph_type == 'all':
+            fig.colorbar(cb, ax=axarr[0])
 
-    if me_anal.graph_type == 'all':
-        fig.colorbar(cb, ax=axarr[0])
     me_anal.init_flag = False
 
     # Graph rod center separations
