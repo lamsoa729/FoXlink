@@ -373,7 +373,13 @@ class PDEAnalyzer(Analyzer):
                         flat_h_arrs[t], bin_edges, weights=flat_distr_arrs[t])[0]
                 self.h_distr_dset = xl_analysis_grp.create_dataset(
                     'xl_stretch_distr', data=self.h_distr)
-                self.h_distr_dset.attrs['bin_edges'] = bin_edges
+                try:
+                    self.h_distr_dset.attrs['bin_edges'] = bin_edges
+                except BaseException:
+                    pass
+
+                self.h_distr_bin_edges_dset = xl_analysis_grp.create_dataset(
+                    'xl_stretch_bin_edges', data=bin_edges)
 
             else:
                 print('--- The stretch distribution not analyzed or stored. ---')

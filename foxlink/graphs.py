@@ -119,7 +119,7 @@ def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
     scaled_mu10 = mu10 / mu00 if mu00 else 0
     mu10_loc = RegularPolygon((r_vec[1] + scaled_mu10 * u_vec[1],
                                r_vec[2] + scaled_mu10 * u_vec[2]),
-                              5, rod_diam, color=cb.to_rgba(mu00), zorder=3)
+                              5, rod_diam, color=cb.to_rgba(mu00), zorder=4)
     variance = (mu20 / mu00) - (scaled_mu10**2) if mu00 > 1e-3 else 0.
 
     sigma_dist = np.sqrt(variance) if variance >= 1e-3 else 0.
@@ -133,9 +133,9 @@ def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
         arrowstyle=ArrowStyle('|-|',
                               widthA=convert_size_units(.5 * rod_diam, ax),
                               widthB=convert_size_units(.5 * rod_diam, ax)),
-        zorder=4)
-    ax.add_patch(mu10_loc)
+        zorder=3)
     ax.add_patch(sigma_bar)
+    ax.add_patch(mu10_loc)
     return cb
 
 
