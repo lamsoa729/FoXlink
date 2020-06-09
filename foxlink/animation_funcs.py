@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import time
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -13,18 +14,22 @@ Description:
 """
 
 
-def make_animation(pde_anal, writer=FFMpegWriter):
+def make_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation of time slices
     @return: TODO
 
     """
+
     fig = plt.figure(constrained_layout=True, figsize=(15, 13))
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
-        "font.size": 15
+        "font.size": 15,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -50,12 +55,13 @@ def make_animation(pde_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}.mp4'.format(pde_anal.get_name()), writer=writer)
+    anim.save(save_path / '{}.mp4'.format(pde_anal.get_name()), writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_minimal_pde_animation(pde_anal, writer=FFMpegWriter):
+def make_minimal_pde_animation(
+        pde_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation of time slices
     @return: TODO
 
@@ -65,7 +71,10 @@ def make_minimal_pde_animation(pde_anal, writer=FFMpegWriter):
         "axes.labelsize": 15,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
-        "font.size": 18
+        "font.size": 18,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -84,12 +93,16 @@ def make_minimal_pde_animation(pde_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_min.mp4'.format(pde_anal.get_name()), writer=writer)
+    anim.save(
+        save_path /
+        '{}_min.mp4'.format(
+            pde_anal.get_name()),
+        writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_distr_pde_animation(pde_anal, writer=FFMpegWriter):
+def make_distr_pde_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation of time slices
     @return: TODO
 
@@ -99,7 +112,10 @@ def make_distr_pde_animation(pde_anal, writer=FFMpegWriter):
         "axes.labelsize": 15,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
-        "font.size": 18
+        "font.size": 18,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -120,12 +136,17 @@ def make_distr_pde_animation(pde_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_distr.mp4'.format(pde_anal.get_name()), writer=writer)
+    anim.save(
+        save_path /
+        '{}_distr.mp4'.format(
+            pde_anal.get_name()),
+        writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_orient_pde_animation(pde_anal, writer=FFMpegWriter):
+def make_orient_pde_animation(
+        pde_anal, writer='ffmpeg', save_path=Path('. /')):
     """!Make animation of time slices
     @return: TODO
 
@@ -136,7 +157,10 @@ def make_orient_pde_animation(pde_anal, writer=FFMpegWriter):
         "axes.labelsize": 15,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
-        "font.size": 15
+        "font.size": 15,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -158,12 +182,17 @@ def make_orient_pde_animation(pde_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_orient.mp4'.format(pde_anal.get_name()), writer=writer)
+    anim.save(
+        save_path /
+        '{}_orient.mp4'.format(
+            pde_anal.get_name()),
+        writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_moment_pde_animation(pde_anal, writer=FFMpegWriter):
+def make_moment_pde_animation(
+        pde_anal, writer='ffmpeg', save_path=Path('. /')):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void
@@ -175,7 +204,10 @@ def make_moment_pde_animation(pde_anal, writer=FFMpegWriter):
         "axes.labelsize": 13,
         "xtick.labelsize": 13,
         "ytick.labelsize": 13,
-        "font.size": 13
+        "font.size": 13,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -199,24 +231,34 @@ def make_moment_pde_animation(pde_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save('{}_moment.mp4'.format(pde_anal.get_name()), writer=writer)
+    anim.save(
+        save_path /
+        '{}_moment.mp4'.format(
+            pde_anal.get_name()),
+        writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_moment_expansion_animation(me_anal, writer=FFMpegWriter):
+def make_moment_expansion_animation(
+        me_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void
 
     """
+    if not isinstance(save_path, Path):
+        save_path = Path(save_path)
     fig = plt.figure(constrained_layout=True, figsize=(12, 8))
     graph_stl = {
         "axes.titlesize": 16,
         "axes.labelsize": 13,
         "xtick.labelsize": 13,
         "ytick.labelsize": 13,
-        "font.size": 13
+        "font.size": 13,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -240,14 +282,15 @@ def make_moment_expansion_animation(me_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save(
-        '{}_ME_{}.mp4'.format(me_anal.get_name(), me_anal.graph_type),
-        writer=writer)
+    anim.save(save_path /
+              '{}_ME_{}.mp4'.format(me_anal.get_name(), me_anal.graph_type),
+              writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_moment_distr_animation(me_anal, writer=FFMpegWriter):
+def make_moment_distr_animation(
+        me_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation of moments with respect to time slices with MT geometries
     and crosslinker distributions.
     @return: void
@@ -259,7 +302,11 @@ def make_moment_distr_animation(me_anal, writer=FFMpegWriter):
         "axes.labelsize": 13,
         "xtick.labelsize": 13,
         "ytick.labelsize": 13,
-        "font.size": 13
+        "font.size": 13,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
+
     }
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
@@ -286,8 +333,51 @@ def make_moment_distr_animation(me_anal, writer=FFMpegWriter):
             blit=True)
     t0 = time.time()
 
-    anim.save(
-        '{}_ME_{}.mp4'.format(me_anal.get_name(), me_anal.graph_type),
-        writer=writer)
+    anim.save(save_path /
+              '{}_ME_{}.mp4'.format(me_anal.get_name(), me_anal.graph_type),
+              writer=writer)
+    t1 = time.time()
+    print("Movie saved in: ", t1 - t0)
+
+
+def make_moment_min_animation(
+        me_anal, writer='ffmpeg', save_path=Path('./')):
+    """!Make animation of moments with respect to time slices with MT geometries
+    and crosslinker distributions.
+    @return: void
+
+    """
+    # fig = plt.figure(constrained_layout=True, figsize=(10, 4))
+    graph_stl = {
+        "axes.titlesize": 18,
+        "axes.labelsize": 15,
+        "xtick.labelsize": 15,
+        "ytick.labelsize": 15,
+        "font.size": 15,
+        "font.sans-serif": 'Helvetica',
+        "text.usetex": False,
+        'mathtext.fontset': 'cm',
+    }
+    # with plt.style.context(graph_stl):
+    plt.style.use(graph_stl)
+    fig = plt.figure(figsize=(11, 4.5), constrained_layout=True)
+    gs = fig.add_gridspec(1, 2)
+    axarr = np.asarray([fig.add_subplot(gs[0, 0]),
+                        fig.add_subplot(gs[0, 1]), ])
+    fig.suptitle(' ')
+    nframes = me_anal.time.size
+    print(nframes)
+    anim = FuncAnimation(
+        fig,
+        me_anal.graph_min_slice,
+        frames=np.arange(nframes),
+        fargs=(fig, axarr),
+        interval=50,
+        blit=True)
+    t0 = time.time()
+
+    anim.save(save_path /
+              '{}_ME_{}.mp4'.format(me_anal.get_name(), me_anal.graph_type),
+              writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)

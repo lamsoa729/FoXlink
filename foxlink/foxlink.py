@@ -10,7 +10,7 @@ from matplotlib.animation import FFMpegWriter
 from .animation_funcs import (make_animation, make_minimal_pde_animation,
                               make_orient_pde_animation, make_moment_pde_animation,
                               make_moment_expansion_animation, make_distr_pde_animation,
-                              make_moment_distr_animation)
+                              make_moment_distr_animation, make_moment_min_animation)
 from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
 import argparse
@@ -147,13 +147,13 @@ class FoXlink(object):
         if self._opts.movie:
             print("Started making movie")
             Writer = FFMpegWriter
-            writer = Writer(
-                fps=25, metadata=dict(
-                    artist='Me'), bitrate=1800)
+            writer = Writer(fps=25, metadata=dict(artist='Me'), bitrate=1800)
             if self._opts.analysis == "ME":
                 analyzer.graph_type = self._opts.movie
                 if self._opts.movie == 'distr':
                     make_moment_distr_animation(analyzer, writer)
+                elif self._opts.movie == 'min':
+                    make_moment_min_animation(analyzer, writer)
                 else:
                     make_moment_expansion_animation(analyzer, writer)
             elif self._opts.movie == 'all':

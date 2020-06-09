@@ -257,10 +257,10 @@ def graph_2d_rod_diagram(ax, anal, n=-1):
         ax.set_ylim(min_y, max_y)
         ax.set_xlabel(r'x (nm)')
         ax.set_ylabel(r'y (nm)')
-        labels = ["fil$_i$", "fil$_j$", "Plus-end"]
+        # labels = ["fil$_i$", "fil$_j$", "Plus-end"]
         # if anal.OT1_pos is not None or anal.OT2_pos is not None:
         #     labels += ["Optical trap", "Bead"]
-        ax.legend(labels, loc="upper right")
+        # ax.legend(labels, loc="upper right")
 
 
 def graph_2d_rod_pde_diagram(ax, anal, n=-1, scale=50):
@@ -355,6 +355,45 @@ def graph_2d_rod_moment_diagram(ax, anal, n=-1):
     return cb
 
 
+def me_graph_min_data_2d(fig, axarr, n, me_anal):
+    # Clean up if lines on axis object to speed up movie making
+    if not me_anal.init_flag:
+        for ax in axarr.flatten():
+            ax.clear()
+        for artist in fig.gca().lines + fig.gca().collections:
+            artist.remove()
+            del artist
+
+    cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
+    cb1 = graph_xl_dens(axarr[1],
+                        me_anal.xl_distr[:, :, n],
+                        me_anal.s_i,
+                        me_anal.s_j,
+                        max_dens_val=me_anal.max_dens_val)
+
+    axarr[1].set_xlabel(
+        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
+    axarr[1].set_ylabel(
+        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
+
+    if me_anal.init_flag:
+        axarr[0].set_aspect(1.0)
+        axarr[1].set_aspect(1.0)
+        cbar = fig.colorbar(cb, ax=axarr[0])
+        cbar.set_label(
+            r'Motor number $\langle N_{i,j} \rangle$')
+        cbar1 = fig.colorbar(cb1, ax=axarr[1])
+        cbar1.set_label(
+            r'Reconstructed motor density $\psi_{i,j}$')
+    me_anal.init_flag = False
+
+    axarr[0].text(.05, .90, "Time = {:.2f} sec".format(me_anal.time[n]),
+                  horizontalalignment='left',
+                  verticalalignment='bottom',
+                  transform=axarr[0].transAxes)
+    return fig.gca().lines + fig.gca().collections
+
+
 def me_graph_all_data_2d(fig, axarr, n, me_anal):
     # Clean up if lines on axis object to speed up movie making
     if not me_anal.init_flag:
@@ -377,7 +416,7 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
                       np.nanmax(me_anal.phi_arr))
 
     axarr[3].set_xlabel(r'Time (sec)')
-    axarr[3].set_ylabel(r'Crosslinker number')
+    axarr[3].set_ylabel(r'Motor number')
     axarr[3].set_xlim(left=0, right=me_anal.time[-1])
     axarr[3].set_ylim(np.amin(me_anal.mu00),
                       np.amax(me_anal.mu00))
@@ -415,18 +454,12 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
 
     # Graph zeroth moment aka number of crosslinkers
     graph_vs_time(axarr[3], me_anal.time, me_anal.mu00, n)
-    graph_vs_time(axarr[3], me_anal.time,
-                  me_anal.mu_kl_eff[:, 0], n, fillstyle='none')
 
     # Graph first moments of crosslink distribution
     graph_vs_time(axarr[4], me_anal.time, me_anal.mu10, n,
                   color='tab:green')
     graph_vs_time(axarr[4], me_anal.time, me_anal.mu01, n,
                   color='tab:purple')
-    graph_vs_time(axarr[4], me_anal.time, me_anal.mu_kl_eff[:, 1], n,
-                  color='tab:green', fillstyle='none')
-    graph_vs_time(axarr[4], me_anal.time, me_anal.mu_kl_eff[:, 2], n,
-                  color='tab:purple', fillstyle='none')
 
     # Graph second moments of crosslinker distribution
     graph_vs_time(axarr[5], me_anal.time, me_anal.mu11, n,
@@ -435,12 +468,23 @@ def me_graph_all_data_2d(fig, axarr, n, me_anal):
                   color='tab:green')
     graph_vs_time(axarr[5], me_anal.time, me_anal.mu02, n,
                   color='tab:purple')
-    graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 3], n,
-                  color='b', fillstyle='none')
-    graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 4], n,
-                  color='tab:green', fillstyle='none')
-    graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 5], n,
-                  color='tab:purple', fillstyle='none')
+
+    # # Effective moment graphing
+    # ## Zeroth moment
+    # graph_vs_time(axarr[3], me_anal.time,
+    #               me_anal.mu_kl_eff[:, 0], n, fillstyle='none')
+    # ## First moments
+    # graph_vs_time(axarr[4], me_anal.time, me_anal.mu_kl_eff[:, 1], n,
+    #               color='tab:green', fillstyle='none')
+    # graph_vs_time(axarr[4], me_anal.time, me_anal.mu_kl_eff[:, 2], n,
+    #               color='tab:purple', fillstyle='none')
+    # ## Second moments
+    # graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 3], n,
+    #               color='b', fillstyle='none')
+    # graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 4], n,
+    #               color='tab:green', fillstyle='none')
+    # graph_vs_time(axarr[5], me_anal.time, me_anal.mu_kl_eff[:, 5], n,
+    #               color='tab:purple', fillstyle='none')
 
     # Legend information
     axarr[1].legend([r"$\Delta$R({:.2f}) = {:.1f} nm".format(
@@ -498,7 +542,7 @@ def me_graph_distr_data_2d(fig, axarr, n, me_anal):
 
     # Graph zeroth moment aka number of crosslinkers
     axarr[2].set_xlabel(r'Time (sec)')
-    axarr[2].set_ylabel(r'Crosslinker number')
+    axarr[2].set_ylabel(r'Motor number')
     axarr[2].set_xlim(left=0, right=me_anal.time[-1])
     axarr[2].set_ylim(np.amin(me_anal.mu00),
                       np.amax(me_anal.mu00))
@@ -585,17 +629,17 @@ def pde_graph_all_data_2d(fig, axarr, n, pde_anal):
         'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
-    axarr[2].set_ylabel(r'Crosslinker number')
+    axarr[2].set_ylabel(r'Motor number')
     axarr[2].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[2].set_ylim(np.amin(pde_anal.mu00), np.amax(pde_anal.mu00))
 
     axarr[3].set_xlabel(r'Time (sec)')
-    axarr[3].set_ylabel(r'Total crosslinker force (pN)')
+    axarr[3].set_ylabel(r'Motor force (pN)')
     axarr[3].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[3].set_ylim(np.amin(pde_anal.force_arr), np.amax(pde_anal.force_arr))
 
     axarr[4].set_xlabel(r'Time (sec)')
-    axarr[4].set_ylabel(r'Total crosslinker torque (pN*nm)')
+    axarr[4].set_ylabel(r'Motor torque (pN*nm)')
     axarr[4].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[4].set_ylim(np.amin(pde_anal.torque_arr),
                       np.amax(pde_anal.torque_arr))
@@ -716,7 +760,7 @@ def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
         'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
-    axarr[2].set_ylabel(r'Crosslinker number')
+    axarr[2].set_ylabel(r'Motor number')
     axarr[2].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[2].set_ylim(np.amin(pde_anal.mu00),
                       np.amax(pde_anal.mu00))
@@ -738,13 +782,13 @@ def pde_graph_moment_data_2d(fig, axarr, n, pde_anal):
                           np.amax(pde_anal.mu02)))
 
     axarr[5].set_xlabel(r'Time (sec)')
-    axarr[5].set_ylabel(r'Total crosslinker force (pN)')
+    axarr[5].set_ylabel(r'Motor force (pN)')
     axarr[5].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[5].set_ylim(np.amin(pde_anal.force_arr),
                       np.amax(pde_anal.force_arr))
 
     axarr[6].set_xlabel(r'Time (sec)')
-    axarr[6].set_ylabel(r'Total crosslinker torque (pN*nm)')
+    axarr[6].set_ylabel(r'Motor torque (pN$\cdot$nm)')
     axarr[6].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[6].set_ylim(np.amin(pde_anal.torque_arr),
                       np.amax(pde_anal.torque_arr))
@@ -841,7 +885,7 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
         axarr[1].set_aspect(1.0)
         fig.colorbar(c, ax=axarr[1])
         pde_anal.init_flag = False
-    axarr[0].text(.05, .95, "Time = {:.2f} sec".format(pde_anal.time[n]),
+    axarr[0].text(.05, .90, "Time = {:.2f} sec".format(pde_anal.time[n]),
                   horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
@@ -874,19 +918,19 @@ def pde_graph_stationary_runs_2d(fig, axarr, n, pde_anal):
         'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     axarr[2].set_xlabel(r'Time (sec)')
-    axarr[2].set_ylabel(r'Crosslinker number')
+    axarr[2].set_ylabel(r'Motor number')
     axarr[2].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[2].set_ylim(np.amin(pde_anal.mu00),
                       np.amax(pde_anal.mu00))
 
     axarr[3].set_xlabel(r'Time (sec)')
-    axarr[3].set_ylabel(r'Total crosslinker force (pN)')
+    axarr[3].set_ylabel(r'Motor force (pN)')
     axarr[3].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[3].set_ylim(np.amin(pde_anal.force_arr),
                       np.amax(pde_anal.force_arr))
 
     axarr[4].set_xlabel(r'Time (sec)')
-    axarr[4].set_ylabel(r'Total crosslinker torque (pN*nm)')
+    axarr[4].set_ylabel(r'Motor torque (pN$\cdotnm)')
     axarr[4].set_xlim(left=0, right=pde_anal.time[-1])
     axarr[4].set_ylim(np.amin(pde_anal.torque_arr),
                       np.amax(pde_anal.torque_arr))

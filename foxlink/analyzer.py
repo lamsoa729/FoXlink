@@ -12,6 +12,7 @@ import numpy as np
 # from matplotlib.lines import Line2D
 import h5py
 import yaml
+import pprint
 
 
 def normalize(vec):
@@ -125,7 +126,7 @@ class Analyzer():
             params = yaml.safe_load(h5_data.attrs['params'])
         else:
             params = h5_data.attrs
-        print(params)
+        pprint.pprint(params)
         return h5_data, params
 
     def save(self):
