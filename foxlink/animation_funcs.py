@@ -16,9 +16,15 @@ Description:
 
 def make_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation of time slices
-    @return: TODO
+    @param: pde_anal Analyzer object storing PDE data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
 
     """
+    if not isinstance(save_path, Path):
+        save_path = Path(save_path)
 
     fig = plt.figure(constrained_layout=True, figsize=(15, 13))
     graph_stl = {
@@ -60,12 +66,20 @@ def make_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
     print("Movie saved in: ", t1 - t0)
 
 
-def make_minimal_pde_animation(
-        pde_anal, writer='ffmpeg', save_path=Path('./')):
-    """!Make animation of time slices
-    @return: TODO
+def make_minimal_pde_animation(pde_anal, writer='ffmpeg',
+                               save_path=Path('./')):
+    """!Make an animation of time slices with only moving rods and xlink
+        density distribution.
+    @param: pde_anal Analyzer object storing PDE data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
 
     """
+    if not isinstance(save_path, Path):
+        save_path = Path(save_path)
+
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
@@ -76,6 +90,7 @@ def make_minimal_pde_animation(
         "text.usetex": False,
         'mathtext.fontset': 'cm',
     }
+
     with plt.style.context(graph_stl):
         plt.style.use(graph_stl)
         fig = plt.figure(figsize=(10, 5), constrained_layout=True)
@@ -93,20 +108,24 @@ def make_minimal_pde_animation(
             blit=True)
     t0 = time.time()
 
-    anim.save(
-        save_path /
-        '{}_min.mp4'.format(
-            pde_anal.get_name()),
-        writer=writer)
+    anim.save(save_path / '{}_min.mp4'.format(pde_anal.get_name()),
+              writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
 def make_distr_pde_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
-    """!Make animation of time slices
-    @return: TODO
-
+    """!Make an animation of time slices with moving rods, xlink density
+    distribution, and recreated density distribution from moments.
+    @param: pde_anal Analyzer object storing PDE data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
     """
+    if not isinstance(save_path, Path):
+        save_path = Path(save_path)
+
     graph_stl = {
         "axes.titlesize": 18,
         "axes.labelsize": 15,
@@ -145,12 +164,19 @@ def make_distr_pde_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
     print("Movie saved in: ", t1 - t0)
 
 
-def make_orient_pde_animation(
+def make_stat_pde_animation(
         pde_anal, writer='ffmpeg', save_path=Path('. /')):
-    """!Make animation of time slices
-    @return: TODO
-
+    """!Make an animation of time slices for stationary rods. Rod diagram,
+    xlink density, xlink number, xlink force, and xlink force are graphed.
+    @param: pde_anal Analyzer object storing PDE data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
     """
+    if not isinstance(save_path, Path):
+        save_path = Path(save_path)
+
     fig = plt.figure(constrained_layout=True, figsize=(15, 9))
     graph_stl = {
         "axes.titlesize": 18,
@@ -184,20 +210,27 @@ def make_orient_pde_animation(
 
     anim.save(
         save_path /
-        '{}_orient.mp4'.format(
+        '{}_stat.mp4'.format(
             pde_anal.get_name()),
         writer=writer)
     t1 = time.time()
     print("Movie saved in: ", t1 - t0)
 
 
-def make_moment_pde_animation(
-        pde_anal, writer='ffmpeg', save_path=Path('. /')):
-    """!Make animation of moments with respect to time slices with MT geometries
-    and crosslinker distributions.
-    @return: void
+def make_moment_pde_animation(pde_anal, writer='ffmpeg',
+                              save_path=Path('. /')):
+    """!Make animation time slices with rod diagram, xlink density, xlink force,
+    xlink torque, and moments up to 2nd order.
+    @param: de_anal Analyzer object storing PDE data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
 
     """
+    if not isinstance(save_path, Path):
+        save_path = Path(save_path)
+
     fig = plt.figure(constrained_layout=True, figsize=(12, 15))
     graph_stl = {
         "axes.titlesize": 16,
@@ -240,11 +273,15 @@ def make_moment_pde_animation(
     print("Movie saved in: ", t1 - t0)
 
 
-def make_moment_expansion_animation(
-        me_anal, writer='ffmpeg', save_path=Path('./')):
-    """!Make animation of moments with respect to time slices with MT geometries
-    and crosslinker distributions.
-    @return: void
+def make_moment_expansion_animation(me_anal, writer='ffmpeg',
+                                    save_path=Path('./')):
+    """!Make animation time slices from moment expansion data, graphing rod
+    diagram, xlink force, xlink torque, and moments up to 2nd order.
+    @param: me_anal Analyzer object storing ME data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
 
     """
     if not isinstance(save_path, Path):
@@ -291,9 +328,14 @@ def make_moment_expansion_animation(
 
 def make_moment_distr_animation(
         me_anal, writer='ffmpeg', save_path=Path('./')):
-    """!Make animation of moments with respect to time slices with MT geometries
-    and crosslinker distributions.
-    @return: void
+    """!Make animation time slices from moment expansion data, graphing rod
+    diagram, recreated xlink density, xlink force, xlink torque, and moments up
+    to 2nd order.
+    @param: me_anal Analyzer object storing ME data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
 
     """
     fig = plt.figure(constrained_layout=True, figsize=(12, 10))
@@ -340,11 +382,14 @@ def make_moment_distr_animation(
     print("Movie saved in: ", t1 - t0)
 
 
-def make_moment_min_animation(
-        me_anal, writer='ffmpeg', save_path=Path('./')):
-    """!Make animation of moments with respect to time slices with MT geometries
-    and crosslinker distributions.
-    @return: void
+def make_moment_min_animation(me_anal, writer='ffmpeg', save_path=Path('./')):
+    """!Make animation time slices from moment expansion data, graphing rod
+    diagram and recreated xlink density.
+    @param: me_anal Analyzer object storing ME data.
+    @param: writer Matplotlib Writer object or string dictating how to create
+            and save animation.
+    @param: save_path pathlib.Path object for where animation will be saved
+    @return: None
 
     """
     # fig = plt.figure(constrained_layout=True, figsize=(10, 4))

@@ -6,16 +6,20 @@ Email: adam.lamson@colorado.edu
 Description: Main control program for FoXlink PDE solver. Parses arguments using
 argsparse. Type foxlink -h for help and main actions.
 """
-from matplotlib.animation import FFMpegWriter
-from .animation_funcs import (make_animation, make_minimal_pde_animation,
-                              make_orient_pde_animation, make_moment_pde_animation,
-                              make_moment_expansion_animation, make_distr_pde_animation,
-                              make_moment_distr_animation, make_moment_min_animation)
-from .pde_analyzer import PDEAnalyzer
-from .me_analyzer import MEAnalyzer
 import argparse
 import sys
 import yaml
+from matplotlib.animation import FFMpegWriter
+from .animation_funcs import (make_animation,
+                              make_minimal_pde_animation,
+                              make_stat_pde_animation,
+                              make_distr_pde_animation,
+                              make_moment_pde_animation,
+                              make_moment_expansion_animation,
+                              make_moment_distr_animation,
+                              make_moment_min_animation)
+from .pde_analyzer import PDEAnalyzer
+from .me_analyzer import MEAnalyzer
 
 # Import all solvers
 # Orient
@@ -160,8 +164,8 @@ class FoXlink(object):
                 make_animation(analyzer, writer)
             elif self._opts.movie == 'min':
                 make_minimal_pde_animation(analyzer, writer)
-            elif self._opts.movie == 'orient':
-                make_orient_pde_animation(analyzer, writer)
+            elif self._opts.movie == 'stat':
+                make_stat_pde_animation(analyzer, writer)
             elif self._opts.movie == 'moment':
                 make_moment_pde_animation(analyzer, writer)
             elif self._opts.movie == 'distr':
