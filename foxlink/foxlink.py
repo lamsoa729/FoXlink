@@ -69,7 +69,7 @@ def parse_args():
                         help=("Make movie of systems of evolution. Options:\n"
                               "\tall = Make movie with all the data \n"
                               "\tmin = Make movie with just diagram of rods and crosslink data.\n"
-                              "\torient = Make movie that describes orientation of rods.\n"
+                              "\tstat = Make movie that describes orientation of rods.\n"
                               "\tmoment = Make movie that shows moments of crosslink distribution.\n"
                               "(Will try to load and analyze files if data is not there.)"))
     opts = parser.parse_args()
