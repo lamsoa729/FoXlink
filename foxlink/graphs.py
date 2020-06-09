@@ -49,19 +49,28 @@ def convert_size_units(d, ax, reference='y'):
 
 
 def xlink_end_pos(r_vec, u_vec, s):
+    """!Get spatial location of a xlink end using rod position and orientation.
+
+    @param r_vec: Position vector of rods center
+    @param u_vec: Orientation unit vector of rod
+    @param s: Location of xlink end with respect to center of rod. Can be negative.
+    @return: Position of xlink end in system
+    """
     return (r_vec + (u_vec * s))
 
 
 def get_max_min_ends(r_i, r_j, u_i, u_j, L_i, L_j):
-    """!TODO: Docstring for get_max_min_ends.
+    """!Get the maximum and minimum end position value in a direction for two
+    rods.
 
-    @param r_i: TODO
-    @param r_j: TODO
-    @param u_i: TODO
-    @param u_j: TODO
-    @param L_i: TODO
-    @param L_j: TODO
-    @return: TODO
+    @param r_i: Array of rod i center positions
+    @param r_j: Array of rod j center positions
+    @param u_i: Array of rod i orientation unit vectors
+    @param u_j: Array of rod j orientation unit vectors
+    @param L_i: Length of rod i
+    @param L_j: Length of rod j
+    @return: List of all possible maximums and minimum rod end positions for
+    rods i and j. Both plus and minus rod ends are considered.
 
     """
     return [np.amax(0.5 * L_i * u_i + r_i), np.amin(0.5 * L_i * u_i + r_i),
@@ -71,6 +80,11 @@ def get_max_min_ends(r_i, r_j, u_i, u_j, L_i, L_j):
 
 
 class LineDataUnits(Line2D):
+
+    """!Class that rescales a 2D matplotlib line to have the proper width and
+    length with respect to axis unit values.
+    """
+
     def __init__(self, *args, **kwargs):
         _lw_data = kwargs.pop("linewidth", 1)
         super().__init__(*args, **kwargs)
@@ -90,7 +104,19 @@ class LineDataUnits(Line2D):
     _linewidth = property(_get_lw, _set_lw)
 
 
-def draw_rod(ax, r_vec, u_vec, L, rod_diam, color='tab:green'):
+def draw_rod(ax, r_vec, u_vec, L, rod_diam, color='tab:green', tip_color='b'):
+    """!Draw a diagramitic representation of a rod on a matplotlib axis object.
+
+    @param ax: Matplotlib axis object
+    @param r_vec: Position vector of rod's center
+    @param u_vec: Orientation unit vector of rod
+    @param L: Length of rod
+    @param rod_diam: Diameter of rod
+    @param color: Color of rod body
+    @param tip_color: Color of plus end of rod
+    @return: None
+
+    """
     line = LineDataUnits((r_vec[1] - .5 * L * u_vec[1],
                           r_vec[1] + .5 * L * u_vec[1]),
                          (r_vec[2] - .5 * L * u_vec[2],
@@ -99,12 +125,22 @@ def draw_rod(ax, r_vec, u_vec, L, rod_diam, color='tab:green'):
                          color=color, clip_on=False, )
 
     tip = Circle((r_vec[1] + .5 * L * u_vec[1], r_vec[2] + .5 * L * u_vec[2]),
-                 .5 * rod_diam, color='b', zorder=3)
+                 .5 * rod_diam, color=tip_color, zorder=3)
     ax.add_patch(tip)
     ax.add_line(line)
 
 
 def draw_xlink(ax, e_i, e_j, lw=10, color='k', alpha=.5):
+    """!Draw a diagramitic representation of an xlink density on a matplotlib
+    axis object.
+    @param ax: Matplotlib axis object
+    @param e_i: End of xlink on rod i
+    @param e_j: End of xlink on rod j
+    @param lw: Width of line representing xlink density
+    @param color: Color of line representing xlink density
+    @param alpha: Transparency of line representing xlink density
+    return: None
+    """
     line = LineDataUnits((e_i[1], e_j[1]), (e_i[2], e_j[2]),
                          linewidth=lw,  # solid_capstyle='round',
                          color=color, clip_on=False, alpha=alpha)
@@ -112,7 +148,24 @@ def draw_xlink(ax, e_i, e_j, lw=10, color='k', alpha=.5):
 
 
 def draw_moment_rod(ax, r_vec, u_vec, L, rod_diam,
-                    mu00, mu10, mu20, num_max=50.):
+                    mu00, mu10, mu20, num_max=50):
+    """!Draw a diagramitic representation of a rod and moments of xlink end
+    density on rod.
+
+    @param ax: Matplotlib axis object
+    @param r_vec: Position vector of rod's center
+    @param u_vec: Orientation unit vector of rod
+    @param L: Length of rod
+    @param rod_diam: Diameter of rod
+    @param mu00: Zeroth moment of xlink density (respresented as rod color)
+    @param mu10: First moment of xlink density corresponding to average end
+    position on rod (represented by position of polygon)
+    @param mu20: First moment of xlink density corresponding to variance of end
+    position on rod with respect to rod center (used to calculate sigma)
+    @param num_max: Maximum number of xlinks to set standard colormap
+    @return: colorbar set by num_max
+
+    """
     cb = mpl.cm.ScalarMappable(
         mpl.colors.Normalize(0, num_max), 'viridis')
     draw_rod(ax, r_vec, u_vec, L, rod_diam)

@@ -15,11 +15,14 @@ Description:
 
 
 def make_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
-    """!Make animation of time slices
-    @param: pde_anal Analyzer object storing PDE data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+    """!Make animation of time slices, graphing rod diagram, xlink density,
+    xlink number, xlink force, xlink torque, moments up to 2nd order,
+    distance between rod centers, and angle between rod orientation vectors.
+
+    @param pde_anal: Analyzer object storing PDE data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
 
     """
@@ -70,10 +73,11 @@ def make_minimal_pde_animation(pde_anal, writer='ffmpeg',
                                save_path=Path('./')):
     """!Make an animation of time slices with only moving rods and xlink
         density distribution.
-    @param: pde_anal Analyzer object storing PDE data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param pde_anal: Analyzer object storing PDE data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
 
     """
@@ -117,11 +121,13 @@ def make_minimal_pde_animation(pde_anal, writer='ffmpeg',
 def make_distr_pde_animation(pde_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make an animation of time slices with moving rods, xlink density
     distribution, and recreated density distribution from moments.
-    @param: pde_anal Analyzer object storing PDE data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param pde_anal: Analyzer object storing PDE data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
+
     """
     if not isinstance(save_path, Path):
         save_path = Path(save_path)
@@ -168,11 +174,13 @@ def make_stat_pde_animation(
         pde_anal, writer='ffmpeg', save_path=Path('. /')):
     """!Make an animation of time slices for stationary rods. Rod diagram,
     xlink density, xlink number, xlink force, and xlink force are graphed.
-    @param: pde_anal Analyzer object storing PDE data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param pde_anal: Analyzer object storing PDE data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
+
     """
     if not isinstance(save_path, Path):
         save_path = Path(save_path)
@@ -221,10 +229,11 @@ def make_moment_pde_animation(pde_anal, writer='ffmpeg',
                               save_path=Path('. /')):
     """!Make animation time slices with rod diagram, xlink density, xlink force,
     xlink torque, and moments up to 2nd order.
-    @param: de_anal Analyzer object storing PDE data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param pde_anal: Analyzer object storing PDE data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
 
     """
@@ -277,10 +286,11 @@ def make_moment_expansion_animation(me_anal, writer='ffmpeg',
                                     save_path=Path('./')):
     """!Make animation time slices from moment expansion data, graphing rod
     diagram, xlink force, xlink torque, and moments up to 2nd order.
-    @param: me_anal Analyzer object storing ME data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param me_anal: Analyzer object storing ME data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
 
     """
@@ -331,10 +341,11 @@ def make_moment_distr_animation(
     """!Make animation time slices from moment expansion data, graphing rod
     diagram, recreated xlink density, xlink force, xlink torque, and moments up
     to 2nd order.
-    @param: me_anal Analyzer object storing ME data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param me_anal: Analyzer object storing ME data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
 
     """
@@ -385,10 +396,11 @@ def make_moment_distr_animation(
 def make_moment_min_animation(me_anal, writer='ffmpeg', save_path=Path('./')):
     """!Make animation time slices from moment expansion data, graphing rod
     diagram and recreated xlink density.
-    @param: me_anal Analyzer object storing ME data.
-    @param: writer Matplotlib Writer object or string dictating how to create
-            and save animation.
-    @param: save_path pathlib.Path object for where animation will be saved
+
+    @param me_anal: Analyzer object storing ME data.
+    @param writer: Matplotlib Writer object or string dictating how to create
+                   and save animation.
+    @param save_path: pathlib.Path object for where animation will be saved
     @return: None
 
     """
