@@ -67,9 +67,9 @@ sqrt_pi = np.sqrt(np.pi)  # Reduce the number of sqrts you need to do
 
 
 @njit
-def avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu00, mu10, mu01,
-                  mu11, mu20, mu02, mu21, mu12, mu30, mu03, ks, ho):
-    """!Find the average force of zero rest length (gen) crosslinkers on rods
+def avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+                  mu00, mu10, mu01, mu20, mu11, mu02, mu30, mu21, mu12, mu03):
+    """!Find the average force of non-zero rest length (gen) crosslinkers on rods
 
     @param r_ij: Vector from the center of mass of rod_i to the center of mass of rod_j
     @param u_i: Orientation unit vector of rod_i
@@ -82,10 +82,37 @@ def avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, mu00, mu10, mu01,
 
     """
     drh2 = rsqr - (ho * ho)
-    return (-ks * ((-drh2 * mu00 + 2. * (a_ij * mu10 - a_ji * mu01 + b * mu11) - mu20 - mu02) * r_ij
-                   + (drh2 * mu10 + 2. * (a_ji * mu11 - a_ij *
-                                          mu20 - b * mu21) + mu12 + mu30) * u_i
-                   + (-drh2 * mu01 + 2. * (a_ij * mu11 - a_ji * mu02 + b * mu12) - mu21 - mu03) * u_j))
+    return (-.5 * (ks / ho) *
+            ((drh2 * mu00 - 2. * (a_ij * mu10 + a_ji * mu01 + b * mu11)
+              + mu20 + mu02) * r_ij
+             + (drh2 * mu01 - 2. * (a_ij * mu11 + a_ji * mu02 + b * mu12)
+                + mu21 + mu03) * u_j
+             - (drh2 * mu10 - 2. * (a_ji * mu11 + a_ij * mu20 + b * mu21)
+                + mu12 + mu30) * u_i))
+
+
+@njit
+def avg_torque_gen_ij(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+                      mu00, mu10, mu01, mu20, mu11, mu02, mu30, mu21, mu12, mu03,
+                      mu40, mu31, mu22, mu13, mu04):
+    drh2 = rsqr - (ho * ho)
+    return (-.5 * (ks / ho) *
+            ((drh2 * mu01 - 2. * (a_ij * mu11 + a_ji * mu02 + b * mu12)
+              + mu21 + mu03) * np.cross(u_j, r_ij)
+             - (drh2 * mu11 - 2. * (a_ij * mu21 + a_ji * mu12 + b * mu22)
+                + mu31 + mu13) * np.cross(u_j, u_i)))
+
+
+@njit
+def avg_torque_gen_ji(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+                      mu00, mu10, mu01, mu20, mu11, mu02, mu30, mu21, mu12, mu03,
+                      mu40, mu31, mu22, mu13, mu04):
+    drh2 = rsqr - (ho * ho)
+    return (.5 * (ks / ho) *
+            ((drh2 * mu10 - 2. * (a_ji * mu11 + a_ij * mu20 + b * mu21)
+              + mu12 + mu30) * np.cross(u_i, r_ij)
+             + (drh2 * mu11 - 2. * (a_ji * mu12 + a_ij * mu21 + b * mu22)
+                + mu31 + mu13) * np.cross(u_i, u_j)))
 
 
 @njit
@@ -106,7 +133,7 @@ def avg_force_gen_2ord(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
     """
     drh2 = rsqr - (ho * ho)
 
-    return -ks * ((drh2 * mu00 - 2. * (a_ij * mu10 + a_ji * mu01 + b * mu11)
-                   + mu20 + mu02) * r_ij
-                  - (drh2 * mu10 - 2. * (a_ji * mu11 + a_ij * mu20)) * u_i
-                  + (drh2 * mu01 - 2. * (a_ij * mu11 + a_ji * mu02)) * u_j)
+    return (-.5 * (ks / ho) * (
+        (drh2 * mu00 - 2. * (a_ij * mu10 + a_ji * mu01 + b * mu11) + mu20 + mu02) * r_ij
+        - (drh2 * mu10 - 2. * (a_ji * mu11 + a_ij * mu20)) * u_i
+        + (drh2 * mu01 - 2. * (a_ij * mu11 + a_ji * mu02)) * u_j))

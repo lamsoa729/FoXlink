@@ -9,12 +9,63 @@ Description:
 
 import numpy as np
 from scipy.integrate import dblquad
-from .me_helpers import dr_dt, convert_sol_to_geom
+from .me_helpers import dr_dt, convert_sol_to_geom, rod_geom_derivs
 from .me_gen_helpers import (weighted_boltz_fact_gen,
                              boltz_fact_gen,
-                             avg_force_gen_2ord)
+                             avg_force_gen,
+                             avg_force_gen_2ord,
+                             avg_torque_gen_ij,
+                             avg_torque_gen_ji,
+                             )
 from .me_gen_odes import (du_dt_gen_2ord, dmu00_dt_gen, dmu10_dt_gen_2ord,
                           dmu11_dt_gen_2ord, dmu20_dt_gen_2ord)
+
+
+def prep_me_evolver_gen_n_ord(sol, params, n_ord=4):
+    """!Calculate necessary variables to evolve the solution.
+
+    @param sol: TODO
+    @param params: TODO
+    @param n_ord: TODO
+    @return: TODO
+
+    """
+
+    # Convert solution entries into readable geometric variables to use in
+    # derivatives
+    r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
+    r_ij = r_j - r_i
+    rsqr = np.dot(r_ij, r_ij)
+    a_ij = np.dot(r_ij, u_i)
+    a_ji = -1.0 * np.dot(r_ij, u_j)
+    b = np.dot(u_i, u_j)
+
+    co = params['co']
+    ks = params['ks']
+    ho = params['ho']
+    beta = params['beta']
+
+    L_i, L_j = params['L1'], params['L2']
+
+    # Convert solution into readable moments to use in derivatives
+    mom_num = (n_ord + 1) * (n_ord + 2) / 2
+    moments = sol[12:12 + mom_num].tolist()
+
+    # Calculate source terms (qkl) to use in derivatives
+    src_terms = []
+    for n in range(n_ord + 1):
+        for i in range(n + 1):
+            src_terms += [
+                co * dblquad(weighted_boltz_fact_gen, -.5 * L_i, .5 * L_i,
+                             lambda s_j: -.5 * L_j, lambda s_j: .5 * L_j,
+                             args=[n - i, i,  # Specify powers, e.g. n=2 would give moments mu20, mu11, and mu02
+                                   rsqr, a_ij, a_ji, b,
+                                   ks, ho, beta],
+                             epsrel=1e-5)[0]]
+
+    return (r_ij, u_i, u_j,  # Vector quantities
+            [rsqr, a_ij, a_ji, b],  # Scalar geometric quantities
+            moments, src_terms)
 
 
 def prep_me_evolver_gen_2ord(sol, params):
@@ -200,7 +251,53 @@ def me_evolver_gen_orient_2ord(sol, fric_coeff, params):
             'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
 
     return dsol
-# TODO: Need to make these functions eventually <11-11-19, ARL> #
-# me_evolver_gen_stat_2ord
-# me_evolver_gen_ang_2ord
-# me_evolver_gen_orient_2ord
+
+
+def me_evolver_pass_gen(sol, fric_coeff, params):
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (gen) crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
+
+    @param sol: Current solution of ODE
+    @param gpara_ij: Parallel drag coefficient of rod_i
+    @param gperp_i: Perpendicular drag coefficient of rod_i
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    co = params['co']
+    ks = params['ks']
+    ho = params['ho']
+    ko = params['ko']
+    vo = params['vo']
+    fs = params['fs']
+    beta = params['beta']
+    # Get variables needed to solve ODE
+    (r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+     moments, src_terms) = prep_me_evolver_gen_n_ord(sol, params)
+
+    # Get average force of crosslinkers on rod_j
+    f_ij = avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+                         *moments[:10])
+    t_ij = avg_torque_gen_ij(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+                             *moments)
+    t_ji = avg_torque_gen_ji(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+                             *moments)
+
+    # Evolution of rod positions
+    # dr_i = dr_dt(-1. * f_ij, u_i, fric_coeff[0], fric_coeff[1])
+    # dr_j = dr_dt(f_ij, u_j, fric_coeff[3], fric_coeff[4])
+    (dr_i, dr_j, du_i, du_j) = rod_geom_derivs(
+        f_ij, t_ji, t_ij, u_i, u_j, fric_coeff)
+
+    dmu_lst = []
+    for qkl, mukl in zip(moments, src_terms):
+        dmu_lst += [ko * qkl - ko * mukl]
+
+    dsol = np.concatenate(
+        (dr_i, dr_j, du_i, du_j, dmu_lst))
+    # Check to make sure all values are finite
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError(
+            'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
+
+    return dsol
