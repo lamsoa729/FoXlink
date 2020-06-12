@@ -95,7 +95,8 @@ class MomentExpansionSolver(Solver):
         """!Set the initial conditions for the system of ODEs
         @return: void
         """
-        self.sol_init = np.zeros(26)
+        self.sol_init = np.zeros(27)
+
         # Set all geometric variables
         self.sol_init[:12] = np.concatenate(
             (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))

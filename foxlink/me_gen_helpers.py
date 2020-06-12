@@ -91,7 +91,7 @@ def avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
                 + mu12 + mu30) * u_i))
 
 
-@njit
+# @njit
 def avg_torque_gen_ij(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
                       mu00, mu10, mu01, mu20, mu11, mu02, mu30, mu21, mu12, mu03,
                       mu40, mu31, mu22, mu13, mu04):
@@ -103,7 +103,7 @@ def avg_torque_gen_ij(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
                 + mu31 + mu13) * np.cross(u_j, u_i)))
 
 
-@njit
+# @njit
 def avg_torque_gen_ji(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
                       mu00, mu10, mu01, mu20, mu11, mu02, mu30, mu21, mu12, mu03,
                       mu40, mu31, mu22, mu13, mu04):

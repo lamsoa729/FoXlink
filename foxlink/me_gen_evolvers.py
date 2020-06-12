@@ -45,10 +45,11 @@ def prep_me_evolver_gen_n_ord(sol, params, n_ord=4):
     ho = params['ho']
     beta = params['beta']
 
-    L_i, L_j = params['L1'], params['L2']
+    L_i, L_j = params['L_i'], params['L_j']
 
     # Convert solution into readable moments to use in derivatives
-    mom_num = (n_ord + 1) * (n_ord + 2) / 2
+    mom_num = int((n_ord + 1) * (n_ord + 2) / 2)
+    print("mom_num:", mom_num)
     moments = sol[12:12 + mom_num].tolist()
 
     # Calculate source terms (qkl) to use in derivatives
@@ -63,8 +64,9 @@ def prep_me_evolver_gen_n_ord(sol, params, n_ord=4):
                                    ks, ho, beta],
                              epsrel=1e-5)[0]]
 
+    print(len(src_terms))
     return (r_ij, u_i, u_j,  # Vector quantities
-            [rsqr, a_ij, a_ji, b],  # Scalar geometric quantities
+            rsqr, a_ij, a_ji, b,  # Scalar geometric quantities
             moments, src_terms)
 
 
@@ -253,7 +255,7 @@ def me_evolver_gen_orient_2ord(sol, fric_coeff, params):
     return dsol
 
 
-def me_evolver_pass_gen(sol, fric_coeff, params):
+def me_evolver_gen_pass(sol, fric_coeff, params):
     """!Calculate all time derivatives necessary to solve the moment expansion
     evolution of the Fokker-Planck equation of zero rest length (gen) crosslinkers
     bound to moving rods. d<var> is the time derivative of corresponding variable
@@ -268,12 +270,12 @@ def me_evolver_pass_gen(sol, fric_coeff, params):
     ks = params['ks']
     ho = params['ho']
     ko = params['ko']
-    vo = params['vo']
     fs = params['fs']
     beta = params['beta']
     # Get variables needed to solve ODE
     (r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
-     moments, src_terms) = prep_me_evolver_gen_n_ord(sol, params)
+     moments, src_terms) = prep_me_evolver_gen_n_ord(sol, params, 4)
+    print("len(moments):", len(moments))
 
     # Get average force of crosslinkers on rod_j
     f_ij = avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,

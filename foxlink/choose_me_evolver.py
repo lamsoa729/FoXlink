@@ -13,7 +13,9 @@ from .me_zrl_evolvers import (evolver_zrl, evolver_zrl_stat, evolver_zrl_bvg,
                               prep_zrl_evolver, get_zrl_moments)
 from .me_zrl_odes import calc_moment_derivs_zrl
 from .me_zrl_bound_evolvers import evolver_zrl_bound
-from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
+from .me_gen_evolvers import (me_evolver_gen_2ord,
+                              me_evolver_gen_orient_2ord,
+                              me_evolver_gen_pass)
 from .rod_motion_solver import get_rod_drag_coeff
 
 
@@ -141,5 +143,21 @@ def choose_me_evolver(sol_init, slvr):
 
             return me_evolver_gen_orient_2ord(sol, fric_coeff, slvr.__dict__)
         return me_evolver_gen_orient_2ord_closure
+
+    if slvr.ODE_type == 'gen_pass':
+        fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+                      get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+
+        def me_evolver_gen_pass_closure(t, sol):
+            if not np.all(np.isfinite(sol)):
+                raise RuntimeError(
+                    'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+            print("sol({}):".format(t), sol)
+
+            sol[6:9] /= np.linalg.norm(sol[6:9])
+            sol[9:12] /= np.linalg.norm(sol[9:12])
+            return me_evolver_gen_pass(sol, fric_coeff, slvr.__dict__)
+
+        return me_evolver_gen_pass_closure
 
     raise IOError('{} not a defined ODE equation for foxlink.')
