@@ -365,7 +365,22 @@ class PDESolver(Solver):
         @return: index of current step
 
         """
+        # Some checking functions
+
         i_step = int((self.t / self.dt) / self.nwrite)
+        error_flag = False
+        if np.isnan(self.sgrid).any():
+            print(
+                "!!! Error: Found NaN in solution grid at time step {}.".format(i_step))
+            error_flag = True
+        if np.any(self.sgrid < 0.):
+            print(
+                "!!! Error: Found negative value in solution grid at time step {}.".format(i_step))
+            error_flag = True
+        if error_flag:
+            raise RuntimeError(
+                "Run stopped because of runtime error in solution.")
+
         if not self.written:
             self._xl_distr_dset[:, :, i_step] = self.sgrid
             self._time_dset[i_step] = self.t
