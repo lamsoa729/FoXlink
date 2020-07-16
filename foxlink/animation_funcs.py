@@ -410,14 +410,14 @@ def make_moment_min_animation(me_anal, writer='ffmpeg', save_path=Path('./')):
         "axes.labelsize": 15,
         "xtick.labelsize": 15,
         "ytick.labelsize": 15,
-        "font.size": 15,
+        "font.size": 18,
         "font.sans-serif": 'Helvetica',
         "text.usetex": False,
         'mathtext.fontset': 'cm',
     }
     # with plt.style.context(graph_stl):
     plt.style.use(graph_stl)
-    fig = plt.figure(figsize=(11, 4.5), constrained_layout=True)
+    fig = plt.figure(figsize=(13, 5), constrained_layout=True)
     gs = fig.add_gridspec(1, 2)
     axarr = np.asarray([fig.add_subplot(gs[0, 0]),
                         fig.add_subplot(gs[0, 1]), ])
