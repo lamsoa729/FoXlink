@@ -21,6 +21,19 @@ from .me_gen_odes import (du_dt_gen_2ord, dmu00_dt_gen, dmu10_dt_gen_2ord,
                           dmu11_dt_gen_2ord, dmu20_dt_gen_2ord)
 
 
+def get_n_ord_moments(sol, n_ord=4):
+    """!TODO: Docstring for convert_sol_to_moment_org.
+
+    @param sol: TODO
+    @param n_ord: TODO
+    @return: TODO
+
+    """
+    mom_num = int((n_ord + 1) * (n_ord + 2) / 2)
+    # print("mom_num:", mom_num)
+    return sol[12:12 + mom_num].tolist()
+
+
 def prep_me_evolver_gen_n_ord(sol, params, n_ord=4):
     """!Calculate necessary variables to evolve the solution.
 
@@ -48,9 +61,9 @@ def prep_me_evolver_gen_n_ord(sol, params, n_ord=4):
     L_i, L_j = params['L_i'], params['L_j']
 
     # Convert solution into readable moments to use in derivatives
-    mom_num = int((n_ord + 1) * (n_ord + 2) / 2)
-    print("mom_num:", mom_num)
-    moments = sol[12:12 + mom_num].tolist()
+    # mom_num = int((n_ord + 1) * (n_ord + 2) / 2)
+    # print("mom_num:", mom_num)
+    moments = get_n_ord_moments(sol, n_ord)
 
     # Calculate source terms (qkl) to use in derivatives
     src_terms = []
@@ -63,8 +76,10 @@ def prep_me_evolver_gen_n_ord(sol, params, n_ord=4):
                                    rsqr, a_ij, a_ji, b,
                                    ks, ho, beta],
                              epsrel=1e-5)[0]]
+    #         print("k={}, l={}".format(n - i, i), end=" ")
+    # print(" ")
 
-    print(len(src_terms))
+    # print(len(src_terms))
     return (r_ij, u_i, u_j,  # Vector quantities
             rsqr, a_ij, a_ji, b,  # Scalar geometric quantities
             moments, src_terms)
@@ -285,6 +300,11 @@ def me_evolver_gen_pass(sol, fric_coeff, params):
     t_ji = avg_torque_gen_ji(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
                              *moments)
 
+    if params['steric_flag'] == 'constrained':
+        u_m = params['constr_vec']  # Get min dist vector of carrier lines
+        f_ij -= np.dot(f_ij, u_m) * u_m  # Min dist component from force
+        t_ij = np.dot(t_ij, u_m) * u_m  # Torque only around min dist vector
+        t_ji = np.dot(t_ji, u_m) * u_m  # Torque only around min dist vector
     # Evolution of rod positions
     # dr_i = dr_dt(-1. * f_ij, u_i, fric_coeff[0], fric_coeff[1])
     # dr_j = dr_dt(f_ij, u_j, fric_coeff[3], fric_coeff[4])
@@ -292,11 +312,60 @@ def me_evolver_gen_pass(sol, fric_coeff, params):
         f_ij, t_ji, t_ij, u_i, u_j, fric_coeff)
 
     dmu_lst = []
-    for qkl, mukl in zip(moments, src_terms):
+    for qkl, mukl in zip(src_terms, moments):
         dmu_lst += [ko * qkl - ko * mukl]
 
     dsol = np.concatenate(
         (dr_i, dr_j, du_i, du_j, dmu_lst))
+    # Check to make sure all values are finite
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError(
+            'Infinity or NaN thrown in ODE solver derivatives. Current derivatives', dsol)
+
+    return dsol
+
+
+def me_evolver_gen_pass_stat(moments, src_terms, params):
+    """!Calculate all time derivatives necessary to solve the moment expansion
+    evolution of the Fokker-Planck equation of zero rest length (gen) crosslinkers
+    bound to moving rods. d<var> is the time derivative of corresponding variable
+
+    @param sol: Current solution of ODE
+    @param gpara_ij: Parallel drag coefficient of rod_i
+    @param gperp_i: Perpendicular drag coefficient of rod_i
+    @return: Time-derivatives of all time varying quantities in a flattened
+             array
+    """
+    co = params['co']
+    ks = params['ks']
+    ho = params['ho']
+    ko = params['ko']
+    fs = params['fs']
+    beta = params['beta']
+    # Get variables needed to solve ODE
+    # (r_ij, u_i, u_j, rsqr, a_ij, a_ji, b,
+    #  moments, src_terms) = prep_me_evolver_gen_n_ord(sol, params, 4)
+    # print("len(moments):", len(moments))
+
+    # Get average force of crosslinkers on rod_j
+    # f_ij = avg_force_gen(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+    #                      *moments[:10])
+    # t_ij = avg_torque_gen_ij(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+    #                          *moments)
+    # t_ji = avg_torque_gen_ji(r_ij, u_i, u_j, rsqr, a_ij, a_ji, b, ks, ho,
+    #                          *moments)
+
+    # Evolution of rod positions
+    # dr_i = dr_dt(-1. * f_ij, u_i, fric_coeff[0], fric_coeff[1])
+    # dr_j = dr_dt(f_ij, u_j, fric_coeff[3], fric_coeff[4])
+    # (dr_i, dr_j, du_i, du_j) = rod_geom_derivs(
+    #     f_ij, t_ji, t_ij, u_i, u_j, fric_coeff)
+
+    dmu_lst = []
+    for qkl, mukl in zip(src_terms, moments):
+        dmu_lst += [ko * qkl - ko * mukl]
+
+    dsol = np.concatenate((np.zeros(12), dmu_lst))
     # Check to make sure all values are finite
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError(
