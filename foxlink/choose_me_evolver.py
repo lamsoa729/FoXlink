@@ -20,8 +20,7 @@ from .rod_motion_solver import get_rod_drag_coeff
 def choose_me_evolver(sol_init, slvr):
     """!Create a closure for ode solver
 
-    @param sol: Array of time-dependent variables in the ODE
-    @param t: time
+    @param sol_init: Array of time-dependent variables in the ODE
     @param slvr: MomentExpansionSolver solver class
     @return: evolver function for ODE of interest
 
@@ -45,7 +44,8 @@ def choose_me_evolver(sol_init, slvr):
             # sol_print_out(sol)
             if not np.all(np.isfinite(sol)):
                 raise RuntimeError(
-                    'Infinity or NaN thrown in ODE solver solutions. Current solution', sol)
+                    ('Infinity or NaN thrown in ODE solver solutions.'
+                     ' Current solution: '), sol)
             return evolver_zrl(sol, fric_coeff, slvr.__dict__)
         return evolver_zrl_closure
 
