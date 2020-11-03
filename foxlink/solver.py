@@ -15,30 +15,31 @@ class Solver():
     """!Abstract class for solver objects. All solving algorithms are implemented
     through these classes.
 
-        Common method functions for inherited solver classes:
-            Run <- Abstract = Iterate through time using the Step method
-            Step <- Abstract = Implement the specified algorithm at a times step
-            setInitialConditions <- Abstract = Set the initial stat of simulation
-            makeDataframe <- Abstract = Make a HDF5 data frame
-            Write <- Abstract = At a specified time step add current solution to output dataframe.
+    Common method functions for inherited solver classes:
+        Run <- Abstract = Iterate through time using the Step method
+        Step <- Abstract = Implement the specified algorithm at a times step
+        setInitialConditions <- Abstract = Set the initial stat of simulation
+        makeDataframe <- Abstract = Make a HDF5 data frame
+        Write <- Abstract = At a specified time step add current solution to
+                            output dataframe.
 
-            ParseParams = Parse parameters from file that is given
-            Save = Flush the remaining data in hdf5 file.
+        ParseParams = Parse parameters from file that is given
+        Save = Flush the remaining data in hdf5 file.
 
-        Foxlink uses inheritance to quickly create and combine PDE and ME solving
-        algorithms. While solvers do not need to follow specific guidelines, it
-        is useful to categorize solvers into different types avoid inheritance
-        conflicts when using multi-inheritance. These include:
-            Orientation solver -> Defines rods orientations and associate parameters.
-                                  eg. Parallel (para),
-            Xlink algorithm solver -> What technique is used to solve the xlink
-                                      density equations. Can use multiple in one
-                                      system. eg. Upwind (UW), Crank-Nicolson(CN)
-            Xlink type solver -> What type of crosslinks are being modeled.
-                                 eg. Motor, Static, Passive
-            Rod algorithm solver -> What technique is used to solve the rods
-                                      position equations.
-                                      eg. Orient (no motions), Motion, Optical Trap
+    Foxlink uses inheritance to quickly create and combine PDE and ME solving
+    algorithms. While solvers do not need to follow specific guidelines, it
+    is useful to categorize solvers into different types avoid inheritance
+    conflicts when using multi-inheritance. These include:
+        Orientation solver -> Defines rods orientations and associate parameters.
+                              eg. Parallel (para),
+        Xlink algorithm solver -> What technique is used to solve the xlink
+                                  density equations. Can use multiple in one
+                                  system. eg. Upwind (UW), Crank-Nicolson(CN)
+        Xlink type solver -> What type of crosslinks are being modeled.
+                             eg. Motor, Static, Passive
+        Rod algorithm solver -> What technique is used to solve the rods
+                                  position equations.
+                                  eg. Orient (no motions), Motion, Optical Trap
 
         Derivative class names are based on their solver type.
     """

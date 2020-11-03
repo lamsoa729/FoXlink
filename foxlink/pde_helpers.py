@@ -53,7 +53,7 @@ def make_force_dep_velocity_mat(f_mat, u_vec, fs, vo):
     @return: velocity matrix corresponding to position of motor head
 
     """
-    if fs is 0:
+    if fs == 0:
         print("!!! Warning: motor stall force is zero. ",
               "This may cause undefined behaviour.")
     f_para_mat = np.einsum('ijk, k->ij', f_mat, u_vec)

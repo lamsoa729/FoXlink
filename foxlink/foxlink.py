@@ -3,9 +3,10 @@
 File: foxlink.py
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description: Main control program for FoXlink PDE solver. Parses arguments using
-argsparse. Type foxlink -h for help and main actions.
+Description: Main control program for FoXlink PDE solver. Parses arguments
+using argsparse. Type foxlink -h for help and main actions.
 """
+
 import argparse
 import sys
 import yaml
