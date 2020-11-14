@@ -12,6 +12,7 @@ import matplotlib as mpl
 from matplotlib.lines import Line2D
 from matplotlib.patches import (Circle, RegularPolygon, FancyArrowPatch,
                                 ArrowStyle)
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 # import matplotlib.pyplot as plt
 
 
@@ -424,17 +425,27 @@ def me_graph_min_data_2d(fig, axarr, n, me_anal):
                         me_anal.s_j,
                         max_dens_val=me_anal.max_dens_val)
 
-    axarr[1].set_xlabel(
-        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
-    axarr[1].set_ylabel(
-        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
+    axarr[1].set_xlabel('Position on filament $i$ $s_i$ (nm)')
+    axarr[1].set_ylabel('Position on filament $j$ $s_j$ (nm)')
+    # axarr[1].set_xlabel(
+    # 'Head distance from \n center of fil$_i$ $s_i$ (nm)')
+    # axarr[1].set_ylabel(
+    # 'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     if me_anal.init_flag:
+        # ax_divider = make_axes_locatable(axarr[0])
         axarr[0].set_aspect(1.0)
         axarr[1].set_aspect(1.0)
-        cbar = fig.colorbar(cb, ax=axarr[0])
+        # cax = ax_divider.append_axes("top", size="7%", pad="2%")
+        cbar = fig.colorbar(
+            cb,
+            ax=axarr[0],
+            # orientation="horizontal",
+            location='bottom',
+            shrink=.95)
         cbar.set_label(
             r'Motor number $\langle N_{i,j} \rangle$')
+        # cax.xaxis.set_ticks_position("top")
         cbar1 = fig.colorbar(cb1, ax=axarr[1])
         cbar1.set_label(
             r'Reconstructed motor density $\psi_{i,j}$')
@@ -928,15 +939,21 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
                       pde_anal.s_i,
                       pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
-    axarr[1].set_xlabel(
-        'Head distance from \n center of fil$_i$ $s_i$ (nm)')
-    axarr[1].set_ylabel(
-        'Head distance from \n center of fil$_j$ $s_j$ (nm)')
+    axarr[1].set_xlabel('Position on filament $i$ $s_i$ (nm)')
+    axarr[1].set_ylabel('Position on filament $j$ $s_j$ (nm)')
+
+    # axarr[1].set_xlabel(
+    # 'Head distance from \n center of fil$_i$ $s_i$ (nm)')
+    # axarr[1].set_ylabel(
+    # 'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     if pde_anal.init_flag:
         axarr[0].set_aspect(1.0)
         axarr[1].set_aspect(1.0)
-        fig.colorbar(c, ax=axarr[1])
+        cbar = fig.colorbar(
+            c,
+            ax=axarr[1],
+            label=r'Motor density $\psi(s_i, s_j)$')
         pde_anal.init_flag = False
     axarr[0].text(.05, .90, "Time = {:.2f} sec".format(pde_anal.time[n]),
                   horizontalalignment='left',
