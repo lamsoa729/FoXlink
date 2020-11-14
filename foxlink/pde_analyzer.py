@@ -518,7 +518,7 @@ class PDEAnalyzer(Analyzer):
         t0 = time.time()
         gca_arts = pde_graph_mts_xlink_distr_2d(fig, axarr, n, self)
         t1 = time.time()
-        print("Graph ", n, "made in: ", t1 - t0)
+        print("PDE Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
     def graph_orient_slice(self, n, fig, axarr):

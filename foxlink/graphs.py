@@ -13,7 +13,16 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import (Circle, RegularPolygon, FancyArrowPatch,
                                 ArrowStyle)
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib.ticker as ticker
 # import matplotlib.pyplot as plt
+
+
+def scifmt(x, pos):
+    a, b = '{:.1e}'.format(x).split('e')
+    b = int(b)
+    if float(a) == 0.:
+        return r'0.0'
+    return r'{}$\times$10$^{{{}}}$'.format(a, b)
 
 
 def convert_size_units(d, ax, reference='y'):
@@ -414,9 +423,9 @@ def me_graph_min_data_2d(fig, axarr, n, me_anal):
     if not me_anal.init_flag:
         for ax in axarr.flatten():
             ax.clear()
-        for artist in fig.gca().lines + fig.gca().collections:
-            artist.remove()
-            del artist
+        # for artist in fig.gca().lines + fig.gca().collections:
+        #     artist.remove()
+        #     del artist
 
     cb = graph_2d_rod_moment_diagram(axarr[0], me_anal, n)
     cb1 = graph_xl_dens(axarr[1],
@@ -425,30 +434,48 @@ def me_graph_min_data_2d(fig, axarr, n, me_anal):
                         me_anal.s_j,
                         max_dens_val=me_anal.max_dens_val)
 
+    print("ME max dense: ", me_anal.max_dens_val)
+    axarr[0].set_title('Moment expansion model')
     axarr[1].set_xlabel('Position on filament $i$ $s_i$ (nm)')
     axarr[1].set_ylabel('Position on filament $j$ $s_j$ (nm)')
+    axarr[0].set_aspect(1.0)
+    axarr[1].set_aspect(1.0)
     # axarr[1].set_xlabel(
     # 'Head distance from \n center of fil$_i$ $s_i$ (nm)')
     # axarr[1].set_ylabel(
     # 'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     if me_anal.init_flag:
-        # ax_divider = make_axes_locatable(axarr[0])
-        axarr[0].set_aspect(1.0)
-        axarr[1].set_aspect(1.0)
-        # cax = ax_divider.append_axes("top", size="7%", pad="2%")
+        # divider = make_axes_locatable(axarr[0])
+        # cax = divider1.append_axes("bottom", size="7.5%", pad=0.2)
         cbar = fig.colorbar(
             cb,
             ax=axarr[0],
             # orientation="horizontal",
             location='bottom',
-            shrink=.95)
+            shrink=.5,
+            pad=-0.08)
         cbar.set_label(
             r'Motor number $\langle N_{i,j} \rangle$')
-        # cax.xaxis.set_ticks_position("top")
-        cbar1 = fig.colorbar(cb1, ax=axarr[1])
+
+        divider1 = make_axes_locatable(axarr[1])
+        cax1 = divider1.append_axes("right", size="7.5%", pad=0.2)
+        # Make colorbar for density plot
+        cbar1 = fig.colorbar(
+            cb1,
+            cax=cax1
+            # ax=axarr[1],
+            # location='right',
+            # format=ticker.FuncFormatter(scifmt),
+        )
+        # Use scientific notation for values less than .1 and greater than 10
+        cbar1.formatter.set_useMathText(True)
+        cbar1.formatter.set_powerlimits((-1, 1))
+        # Shift over offset text
+        cbar1.ax.yaxis.get_offset_text().set_x(3.)
         cbar1.set_label(
             r'Reconstructed motor density $\psi_{i,j}$')
+        # Divide the density plot to get colorbar
     me_anal.init_flag = False
 
     axarr[0].text(.05, .90, "Time = {:.2f} sec".format(me_anal.time[n]),
@@ -925,9 +952,9 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
     if not pde_anal.init_flag:
         for ax in axarr.flatten():
             ax.clear()
-        for artist in fig.gca().lines + fig.gca().collections:
-            artist.remove()
-            del artist
+        # for artist in fig.gca().lines + fig.gca().collections:
+            # artist.remove()
+            # del artist
 
     # Draw rods
     graph_2d_rod_pde_diagram(axarr[0], pde_anal, n,
@@ -939,6 +966,7 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
                       pde_anal.s_i,
                       pde_anal.s_j,
                       max_dens_val=pde_anal.max_dens_val)
+    axarr[0].set_title('MFMD model')
     axarr[1].set_xlabel('Position on filament $i$ $s_i$ (nm)')
     axarr[1].set_ylabel('Position on filament $j$ $s_j$ (nm)')
 
@@ -948,18 +976,36 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
     # 'Head distance from \n center of fil$_j$ $s_j$ (nm)')
 
     if pde_anal.init_flag:
-        axarr[0].set_aspect(1.0)
-        axarr[1].set_aspect(1.0)
+        divider = make_axes_locatable(axarr[1])
+        cax = divider.append_axes("right", size="7.5%", pad=0.2)
+        # Make colorbar for density plot
         cbar = fig.colorbar(
             c,
-            ax=axarr[1],
-            label=r'Motor density $\psi(s_i, s_j)$')
+            cax=cax
+            # ax=axarr[1],
+            # location='right',
+            # format=ticker.FuncFormatter(scifmt),
+        )
+        # Use scientific notation for values less than .1 and greater than 10
+        cbar.formatter.set_useMathText(True)
+        cbar.formatter.set_powerlimits((-1, 1))
+        # Shift over offset text
+        cbar.ax.yaxis.get_offset_text().set_x(3.)
+        # cbar = fig.colorbar(
+        #     c,
+        #     ax=axarr[1],
+        #     format=ticker.FuncFormatter(scifmt),
+        # label=r'Motor density $\psi(s_i, s_j)$')
+        cbar.set_label(
+            r'Motor density $\psi_{i,j}$')
         pde_anal.init_flag = False
     axarr[0].text(.05, .90, "Time = {:.2f} sec".format(pde_anal.time[n]),
                   horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
 
+    axarr[0].set_aspect(1.0)
+    axarr[1].set_aspect(1.0)
     # pde_anal.time[n])], facecolor='inherit')
     return fig.gca().lines + fig.gca().collections
 

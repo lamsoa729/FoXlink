@@ -335,7 +335,7 @@ class MEAnalyzer(Analyzer):
         t0 = time.time()
         gca_arts = me_graph_min_data_2d(fig, axarr, n, self)
         t1 = time.time()
-        print("Graph ", n, "made in: ", t1 - t0)
+        print("ME Graph ", n, "made in: ", t1 - t0)
         return gca_arts
 
     def make_snapshot(self):
