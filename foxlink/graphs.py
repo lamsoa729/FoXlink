@@ -474,11 +474,11 @@ def me_graph_min_data_2d(fig, axarr, n, me_anal):
         # Shift over offset text
         cbar1.ax.yaxis.get_offset_text().set_x(3.)
         cbar1.set_label(
-            r'Reconstructed motor density $\psi_{i,j}$')
+            'Reconstructed motor density \n $\psi_{i,j}$ (nm$^{-2}$)')
         # Divide the density plot to get colorbar
     me_anal.init_flag = False
 
-    axarr[0].text(.05, .90, "Time = {:.2f} sec".format(me_anal.time[n]),
+    axarr[0].text(.05, .90, "Time = {:.1f} sec".format(me_anal.time[n]),
                   horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
@@ -997,9 +997,9 @@ def pde_graph_mts_xlink_distr_2d(fig, axarr, n, pde_anal):
         #     format=ticker.FuncFormatter(scifmt),
         # label=r'Motor density $\psi(s_i, s_j)$')
         cbar.set_label(
-            r'Motor density $\psi_{i,j}$')
+            r'Motor density $\psi_{i,j}$ (nm$^{-2})$')
         pde_anal.init_flag = False
-    axarr[0].text(.05, .90, "Time = {:.2f} sec".format(pde_anal.time[n]),
+    axarr[0].text(.05, .90, "Time = {:.1f} sec".format(pde_anal.time[n]),
                   horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
@@ -1122,7 +1122,7 @@ def pde_graph_recreate_xlink_distr_2d(fig, axarr, n, pde_anal):
         axarr[2].set_aspect(1.0)
 
         pde_anal.init_flag = False
-    axarr[0].text(.05, .95, "Time = {:.2f} sec".format(pde_anal.time[n]),
+    axarr[0].text(.05, .95, "Time = {:.1f} sec".format(pde_anal.time[n]),
                   horizontalalignment='left',
                   verticalalignment='bottom',
                   transform=axarr[0].transAxes)
