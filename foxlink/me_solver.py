@@ -195,15 +195,10 @@ class MomentExpansionSolver(Solver):
         @return: non dimensionalizer
 
         """
-        # non_dim_dict = {'time': 1. / self._params['ko'],
-        #                 # 'length': max(self._params['L1'], self._params['L2']),
-        #                 'length': self._params['fs'] / self._params['ks'],
-        #                 'energy': 1. / self._params['beta']}
         # NonDimensionalizer not working currently
         non_dim_dict = {'time': 1.,
                         'length': float(max(self._params['L1'],
                                             self._params['L2'])),
-                        # 'length': 1.,
                         'energy': 1.}
         non_dimmer = NonDimensionalizer(**non_dim_dict)
         # non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
