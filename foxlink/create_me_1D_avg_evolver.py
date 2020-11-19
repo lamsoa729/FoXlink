@@ -10,11 +10,11 @@ Description:
 import numpy as np
 
 
-def init_me_1D_avg_evolver(sol_init, slvr):
+def init_me_1D_avg_evolver(slvr, sol_init):
     """!Create a closure for ode solver
 
+    @param slvr: MomentExpansion1DAvgSolver solver class
     @param sol_init: Array of time-dependent variables in the ODE
-    @param slvr: MomentExpansionSolver solver class
     @return: evolver function for ODE of interest
 
     """

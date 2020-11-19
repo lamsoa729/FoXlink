@@ -10,10 +10,9 @@ Description:
 import time
 import numpy as np
 from scipy.integrate import solve_ivp
-from .choose_me_evolver import choose_me_evolver
+from .create_me_1D_avg_evolver import init_me_1D_avg_evolver
 from .solver import Solver
 from .non_dimensionalizer import NonDimensionalizer
-from .rod_steric_forces import get_min_dist_vec
 
 
 class MomentExpansion1DAvgSolver(Solver):
@@ -33,7 +32,8 @@ class MomentExpansion1DAvgSolver(Solver):
 
     def ParseParams(self):
         """!Collect parameters from yaml file or dictionary then calculate
-        some necessary parameters if not defined. Also non-dimensionalize parameters.
+        some necessary parameters if not defined.
+        Also non-dimensionalize parameters.
         @return: void
         """
         Solver.ParseParams(self)
@@ -48,7 +48,7 @@ class MomentExpansion1DAvgSolver(Solver):
         self._nframes = self.t_eval.size
 
         # Set integration method for solver
-        self.method = self._params.get('method', 'LSODA')
+        self.method = self._params.get('method', 'BDF')
         self._params['method'] = self.method
         print("Solving method = ", self.method)
 
@@ -58,19 +58,16 @@ class MomentExpansion1DAvgSolver(Solver):
         """
         # Set up initial state for 4 conditions
         L = self.L
-        self.xi_vec = .5 * np.asarray([-L, -L, L, L])
+        self.xi_pos = .5 * np.asarray([-L, -L, L, L])
 
-        self.sol_init = np.zeros(26)
+        self.sol_init = np.zeros(28)
         # Set all geometric variables
-        self.sol_init[:12] = np.concatenate(
-            (self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec))
+        self.sol_init[:4] = self.xi_pos
         print("=== Initial conditions ===")
         print(self.sol_init)
-        # TODO Allow for different initial conditions of moments besides zero
 
         # Set solver once you set initial conditions
-        # Add kwargs
-        self.ode_solver = choose_me_evolver(self.sol_init, self)
+        self.ode_solver = init_me_1D_avg_evolver(self.sol_init, self)
 
     def makeDataframe(self):
         """!Create data frame to be written out
@@ -95,11 +92,12 @@ class MomentExpansion1DAvgSolver(Solver):
 
         t0 = time.time()
         self.sol = solve_ivp(self.ode_solver, [0, self.nt], self.sol_init,
-                             t_eval=self.t_eval, method=self.method,)
+                             t_eval=self.t_eval, method=self.method)
         # min_step=self.dt, atol=1e-6)
         self.cpu_time = time.time() - t0
         print(
-            r" --- Total simulation time {:.4f} seconds ---".format(self.cpu_time))
+            r" --- Total simulation time {:.4f} seconds ---".format(
+                self.cpu_time))
 
         self.Write()
 
@@ -108,41 +106,30 @@ class MomentExpansion1DAvgSolver(Solver):
         @return: void
 
         """
-        self._R1_pos_dset = self._rod_grp.create_dataset(
-            'R1_pos', data=self.sol.y[: 3, :].T)
-        self._R2_pos_dset = self._rod_grp.create_dataset(
-            'R2_pos', data=self.sol.y[3: 6, :].T)
-        self._R1_vec_dset = self._rod_grp.create_dataset(
-            'R1_vec', data=self.sol.y[6: 9, :].T)
-        self._R2_vec_dset = self._rod_grp.create_dataset(
-            'R2_vec', data=self.sol.y[9: 12, :].T)
+        self._xi_pos_dset = self._rod_grp.create_dataset(
+            'xi_pos', data=self.sol.y[: 4, :].T)
 
     def make_xl_moment_dataset(self):
         """!Initialize dataframe with empty crosslinker moment data
+        Nomenclature:
+            hat{x} = ->
+
+            rod bundle L <------------> R
+                  <-----                ----->  if rod i starts here,
+            if rod i starts here                it moments are labeled muRP
+            its moments are labeled muLN
         @return: void
 
         """
-        self._mu0_dset = self._xl_grp.create_dataset('zeroth_moment',
-                                                     data=self.sol.y[12, :].T,
-                                                     dtype=np.float32)
-        self._mu1_dset = self._xl_grp.create_dataset('first_moments',
-                                                     data=self.sol.y[13: 15, :].T,
-                                                     dtype=np.float32)
-        self._mu2_dset = self._xl_grp.create_dataset('second_moments',
-                                                     data=self.sol.y[15:18, :].T,
-                                                     dtype=np.float32)
-        self._B0_dset = self._xl_grp.create_dataset('zeroth_boundary_terms',
-                                                    data=self.sol.y[18:20, :].T,
-                                                    dtype=np.float32)
-        self._B1_dset = self._xl_grp.create_dataset('first_boundary_terms',
-                                                    data=self.sol.y[20:22, :].T,
-                                                    dtype=np.float32)
-        self._B2_dset = self._xl_grp.create_dataset('second_boundary_terms',
-                                                    data=self.sol.y[22:24, :].T,
-                                                    dtype=np.float32)
-        self._B3_dset = self._xl_grp.create_dataset('third_boundary_terms',
-                                                    data=self.sol.y[24:26, :].T,
-                                                    dtype=np.float32)
+
+        self._muLP_dset = self._xl_grp.create_dataset(
+            'muLP_moments', data=self.sol.y[4:10, :].T, dtype=np.float32)
+        self._muLN_dset = self._xl_grp.create_dataset(
+            'muLN_moments', data=self.sol.y[10:16, :].T, dtype=np.float32)
+        self._muRP_dset = self._xl_grp.create_dataset(
+            'muRP_moments', data=self.sol.y[16:22, :].T, dtype=np.float32)
+        self._muRN_dset = self._xl_grp.create_dataset(
+            'muRN_moments', data=self.sol.y[22:28, :].T, dtype=np.float32)
 
     def Write(self):
         """!Write out data
@@ -160,14 +147,8 @@ class MomentExpansion1DAvgSolver(Solver):
         @return: non dimensionalizer
 
         """
-        # non_dim_dict = {'time': 1. / self._params['ko'],
-        #                 # 'length': max(self._params['L1'], self._params['L2']),
-        #                 'length': self._params['fs'] / self._params['ks'],
-        #                 'energy': 1. / self._params['beta']}
-        # NonDimensionalizer not working currently
         non_dim_dict = {'time': 1.,
-                        'length': float(max(self._params['L1'],
-                                            self._params['L2'])),
+                        'length': float(self._params['L']),
                         # 'length': 1.,
                         'energy': 1.}
         non_dimmer = NonDimensionalizer(**non_dim_dict)
@@ -178,22 +159,17 @@ class MomentExpansion1DAvgSolver(Solver):
         self.visc = non_dimmer.non_dim_val(self._params['viscosity'],
                                            ['energy', 'time', 'length'],
                                            [1, 1, -3])
-        self.L_i = non_dimmer.non_dim_val(self._params['L1'], ['length'])
-        self.L_j = non_dimmer.non_dim_val(self._params['L2'], ['length'])
-        self.R1_pos = non_dimmer.non_dim_val(
-            self._params['R1_pos'], ['length'])
-        self.R2_pos = non_dimmer.non_dim_val(
-            self._params['R2_pos'], ['length'])
+        self.L = non_dimmer.non_dim_val(self._params['L'], ['length'])
         self.rod_diam = non_dimmer.non_dim_val(self._params['rod_diameter'],
                                                ['length'])
-        self.dt = non_dimmer.non_dim_val(self.dt, ['time'])
+        self.rod_dens = self._params['rod_dense']
+        self.polarity = self._params['rod_polarity']
         self.nt = non_dimmer.non_dim_val(self.nt, ['time'])
         self.twrite = non_dimmer.non_dim_val(self.twrite, ['time'])
         self.ko = non_dimmer.non_dim_val(self._params['ko'], ['time'], [-1])
         self.co = non_dimmer.non_dim_val(self._params['co'], ['length'], [-2])
         self.ks = non_dimmer.non_dim_val(self._params['ks'],
                                          ['energy', 'length'], [1, -2])
-        self.ho = non_dimmer.non_dim_val(self._params['ho'], ['length'])
         self.vo = non_dimmer.non_dim_val(self._params['vo'],
                                          ['length', 'time'], [1, -1])
         self.fs = non_dimmer.non_dim_val(
@@ -206,17 +182,22 @@ class MomentExpansion1DAvgSolver(Solver):
 
         """
         # Redimensionalize rod positions
-        self.sol.y[:6, :] = self.non_dimmer.dim_val(self.sol.y[:6, :],
+        self.sol.y[:4, :] = self.non_dimmer.dim_val(self.sol.y[:4, :],
                                                     ['length'])
         # Redimensionalize first moments
-        self.sol.y[13:15, :] = self.non_dimmer.dim_val(self.sol.y[13: 15, :],
+        self.sol.y[5:7, :] = self.non_dimmer.dim_val(self.sol.y[5:7, :],
+                                                     ['length'])
+        self.sol.y[8:10, :] = self.non_dimmer.dim_val(self.sol.y[8:10, :],
+                                                      ['length'])
+        self.sol.y[11:13, :] = self.non_dimmer.dim_val(self.sol.y[11:13, :],
                                                        ['length'])
-        # Redimensionalize second moments
-        self.sol.y[15:18, :] = self.non_dimmer.dim_val(self.sol.y[15:18, :],
-                                                       ['length'], [2])
+        self.sol.y[14:16, :] = self.non_dimmer.dim_val(self.sol.y[14:16, :],
+                                                       ['length'])
+        self.sol.y[17:19, :] = self.non_dimmer.dim_val(self.sol.y[17:19, :],
+                                                       ['length'])
         self.sol.y[20:22, :] = self.non_dimmer.dim_val(self.sol.y[20:22, :],
                                                        ['length'])
-        self.sol.y[22:24, :] = self.non_dimmer.dim_val(self.sol.y[22:24, :],
-                                                       ['length'], [2])
-        self.sol.y[24:26, :] = self.non_dimmer.dim_val(self.sol.y[24:26, :],
-                                                       ['length'], [3])
+        self.sol.y[23:25, :] = self.non_dimmer.dim_val(self.sol.y[23:2, :],
+                                                       ['length'])
+        self.sol.y[26:, :] = self.non_dimmer.dim_val(self.sol.y[26:, :],
+                                                     ['length'])
