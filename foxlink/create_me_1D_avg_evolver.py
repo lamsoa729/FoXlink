@@ -40,22 +40,54 @@ def me_1D_avg_evolver(sol, gpara, params):
 
     """
     beta = params['beta']
-    ks = params['ks']
     N = params['rod_dense']
     P = params['polarity']
+
+    vo = params['vo']
+    ks = params['ks']
+    fs = params['fs']
+    ko = params['ko']
+    kappa = vo * ks / fs
+    # Make list of solution derivatives
     # Get source terms
+    q_arr = []
     # Evolve positions
-    sol[0] = dx_dt_avg(sol[0], 1., sol[4:10], N, P, gpara, ks)
-    sol[1] = dx_dt_avg(sol[1], -1., sol[10:16], N, P, gpara, ks)
-    sol[2] = dx_dt_avg(sol[2], 1., sol[16:22], N, P, gpara, ks)
-    sol[3] = dx_dt_avg(sol[3], -1., sol[22:], N, P, gpara, ks)
+    dx_arr = [dx_dt_avg(sol[0], 1., sol[4:10], N, P, gpara, ks),
+              dx_dt_avg(sol[1], -1., sol[10:16], N, P, gpara, ks),
+              dx_dt_avg(sol[2], 1., sol[16:22], N, P, gpara, ks),
+              dx_dt_avg(sol[3], -1., sol[22:], N, P, gpara, ks)]
     # Evolve moments
-    pass
+    dmu_arr = calc_1D_moment_derivs(sol[0], 1., 1., sol[4:7], q_arr[:3],
+                                    ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[0], 1., -1., sol[7:10], q_arr[3:6],
+                                     ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[1], 1., 1., sol[10:13], q_arr[6:9],
+                                     ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[1], 1., -1., sol[13:16], q_arr[9:12],
+                                     ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[2], 1., 1., sol[16:19], q_arr[9:12],
+                                     ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[2], 1., -1., sol[19:22], q_arr[12:15],
+                                     ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[3], 1., 1., sol[22:25], q_arr[15:18],
+                                     ko, vo, kappa)
+    dmu_arr += calc_1D_moment_derivs(sol[3], 1., -1., sol[25:], q_arr[18:],
+                                     ko, vo, kappa)
+    dsol = np.concatenate(dx_arr, dmu_arr)
+    if not np.all(np.isfinite(dsol)):
+        raise RuntimeError('Infinity or NaN thrown in ODE solver derivatives. '
+                           'Current derivatives', dsol)
+    return dsol
 
 
-def calc_1D_moment_derivs(x, u, mu_kl, N, P, q_arr):
-
-    pass
+@njit
+def calc_1D_moment_derivs(x, u_i, u_j, mu_kl, q_arr, ko, vo, kappa):
+    dmu00 = dmu00_dt_zrl_1D(mu_kl[0], ko, q_arr[0])
+    dmu10 = dmu10_dt_zrl_1D(mu_kl[0], mu_kl[1], mu_kl[2], x * u_i, u_i * u_j,
+                            ko, vo, kappa, q_arr[1])
+    dmu01 = dmu10_dt_zrl_1D(mu_kl[0], mu_kl[2], mu_kl[1], -x * u_j, u_i * u_j,
+                            ko, vo, kappa, q_arr[2])
+    return [dmu00, dmu10, dmu01]
 
 
 def init_me_1D_avg_evolver(slvr, sol_init):
