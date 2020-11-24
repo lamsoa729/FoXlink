@@ -175,27 +175,27 @@ def dmu00_dt_zrl(mu00, a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
 
 @njit
 def dmu10_dt_zrl(mu00, mu10, mu01,
-                 a_ij, a_ji, b, hL_i, hL_j, ko, vo, kappa,
-                 q10=0, B0_j=0, B1_j=0, B1_i=0, B2_i=0):
-    """!Calculate the time-derivative of the first moment(s1) of the zero rest
+                 a_ij, a_ji, b, hl_i, hl_j, ko, vo, kappa,
+                 q10=0, b0_j=0, b1_j=0, b1_i=0, b2_i=0):
+    """!calculate the time-derivative of the first moment(s1) of the zero rest
     length crosslinkers bound to rods.
 
-    @param mu00: Zeroth motor moment
-    @param mu10: First motor moment of s1
-    @param mu01: First motor moment of s2
-    @param a_ij: Dot product of u_i and r_ij
-    @param b: Dot product of u_i and u_j
-    @param ko: Turnover rate of motors
-    @param vo: Velocity of motor when no force is applied
-    @param q10: Binding source term of first moment
-    @return: Time derivative of the first(s1) moment of motors
+    @param mu00: zeroth motor moment
+    @param mu10: first motor moment of s1
+    @param mu01: first motor moment of s2
+    @param a_ij: dot product of u_i and r_ij
+    @param b: dot product of u_i and u_j
+    @param ko: turnover rate of motors
+    @param vo: velocity of motor when no force is applied
+    @param q10: binding source term of first moment
+    @return: time derivative of the first(s1) moment of motors
 
     """
     return ((ko * q10) + ((vo + kappa * a_ij) * mu00) - ((ko + kappa) * mu10)
             + (kappa * b * mu01)
-            + hL_i * (kappa * (hL_i - a_ij) - vo) * B0_j
-            - kappa * b * hL_i * B1_j
-            + (kappa * (hL_j - a_ji) - vo) * B1_i - kappa * b * B2_i)
+            + hl_i * (kappa * (hl_i - a_ij) - vo) * b0_j
+            - kappa * b * hl_i * b1_j
+            + (kappa * (hl_j - a_ji) - vo) * b1_i - kappa * b * b2_i)
 
 
 @njit
@@ -287,3 +287,38 @@ def dBl_j_dt_zrl(l, Bl_prev_j, Bl_j, a_ij, a_ji, b, s_i, vo, ko, kappa,
     return (ko * Ql_j + l * (vo + kappa * (a_ji + b * s_i)) * Bl_prev_j
             - (ko + kappa * (l - 1.)) * Bl_j)
     # return -ko * (Ql_j - Bl_j)
+
+
+@njit
+def dmu00_dt_zrl_1D(mu00, ko, q00=0):
+    """!Calculate the time-derivative of the zeroth moment of the zero rest
+    length crosslinkers bound to rods.
+
+    @param mu00: Zeroth motor moment
+    @param ko: Turnover rate of motors
+    @param q00: Binding source term (i.e. partition function)
+    @return: Time derivative of the zeroth moment of motors
+
+    """
+    return ko * (q00 - mu00)
+
+
+@njit
+def dmu10_dt_zrl_1D(mu00, mu10, mu01,
+                    xdotu, uidotuj, ko, vo, kappa, q10=0):
+    """!calculate the time-derivative of the first moment(s1) of the zero rest
+    length crosslinkers bound to rods.
+
+    @param mu00: zeroth motor moment
+    @param mu10: first motor moment of s1
+    @param mu01: first motor moment of s2
+    @param xdotu: dot product of u_i and r_ij
+    @param b: dot product of u_i and u_j
+    @param ko: turnover rate of motors
+    @param vo: velocity of motor when no force is applied
+    @param q10: binding source term of first moment
+    @return: time derivative of the first(s1) moment of motors
+
+    """
+    return ((ko * q10) + ((vo + kappa * xdotu) * mu00)
+            - ((ko + kappa) * mu10) + (kappa * uidotuj * mu01))

@@ -118,6 +118,7 @@ class MomentExpansion1DAvgSolver(Solver):
                   <-----                ----->  if rod i starts here,
             if rod i starts here                it moments are labeled muRP
             its moments are labeled muLN
+        moments are in order of mu00, mu10, mu01
         @return: void
 
         """
@@ -129,7 +130,7 @@ class MomentExpansion1DAvgSolver(Solver):
         self._muRP_dset = self._xl_grp.create_dataset(
             'muRP_moments', data=self.sol.y[16:22, :].T, dtype=np.float32)
         self._muRN_dset = self._xl_grp.create_dataset(
-            'muRN_moments', data=self.sol.y[22:28, :].T, dtype=np.float32)
+            'muRN_moments', data=self.sol.y[22:, :].T, dtype=np.float32)
 
     def Write(self):
         """!Write out data
@@ -197,7 +198,7 @@ class MomentExpansion1DAvgSolver(Solver):
                                                        ['length'])
         self.sol.y[20:22, :] = self.non_dimmer.dim_val(self.sol.y[20:22, :],
                                                        ['length'])
-        self.sol.y[23:25, :] = self.non_dimmer.dim_val(self.sol.y[23:2, :],
+        self.sol.y[23:25, :] = self.non_dimmer.dim_val(self.sol.y[23:25, :],
                                                        ['length'])
         self.sol.y[26:, :] = self.non_dimmer.dim_val(self.sol.y[26:, :],
                                                      ['length'])

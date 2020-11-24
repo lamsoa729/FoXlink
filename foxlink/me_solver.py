@@ -33,15 +33,17 @@ class MomentExpansionSolver(Solver):
 
     def ParseParams(self):
         """!Collect parameters from yaml file or dictionary then calculate
-        some necessary parameters if not defined. Also non-dimensionalize parameters.
+        some necessary parameters if not defined. Also non-dimensionalize
+        parameters.
         @return: void
         """
         Solver.ParseParams(self)
 
         self.dt = self._params["dt"]  # Time step
         if "nt" not in self._params:
-            print("!!! Warning: nt not defined. Using nsteps and dt to find ",
-                  "total time. nsteps and dt are not used in this calculation.")
+            print("!!! Warning: nt not defined. Using nsteps and dt to find "
+                  "total time. "
+                  "nsteps and dt are not used in this calculation.")
             self.nsteps = int(self._params["nsteps"])
             self.nt = self.nsteps * self.dt
             self._params["nt"] = self.nt
