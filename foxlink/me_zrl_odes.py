@@ -300,7 +300,7 @@ def dmu00_dt_zrl_1D(mu00, ko, q00=0):
     @return: Time derivative of the zeroth moment of motors
 
     """
-    return ko * (q00 - mu00)
+    return 2. * ko * (q00 - mu00)
 
 
 @njit
@@ -320,5 +320,5 @@ def dmu10_dt_zrl_1D(mu00, mu10, mu01,
     @return: time derivative of the first(s1) moment of motors
 
     """
-    return ((ko * q10) + ((vo + kappa * xdotu) * mu00)
-            - ((ko + kappa) * mu10) + (kappa * uidotuj * mu01))
+    return ((2 * ko * q10) + ((vo + kappa * xdotu) * mu00)
+            - ((2. * ko + kappa) * mu10) + (kappa * uidotuj * mu01))

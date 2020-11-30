@@ -58,7 +58,7 @@ class MomentExpansion1DAvgSolver(Solver):
         """
         # Set up initial state for 4 conditions
         L = self.L
-        self.xi_pos = .5 * np.asarray([-L, -L, L, L])
+        self.xi_pos = np.asarray([-L, -L, L, L])
 
         self.sol_init = np.zeros(28)
         # Set all geometric variables
@@ -67,7 +67,7 @@ class MomentExpansion1DAvgSolver(Solver):
         print(self.sol_init)
 
         # Set solver once you set initial conditions
-        self.ode_solver = init_me_1D_avg_evolver(self.sol_init, self)
+        self.ode_solver = init_me_1D_avg_evolver(self, self.sol_init)
 
     def makeDataframe(self):
         """!Create data frame to be written out
@@ -149,8 +149,8 @@ class MomentExpansion1DAvgSolver(Solver):
 
         """
         non_dim_dict = {'time': 1.,
-                        'length': float(self._params['L']),
-                        # 'length': 1.,
+                        # 'length': float(self._params['L']),
+                        'length': 1.,
                         'energy': 1.}
         non_dimmer = NonDimensionalizer(**non_dim_dict)
         # non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
@@ -163,7 +163,7 @@ class MomentExpansion1DAvgSolver(Solver):
         self.L = non_dimmer.non_dim_val(self._params['L'], ['length'])
         self.rod_diam = non_dimmer.non_dim_val(self._params['rod_diameter'],
                                                ['length'])
-        self.rod_dens = self._params['rod_dense']
+        self.rod_dense = self._params['rod_dense']
         self.polarity = self._params['rod_polarity']
         self.nt = non_dimmer.non_dim_val(self.nt, ['time'])
         self.twrite = non_dimmer.non_dim_val(self.twrite, ['time'])

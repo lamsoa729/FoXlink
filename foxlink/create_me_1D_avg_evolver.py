@@ -17,7 +17,7 @@ from .me_zrl_helpers import (semi_anti_deriv_boltz_0, semi_anti_deriv_boltz_1)
 
 
 @njit
-def dx_dt_avg(x, u, mukl, N, P, gpara, ks):
+def dx_dt_avg(x, ui, mukl, N, P, gpara, ks):
     """TODO: Docstring for dx_dt.
 
     @param x TODO
@@ -27,9 +27,9 @@ def dx_dt_avg(x, u, mukl, N, P, gpara, ks):
     @return: TODO
 
     """
-    a = .5 * ks * N / gpara
-    return a * ((1. + P) * (x * mukl[0] + u * mukl[1] - mukl[2])
-                + (1. - P) * (x * mukl[3] + u * mukl[4] + mukl[5]))
+    a = -.5 * ks * N / gpara
+    return a * ((1. + P) * (x * mukl[0] + ui * mukl[1] - mukl[2])
+                + (1. - P) * (x * mukl[3] + ui * mukl[4] + mukl[5]))
 
 
 def get_src_term_arr(x, ui, L, co, ks, beta):
@@ -73,23 +73,22 @@ def fast_1D_src_integrand_l0(s_i, L, x, ui, uj, sigma, k=0):
 
     """
     A = -1. * uj * (x + (ui * s_i))
-    exponent = -1. * (s_i * (s_i + 2. * ui * uj) -
+    exponent = -1. * (x * x + s_i * (s_i + 2. * ui * x) -
                       (A * A)) / (sigma * sigma)
-
     pre_fact = np.power(s_i, k) * np.exp(exponent)
     I_m = semi_anti_deriv_boltz_0(-.5 * L, sigma, A)
     I_p = semi_anti_deriv_boltz_0(.5 * L, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
-@njit
+@ njit
 def fast_1D_src_integrand_l1(s_i, L, x, ui, uj, sigma, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k1.
     @return: TODO
 
     """
     A = -1. * uj * (x + (ui * s_i))
-    exponent = -1. * (s_i * (s_i + 2. * ui * uj) -
+    exponent = -1. * (x * x + s_i * (s_i + 2. * ui * x) -
                       (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
     I_m = semi_anti_deriv_boltz_1(-.5 * L, sigma, A)
@@ -110,7 +109,7 @@ def me_1D_avg_evolver(sol, gpara, params):
     beta = params['beta']
     N = params['rod_dense']
     P = params['polarity']
-    L = params['length']
+    L = params['L']
     # Get motor parameters
     co = params['co']
     vo = params['vo']
@@ -119,11 +118,13 @@ def me_1D_avg_evolver(sol, gpara, params):
     ko = params['ko']
     kappa = vo * ks / fs
     # Get source terms
+    print("positions:", sol[:4])
     q_arr = []
-    q_arr += get_src_term_arr(sol[0], 1., L, co, beta)
-    q_arr += get_src_term_arr(sol[1], -1., L, co, beta)
-    q_arr += get_src_term_arr(sol[2], 1., L, co, beta)
-    q_arr += get_src_term_arr(sol[3], -1., L, co, beta)
+    q_arr += get_src_term_arr(sol[0], 1., L, co, ks, beta)
+    q_arr += get_src_term_arr(sol[1], -1., L, co, ks, beta)
+    q_arr += get_src_term_arr(sol[2], 1., L, co, ks, beta)
+    q_arr += get_src_term_arr(sol[3], -1., L, co, ks, beta)
+    # print("Source terms", q_arr)
     # Evolve positions
     dx_arr = [dx_dt_avg(sol[0], 1., sol[4:10], N, P, gpara, ks),
               dx_dt_avg(sol[1], -1., sol[10:16], N, P, gpara, ks),
@@ -134,26 +135,25 @@ def me_1D_avg_evolver(sol, gpara, params):
                                     ko, vo, kappa)
     dmu_arr += calc_1D_moment_derivs(sol[0], 1., -1., sol[7:10], q_arr[3:6],
                                      ko, vo, kappa)
-    dmu_arr += calc_1D_moment_derivs(sol[1], 1., 1., sol[10:13], q_arr[6:9],
+    dmu_arr += calc_1D_moment_derivs(sol[1], -1., 1., sol[10:13], q_arr[6:9],
                                      ko, vo, kappa)
-    dmu_arr += calc_1D_moment_derivs(sol[1], 1., -1., sol[13:16], q_arr[9:12],
+    dmu_arr += calc_1D_moment_derivs(sol[1], -1., -1., sol[13:16], q_arr[9:12],
                                      ko, vo, kappa)
     dmu_arr += calc_1D_moment_derivs(sol[2], 1., 1., sol[16:19], q_arr[12:15],
                                      ko, vo, kappa)
     dmu_arr += calc_1D_moment_derivs(sol[2], 1., -1., sol[19:22], q_arr[15:18],
                                      ko, vo, kappa)
-    dmu_arr += calc_1D_moment_derivs(sol[3], 1., 1., sol[22:25], q_arr[18:21],
+    dmu_arr += calc_1D_moment_derivs(sol[3], -1., 1., sol[22:25], q_arr[18:21],
                                      ko, vo, kappa)
-    dmu_arr += calc_1D_moment_derivs(sol[3], 1., -1., sol[25:], q_arr[21:],
+    dmu_arr += calc_1D_moment_derivs(sol[3], -1., -1., sol[25:], q_arr[21:],
                                      ko, vo, kappa)
-    dsol = np.concatenate(dx_arr, dmu_arr)
+    dsol = np.concatenate((dx_arr, dmu_arr))
     if not np.all(np.isfinite(dsol)):
         raise RuntimeError('Infinity or NaN thrown in ODE solver derivatives. '
                            'Current derivatives', dsol)
     return dsol
 
 
-@njit
 def calc_1D_moment_derivs(x, u_i, u_j, mu_kl, q_arr, ko, vo, kappa):
     dmu00 = dmu00_dt_zrl_1D(mu_kl[0], ko, q_arr[0])
     dmu10 = dmu10_dt_zrl_1D(mu_kl[0], mu_kl[1], mu_kl[2], x * u_i, u_i * u_j,
