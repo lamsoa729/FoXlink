@@ -6,8 +6,8 @@ Email: adam.lamson@colorado.edu
 Description:
 """
 
-import numpy as np
 from math import erf
+import numpy as np
 from numba import njit
 from scipy.integrate import quad
 from .me_helpers import convert_sol_to_geom
@@ -66,10 +66,11 @@ def get_mu_kl_eff(mu_kl, params):
 
 @njit
 def boltz_fact_zrl(s_i, s_j, rsqr, a1, a2, b, ks, beta):
-    """!Boltzmann factor for a zero rest length crosslinking motor bound to two rods
+    """!Boltzmann factor for a zero rest length crosslinking motor bound to
+    two rods
 
-    @param s_i: Position of a bound motor end on rod1 relative to the rods center
-    @param s_j: Position of a bound motor end on rod1 relative to the rods center
+    @param s_i: Position of bound motor end on rod1 relative to the rods center
+    @param s_j: Position of bound motor end on rod1 relative to the rods center
     @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
     @param a1: Dot product of u1 and r12
     @param a2: Dot product of u2 and r12
@@ -120,7 +121,6 @@ def semi_anti_deriv_boltz_0(L, sigma, A):
     moment.
 
     @param L: minus or plus end of bound
-    @param s_i: location along the first rod
     @param sigma: sqrt(2 kBT/crosslinker spring constant)
     @param A: a2 + b s_i
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
@@ -135,7 +135,6 @@ def semi_anti_deriv_boltz_1(L, sigma, A):
     moment.
 
     @param L: minus or plus end of bound
-    @param s_i: location along the first rod
     @param sigma: sqrt(2 kBT/crosslinker spring constant)
     @param A: a2 - b s_i
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
