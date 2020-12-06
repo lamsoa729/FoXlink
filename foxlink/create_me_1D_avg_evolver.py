@@ -28,8 +28,8 @@ def dx_dt_avg(x, ui, mukl, N, P, gpara, ks):
 
     """
     a = -.5 * ks * N / gpara
-    return a * ((1. + P) * (x * mukl[0] + ui * mukl[1] - mukl[2])
-                + (1. - P) * (x * mukl[3] + ui * mukl[4] + mukl[5]))
+    return a * ((1. + P) * (x * mukl[0] + (ui * mukl[1]) - mukl[2])
+                + (1. - P) * (x * mukl[3] + (ui * mukl[4]) + mukl[5]))
 
 
 def get_src_term_arr(x, ui, L, co, ks, beta):
