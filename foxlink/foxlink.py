@@ -37,6 +37,7 @@ from .pde_ot_gen_motion_static_xlinks_solver import PDEOpticalTrapGenMotionStati
 from .pde_gen_def_motion_motor_uw_solver import PDEGenDefMotionMotorUWSolver
 # Moment expansion solvers
 from .me_solver import MomentExpansionSolver
+from .me_1D_solver import MomentExpansion1DSolver
 from .me_1D_avg_solver import MomentExpansion1DAvgSolver
 
 
