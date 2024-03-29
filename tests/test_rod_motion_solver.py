@@ -10,6 +10,6 @@ Email: adam.lamson@colorado.edu
 Description: Test for RodMotionSolver code
 """
 #  TODO: Create default parameters to test <18-10-19, ARL> #
-#  TODO: Test get_rod_drag_coeff <18-10-19, ARL> #
+#  TODO: Test calc_rod_drag_coeff <18-10-19, ARL> #
 #  TODO: Test get_rod_mob_mat <18-10-19, ARL> #
 #  TODO: Test RodMotionSolver <18-10-19, ARL> #

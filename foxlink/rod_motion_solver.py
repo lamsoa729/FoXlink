@@ -14,7 +14,7 @@ Description:
 
 
 @njit
-def get_rod_drag_coeff(visc, L, d):
+def calc_rod_drag_coeff(visc, L, d):
     """! Get the drag coeffiecents of slender bodies using theory from
     Brownian dynamics of hard spherocylinders
     Hartmut Löwen
@@ -29,12 +29,11 @@ def get_rod_drag_coeff(visc, L, d):
     l = L / d
     ln_l = np.log(l)
     l2 = l * l
-    g_para = ((2. * np.pi * visc * L * l2) /
-              (l2 * (ln_l - .207) + (l * .98) - .133))
-    g_perp = ((4. * np.pi * visc * L * l2) /
-              (l2 * (ln_l + .839) + (0.185 * l) + 0.233))
-    g_rot = ((np.pi * visc * L * L * L * l2) /
-             (3. * (l2 * (ln_l - .662) + (.917 * l) - .05)))
+    g_para = (2.0 * np.pi * visc * L * l2) / (l2 * (ln_l - 0.207) + (l * 0.98) - 0.133)
+    g_perp = (4.0 * np.pi * visc * L * l2) / (l2 * (ln_l + 0.839) + (0.185 * l) + 0.233)
+    g_rot = (np.pi * visc * L * L * L * l2) / (
+        3.0 * (l2 * (ln_l - 0.662) + (0.917 * l) - 0.05)
+    )
 
     return g_para, g_perp, g_rot
 
@@ -51,7 +50,7 @@ def get_rod_mob_mat(visc, L, d, R_vec):
     """
     # Calculate the diagnol elements of linear drag tensor and
     #   rotation drag coefficient
-    g_para, g_perp, g_rot = get_rod_drag_coeff(visc, L, d)
+    g_para, g_perp, g_rot = calc_rod_drag_coeff(visc, L, d)
     # Create dyadic tensor of orientation vector
     uu_mat = np.outer(R_vec, R_vec)
     # Create mobility tensor for rod
@@ -60,8 +59,7 @@ def get_rod_mob_mat(visc, L, d, R_vec):
 
 
 class RodMotionSolver(Solver):
-
-    """!Docstring for RodMotionSolver. """
+    """!Docstring for RodMotionSolver."""
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of system
@@ -74,8 +72,17 @@ class RodMotionSolver(Solver):
         print("Init RodMotionSolver ->", end=" ")
         Solver.__init__(self, pfile=pfile, pdict=pdict)
 
-    def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
-                r_i=None, r_j=None, u_i=None, u_j=None):
+    def RodStep(
+        self,
+        force1=0,
+        force2=0,
+        torque1=0,
+        torque2=0,
+        r_i=None,
+        r_j=None,
+        u_i=None,
+        u_j=None,
+    ):
         """! Change the position of rods based on forces and torques exerted on rod
         @param force: Force vector of rod2 by rod1
         @param torque: Torque vector of rod2 by rod1
@@ -93,15 +100,14 @@ class RodMotionSolver(Solver):
         L_j = self._params["L2"]
         d = self._params["rod_diameter"]
 
-        self.calc_rod_steric_interactions(r_i, r_j, u_i, u_j,
-                                          L_i, L_j, d)
+        self.calc_rod_steric_interactions(r_i, r_j, u_i, u_j, L_i, L_j, d)
 
         f_i = force1 + self.steric_force_i
         f_j = force2 + self.steric_force_j
         tau_i = torque1 + self.steric_torque_i
         tau_j = torque2 + self.steric_torque_j
 
-        if self.steric_flag == 'constrained':
+        if self.steric_flag == "constrained":
             u_m = self.constr_vec  # Get min dist vector of carrier lines
             f_i -= np.dot(f_i, u_m) * u_m  # Min dist component from force
             f_j -= np.dot(f_j, u_m) * u_m  # Min dist component from force
@@ -110,7 +116,7 @@ class RodMotionSolver(Solver):
             # Torque only around min dist vector
             tau_j = np.dot(tau_j, u_m) * u_m
 
-        if (np.any(f_i) or np.any(f_j) or np.any(tau_i) or np.any(tau_j)):
+        if np.any(f_i) or np.any(f_j) or np.any(tau_i) or np.any(tau_j):
             # Get the mobility matrices and rotational drag coefficient
             mob_mat1, g_rot1 = get_rod_mob_mat(visc, L_i, d, u_i)
             mob_mat2, g_rot2 = get_rod_mob_mat(visc, L_j, d, u_j)

@@ -19,8 +19,8 @@ from .me_zrl_evolvers import (
 from .me_zrl_odes import calc_moment_derivs_zrl
 from .me_zrl_bound_evolvers import evolver_zrl_bound
 from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
-from .rod_motion_solver import get_rod_drag_coeff
-# from .me_
+from .rod_motion_solver import calc_rod_drag_coeff
+from .me_n_fil_evolvers import me_evolver_nfil_crosslink
 
 
 def choose_me_evolver(sol_init, slvr):
@@ -35,9 +35,9 @@ def choose_me_evolver(sol_init, slvr):
 
     if slvr.ODE_type == "zrl":
         # Get drag coefficients
-        fric_coeff = get_rod_drag_coeff(
+        fric_coeff = calc_rod_drag_coeff(
             slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -61,9 +61,9 @@ def choose_me_evolver(sol_init, slvr):
 
     if slvr.ODE_type == "zrl_bvg":
         # Get drag coefficients
-        fric_coeff = get_rod_drag_coeff(
+        fric_coeff = calc_rod_drag_coeff(
             slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_bvg_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -88,9 +88,9 @@ def choose_me_evolver(sol_init, slvr):
 
     if slvr.ODE_type == "zrl_bound":
         # Get drag coefficients
-        fric_coeff = get_rod_drag_coeff(
+        fric_coeff = calc_rod_drag_coeff(
             slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def evolver_zrl_bound_closure(t, sol):
             """!Define the function of an ODE solver with zero length
@@ -133,9 +133,9 @@ def choose_me_evolver(sol_init, slvr):
         return evolver_zrl_stat_closure
 
     if slvr.ODE_type == "gen_2ord":
-        fric_coeff = get_rod_drag_coeff(
+        fric_coeff = calc_rod_drag_coeff(
             slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def me_evolver_gen_2ord_closure(t, sol):
             if not np.all(np.isfinite(sol)):
@@ -152,9 +152,9 @@ def choose_me_evolver(sol_init, slvr):
         return me_evolver_gen_2ord_closure
 
     if slvr.ODE_type == "gen_orient_2ord":
-        fric_coeff = get_rod_drag_coeff(
+        fric_coeff = calc_rod_drag_coeff(
             slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
         def me_evolver_gen_orient_2ord_closure(t, sol):
             if not np.all(np.isfinite(sol)):
@@ -171,8 +171,8 @@ def choose_me_evolver(sol_init, slvr):
     if slvr.solver_type == "NFilMomentExpansionSolver":
         # TODO: Add drag coefficients
         fric_coeff_arr = []
-        # fric_coeff = (get_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
-        #               get_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
+        # fric_coeff = (calc_rod_drag_coeff(slvr.visc, slvr.L_i, slvr.rod_diam) +
+        #               calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam))
 
         def me_evolver_nfil_crosslink_closure(t, sol):
             if not np.all(np.isfinite(sol)):

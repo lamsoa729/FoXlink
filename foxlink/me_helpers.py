@@ -5,12 +5,14 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+
 import numpy as np
 from numba import njit
+from typing import List, Tuple
 
 
 def convert_sol_to_geom(sol):
-    """ Convert solution array of me_solver into 3D vectors
+    """Convert solution array of me_solver into 3D vectors
     @param sol: Solution numpy array greater than 11 items long
 
     Examples
@@ -21,6 +23,36 @@ def convert_sol_to_geom(sol):
 
     """
     return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
+
+    """ Return the rod positions and orientations from the solution array
+
+
+    Examples
+    -------------------------
+    >>> a = np.arange(18)
+    >>> convert_sol_to_geom(a)
+    (array([0, 1, 2]), array([3, 4, 5]), array([6, 7, 8]), array([ 9, 10, 11]))
+
+    """
+
+
+def convert_nfil_sol_to_geom(sol: List[float], fil_i: int) -> Tuple:
+    """Return the rod positions and orientations from the solution array
+
+    Parameters
+    ----------
+    sol : List
+        _description_
+    fil_i : int
+        _description_
+
+    Returns
+    -------
+    Tuple
+        position, orientation, and length of rod i
+    """
+    i = fil_i * 7
+    return (sol[i : i + 3], sol[i + 3 : i + 6], sol[i + 6 : i + 7])
 
 
 def sol_print_out(sol):
@@ -36,10 +68,16 @@ def sol_print_out(sol):
     """
     r1, r2, u1, u2 = convert_sol_to_geom(sol)
     print("Step-> r1:", r1, ", r2:", r2, ", u1:", u1, ", u2:", u2)
-    print("       mu00:{}, mu10:{}, mu01:{}, mu11:{}, mu20:{}, mu02:{}".format(
-        sol[12], sol[13], sol[14], sol[15], sol[16], sol[17]))
-    print("       B0_j:{}, B0_i:{}, B1_j:{}, B1_i:{}, B2_j:{}, B2_i:{}".format(
-        sol[18], sol[19], sol[20], sol[21], sol[22], sol[23]))
+    print(
+        "       mu00:{}, mu10:{}, mu01:{}, mu11:{}, mu20:{}, mu02:{}".format(
+            sol[12], sol[13], sol[14], sol[15], sol[16], sol[17]
+        )
+    )
+    print(
+        "       B0_j:{}, B0_i:{}, B1_j:{}, B1_i:{}, B2_j:{}, B2_i:{}".format(
+            sol[18], sol[19], sol[20], sol[21], sol[22], sol[23]
+        )
+    )
 
 
 @njit
@@ -58,7 +96,8 @@ def dr_dt(f_vec, u_vec, gpara, gperp):
     uu_mat = np.outer(u_vec, u_vec)
     # Create mobility tensor for rod
     mob_mat = np.ascontiguousarray(
-        np.linalg.inv((gpara - gperp) * uu_mat + gperp * np.eye(3)))
+        np.linalg.inv((gpara - gperp) * uu_mat + gperp * np.eye(3))
+    )
     return np.dot(mob_mat, f_vec)
 
 
@@ -88,7 +127,7 @@ def rod_geom_derivs(f_ij, tau_i, tau_j, u_i, u_j, fric_coeff):
     (gpara_i, gperp_i, grot_i, gpara_j, gperp_j, grot_j) = fric_coeff
 
     # Evolution of position vectors
-    dr_i = dr_dt(-1. * f_ij, u_i, gpara_i, gperp_i)
+    dr_i = dr_dt(-1.0 * f_ij, u_i, gpara_i, gperp_i)
     dr_j = dr_dt(f_ij, u_j, gpara_j, gperp_j)
     # Evolution of orientation vectors
     du_i = du_dt(tau_i, u_i, grot_i)

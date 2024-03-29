@@ -14,6 +14,10 @@ from .me_helpers import convert_sol_to_geom
 from .bivariate_gauss_helpers import fast_gauss_moment_kl
 
 
+def pair_index(i, j, n_fils):
+    return int((2 * n_fils - i + 1) * i / 2 + j)
+
+
 def get_zrl_moments(sol):
     """!Get the moments from the solution vector of solve_ivp
 
@@ -22,6 +26,10 @@ def get_zrl_moments(sol):
 
     """
     return sol[12:18].tolist()
+
+
+def get_zrl_xl_moments_for_ij(sol, i, j, n_fils):
+    pass
 
 
 def get_zrl_moments_and_boundary_terms(sol):
@@ -44,8 +52,8 @@ def get_mu_kl_eff(mu_kl, params):
     """
     if mu_kl[0] <= 0:
         return [0] * 6
-    L_i = params['L_i']
-    L_j = params['L_j']
+    L_i = params["L_i"]
+    L_j = params["L_j"]
     # Create a list for moments where asymetric terms are reversed
     mu_lk = [mu_kl[0], mu_kl[2], mu_kl[1], mu_kl[3], mu_kl[5], mu_kl[4]]
 
@@ -58,6 +66,7 @@ def get_mu_kl_eff(mu_kl, params):
     mu02 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=2, index=5)
 
     return [mu00, mu10, mu01, mu11, mu20, mu02]
+
 
 ###################################
 #  Boltzmann factor calculations  #
@@ -79,9 +88,12 @@ def boltz_fact_zrl(s_i, s_j, rsqr, a1, a2, b, ks, beta):
     @return: Computed Boltzmann factor
 
     """
-    return np.exp(-.5 * beta * ks * (rsqr + s_i**2 + s_j**2 -
-                                     (2. * s_i * s_j * b) +
-                                     2. * (s_j * a2 - s_i * a1)))
+    return np.exp(
+        -0.5
+        * beta
+        * ks
+        * (rsqr + s_i**2 + s_j**2 - (2.0 * s_i * s_j * b) + 2.0 * (s_j * a2 - s_i * a1))
+    )
 
 
 @njit
@@ -102,10 +114,22 @@ def weighted_boltz_fact_zrl(s_i, s_j, pow1, pow2, rsqr, a1, a2, b, ks, beta):
     @return: TODO
 
     """
-    return (np.power(s_i, pow1) * np.power(s_j, pow2) *
-            np.exp(-.5 * beta * ks * (rsqr + s_i**2 + s_j**2 -
-                                      (2. * s_i * s_j * b) +
-                                      2. * (s_j * a2 - s_i * a1))))
+    return (
+        np.power(s_i, pow1)
+        * np.power(s_j, pow2)
+        * np.exp(
+            -0.5
+            * beta
+            * ks
+            * (
+                rsqr
+                + s_i**2
+                + s_j**2
+                - (2.0 * s_i * s_j * b)
+                + 2.0 * (s_j * a2 - s_i * a1)
+            )
+        )
+    )
 
 
 ############################################
@@ -126,7 +150,7 @@ def semi_anti_deriv_boltz_0(L, sigma, A):
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
-    return (.5 * SQRT_PI * sigma) * erf((L + A) / sigma)
+    return (0.5 * SQRT_PI * sigma) * erf((L + A) / sigma)
 
 
 @njit
@@ -142,8 +166,7 @@ def semi_anti_deriv_boltz_1(L, sigma, A):
 
     """
     B = (L + A) / sigma
-    return (-.5 * sigma) * (sigma * np.exp(-1. * B * B) +
-                            (A * SQRT_PI * erf(B)))
+    return (-0.5 * sigma) * (sigma * np.exp(-1.0 * B * B) + (A * SQRT_PI * erf(B)))
 
 
 @njit
@@ -159,8 +182,10 @@ def semi_anti_deriv_boltz_2(L, sigma, A):
 
     """
     B = (L + A) / sigma
-    return (.25 * sigma) * (2. * sigma * (A - L) * np.exp(-1. * B * B) +
-                            (((2. * A * A) + (sigma * sigma)) * SQRT_PI) * erf(B))
+    return (0.25 * sigma) * (
+        2.0 * sigma * (A - L) * np.exp(-1.0 * B * B)
+        + (((2.0 * A * A) + (sigma * sigma)) * SQRT_PI) * erf(B)
+    )
 
 
 @njit
@@ -176,15 +201,14 @@ def semi_anti_deriv_boltz_3(L, sigma, A):
 
     """
     B = (L + A) / sigma
-    return (-.25 * sigma) * ((2. * sigma * (A * A - A * L + L * L + sigma * sigma)
-                              * np.exp(-1. * B * B))
-                             + ((2. * A * A) + 3. * (sigma * sigma))
-                             * A * SQRT_PI * erf(B))
+    return (-0.25 * sigma) * (
+        (2.0 * sigma * (A * A - A * L + L * L + sigma * sigma) * np.exp(-1.0 * B * B))
+        + ((2.0 * A * A) + 3.0 * (sigma * sigma)) * A * SQRT_PI * erf(B)
+    )
 
 
 @njit
-def fast_zrl_src_integrand_l0(
-        s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
+def fast_zrl_src_integrand_l0(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
 
     @param s_i: TODO
@@ -198,20 +222,18 @@ def fast_zrl_src_integrand_l0(
     @return: TODO
 
     """
-    A = -1. * (a_ji + (b * s_i))
-    exponent = -1. * (rsqr + s_i * (s_i - 2. * a_ij) -
-                      (A * A)) / (sigma * sigma)
+    A = -1.0 * (a_ji + (b * s_i))
+    exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
 
     pre_fact = np.power(s_i, k) * np.exp(exponent)
     # ((s_i * (s_i - 2. * a1)) - (A * A)) / (sigma * sigma))
-    I_m = semi_anti_deriv_boltz_0(-.5 * L_j, sigma, A)
-    I_p = semi_anti_deriv_boltz_0(.5 * L_j, sigma, A)
+    I_m = semi_anti_deriv_boltz_0(-0.5 * L_j, sigma, A)
+    I_p = semi_anti_deriv_boltz_0(0.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
 @njit
-def fast_zrl_src_integrand_l1(
-        s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
+def fast_zrl_src_integrand_l1(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k1.
 
     @param s_i: TODO
@@ -225,18 +247,16 @@ def fast_zrl_src_integrand_l1(
     @return: TODO
 
     """
-    A = -1. * (a_ji + (b * s_i))
-    exponent = -1. * (rsqr + s_i * (s_i - 2. * a_ij) -
-                      (A * A)) / (sigma * sigma)
+    A = -1.0 * (a_ji + (b * s_i))
+    exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
-    I_m = semi_anti_deriv_boltz_1(-.5 * L_j, sigma, A)
-    I_p = semi_anti_deriv_boltz_1(.5 * L_j, sigma, A)
+    I_m = semi_anti_deriv_boltz_1(-0.5 * L_j, sigma, A)
+    I_p = semi_anti_deriv_boltz_1(0.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
 @njit
-def fast_zrl_src_integrand_l2(
-        s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
+def fast_zrl_src_integrand_l2(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
 
     @param s_i: TODO
@@ -250,19 +270,17 @@ def fast_zrl_src_integrand_l2(
     @return: TODO
 
     """
-    A = -1. * (a_ji + (b * s_i))
-    exponent = -1. * (rsqr + s_i * (s_i - 2. * a_ij) -
-                      (A * A)) / (sigma * sigma)
+    A = -1.0 * (a_ji + (b * s_i))
+    exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
     # pre_fact *= np.power(s_i, k) * np.exp(-1. *
     # ((s_i * (s_i - 2. * a1)) - (A * A)) / (sigma * sigma))
-    I_m = semi_anti_deriv_boltz_2(-.5 * L_j, sigma, A)
-    I_p = semi_anti_deriv_boltz_2(.5 * L_j, sigma, A)
+    I_m = semi_anti_deriv_boltz_2(-0.5 * L_j, sigma, A)
+    I_p = semi_anti_deriv_boltz_2(0.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
-def fast_zrl_src_integrand_l3(
-        s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
+def fast_zrl_src_integrand_l3(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
     """!TODO: Docstring for fast_zrl_src_integrand_k0.
 
     @param s_i: TODO
@@ -276,12 +294,11 @@ def fast_zrl_src_integrand_l3(
     @return: TODO
 
     """
-    A = -1. * (a_ji + (b * s_i))
-    exponent = -1. * (rsqr + s_i * (s_i - 2. * a_ij) -
-                      (A * A)) / (sigma * sigma)
+    A = -1.0 * (a_ji + (b * s_i))
+    exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
-    I_m = semi_anti_deriv_boltz_3(-.5 * L_j, sigma, A)
-    I_p = semi_anti_deriv_boltz_3(.5 * L_j, sigma, A)
+    I_m = semi_anti_deriv_boltz_3(-0.5 * L_j, sigma, A)
+    I_p = semi_anti_deriv_boltz_3(0.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
@@ -306,11 +323,16 @@ def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
         integrand = fast_zrl_src_integrand_l2
     else:
         raise RuntimeError(
-            "{}-order derivatives have not been implemented for fast source solver.".format(l))
-    sigma = np.sqrt(2. / (ks * beta))
-    q, e = quad(integrand, -.5 * L_i, .5 * L_i,
-                args=(L_j, rsqr, a_ij, a_ji, b, sigma, k))
+            "{}-order derivatives have not been implemented for fast source solver.".format(
+                l
+            )
+        )
+    sigma = np.sqrt(2.0 / (ks * beta))
+    q, e = quad(
+        integrand, -0.5 * L_i, 0.5 * L_i, args=(L_j, rsqr, a_ij, a_ji, b, sigma, k)
+    )
     return q
+
 
 ########################################
 #  Preparation functions for evolvers  #
@@ -319,10 +341,27 @@ def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
 
 @njit
 def get_Qj_params(s_i, L_j, a_ji, b, ks, beta):
-    hL_j = .5 * L_j
-    sigma = np.sqrt(2. / (ks * beta))
-    A_j = -1. * (a_ji + (b * s_i))
+    hL_j = 0.5 * L_j
+    sigma = np.sqrt(2.0 / (ks * beta))
+    A_j = -1.0 * (a_ji + (b * s_i))
     return hL_j, sigma, A_j
+
+
+def prep_zrl_nfil_evolver(r_i, u_i, L_i, r_j, u_j, L_j, params):
+    ks = params["ks"]
+    beta = params["beta"]
+
+    r_ij = r_j - r_i
+    rsqr = np.dot(r_ij, r_ij)
+    a_ij = np.dot(r_ij, u_i)
+    a_ji = -1.0 * np.dot(r_ij, u_j)
+    b = np.dot(u_i, u_j)
+
+    q00 = fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
+    q10 = fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
+    q01 = fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
+    q11 = fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
+    return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11)
 
 
 def prep_zrl_evolver(sol, params):
@@ -333,29 +372,23 @@ def prep_zrl_evolver(sol, params):
 
     """
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
-    c = params['co']
-    L_i, L_j = params['L_i'], params['L_j']
-    ks = params['ks']
-    beta = params['beta']
+    c = params["co"]
+    L_i, L_j = params["L_i"], params["L_j"]
+    ks = params["ks"]
+    beta = params["beta"]
 
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
     a_ij = np.dot(r_ij, u_i)
-    a_ji = -1. * np.dot(r_ij, u_j)
+    a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
-    q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=0, l=0)
-    q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji,
-                              a_ij, b, ks, beta, k=0, l=1)
-    q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=0, l=1)
-    q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=1, l=1)
-    q20 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji,
-                              a_ij, b, ks, beta, k=0, l=2)
-    q02 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij,
-                              a_ji, b, ks, beta, k=0, l=2)
+    q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
+    q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
+    q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
+    q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
+    q20 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=2)
+    q02 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=2)
     return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11, q20, q02)
 
 
@@ -367,15 +400,15 @@ def prep_zrl_bound_evolver(sol, params):
     @return: TODO
 
     """
-    c = params['co']
-    L_i, L_j = params['L_i'], params['L_j']
-    ks = params['ks']
-    beta = params['beta']
+    c = params["co"]
+    L_i, L_j = params["L_i"], params["L_j"]
+    ks = params["ks"]
+    beta = params["beta"]
 
     (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)
     (rsqr, a_ij, a_ji, b) = scalar_geom
 
-    hL_j, sigma, A_j = get_Qj_params(.5 * L_i, L_j, a_ji, b, ks, beta)
+    hL_j, sigma, A_j = get_Qj_params(0.5 * L_i, L_j, a_ji, b, ks, beta)
     hL_i, sigma, A_i = get_Qj_params(hL_j, L_i, a_ij, b, ks, beta)
     Q0_j = c * fast_zrl_src_integrand_l0(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
     Q0_i = c * fast_zrl_src_integrand_l0(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
@@ -385,8 +418,7 @@ def prep_zrl_bound_evolver(sol, params):
     Q2_i = c * fast_zrl_src_integrand_l2(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
     Q3_j = c * fast_zrl_src_integrand_l3(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
     Q3_i = c * fast_zrl_src_integrand_l3(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
-    return (scalar_geom, q_arr,
-            (Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i))
+    return (scalar_geom, q_arr, (Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i))
 
 
 @njit
