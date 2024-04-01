@@ -29,7 +29,8 @@ def get_zrl_moments(sol):
 
 
 def get_zrl_xl_moments_for_ij(sol, i, j, n_fils):
-    pass
+    ij = n_fils * 7 + pair_index(i, j, n_fils)
+    return sol[-1], sol[ij : ij + 4]
 
 
 def get_zrl_moments_and_boundary_terms(sol):

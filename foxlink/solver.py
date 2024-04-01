@@ -5,13 +5,14 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description: Base Solver class for FoXlink
 """
+
 from pathlib import Path
 from copy import deepcopy as dcp
 import yaml
 import h5py
 
 
-class Solver():
+class Solver:
     """!Abstract class for solver objects. All solving algorithms are implemented
     through these classes.
 
@@ -61,11 +62,11 @@ class Solver():
         # self.setBoundaryConditions()
 
         # Create data frame
-        if 'name' not in self._params:
-            self._params['name'] = str(self.__class__.__name__)
-        self._h5_fpath = Path("{}.h5".format(self._params['name']))
-        self._h5_data = h5py.File(self._h5_fpath, 'w')
-        self.makeDataframe()
+        if "name" not in self._params:
+            self._params["name"] = str(self.__class__.__name__)
+        self._h5_fpath = Path("{}.h5".format(self._params["name"]))
+        self._h5_data = h5py.File(self._h5_fpath, "w")
+        self.make_dataframe()
 
     def ParseParams(self):
         """! Method to extract and/or calculate parameter values necessary for
@@ -79,11 +80,13 @@ class Solver():
 
         """
         if self._pfile is not None:
-            with open(self._pfile, 'r') as pf:
+            with open(self._pfile, "r") as pf:
                 self._params = yaml.safe_load(pf)
         elif self._params is None:
-            print("Could not find parameter set.",
-                  "Using default params defined in solver.py")
+            print(
+                "Could not find parameter set.",
+                "Using default params defined in solver.py",
+            )
             self._params = dcp(Solver.default_params)
 
     def Save(self):
@@ -94,13 +97,13 @@ class Solver():
         self._h5_data.flush()
         self._h5_data.close()
 
-    def makeDataframe(self):
+    def make_dataframe(self):
         """! Make data frame to read from later
         @return: void
 
         """
         # Enter params into hdf5 data file as attributes for later
-        self._h5_data.attrs['params'] = yaml.dump(self._params)
+        self._h5_data.attrs["params"] = yaml.dump(self._params)
 
     #####################
     #  Virtual methods  #
@@ -114,7 +117,9 @@ class Solver():
         """
         raise NotImplementedError(
             "Implement setInitialConditions method for {}.".format(
-                self.__class__.__name__))
+                self.__class__.__name__
+            )
+        )
 
     def Run(self):
         """!Run PDE solver with parameters in pfile through explicity interative time stepping.
@@ -122,48 +127,50 @@ class Solver():
 
         """
         raise NotImplementedError(
-            "Implement Run method for {}".format(self.__class__.__name__))
+            "Implement Run method for {}".format(self.__class__.__name__)
+        )
 
     def Step(self):
         """!Step solver method one unit in time
         @return: None
 
         """
-        raise NotImplementedError("Implement Step method for {}.".format(
-            self.__class__.__name__))
+        raise NotImplementedError(
+            "Implement Step method for {}.".format(self.__class__.__name__)
+        )
 
-    def Write(self):
+    def write(self):
         """!Write current step in algorithm into data frame
         @return: index of current step
 
         """
         raise NotImplementedError(
-            "Implement Write method for {}.".format(
-                self.__class__.__name__))
+            "Implement Write method for {}.".format(self.__class__.__name__)
+        )
 
     default_params = {
-        "R1_pos": [0., 0., 0.],
-        "R2_pos": [0., 0., 0.],
-        "R1_vec": [0., 1., 0.],
-        "R2_vec": [0., 1., 0.],
-        "L1": 100.,  # Length of microtubule 1
-        "L2": 100.,  # Length of microtubule 2
+        "R1_pos": [0.0, 0.0, 0.0],
+        "R2_pos": [0.0, 0.0, 0.0],
+        "R1_vec": [0.0, 1.0, 0.0],
+        "R2_vec": [0.0, 1.0, 0.0],
+        "L1": 100.0,  # Length of microtubule 1
+        "L2": 100.0,  # Length of microtubule 2
         "rod_diameter": 25,  # Diameter of filament
-        "dt": 1.,  # Time step
-        "nt": 2000.,  # total time
+        "dt": 1.0,  # Time step
+        "nt": 2000.0,  # total time
         "nsteps": 2000,  # total time
         "nwrite": 1,
-        "twrite": 1.,
-        "ds": 1.,  # Segmentation size of microtubules
-        "ko": 1.,  # Crosslinker turnover rate
-        "co": 1.,  # Effective crosslinker concentration
-        "ks": 1.,  # Crosslinker spring concentration
-        "ho": 1.,  # Equilibrium length of crosslinkers
-        "vo": 1.,  # Base velocity of crosslinker heads
-        "fs": 1.,  # Stall force of crosslinker heads
-        "beta": 1.,  # Inverse temperature
+        "twrite": 1.0,
+        "ds": 1.0,  # Segmentation size of microtubules
+        "ko": 1.0,  # Crosslinker turnover rate
+        "co": 1.0,  # Effective crosslinker concentration
+        "ks": 1.0,  # Crosslinker spring concentration
+        "ho": 1.0,  # Equilibrium length of crosslinkers
+        "vo": 1.0,  # Base velocity of crosslinker heads
+        "fs": 1.0,  # Stall force of crosslinker heads
+        "beta": 1.0,  # Inverse temperature
         "viscosity": 0.00089,  # Viscosity of fluid filaments are in
-        "initial_condition": 'empty',
+        "initial_condition": "empty",
         "end_pause": False,
         "steric_interactions": None,
     }

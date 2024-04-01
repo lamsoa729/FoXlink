@@ -23,7 +23,7 @@ def xlink_stretch_ang(s1, s2, phi):
     @return: TODO
 
     """
-    return np.sqrt((s1 * s1) + (s2 * s2) - (2. * s1 * s2 * np.cos(phi)))
+    return np.sqrt((s1 * s1) + (s2 * s2) - (2.0 * s1 * s2 * np.cos(phi)))
 
 
 @jit
@@ -42,8 +42,17 @@ def xlink_avg_torque_ang(s1, s2, phi, co, ks, ho, beta):
     if h == 0:
         return 0
     else:
-        return -co * ks * np.sin(phi) * (s1 * s2 * (1. - np.divide(ho, h))
-                                         * np.exp(-.5 * beta * ks * np.power(h - ho, 2)))
+        return (
+            -co
+            * ks
+            * np.sin(phi)
+            * (
+                s1
+                * s2
+                * (1.0 - np.divide(ho, h))
+                * np.exp(-0.5 * beta * ks * np.power(h - ho, 2))
+            )
+        )
 
 
 def total_xlink_torque_ang(L1, L2, phi, co, ks, ho, beta):
@@ -59,10 +68,14 @@ def total_xlink_torque_ang(L1, L2, phi, co, ks, ho, beta):
     @return: TODO
 
     """
-    torque, _ = dblquad(xlink_avg_torque_ang,
-                        -.5 * L1, .5 * L1,
-                        lambda s2: -.5 * L2, lambda s2: .5 * L2,
-                        args=[phi, co, ks, ho, beta],)
+    torque, _ = dblquad(
+        xlink_avg_torque_ang,
+        -0.5 * L1,
+        0.5 * L1,
+        lambda s2: -0.5 * L2,
+        lambda s2: 0.5 * L2,
+        args=[phi, co, ks, ho, beta],
+    )
     # epsabs=0, epsrel=1.e-8)
     # print("Torque: {}, phi: {}".format(torque, phi))
     return torque
@@ -81,8 +94,9 @@ def rod_rot_mobility(L, diameter, visc):
     l = L / diameter
     l2 = l * l
 
-    return ((3. * (l2 * (np.log(l) - .662) + (.917 * l) - .05)) /
-            (np.pi * L * L * L * l2 * visc))
+    return (3.0 * (l2 * (np.log(l) - 0.662) + (0.917 * l) - 0.05)) / (
+        np.pi * L * L * L * l2 * visc
+    )
 
 
 def phidot(phi, t, params):
@@ -100,8 +114,7 @@ def phidot(phi, t, params):
 
 
 class ODEAdiabaticAngSolver(Solver):
-
-    """!Docstring for ODEAdiabaticAngSolver. """
+    """!Docstring for ODEAdiabaticAngSolver."""
 
     def __init__(self, pfile=None, pdict=None):
         """!TODO: to be defined1.
@@ -130,9 +143,9 @@ class ODEAdiabaticAngSolver(Solver):
         ks = self._params["ks"]
         ho = self._params["ho"]
         # Initial variables
-        R1_vec = np.asarray(params['R1_vec'])
+        R1_vec = np.asarray(params["R1_vec"])
         r1_vec = R1_vec / np.linalg.norm(R1_vec)
-        R2_vec = np.asarray(params['R2_vec'])
+        R2_vec = np.asarray(params["R2_vec"])
         r2_vec = R2_vec / np.linalg.norm(R2_vec)
         # Calculated variables
         self.phio = np.arccos(np.dot(r1_vec, r2_vec))
@@ -140,7 +153,7 @@ class ODEAdiabaticAngSolver(Solver):
         mu2_rot = rod_rot_mobility(L2, diameter, visc)
         # Get reduced mobility times 2 since the system experiences. Not sure if
         # this is right.
-        mu_eff = 2. * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
+        mu_eff = 2.0 * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
         self.int_params = [L1, L2, mu_eff, co, ks, ho, beta]
 
     def Run(self):
@@ -148,12 +161,10 @@ class ODEAdiabaticAngSolver(Solver):
         @return: TODO
 
         """
-        self.psoln = odeint(
-            phidot, self.phio, self.time, args=(
-                self.int_params,))
-        self.Write()
+        self.psoln = odeint(phidot, self.phio, self.time, args=(self.int_params,))
+        self.write()
 
-    def Write(self):
+    def write(self):
         """!TODO: Docstring for Write.
         @return: TODO
 

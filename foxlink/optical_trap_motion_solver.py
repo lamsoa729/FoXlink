@@ -5,16 +5,18 @@ Author: Adam Lamson
 Email: adam.lamson@colorado.edu
 Description:
 """
+
 from .rod_motion_solver import RodMotionSolver
-from .optical_trap_types import (OpticalTrapOscillator,)
+from .optical_trap_types import (
+    OpticalTrapOscillator,
+)
 
 
 import numpy as np
 
 
 class OpticalTrapMotionSolver(RodMotionSolver):
-
-    """!Docstring for PDEGenOpticalTrapMotionSolver. """
+    """!Docstring for PDEGenOpticalTrapMotionSolver."""
 
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters of PDE system
@@ -33,31 +35,33 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @return: void, set position of optical traps and motion
 
         """
-        if 'OT1_pos' in self._params:  # Set to defined location
-            self.OT1_pos = np.asarray(self._params['OT1_pos'])
+        if "OT1_pos" in self._params:  # Set to defined location
+            self.OT1_pos = np.asarray(self._params["OT1_pos"])
         else:  # Set optical trap 2 to minus end of rod1
-            hL1 = .5 * self._params["L1"]
+            hL1 = 0.5 * self._params["L1"]
             self.OT1_pos = self.R1_pos - (hL1 * self.R1_vec)
         print("Initial OT1 pos = ", self.OT1_pos)
 
-        if 'OT2_pos' in self._params:  # Set to defined location
-            self.OT2_pos = np.asarray(self._params['OT2_pos'])
+        if "OT2_pos" in self._params:  # Set to defined location
+            self.OT2_pos = np.asarray(self._params["OT2_pos"])
         else:  # Set optical trap 2 to minus end of rod2
-            hL2 = .5 * self._params["L2"]
+            hL2 = 0.5 * self._params["L2"]
             self.OT2_pos = self.R2_pos - (hL2 * self.R2_vec)
         print("Initial OT2 pos = ", self.OT2_pos)
 
-        if 'OT_ks' not in self._params:
-            raise KeyError('OT_k must be defined for optical trap runs')
+        if "OT_ks" not in self._params:
+            raise KeyError("OT_k must be defined for optical trap runs")
 
         self.OT1_mot = None
         self.OT2_mot = None
-        if 'OT1_motion' in self._params:
+        if "OT1_motion" in self._params:
             self.OT1_mot = self.initOTMotion(
-                self._params['OT1_motion'], 1, self.OT1_pos)
-        if 'OT2_motion' in self._params:
+                self._params["OT1_motion"], 1, self.OT1_pos
+            )
+        if "OT2_motion" in self._params:
             self.OT2_mot = self.initOTMotion(
-                self._params['OT2_motion'], 2, self.OT2_pos)
+                self._params["OT2_motion"], 2, self.OT2_pos
+            )
             # if 'OT2_motion' in self._params:
 
     @staticmethod
@@ -69,14 +73,23 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @return: TODO
 
         """
-        ot_type = ot_mot_dict['type']
-        if ot_type == 'OpticalTrapOscillator':
+        ot_type = ot_mot_dict["type"]
+        if ot_type == "OpticalTrapOscillator":
             return OpticalTrapOscillator(ot_mot_dict, ot_num, ot_pos)
         else:
             raise NameError("{} is not an optical trap type.".format(ot_type))
 
-    def RodStep(self, force1=0, force2=0, torque1=0, torque2=0,
-                R1_pos=None, R2_pos=None, R1_vec=None, R2_vec=None):
+    def RodStep(
+        self,
+        force1=0,
+        force2=0,
+        torque1=0,
+        torque2=0,
+        R1_pos=None,
+        R2_pos=None,
+        R1_vec=None,
+        R2_vec=None,
+    ):
         """! Change the position of rods based on forces and torques exerted on rod
         @param force: Force vector of rod2 by rod1
         @param torque: Torque vector of rod2 by rod1
@@ -89,12 +102,17 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         """
         self.stepOT()
         self.calcOTInteractions(R1_pos, R2_pos, R1_vec, R2_vec)
-        return RodMotionSolver.RodStep(self,
-                                       force1 + self.ot1_force,
-                                       force2 + self.ot2_force,
-                                       torque1 + self.ot1_torque,
-                                       torque2 + self.ot2_torque,
-                                       R1_pos, R2_pos, R1_vec, R2_vec)
+        return RodMotionSolver.RodStep(
+            self,
+            force1 + self.ot1_force,
+            force2 + self.ot2_force,
+            torque1 + self.ot1_torque,
+            torque2 + self.ot2_torque,
+            R1_pos,
+            R2_pos,
+            R1_vec,
+            R2_vec,
+        )
 
     def calcOTInteractions(self, R1_pos, R2_pos, R1_vec, R2_vec):
         """!TODO: Docstring for calcOTInteractions.
@@ -106,9 +124,9 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         @return: TODO
 
         """
-        ot_k = self._params['OT_ks']
-        hL1 = .5 * self._params["L1"]
-        hL2 = .5 * self._params["L2"]
+        ot_k = self._params["OT_ks"]
+        hL1 = 0.5 * self._params["L1"]
+        hL2 = 0.5 * self._params["L2"]
         # Get position of minus ends
         rod1_minus_pos = R1_pos - (hL1 * R1_vec)
         rod2_minus_pos = R2_pos - (hL2 * R2_vec)
@@ -136,27 +154,27 @@ class OpticalTrapMotionSolver(RodMotionSolver):
         if not self.data_frame_made:
             RodMotionSolver.makeDataframe(self)
         self._ot_force_dset = self._interaction_grp.create_dataset(
-            'optical_trap_force_data',
-            shape=(self._nframes + 1, 2, 3),
-            dtype=np.float32)
-        for dim, label in zip(self._ot_force_dset.dims,
-                              ['frame', 'trap', 'coord']):
+            "optical_trap_force_data", shape=(self._nframes + 1, 2, 3), dtype=np.float32
+        )
+        for dim, label in zip(self._ot_force_dset.dims, ["frame", "trap", "coord"]):
             dim.label = label
         self._ot_torque_dset = self._interaction_grp.create_dataset(
-            'optical_trap_torque_data',
+            "optical_trap_torque_data",
             shape=(self._nframes + 1, 2, 3),
-            dtype=np.float32)
-        for dim, label in zip(self._ot_torque_dset.dims,
-                              ['frame', 'trap', 'coord']):
+            dtype=np.float32,
+        )
+        for dim, label in zip(self._ot_torque_dset.dims, ["frame", "trap", "coord"]):
             dim.label = label
 
-        self._ot_grp = self._h5_data.create_group('OT_data')
+        self._ot_grp = self._h5_data.create_group("OT_data")
         self._ot1_pos_dset = self._ot_grp.create_dataset(
-            'OT1_pos', shape=(self._nframes + 1, 3))
+            "OT1_pos", shape=(self._nframes + 1, 3)
+        )
         self._ot2_pos_dset = self._ot_grp.create_dataset(
-            'OT2_pos', shape=(self._nframes + 1, 3))
+            "OT2_pos", shape=(self._nframes + 1, 3)
+        )
 
-    def Write(self):
+    def write(self):
         """!Write current step in algorithm into dataframe
         @return: TODO
 

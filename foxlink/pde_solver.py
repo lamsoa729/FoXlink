@@ -15,7 +15,6 @@ from .rod_steric_forces import calc_wca_force_torque, get_min_dist_vec
 
 
 class PDESolver(Solver):
-
     """!Abstract class for solver objects. All PDE algorithms are implemented
     through these classes.
 
@@ -71,7 +70,7 @@ class PDESolver(Solver):
         Solver.ParseParams(self)
 
         # Integration parameters
-        self.t = 0.
+        self.t = 0.0
         self.ds = self._params["ds"]  # Segmentation size of microtubules
         if "nt" not in self._params:
             self.nsteps = int(self._params["nsteps"])
@@ -89,8 +88,10 @@ class PDESolver(Solver):
             self.nsteps = int(self.nt / self.dt)
             self._params["nsteps"] = self.nsteps
         else:
-            print("!!! Warning: step parameters over defined,",
-                  "using nt and nsteps to calculate step size.")
+            print(
+                "!!! Warning: step parameters over defined,",
+                "using nt and nsteps to calculate step size.",
+            )
             self.nt = self._params["nt"]  # total time
             self.dt = self._params["dt"]  # Time step
             self.nsteps = int(self.nt / self.dt)
@@ -103,22 +104,23 @@ class PDESolver(Solver):
             self.nwrite = self._params["nwrite"]
             self.twrite = float(self.nwrite * self.dt)
         else:
-            print("!!! Warning: Write parameters over defined,",
-                  "using twrite to calculate number of steps between write out.")
+            print(
+                "!!! Warning: Write parameters over defined,",
+                "using twrite to calculate number of steps between write out.",
+            )
             self.twrite = self._params["twrite"]
             self.nwrite = int(self.twrite / self.dt)
 
         # Check to see if steric forces should be used
-        self.steric_flag = self._params.get('steric_interactions', None)
+        self.steric_flag = self._params.get("steric_interactions", None)
 
         # Make time array. Set extra space for initial condition
         self.time = np.linspace(0, self.nt, self.nsteps + 1)
-        self._nframes = len(self.time[::self.nwrite])
+        self._nframes = len(self.time[:: self.nwrite])
         print("Time step: ", self.dt)
         print("Total time: ", self.nt)
         print("Number of steps: ", self.nsteps)
-        print("Write out every {} steps ({} secs)".format(self.nwrite,
-                                                          self.twrite))
+        print("Write out every {} steps ({} secs)".format(self.nwrite, self.twrite))
 
     def setInitialConditions(self):
         """! Set the initial state for the solution grid.
@@ -129,20 +131,22 @@ class PDESolver(Solver):
 
         """
         self.makeSolutionGrid()
-        self.calc_rod_steric_interactions(np.asarray(self._params['R1_pos']),
-                                          np.asarray(self._params['R2_pos']),
-                                          np.asarray(self._params['R1_vec']),
-                                          np.asarray(self._params['R2_vec']),
-                                          self._params["L1"],
-                                          self._params["L2"],
-                                          self._params["rod_diameter"])
-        if 'initial_condition' in self._params:
-            if self._params['initial_condition'] == 'equil':
-                self.sgrid += self.src_mat / self._params['ko']
-            elif self._params['initial_condition'] == 'empty':
+        self.calc_rod_steric_interactions(
+            np.asarray(self._params["R1_pos"]),
+            np.asarray(self._params["R2_pos"]),
+            np.asarray(self._params["R1_vec"]),
+            np.asarray(self._params["R2_vec"]),
+            self._params["L1"],
+            self._params["L2"],
+            self._params["rod_diameter"],
+        )
+        if "initial_condition" in self._params:
+            if self._params["initial_condition"] == "equil":
+                self.sgrid += self.src_mat / self._params["ko"]
+            elif self._params["initial_condition"] == "empty":
                 return
             else:
-                self.sgrid += eval(self._params['initial_condition'])
+                self.sgrid += eval(self._params["initial_condition"])
             print("Initial distribution =", self.sgrid)
 
     def makeSolutionGrid(self):
@@ -161,12 +165,10 @@ class PDESolver(Solver):
         self._params["L2"] = ds * (self.ns2 - 2)
 
         # Discrete rod locations, extra spots left for boundary conditions
-        self.s1, step1 = np.linspace(
-            0, ds * (self.ns1 - 1), self.ns1, retstep=True)
-        self.s1 -= (L1 * .5)
-        self.s2, step2 = np.linspace(
-            0, ds * (self.ns2 - 1), self.ns2, retstep=True)
-        self.s2 -= (L2 * .5)
+        self.s1, step1 = np.linspace(0, ds * (self.ns1 - 1), self.ns1, retstep=True)
+        self.s1 -= L1 * 0.5
+        self.s2, step2 = np.linspace(0, ds * (self.ns2 - 1), self.ns2, retstep=True)
+        self.s2 -= L2 * 0.5
         print("ds1: ", step1)
         print("ds2: ", step2)
 
@@ -190,7 +192,7 @@ class PDESolver(Solver):
 
         """
         # Write initial configuration
-        self.Write()
+        self.write()
         self.written = False
 
         t0 = time.time()
@@ -202,18 +204,24 @@ class PDESolver(Solver):
             self.sgrid = self.sgrid.round(30)
             if (int(self.t / self.dt) % self.nwrite) == 0:
                 t1 = time.time()
-                print(r" {} steps in {:.4f} seconds, {:.1f}% complete".format(
-                    self.nwrite, t1 - t0, float(self.t / self.nt) * 100.))
-                self.Write()
+                print(
+                    r" {} steps in {:.4f} seconds, {:.1f}% complete".format(
+                        self.nwrite, t1 - t0, float(self.t / self.nt) * 100.0
+                    )
+                )
+                self.write()
                 # Reset write function
                 self.written = False
                 t0 = time.time()
             # Clear interactions for next step
             self.clearInteractions()
         tot_time = time.time() - t_start
-        print(r" --- Total of {:d} steps in {:.4f} seconds ---".format(self.nsteps,
-                                                                       tot_time))
-        self._h5_data.attrs['cpu_time'] = tot_time
+        print(
+            r" --- Total of {:d} steps in {:.4f} seconds ---".format(
+                self.nsteps, tot_time
+            )
+        )
+        self._h5_data.attrs["cpu_time"] = tot_time
 
         return
 
@@ -222,26 +230,28 @@ class PDESolver(Solver):
         @return: Sum of changes of grid, Changes phi1 and phi0
 
         """
-        print("Step not made!",
-              "Initialize Step method of {}.".format(self.__class__.__name__))
+        print(
+            "Step not made!",
+            "Initialize Step method of {}.".format(self.__class__.__name__),
+        )
 
-    def makeDataframe(self):
+    def make_dataframe(self):
         """! Make output data frame
         @return: void
 
         """
         if not self.data_frame_made:
-            time = self.time[::self.nwrite]
-            self._time_dset = self._h5_data.create_dataset('time', data=time,
-                                                           dtype=np.float32)
-            self._xl_grp = self._h5_data.create_group('xl_data')
-            self._rod_grp = self._h5_data.create_group('rod_data')
+            time = self.time[:: self.nwrite]
+            self._time_dset = self._h5_data.create_dataset(
+                "time", data=time, dtype=np.float32
+            )
+            self._xl_grp = self._h5_data.create_group("xl_data")
+            self._rod_grp = self._h5_data.create_group("rod_data")
 
-            self._rod_grp.create_dataset('s1', data=self.s1)
-            self._rod_grp.create_dataset('s2', data=self.s2)
+            self._rod_grp.create_dataset("s1", data=self.s1)
+            self._rod_grp.create_dataset("s2", data=self.s2)
 
-            self._interaction_grp = self._h5_data.create_group(
-                'interaction_data')
+            self._interaction_grp = self._h5_data.create_group("interaction_data")
 
             self.makeXLDataSet()
             self.makeInteractionDataSet()
@@ -254,9 +264,8 @@ class PDESolver(Solver):
 
         """
         self._xl_distr_dset = self._xl_grp.create_dataset(
-            'xl_distr',
-            shape=(self.ns1, self.ns2, self._nframes),
-            dtype=np.float32)
+            "xl_distr", shape=(self.ns1, self.ns2, self._nframes), dtype=np.float32
+        )
 
     def makeInteractionDataSet(self):
         """!Make specific data set for interaction data
@@ -264,32 +273,24 @@ class PDESolver(Solver):
 
         """
         self._force_dset = self._interaction_grp.create_dataset(
-            'force_data',
-            shape=(self._nframes, 2, 3),
-            dtype=np.float32)
-        for dim, label in zip(self._force_dset.dims,
-                              ['frame', 'rod', 'coord']):
+            "force_data", shape=(self._nframes, 2, 3), dtype=np.float32
+        )
+        for dim, label in zip(self._force_dset.dims, ["frame", "rod", "coord"]):
             dim.label = label
         self._torque_dset = self._interaction_grp.create_dataset(
-            'torque_data',
-            shape=(self._nframes, 2, 3),
-            dtype=np.float32)
-        for dim, label in zip(self._torque_dset.dims,
-                              ['frame', 'rod', 'coord']):
+            "torque_data", shape=(self._nframes, 2, 3), dtype=np.float32
+        )
+        for dim, label in zip(self._torque_dset.dims, ["frame", "rod", "coord"]):
             dim.label = label
         self._steric_force_dset = self._interaction_grp.create_dataset(
-            'steric_force_data',
-            shape=(self._nframes, 2, 3),
-            dtype=np.float32)
-        for dim, label in zip(self._steric_force_dset.dims,
-                              ['frame', 'rod', 'coord']):
+            "steric_force_data", shape=(self._nframes, 2, 3), dtype=np.float32
+        )
+        for dim, label in zip(self._steric_force_dset.dims, ["frame", "rod", "coord"]):
             dim.label = label
         self._steric_torque_dset = self._interaction_grp.create_dataset(
-            'steric_torque_data',
-            shape=(self._nframes, 2, 3),
-            dtype=np.float32)
-        for dim, label in zip(self._steric_torque_dset.dims,
-                              ['frame', 'rod', 'coord']):
+            "steric_torque_data", shape=(self._nframes, 2, 3), dtype=np.float32
+        )
+        for dim, label in zip(self._steric_torque_dset.dims, ["frame", "rod", "coord"]):
             dim.label = label
 
     def calcSourceMatrix(self):
@@ -322,13 +323,12 @@ class PDESolver(Solver):
         @return: TODO
 
         """
-        eps = 1. / self._params['beta']
-        if self.steric_flag == 'wca':
-            (self.steric_force_j,
-             self.steric_torque_i,
-             self.steric_torque_j) = calc_wca_force_torque(
-                r_i, r_j, u_i, u_j, L_i, L_j, d, eps)
-            self.steric_force_i = -1. * self.steric_force_j
+        eps = 1.0 / self._params["beta"]
+        if self.steric_flag == "wca":
+            (self.steric_force_j, self.steric_torque_i, self.steric_torque_j) = (
+                calc_wca_force_torque(r_i, r_j, u_i, u_j, L_i, L_j, d, eps)
+            )
+            self.steric_force_i = -1.0 * self.steric_force_j
             return
 
         self.steric_force_i = np.zeros(3)
@@ -352,7 +352,7 @@ class PDESolver(Solver):
         self.steric_torque_j = 0
         self.cleared = True
 
-    def apply_dirichlet_bc(self, bc_val=0.):
+    def apply_dirichlet_bc(self, bc_val=0.0):
         """! Apply a constant boundary condition to solution grid
         @return: TODO
 
@@ -360,7 +360,7 @@ class PDESolver(Solver):
         self.sgrid[:, 0] *= bc_val
         self.sgrid[0, :] *= bc_val
 
-    def Write(self):
+    def write(self):
         """!Write current step in algorithm into data frame
         @return: index of current step
 
@@ -371,15 +371,18 @@ class PDESolver(Solver):
         error_flag = False
         if np.isnan(self.sgrid).any():
             print(
-                "!!! Error: Found NaN in solution grid at time step {}.".format(i_step))
+                "!!! Error: Found NaN in solution grid at time step {}.".format(i_step)
+            )
             error_flag = True
-        if np.any(self.sgrid < 0.):
+        if np.any(self.sgrid < 0.0):
             print(
-                "!!! Error: Found negative value in solution grid at time step {}.".format(i_step))
+                "!!! Error: Found negative value in solution grid at time step {}.".format(
+                    i_step
+                )
+            )
             error_flag = True
         if error_flag:
-            raise RuntimeError(
-                "Run stopped because of runtime error in solution.")
+            raise RuntimeError("Run stopped because of runtime error in solution.")
 
         if not self.written:
             self._xl_distr_dset[:, :, i_step] = self.sgrid

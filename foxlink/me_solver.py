@@ -120,7 +120,7 @@ class MomentExpansionSolver(Solver):
         # Add kwargs
         self.ode_solver = choose_me_evolver(self.sol_init, self)
 
-    def makeDataframe(self):
+    def make_dataframe(self):
         """!Create data frame to be written out
         @return: TODO
         """
@@ -153,7 +153,7 @@ class MomentExpansionSolver(Solver):
         self.cpu_time = time.time() - t0
         print(r" --- Total simulation time {:.4f} seconds ---".format(self.cpu_time))
 
-        self.Write()
+        self.write()
 
     def make_rod_dataset(self):
         """!Initialize dataframe with empty rod configuration data
@@ -200,7 +200,7 @@ class MomentExpansionSolver(Solver):
             "third_boundary_terms", data=self.sol.y[24:26, :].T, dtype=np.float32
         )
 
-    def Write(self):
+    def write(self):
         """!Write out data
         @return: void
 

@@ -2,29 +2,17 @@
 beta: .243309002 # Inverse temperature
 viscosity: 0.00089 # Using nucleoplasm pN/nm^2
 
-# Microtubule parameters
-L1: 500. # Length of microtubule 1
-L2: 500. # Length of microtubule 2
-R1_pos: [0., 0., 0.]
-R2_pos: [0., 0., 10.]
-R1_vec: [0., 1., 0.]
-R2_vec: [0., -1., 0.]
-R1_mot:
-    pos:
-        - 0
-        - ".01 * t" # Moving
-        - 0
-    vec: [0., 1., 0.]
-R2_mot:
-    pos:
-        - ".01 * t"
-        - 0
-        - 0
-    vec: [0., -1., 0.]
+# Rod parameters
+rods:
+    - [0, 0, 0, 1, 0, 0, 250]
+    - [0, 0, 0, 0, 1, 0, 250]
 rod_diameter: 25 # nm
 
+# Unbound crosslinkers
+n_unbound: 100
+
 # Integration parameters
-dt: .001 # Crosslinker turnover rate (sec^-1)
+dt: .001 # Time step (sec)
 #nsteps: 1000 # Total number of steps, used if dt is not defined
 nt: 5 # total time (sec)
 ds: 2.0 # Segmentation size of microtubules (nm

@@ -12,7 +12,8 @@ Description:
 
 
 class PDEOpticalTrapGenMotionMotorUWSolver(
-        OpticalTrapMotionSolver, PDEGenMotionMotorUWSolver):
+    OpticalTrapMotionSolver, PDEGenMotionMotorUWSolver
+):
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for PDE to be solved including boundary conditions.
 
@@ -35,12 +36,9 @@ class PDEOpticalTrapGenMotionMotorUWSolver(
         print("Init PDEOpticalTrapGenMotionMotorUWSolver ->", end=" ")
         PDEGenMotionMotorUWSolver.__init__(self, pfile, pdict)
         self.OTParseParams()
-        self.calcOTInteractions(self.R1_pos,
-                                self.R2_pos,
-                                self.R1_vec,
-                                self.R2_vec)
+        self.calcOTInteractions(self.R1_pos, self.R2_pos, self.R1_vec, self.R2_vec)
 
-    def makeDataframe(self):
+    def make_dataframe(self):
         """! Make data frame with optical trap objects
         @return: void, Create dataframe for output with optical trap data
 
@@ -48,7 +46,7 @@ class PDEOpticalTrapGenMotionMotorUWSolver(
         PDEGenMotionMotorUWSolver.makeDataframe(self)
         self.addOTDataframe()
 
-    def Write(self):
+    def write(self):
         i_step = PDEGenMotionMotorUWSolver.Write(self)
         self.OTWrite(i_step)
         return i_step

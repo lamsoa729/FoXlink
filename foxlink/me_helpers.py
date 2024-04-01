@@ -24,17 +24,6 @@ def convert_sol_to_geom(sol):
     """
     return (sol[:3], sol[3:6], sol[6:9], sol[9:12])
 
-    """ Return the rod positions and orientations from the solution array
-
-
-    Examples
-    -------------------------
-    >>> a = np.arange(18)
-    >>> convert_sol_to_geom(a)
-    (array([0, 1, 2]), array([3, 4, 5]), array([6, 7, 8]), array([ 9, 10, 11]))
-
-    """
-
 
 def convert_nfil_sol_to_geom(sol: List[float], fil_i: int) -> Tuple:
     """Return the rod positions and orientations from the solution array

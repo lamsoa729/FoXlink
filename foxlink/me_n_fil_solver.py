@@ -2,6 +2,7 @@
 
 import numpy as np
 from scipy.integrate import solve_ivp
+from .choose_me_evolver import choose_me_evolver
 from .me_solver import MomentExpansionSolver
 from .non_dimensionalizer import NonDimensionalizer
 
@@ -24,8 +25,8 @@ class NFilMomentExpansionSolver(MomentExpansionSolver):
 
     def set_rod_params(self):
         # go through parameter file pulling out rod parameters
-        print("Set rod parameters")
-        pass
+        self.n_fils = self.rods.shape[0]
+        print(f"Number of filaments {self.n_fils}.")
 
     def setInitialConditions(self):
         """! Set the initial state for the solution.
@@ -33,8 +34,22 @@ class NFilMomentExpansionSolver(MomentExpansionSolver):
         @return: void, modifies solution grid
 
         """
-        print("Setting initial conditions")
-        pass
+        print("=== Initial conditions ===")
+        self.sol_init = np.zeros(
+            7 * self.n_fil + (self.n_fils * (self.n_fils - 1) / 2) + 1
+        )
+        self.sol_init[: 7 * self.n_fils] = self.rods.flatten()
+        print("Rods: (r_x, r_y, r_z, p_x, p_y, p_z, l)")
+        print(self.sol_init[: 7 * self.n_fils].reshape(-1, 7))
+
+        print("mu_ij^kl: (mu^00, mu^10, mu^01, mu^11)")
+        print(self.sol_init[7 * self.n_fils : -1])
+
+        self.sol_init[-1] = self._params["n_unbound"]
+        print("Unbound motors:")
+        print(self.sol_init[-1])
+
+        self.ode_solver = choose_me_evolver(self.sol_init, self)
 
     def Run(self):
         print("Run MomentExpansionSolver")
@@ -59,6 +74,18 @@ class NFilMomentExpansionSolver(MomentExpansionSolver):
         }
         non_dimmer = NonDimensionalizer(**non_dim_dict)
         # non_dimmer.calc_new_dim('force', ['energy', 'length'], [1, -1])
+
+        self.rod_arr = np.array(self._params["rods"], dtype=float)
+
+        # Non-dimensionalize rods
+        self.rod_arr[:, [0, 1, 2, 6]] = non_dimmer.non_dim_val(
+            self.rod_arr[:, [0, 1, 2, 6]], ["length"]
+        )
+
+        # Normalize rod directions
+        self.rod_arr[:, 3:6] /= np.linalg.norm(self.rod_arr[:, 3:6], axis=1)[
+            :, np.newaxis
+        ]
 
         self.beta = non_dimmer.non_dim_val(self._params["beta"], ["energy"], [-1])
         self.visc = non_dimmer.non_dim_val(
