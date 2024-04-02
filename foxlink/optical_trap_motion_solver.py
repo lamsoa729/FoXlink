@@ -152,7 +152,7 @@ class OpticalTrapMotionSolver(RodMotionSolver):
 
         """
         if not self.data_frame_made:
-            RodMotionSolver.makeDataframe(self)
+            RodMotionSolver.make_dataframe(self)
         self._ot_force_dset = self._interaction_grp.create_dataset(
             "optical_trap_force_data", shape=(self._nframes + 1, 2, 3), dtype=np.float32
         )

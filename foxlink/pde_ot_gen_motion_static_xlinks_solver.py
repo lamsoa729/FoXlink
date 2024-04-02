@@ -40,7 +40,7 @@ class PDEOpticalTrapGenMotionStaticXlinksSolver(
         @return: void, Create dataframe for output with optical trap data
 
         """
-        PDEGenMotionStaticXlinksSolver.makeDataframe(self)
+        PDEGenMotionStaticXlinksSolver.make_dataframe(self)
         self.addOTDataframe()
 
     def write(self):

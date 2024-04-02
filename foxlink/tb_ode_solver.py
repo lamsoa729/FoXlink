@@ -128,7 +128,7 @@ class ODEAdiabaticAngSolver(Solver):
         self._pfile = pfile
         self._params = pdict
 
-    def setInitialConditions(self):
+    def set_initial_conditions(self):
         """!Parse parameters for the run, calculating necessary variables not directly specified including phio and mobility matrices.
         @return: TODO
 
@@ -156,7 +156,7 @@ class ODEAdiabaticAngSolver(Solver):
         mu_eff = 2.0 * mu1_rot * mu2_rot / (mu1_rot + mu2_rot)
         self.int_params = [L1, L2, mu_eff, co, ks, ho, beta]
 
-    def Run(self):
+    def run(self):
         """!This uses odeint as its main run functions
         @return: TODO
 

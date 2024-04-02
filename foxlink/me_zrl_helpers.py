@@ -7,7 +7,10 @@ Description:
 """
 
 import numpy as np
-from math import erf
+
+# from math import erf
+# from numba.scipy.special import erf
+import math
 from numba import njit
 from scipy.integrate import quad
 from .me_helpers import convert_sol_to_geom
@@ -15,7 +18,7 @@ from .bivariate_gauss_helpers import fast_gauss_moment_kl
 
 
 def pair_index(i, j, n_fils):
-    return int((2 * n_fils - i + 1) * i / 2 + j)
+    return int((2 * n_fils - i - 1) * i / 2 + j - i - 1)
 
 
 def get_zrl_moments(sol):
@@ -29,7 +32,7 @@ def get_zrl_moments(sol):
 
 
 def get_zrl_xl_moments_for_ij(sol, i, j, n_fils):
-    ij = n_fils * 7 + pair_index(i, j, n_fils)
+    ij = n_fils * 7 + pair_index(i, j, n_fils) * 4
     return sol[-1], sol[ij : ij + 4]
 
 
@@ -151,7 +154,7 @@ def semi_anti_deriv_boltz_0(L, sigma, A):
     @return: One term in the anti-derivative of the boltzman factor integrated over s_j
 
     """
-    return (0.5 * SQRT_PI * sigma) * erf((L + A) / sigma)
+    return (0.5 * SQRT_PI * sigma) * math.erf((L + A) / sigma)
 
 
 @njit
@@ -167,7 +170,7 @@ def semi_anti_deriv_boltz_1(L, sigma, A):
 
     """
     B = (L + A) / sigma
-    return (-0.5 * sigma) * (sigma * np.exp(-1.0 * B * B) + (A * SQRT_PI * erf(B)))
+    return (-0.5 * sigma) * (sigma * np.exp(-1.0 * B * B) + (A * SQRT_PI * math.erf(B)))
 
 
 @njit
@@ -185,7 +188,7 @@ def semi_anti_deriv_boltz_2(L, sigma, A):
     B = (L + A) / sigma
     return (0.25 * sigma) * (
         2.0 * sigma * (A - L) * np.exp(-1.0 * B * B)
-        + (((2.0 * A * A) + (sigma * sigma)) * SQRT_PI) * erf(B)
+        + (((2.0 * A * A) + (sigma * sigma)) * SQRT_PI) * math.erf(B)
     )
 
 
@@ -204,7 +207,7 @@ def semi_anti_deriv_boltz_3(L, sigma, A):
     B = (L + A) / sigma
     return (-0.25 * sigma) * (
         (2.0 * sigma * (A * A - A * L + L * L + sigma * sigma) * np.exp(-1.0 * B * B))
-        + ((2.0 * A * A) + 3.0 * (sigma * sigma)) * A * SQRT_PI * erf(B)
+        + ((2.0 * A * A) + 3.0 * (sigma * sigma)) * A * SQRT_PI * math.erf(B)
     )
 
 

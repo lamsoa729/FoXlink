@@ -21,9 +21,9 @@ def test_pde_solver_inheritance():
     # assert PDESolver.ParseParams is FPGenOrientSolver.ParseParams
     # assert PDESolver.makeSolutionGrid is FokkerPlanckSolver.makeSolutionGrid
     # assert PDESolver.setInitialConditions is FokkerPlanckSolver.setInitialConditions
-    # assert PDESolver.Run is FokkerPlanckSolver.Run
+    # assert PDESolver.run is FokkerPlanckSolver.run
     # assert PDESolver.Step is FokkerPlanckSolver.Step
-    # assert PDESolver.makeDataframe is FPGenOrientSolver.makeDataframe
+    # assert PDESolver.make_dataframe is FPGenOrientSolver.make_dataframe
     # assert PDESolver.calcForceMatrix is FPGenOrientSolver.calcForceMatrix
     # assert PDESolver.calcTorqueMatrix is FPGenOrientSolver.calcTorqueMatrix
     # assert PDESolver.calcSourceMatrix is FPGenOrientSolver.calcSourceMatrix

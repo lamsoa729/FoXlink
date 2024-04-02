@@ -99,11 +99,12 @@ class MomentExpansionSolver(Solver):
         print("Solving method = ", self.method)
 
         # Specify the ODE type
-        self.ODE_type = self._params.get("ODE_type", "zrl")
+        if not self.ODE_type:
+            self.ODE_type = self._params.get("ODE_type", "zrl")
         self._params["ODE_type"] = self.ODE_type
         print("ODE type = ", self.ODE_type)
 
-    def setInitialConditions(self):
+    def set_initial_conditions(self):
         """!Set the initial conditions for the system of ODEs
         @return: void
         """
@@ -133,10 +134,10 @@ class MomentExpansionSolver(Solver):
             self._xl_grp = self._h5_data.create_group("xl_data")
             self._rod_grp = self._h5_data.create_group("rod_data")
 
-            Solver.makeDataframe(self)
+            Solver.make_dataframe(self)
             self.data_frame_made = True
 
-    def Run(self):
+    def run(self):
         """!Run algorithm to solve system of ODEs
         @return: TODO
         """

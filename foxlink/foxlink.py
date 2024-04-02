@@ -179,7 +179,7 @@ class FoXlink(object):
         self._params = self.parse_params()
         self._solver_type = self.get_solver_type()
         self._solver = self.create_solver()
-        self._solver.Run()
+        self._solver.run()
         self._solver.Save()
 
     def analyze(self):

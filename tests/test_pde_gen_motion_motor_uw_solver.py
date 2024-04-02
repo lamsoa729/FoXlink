@@ -25,17 +25,30 @@ def test_fp_gen_motion_motor_uw_solver_inheritance():
     """
     assert PDEGenMotionMotorUWSolver.ParseParams is PDEGenOrientSolver.ParseParams
     assert PDEGenMotionMotorUWSolver.makeSolutionGrid is PDESolver.makeSolutionGrid
-    assert PDEGenMotionMotorUWSolver.setInitialConditions is PDESolver.setInitialConditions
-    assert PDEGenMotionMotorUWSolver.makeDataframe is PDEGenOrientSolver.makeDataframe
+    assert (
+        PDEGenMotionMotorUWSolver.setInitialConditions is PDESolver.setInitialConditions
+    )
+    assert PDEGenMotionMotorUWSolver.make_dataframe is PDEGenOrientSolver.make_dataframe
     assert PDEGenMotionMotorUWSolver.makeDiagMats is PDEUWSolver.makeDiagMats
 
-    assert PDEGenMotionMotorUWSolver.Run is PDESolver.Run
+    assert PDEGenMotionMotorUWSolver.run is PDESolver.run
     assert PDEGenMotionMotorUWSolver.Step is not PDEGenOrientMotorUWSolver.Step
     assert PDEGenMotionMotorUWSolver.stepUW is PDEUWSolver.stepUW
-    assert PDEGenMotionMotorUWSolver.calcForceMatrix is PDEGenOrientSolver.calcForceMatrix
-    assert PDEGenMotionMotorUWSolver.calcTorqueMatrix is PDEGenOrientSolver.calcTorqueMatrix
-    assert PDEGenMotionMotorUWSolver.calcSourceMatrix is PDEGenOrientSolver.calcSourceMatrix
-    assert PDEGenMotionMotorUWSolver.calcVelocityMats is PDEGenOrientMotorUWSolver.calcVelocityMats
+    assert (
+        PDEGenMotionMotorUWSolver.calcForceMatrix is PDEGenOrientSolver.calcForceMatrix
+    )
+    assert (
+        PDEGenMotionMotorUWSolver.calcTorqueMatrix
+        is PDEGenOrientSolver.calcTorqueMatrix
+    )
+    assert (
+        PDEGenMotionMotorUWSolver.calcSourceMatrix
+        is PDEGenOrientSolver.calcSourceMatrix
+    )
+    assert (
+        PDEGenMotionMotorUWSolver.calcVelocityMats
+        is PDEGenOrientMotorUWSolver.calcVelocityMats
+    )
     assert PDEGenMotionMotorUWSolver.RodStep is PDEGenMotionSolver.RodStep
 
     assert PDEGenMotionMotorUWSolver.Write is PDEGenOrientSolver.Write

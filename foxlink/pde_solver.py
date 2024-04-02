@@ -122,7 +122,7 @@ class PDESolver(Solver):
         print("Number of steps: ", self.nsteps)
         print("Write out every {} steps ({} secs)".format(self.nwrite, self.twrite))
 
-    def setInitialConditions(self):
+    def set_initial_conditions(self):
         """! Set the initial state for the solution grid.
             If no 'initial_condition' parameter is set in the yaml file or
             parameter dictionary. The solution grid will remain filled with zeros.
@@ -186,7 +186,7 @@ class PDESolver(Solver):
         self.calcTorqueMatrix()
         self.cleared = False
 
-    def Run(self):
+    def run(self):
         """!Run PDE solver with parameters in pfile through explicity interative time stepping.
         @return: void
 
@@ -255,7 +255,7 @@ class PDESolver(Solver):
 
             self.makeXLDataSet()
             self.makeInteractionDataSet()
-            Solver.makeDataframe(self)
+            Solver.make_dataframe(self)
             self.data_frame_made = True
 
     def makeXLDataSet(self):

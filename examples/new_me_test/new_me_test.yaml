@@ -5,11 +5,12 @@ viscosity: 0.00089 # Using nucleoplasm pN/nm^2
 # Rod parameters
 rods:
     - [0, 0, 0, 1, 0, 0, 250]
-    - [0, 0, 0, 0, 1, 0, 250]
+    - [-75, 0, 0, 1, -1, 0, 250]
+    - [75, 0, 0, 1, 1, 0, 250]
 rod_diameter: 25 # nm
 
 # Unbound crosslinkers
-n_unbound: 100
+n_unbound: 1000
 
 # Integration parameters
 dt: .001 # Time step (sec)

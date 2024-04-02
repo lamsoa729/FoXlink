@@ -33,6 +33,24 @@ def choose_me_evolver(sol_init, slvr):
 
     """
 
+    if slvr.ODE_type == "n_fil_zrl_xl":
+        fric_coeff_arr = [
+            calc_rod_drag_coeff(slvr.visc, length, slvr.rod_diam)
+            for length in slvr.rod_arr[:, 6]
+        ]
+
+        def me_evolver_nfil_crosslink_closure(t, sol):
+            if not np.all(np.isfinite(sol)):
+                raise RuntimeError(
+                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
+                    sol,
+                )
+            print("sol({}):".format(t), sol)
+
+            return me_evolver_nfil_crosslink(sol, fric_coeff_arr, slvr.__dict__)
+
+        return me_evolver_nfil_crosslink_closure
+
     if slvr.ODE_type == "zrl":
         # Get drag coefficients
         fric_coeff = calc_rod_drag_coeff(
@@ -167,23 +185,5 @@ def choose_me_evolver(sol_init, slvr):
             return me_evolver_gen_orient_2ord(sol, fric_coeff, slvr.__dict__)
 
         return me_evolver_gen_orient_2ord_closure
-
-    if slvr.solver_type == "NFilMomentExpansionSolver":
-        fric_coeff_arr = [
-            calc_rod_drag_coeff(slvr.visc, length, slvr.rod_diam)
-            for length in slvr.rod_arr[:, 6]
-        ]
-
-        def me_evolver_nfil_crosslink_closure(t, sol):
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
-            print("sol({}):".format(t), sol)
-
-            return me_evolver_nfil_crosslink(sol, fric_coeff_arr, slvr.__dict__)
-
-        return me_evolver_nfil_crosslink_closure
 
     raise IOError("{} not a defined ODE equation for foxlink.")

@@ -58,7 +58,7 @@ class Solver:
         self.written = False
         # Initialize parameters from file
         self.ParseParams()
-        self.setInitialConditions()
+        self.set_initial_conditions()
         # self.setBoundaryConditions()
 
         # Create data frame
@@ -109,7 +109,7 @@ class Solver:
     #  Virtual methods  #
     #####################
 
-    def setInitialConditions(self):
+    def set_initial_conditions(self):
         """! Set the initial state for the solution.
 
         @return: void, modifies solution grid
@@ -121,7 +121,7 @@ class Solver:
             )
         )
 
-    def Run(self):
+    def run(self):
         """!Run PDE solver with parameters in pfile through explicity interative time stepping.
         @return: void
 

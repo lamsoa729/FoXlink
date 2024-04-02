@@ -48,7 +48,7 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
     for i in range(n_fils):
         # Get geometry for i
         r_i, u_i, L_i = convert_nfil_sol_to_geom(sol, i)
-        for j in range(n_fils):
+        for j in range(i + 1, n_fils):
             # Get geometry for j
             r_j, u_j, L_j = convert_nfil_sol_to_geom(sol, j)
             r_ij = r_j - r_i
@@ -61,10 +61,10 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
             n_unbound, mu_kl = get_zrl_xl_moments_for_ij(sol, i, j, n_fils)
 
             # Get average force of crosslinkers on rod_j
-            force_arr[i] += avg_force_zrl(
-                r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks
-            )
-            force_arr[j] -= force_arr[i]
+            force_on_j = avg_force_zrl(r_ij, u_i, u_j, mu_kl[0], mu_kl[1], mu_kl[2], ks)
+
+            force_arr[j] += force_on_j
+            force_arr[i] -= force_on_j
             torque_arr[i] += avg_torque_zrl(r_ij, u_i, u_j, mu_kl[1], mu_kl[3], ks)
             torque_arr[j] += avg_torque_zrl(
                 -1.0 * r_ij, u_j, u_i, mu_kl[2], mu_kl[3], ks
@@ -74,7 +74,7 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
             dn_unbound, dmu_kl = calc_zrl_xl_moment_derivs(n_unbound, mu_kl, q_arr, ko)
 
             derivs[-1] += dn_unbound
-            ij = n_fils * 7 + pair_index(i, j, n_fils)
+            ij = n_fils * 7 + pair_index(i, j, n_fils) * 4
             derivs[ij : ij + 4] = dmu_kl
 
         # TODO: add in boundary forces eventually

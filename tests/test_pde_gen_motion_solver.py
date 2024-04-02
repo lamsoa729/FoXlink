@@ -22,9 +22,9 @@ def test_gen_motion_solver_inheritance():
     assert PDEGenMotionSolver.ParseParams is PDEGenOrientSolver.ParseParams
     assert PDEGenMotionSolver.makeSolutionGrid is PDESolver.makeSolutionGrid
     assert PDEGenMotionSolver.setInitialConditions is PDESolver.setInitialConditions
-    assert PDEGenMotionSolver.Run is PDESolver.Run
+    assert PDEGenMotionSolver.run is PDESolver.run
     assert PDEGenMotionSolver.Step is PDESolver.Step
-    assert PDEGenMotionSolver.makeDataframe is PDEGenOrientSolver.makeDataframe
+    assert PDEGenMotionSolver.make_dataframe is PDEGenOrientSolver.make_dataframe
     assert PDEGenMotionSolver.calcForceMatrix is PDEGenOrientSolver.calcForceMatrix
     assert PDEGenMotionSolver.calcTorqueMatrix is PDEGenOrientSolver.calcTorqueMatrix
     assert PDEGenMotionSolver.calcSourceMatrix is PDEGenOrientSolver.calcSourceMatrix

@@ -41,7 +41,7 @@ def convert_nfil_sol_to_geom(sol: List[float], fil_i: int) -> Tuple:
         position, orientation, and length of rod i
     """
     i = fil_i * 7
-    return (sol[i : i + 3], sol[i + 3 : i + 6], sol[i + 6 : i + 7])
+    return (sol[i : i + 3], sol[i + 3 : i + 6], sol[i + 6])
 
 
 def sol_print_out(sol):

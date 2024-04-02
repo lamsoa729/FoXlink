@@ -153,7 +153,7 @@ class PDEGenOrientSolver(PDESolver):
         @return: TODO
 
         """
-        PDESolver.makeDataframe(self)
+        PDESolver.make_dataframe(self)
         # Track position and orientations of MTs
         self._R1_pos_dset = self._rod_grp.create_dataset(
             "R1_pos", shape=(self._nframes, 3)

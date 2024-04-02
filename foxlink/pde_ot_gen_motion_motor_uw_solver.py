@@ -43,7 +43,7 @@ class PDEOpticalTrapGenMotionMotorUWSolver(
         @return: void, Create dataframe for output with optical trap data
 
         """
-        PDEGenMotionMotorUWSolver.makeDataframe(self)
+        PDEGenMotionMotorUWSolver.make_dataframe(self)
         self.addOTDataframe()
 
     def write(self):
