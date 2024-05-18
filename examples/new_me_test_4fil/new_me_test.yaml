@@ -7,11 +7,11 @@ rods:
     - [0, 0, 0, 1, 0, 0, 250]
     - [-75, 0, 0, 1, -1, 0, 250]
     - [75, 0, 0, 1, 1, 0, 250]
+    - [75, 20, 0, 1, 1, 0, 250]
 rod_diameter: 25 # nm
 
 # Unbound crosslinkers
 n_unbound: 1000
-volume: 1E9 # nm^3
 
 # Integration parameters
 dt: .001 # Time step (sec)

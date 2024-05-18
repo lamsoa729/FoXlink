@@ -92,6 +92,7 @@ class MomentExpansionSolver(Solver):
 
         self.t_eval = np.linspace(0, self.nt, int(self.nt / self.twrite) + 1)
         self._nframes = self.t_eval.size
+        print("Frames = ", self._nframes)
 
         # Set integration method for solver
         self.method = self._params.get("method", "LSODA")

@@ -22,7 +22,6 @@ from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
 from .rod_motion_solver import calc_rod_drag_coeff
 from .me_n_fil_evolvers import me_evolver_nfil_crosslink
 
-
 def choose_me_evolver(sol_init, slvr):
     """!Create a closure for ode solver
 

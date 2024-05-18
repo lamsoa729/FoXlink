@@ -354,6 +354,8 @@ def get_Qj_params(s_i, L_j, a_ji, b, ks, beta):
 def prep_zrl_nfil_evolver(r_i, u_i, L_i, r_j, u_j, L_j, params):
     ks = params["ks"]
     beta = params["beta"]
+    c = params["co"]/params["volume"]
+
 
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
@@ -361,10 +363,10 @@ def prep_zrl_nfil_evolver(r_i, u_i, L_i, r_j, u_j, L_j, params):
     a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
-    q00 = fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
-    q10 = fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
-    q01 = fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
-    q11 = fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
+    q00 = c*fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
+    q10 = c*fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
+    q01 = c*fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
+    q11 = c*fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
     return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11)
 
 

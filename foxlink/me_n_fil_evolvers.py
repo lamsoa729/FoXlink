@@ -77,7 +77,6 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
             ij = n_fils * 7 + pair_index(i, j, n_fils) * 4
             derivs[ij : ij + 4] = dmu_kl
 
-        # TODO: add in boundary forces eventually
 
         # Now that we have collected all the forces and torques on rod i, calculate positional derivatives
         i_start = i * 7

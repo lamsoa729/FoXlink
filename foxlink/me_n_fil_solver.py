@@ -107,6 +107,8 @@ class NFilMomentExpansionSolver(MomentExpansionSolver):
         self.visc = non_dimmer.non_dim_val(
             self._params["viscosity"], ["energy", "time", "length"], [1, 1, -3]
         )
+        self.volume = non_dimmer.non_dim_val(float(self._params["volume"]), ["length"], [3])
+        self.co = non_dimmer.non_dim_val(float(self._params["co"]), ["length"], [-2])
         self.rod_diam = non_dimmer.non_dim_val(self._params["rod_diameter"], ["length"])
         self.dt = non_dimmer.non_dim_val(self.dt, ["time"])
         self.nt = non_dimmer.non_dim_val(self.nt, ["time"])
