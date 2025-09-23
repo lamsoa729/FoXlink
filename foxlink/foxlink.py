@@ -23,6 +23,11 @@ from .animation_funcs import (
 )
 from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
+from .profiler import (
+    profiler,
+    reset_profiler,
+    PROFILING_ENABLED,
+)
 
 # Import all solvers
 # Orient
@@ -47,6 +52,8 @@ from .pde_gen_def_motion_motor_uw_solver import PDEGenDefMotionMotorUWSolver
 from .me_solver import MomentExpansionSolver
 from .me_n_fil_solver import NFilMomentExpansionSolver
 
+# Global flag to enable/disable profiling
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -58,7 +65,7 @@ def parse_args():
         "--verbose",
         action="store_true",
         default=False,
-        help=("Print out more text from simulations. " "NOT IMPLEMENTED YET!"),
+        help=("Print out more text from simulations. NOT IMPLEMENTED YET!"),
     )  # TODO
     parser.add_argument(
         "-f",
@@ -181,6 +188,8 @@ class FoXlink(object):
         self._solver = self.create_solver()
         self._solver.run()
         self._solver.Save()
+        if PROFILING_ENABLED:
+            profiler.print_stats()
 
     def analyze(self):
         """!Analyze hdf5 file from foxlink solver run and make movie if parameter is given.

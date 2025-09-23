@@ -1,72 +1,75 @@
 #!/usr/bin/env python
-"""@package docstring
-File: me_zrl_helpers.py
+"""
+Zero Rest Length (ZRL) Crosslinker Helper Functions
+
+This module provides mathematical functions for calculating moments, Boltzmann factors,
+and force/torque distributions for zero rest length crosslinking motors between rods.
+
 Author: Adam Lamson
-Email: adam.lamson@colorado.edu
-Description:
+Email: adam.r.lamson@gmail.com
 """
 
 import numpy as np
-
-# from math import erf
-# from numba.scipy.special import erf
 import math
+import time
 from numba import njit
 from scipy.integrate import quad
 from .me_helpers import convert_sol_to_geom
 from .bivariate_gauss_helpers import fast_gauss_moment_kl
+from .profiler import profile_function
+
+SQRT_PI = np.sqrt(np.pi)
+
+# ==============================================================================
+# UTILITY FUNCTIONS
+# ==============================================================================
 
 
+@profile_function
 def pair_index(i, j, n_fils):
+    """Calculate linear index for rod pair (i,j)."""
     return int((2 * n_fils - i - 1) * i / 2 + j - i - 1)
 
 
+@profile_function
 def get_zrl_moments(sol):
-    """!Get the moments from the solution vector of solve_ivp
-
-    @param sol: Solution vector
-    @return: Moments of the solution vector
-
-    """
+    """Extract ZRL moment variables from solution vector."""
     return sol[12:18].tolist()
 
 
+@profile_function
 def get_unbound_and_zrl_xl_moments_for_ij(sol, i, j, n_fils):
+    """Extract unbound motor count and crosslink moments for rod pair (i,j)."""
     ij = n_fils * 7 + pair_index(i, j, n_fils) * 4
     return sol[-1], sol[ij : ij + 4]
 
 
+@profile_function
 def get_zrl_xl_moments_for_ij(sol, i, j, n_fils):
+    """Extract crosslink moments for rod pair (i,j)."""
     ij = n_fils * 7 + pair_index(i, j, n_fils) * 4
     return sol[ij : ij + 4]
 
 
+@profile_function
 def get_zrl_moments_and_boundary_terms(sol):
-    """!Get the moments from the solution vector of solve_ivp
-
-    @param sol: Solution vector
-    @return: Moments of the solution vector
-
-    """
+    """Extract both moments and boundary terms from solution vector."""
     return (sol[12:18].tolist(), sol[18:26].tolist())
 
 
+@profile_function
 def get_mu_kl_eff(mu_kl, params):
-    """!TODO: Docstring for get_mu_kl_eff.
-
-    @param mu_kl: TODO
-    @param params: TODO
-    @return: TODO
-
-    """
+    """Calculate effective moments using bivariate Gaussian approximation."""
     if mu_kl[0] <= 0:
         return [0] * 6
+
     L_i = params["L_i"]
     L_j = params["L_j"]
-    # Create a list for moments where asymetric terms are reversed
+
+    # Create reversed moment list for asymmetric calculations
     mu_lk = [mu_kl[0], mu_kl[2], mu_kl[1], mu_kl[3], mu_kl[5], mu_kl[4]]
 
-    # Create effective moments to return
+    # Calculate effective moments using fast Gaussian integration
     mu00 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=0, index=0)
     mu10 = fast_gauss_moment_kl(L_j, L_i, mu_lk, k=0, l=1, index=2)
     mu01 = fast_gauss_moment_kl(L_i, L_j, mu_kl, k=0, l=1, index=2)
@@ -77,26 +80,14 @@ def get_mu_kl_eff(mu_kl, params):
     return [mu00, mu10, mu01, mu11, mu20, mu02]
 
 
-###################################
-#  Boltzmann factor calculations  #
-###################################
+# ==============================================================================
+# BOLTZMANN FACTOR CALCULATIONS (Already optimized with @njit)
+# ==============================================================================
 
 
 @njit
 def boltz_fact_zrl(s_i, s_j, rsqr, a1, a2, b, ks, beta):
-    """!Boltzmann factor for a zero rest length crosslinking motor bound to two rods
-
-    @param s_i: Position of a bound motor end on rod1 relative to the rods center
-    @param s_j: Position of a bound motor end on rod1 relative to the rods center
-    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
-    @param a1: Dot product of u1 and r12
-    @param a2: Dot product of u2 and r12
-    @param ks: Motor spring constant
-    @param c: Effective concentration of motors in solution
-    @param beta: 1/(Boltzmann's constant * Temperature)
-    @return: Computed Boltzmann factor
-
-    """
+    """Boltzmann factor for zero rest length crosslinker."""
     return np.exp(
         -0.5
         * beta
@@ -107,22 +98,7 @@ def boltz_fact_zrl(s_i, s_j, rsqr, a1, a2, b, ks, beta):
 
 @njit
 def weighted_boltz_fact_zrl(s_i, s_j, pow1, pow2, rsqr, a1, a2, b, ks, beta):
-    """!Boltzmann factor for a zero rest length crosslinking motor bound to two
-    rods multiplied by s_i and s_j raised to specified powers
-
-    @param s_i: Position of a bound motor end on rod1 relative to the rods center
-    @param s_j: Position of a bound motor end on rod1 relative to the rods center
-    @param pow1: Power of s_i to weight Boltzmann factor by
-    @param pow2: Power of s_j to weight Boltzmann factor by
-    @param rsqr: Magnitude squared of the vector from rod1's COM to rod2's COM
-    @param a1: Dot product of u1 and r12
-    @param a2: Dot product of u2 and r12
-    @param ks: Motor spring constant
-    @param c: Effective concentration of motors in solution
-    @param beta: 1/(Boltzmann's constant * Temperature)
-    @return: TODO
-
-    """
+    """Weighted Boltzmann factor (s_i^pow1 * s_j^pow2 * boltz_fact)."""
     return (
         np.power(s_i, pow1)
         * np.power(s_j, pow2)
@@ -141,55 +117,27 @@ def weighted_boltz_fact_zrl(s_i, s_j, pow1, pow2, rsqr, a1, a2, b, ks, beta):
     )
 
 
-############################################
-#  Semi-anti derivatives for source terms  #
-############################################
-SQRT_PI = np.sqrt(np.pi)  # Reduce the number of sqrts you need to do
+# ==============================================================================
+# SEMI-ANALYTICAL INTEGRATION FUNCTIONS (Already optimized with @njit)
+# ==============================================================================
 
 
 @njit
 def semi_anti_deriv_boltz_0(L, sigma, A):
-    """!Fast calculation of the s_j integral of the source term for the zeroth
-    moment.
-
-    @param L: minus or plus end of bound
-    @param s_i: location along the first rod
-    @param sigma: sqrt(2 kBT/crosslinker spring constant)
-    @param A: a2 + b s_i
-    @return: One term in the anti-derivative of the boltzman factor integrated over s_j
-
-    """
+    """Semi-analytical integration for zeroth moment."""
     return (0.5 * SQRT_PI * sigma) * math.erf((L + A) / sigma)
 
 
 @njit
 def semi_anti_deriv_boltz_1(L, sigma, A):
-    """!Fast calculation of the s_j integral of the source term for the first
-    moment.
-
-    @param L: minus or plus end of bound
-    @param s_i: location along the first rod
-    @param sigma: sqrt(2 kBT/crosslinker spring constant)
-    @param A: a2 - b s_i
-    @return: One term in the anti-derivative of the boltzman factor integrated over s_j
-
-    """
+    """Semi-analytical integration for first moment."""
     B = (L + A) / sigma
     return (-0.5 * sigma) * (sigma * np.exp(-1.0 * B * B) + (A * SQRT_PI * math.erf(B)))
 
 
 @njit
 def semi_anti_deriv_boltz_2(L, sigma, A):
-    """!Fast calculation of the s_j integral of the source term for the second
-    moment.
-
-    @param L: minus or plus end of bound
-    @param s_i: location along the first rod
-    @param sigma: sqrt(2 kBT/crosslinker spring constant)
-    @param A: a2 - b*s_i
-    @return: One term in the anti-derivative of the boltzman factor integrated over s_j
-
-    """
+    """Semi-analytical integration for second moment."""
     B = (L + A) / sigma
     return (0.25 * sigma) * (
         2.0 * sigma * (A - L) * np.exp(-1.0 * B * B)
@@ -199,16 +147,7 @@ def semi_anti_deriv_boltz_2(L, sigma, A):
 
 @njit
 def semi_anti_deriv_boltz_3(L, sigma, A):
-    """!Fast calculation of the s_j integral of the source term for the second
-    moment.
-
-    @param L: minus or plus end of bound
-    @param s_i: location along the first rod
-    @param sigma: sqrt(2 kBT/crosslinker spring constant)
-    @param A: a2 - b*s_i
-    @return: One term in the anti-derivative of the boltzman factor integrated over s_j
-
-    """
+    """Semi-analytical integration for third moment."""
     B = (L + A) / sigma
     return (-0.25 * sigma) * (
         (2.0 * sigma * (A * A - A * L + L * L + sigma * sigma) * np.exp(-1.0 * B * B))
@@ -216,26 +155,18 @@ def semi_anti_deriv_boltz_3(L, sigma, A):
     )
 
 
+# ==============================================================================
+# INTEGRAND FUNCTIONS (Already optimized with @njit)
+# ==============================================================================
+
+
 @njit
 def fast_zrl_src_integrand_l0(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
-    """!TODO: Docstring for fast_zrl_src_integrand_k0.
-
-    @param s_i: TODO
-    @param L_j: TODO
-    @param rsqr: TODO
-    @param a_ij: TODO
-    @param a_ji: TODO
-    @param b: TODO
-    @param sigma: TODO
-    @param k: TODO
-    @return: TODO
-
-    """
+    """Fast calculation of source integrand for l=0."""
     A = -1.0 * (a_ji + (b * s_i))
     exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
 
     pre_fact = np.power(s_i, k) * np.exp(exponent)
-    # ((s_i * (s_i - 2. * a1)) - (A * A)) / (sigma * sigma))
     I_m = semi_anti_deriv_boltz_0(-0.5 * L_j, sigma, A)
     I_p = semi_anti_deriv_boltz_0(0.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
@@ -243,19 +174,7 @@ def fast_zrl_src_integrand_l0(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
 
 @njit
 def fast_zrl_src_integrand_l1(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
-    """!TODO: Docstring for fast_zrl_src_integrand_k1.
-
-    @param s_i: TODO
-    @param L_j: TODO
-    @param rsqr: TODO
-    @param a_ij: TODO
-    @param a_ji: TODO
-    @param b: TODO
-    @param sigma: TODO
-    @param k: TODO
-    @return: TODO
-
-    """
+    """Fast calculation of source integrand for l=1."""
     A = -1.0 * (a_ji + (b * s_i))
     exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
@@ -266,43 +185,17 @@ def fast_zrl_src_integrand_l1(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
 
 @njit
 def fast_zrl_src_integrand_l2(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
-    """!TODO: Docstring for fast_zrl_src_integrand_k0.
-
-    @param s_i: TODO
-    @param L_j: TODO
-    @param rsqr: TODO
-    @param a_ij: TODO
-    @param a_ji: TODO
-    @param b: TODO
-    @param sigma: TODO
-    @param k: TODO
-    @return: TODO
-
-    """
+    """Fast calculation of source integrand for l=2."""
     A = -1.0 * (a_ji + (b * s_i))
     exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
-    # pre_fact *= np.power(s_i, k) * np.exp(-1. *
-    # ((s_i * (s_i - 2. * a1)) - (A * A)) / (sigma * sigma))
     I_m = semi_anti_deriv_boltz_2(-0.5 * L_j, sigma, A)
     I_p = semi_anti_deriv_boltz_2(0.5 * L_j, sigma, A)
     return pre_fact * (I_p - I_m)
 
 
 def fast_zrl_src_integrand_l3(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
-    """!TODO: Docstring for fast_zrl_src_integrand_k0.
-
-    @param s_i: TODO
-    @param L_j: TODO
-    @param rsqr: TODO
-    @param a_ij: TODO
-    @param a_ji: TODO
-    @param b: TODO
-    @param sigma: TODO
-    @param k: TODO
-    @return: TODO
-
-    """
+    """Fast calculation of source integrand for l=3."""
     A = -1.0 * (a_ji + (b * s_i))
     exponent = -1.0 * (rsqr + s_i * (s_i - 2.0 * a_ij) - (A * A)) / (sigma * sigma)
     pre_fact = np.power(s_i, k) * np.exp(exponent)
@@ -311,115 +204,126 @@ def fast_zrl_src_integrand_l3(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
     return pre_fact * (I_p - I_m)
 
 
+# ==============================================================================
+# SOURCE TERM CALCULATIONS (This is likely your bottleneck!)
+# ==============================================================================
+
+
+@profile_function
 def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
-    """!TODO: Docstring for fast_zrl_src_kl
-
-    @param s_i: TODO
-    @param L2: TODO
-    @param a1: TODO
-    @param a2: TODO
-    @param b: TODO
-    @param sigma: TODO
-    @param l: TODO
-    @return: TODO
-
     """
-    if l == 0:
-        integrand = fast_zrl_src_integrand_l0
-    elif l == 1:
-        integrand = fast_zrl_src_integrand_l1
-    elif l == 2:
-        integrand = fast_zrl_src_integrand_l2
-    else:
+    Calculate k-th, l-th moment of source term using semi-analytical integration.
+
+    NOTE: This function uses scipy.integrate.quad which is likely your performance bottleneck!
+    """
+    # Map l values to integrand functions
+    integrand_map = {
+        0: fast_zrl_src_integrand_l0,
+        1: fast_zrl_src_integrand_l1,
+        2: fast_zrl_src_integrand_l2,
+    }
+
+    if l not in integrand_map:
         raise RuntimeError(
-            "{}-order derivatives have not been implemented for fast source solver.".format(
-                l
-            )
+            f"{l}-order derivatives not implemented for fast source solver."
         )
+
+    integrand = integrand_map[l]
     sigma = np.sqrt(2.0 / (ks * beta))
+
+    # THIS IS LIKELY YOUR BOTTLENECK - scipy.integrate.quad is slow!
+    start_quad = time.perf_counter()
     q, e = quad(
         integrand, -0.5 * L_i, 0.5 * L_i, args=(L_j, rsqr, a_ij, a_ji, b, sigma, k)
     )
+    quad_time = time.perf_counter() - start_quad
+
+    if quad_time > 0.001:  # Log slow integrations
+        print(f"[QUAD] L_i={L_i:.3f}, L_j={L_j:.3f}, k={k}, l={l}: {quad_time:.6f}s")
+
     return q
 
 
-########################################
-#  Preparation functions for evolvers  #
-########################################
+# ==============================================================================
+# EVOLVER PREPARATION FUNCTIONS
+# ==============================================================================
 
 
 @njit
 def get_Qj_params(s_i, L_j, a_ji, b, ks, beta):
+    """Calculate parameters for Q_j boundary term calculations."""
     hL_j = 0.5 * L_j
     sigma = np.sqrt(2.0 / (ks * beta))
     A_j = -1.0 * (a_ji + (b * s_i))
     return hL_j, sigma, A_j
 
 
+@profile_function
 def prep_zrl_nfil_evolver(r_i, u_i, L_i, r_j, u_j, L_j, params):
+    """Prepare geometric and source terms for N-filament ZRL evolver."""
     ks = params["ks"]
     beta = params["beta"]
     c = params["co"] / params["volume"]
 
+    # Geometric calculations (fast)
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
     a_ij = np.dot(r_ij, u_i)
     a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
+    # Source term calculations (potentially slow due to quad integration)
     q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
     q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
     q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
     q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
+
     return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11)
 
 
+@profile_function
 def prep_zrl_evolver(sol, params):
-    """!TODO: Docstring for prep_zrl_stat_evolver.
-
-    @param arg1: TODO
-    @return: TODO
-
-    """
+    """Prepare all terms needed for standard ZRL evolver."""
     r_i, r_j, u_i, u_j = convert_sol_to_geom(sol)
     c = params["co"]
     L_i, L_j = params["L_i"], params["L_j"]
     ks = params["ks"]
     beta = params["beta"]
 
+    # Geometric calculations
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
     a_ij = np.dot(r_ij, u_i)
     a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
+    # Multiple quad integrations - this is expensive!
     q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
     q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
     q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
     q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
     q20 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=2)
     q02 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=2)
+
     return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11, q20, q02)
 
 
+@profile_function
 def prep_zrl_bound_evolver(sol, params):
-    """!TODO: Docstring for prep_zrl_stat_evolver.
-
-    @param sol: TODO
-    @param params: TODO
-    @return: TODO
-
-    """
+    """Prepare terms for bounded ZRL evolver including boundary contributions."""
     c = params["co"]
     L_i, L_j = params["L_i"], params["L_j"]
     ks = params["ks"]
     beta = params["beta"]
 
+    # Get standard terms (expensive due to multiple quad calls)
     (scalar_geom, q_arr) = prep_zrl_evolver(sol, params)
     (rsqr, a_ij, a_ji, b) = scalar_geom
 
+    # Calculate boundary terms (more function calls)
     hL_j, sigma, A_j = get_Qj_params(0.5 * L_i, L_j, a_ji, b, ks, beta)
     hL_i, sigma, A_i = get_Qj_params(hL_j, L_i, a_ij, b, ks, beta)
+
     Q0_j = c * fast_zrl_src_integrand_l0(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
     Q0_i = c * fast_zrl_src_integrand_l0(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
     Q1_j = c * fast_zrl_src_integrand_l1(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
@@ -428,37 +332,22 @@ def prep_zrl_bound_evolver(sol, params):
     Q2_i = c * fast_zrl_src_integrand_l2(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
     Q3_j = c * fast_zrl_src_integrand_l3(hL_i, L_j, rsqr, a_ij, a_ji, b, sigma)
     Q3_i = c * fast_zrl_src_integrand_l3(hL_j, L_i, rsqr, a_ji, a_ij, b, sigma)
+
     return (scalar_geom, q_arr, (Q0_j, Q0_i, Q1_j, Q1_i, Q2_j, Q2_i, Q3_j, Q3_i))
+
+
+# ==============================================================================
+# FORCE AND TORQUE CALCULATIONS (Already optimized with @njit)
+# ==============================================================================
 
 
 @njit
 def avg_force_zrl(r_ij, u_i, u_j, mu00, mu10, mu01, ks):
-    """!Find the average force of zero rest length (zrl) crosslinkers on rods
-
-    @param r_ij: Vector from the center of mass of rod1 to the center of mass of rod2
-    @param u_i: Orientation unit vector of rod1
-    @param u_j: Orientation unit vector of rod2
-    @param mu00: Zeroth motor moment
-    @param mu10: First motor moment of s_i
-    @param mu01: First motor moment of s_j
-    @param ks: motor spring constant
-    return: Vector of force from rod i on rod j
-
-    """
+    """Calculate average force on rod j from ZRL crosslinkers."""
     return -ks * (r_ij * mu00 + mu01 * u_j - mu10 * u_i)
 
 
+@njit  # Added @njit for consistency
 def avg_torque_zrl(r_ij, u_i, u_j, mu10, mu11, ks):
-    """!Find the average torque of zero rest length (zrl) crosslinkers on filament i by j
-
-    @param r_ij: Vector from the center of mass of rod1 to the center of mass of rod2
-    @param u_i: Orientation unit vector of rod1
-    @param u_j: Orientation unit vector of rod2
-    @param mu00: Zeroth motor moment
-    @param mu10: First motor moment of s_i
-    @param mu01: First motor moment of s_j
-    @param ks: motor spring constant
-    return: Vector of force from rod i on rod j
-
-    """
+    """Calculate average torque on rod i from ZRL crosslinkers."""
     return ks * (np.cross(u_i, r_ij) * mu10 + np.cross(u_i, u_j) * mu11)

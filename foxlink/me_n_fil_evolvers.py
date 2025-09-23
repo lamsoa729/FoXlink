@@ -24,6 +24,7 @@ from .me_zrl_xl_odes import (
     calc_zrl_xl_moment_derivs,
     calc_zrl_unbound_and_xl_moment_derivs,
 )
+from .profiler import profile_function
 
 
 def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):

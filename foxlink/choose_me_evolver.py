@@ -240,7 +240,7 @@ def _create_gen_evolver(ode_type, slvr):
     return gen_evolver_closure
 
 
-def _validate_solution(sol, t, evolver_name, verbose=True):
+def _validate_solution(sol, t, evolver_name, verbose=False):
     """
     Validate that solution contains only finite values.
 
@@ -261,3 +261,5 @@ def _validate_solution(sol, t, evolver_name, verbose=True):
     # Optional: Print solution for debugging
     if verbose:
         print(f"sol({t}): {sol}")
+    else:
+        print(f"Time {t}")

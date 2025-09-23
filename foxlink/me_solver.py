@@ -21,6 +21,8 @@ class MomentExpansionSolver(Solver):
     in a series of moments of motor end positions on rods.
     """
 
+    ODE_type = "zrl"  # Default ODE type
+
     def __init__(self, pfile=None, pdict=None):
         """!Set parameters for ODE to be solved including initial conditions.
 
@@ -99,9 +101,8 @@ class MomentExpansionSolver(Solver):
         self._params["method"] = self.method
         print("Solving method = ", self.method)
 
-        # Specify the ODE type
-        if not self.ODE_type:
-            self.ODE_type = self._params.get("ODE_type", "zrl")
+        if "ODE_type" in self._params:
+            self.ODE_type = self._params["ODE_type"]
         self._params["ODE_type"] = self.ODE_type
         print("ODE type = ", self.ODE_type)
 
