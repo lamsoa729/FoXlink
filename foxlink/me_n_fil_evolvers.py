@@ -3,7 +3,7 @@
 """@package docstring
 File: me_zrl_evolvers.py
 Author: Adam Lamson
-Email: adam.lamson@colorado.edu
+Email: adam.r.lamson@gmail.com
 Description:
 """
 
@@ -77,7 +77,6 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
             ij = n_fils * 7 + pair_index(i, j, n_fils) * 4
             derivs[ij : ij + 4] = dmu_kl
 
-
         # Now that we have collected all the forces and torques on rod i, calculate positional derivatives
         i_start = i * 7
         drag_para, drag_perp, drag_rot = fric_coeff_arr[i]
@@ -87,7 +86,7 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
     # Check to make sure all values are finite
     if not np.all(np.isfinite(derivs)):
         raise RuntimeError(
-            "Infinity or NaN thrown in ODE solver derivatives. " "Current derivatives",
+            "Infinity or NaN thrown in ODE solver derivatives. Current derivatives",
             derivs,
         )
     return derivs
