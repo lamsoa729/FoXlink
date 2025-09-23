@@ -1,0 +1,36 @@
+# System parameters
+beta: .243309002 # Inverse temperature
+viscosity: 0.00089 # Using nucleoplasm pN/nm^2
+
+# Rod parameters
+rods:
+    - [0, 0, 0, 1, 0, 0, 250]
+    - [-75, 0, 0, 1, -1, 0, 250]
+    - [75, 0, 0, 1, 1, 0, 250]
+rod_diameter: 25 # nm
+
+# Unbound crosslinkers
+volume: 1E9 # nm^3
+
+# Integration parameters
+dt: .001 # Time step (sec)
+#nsteps: 1000 # Total number of steps, used if dt is not defined
+nt: 10 # total time (sec)
+ds: 2.0 # Segmentation size of microtubules (nm
+# Boundary conditions
+
+# Crosslinker parameters
+ko: 28. # Crosslinker turnover rate (sec^-1)
+# co: .015625 # Effective crosslinker concentration
+# co: 156250 # Effective crosslinker concentration
+co: 1e5 # Effective crosslinker concentration
+ks: .33 # Crosslinker spring concentration (pN*s/nm)
+# ho: 52. # Equilibrium length of kinesin5
+ho: 0. # Equilibrium length of crosslinkers
+
+# Misc
+nwrite: 100
+initial_condition: "empty"
+end_pause: False
+# method: "RK45"
+solver_type: "NFilMomentExpansionSolver"

@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+"""
+ODE Evolver Factory Module
 
-"""@package docstring
-File: choose_me_evolver.py
+This module provides a factory function for creating appropriate ODE evolvers
+based on the solver type. It creates closures that encapsulate the specific
+evolver functions with their required parameters.
+
 Author: Adam Lamson
 Email: adam.lamson@colorado.edu
-Description: Function that creates closures of ODE system evolvers
 """
 
 import numpy as np
@@ -16,173 +19,245 @@ from .me_zrl_evolvers import (
     prep_zrl_evolver,
     get_zrl_moments,
 )
-from .me_zrl_odes import calc_moment_derivs_zrl
 from .me_zrl_bound_evolvers import evolver_zrl_bound
 from .me_gen_evolvers import me_evolver_gen_2ord, me_evolver_gen_orient_2ord
 from .rod_motion_solver import calc_rod_drag_coeff
-from .me_n_fil_evolvers import me_evolver_nfil_crosslink
+from .me_n_fil_evolvers import (
+    me_evolver_nfil_crosslink,
+    me_evolver_nfil_finite_crosslink,
+)
+
 
 def choose_me_evolver(sol_init, slvr):
-    """!Create a closure for ode solver
-
-    @param sol: Array of time-dependent variables in the ODE
-    @param t: time
-    @param slvr: MomentExpansionSolver solver class
-    @return: evolver function for ODE of interest
-
     """
+    Factory function to create appropriate ODE evolver based on solver type.
 
-    if slvr.ODE_type == "n_fil_zrl_xl":
-        fric_coeff_arr = [
-            calc_rod_drag_coeff(slvr.visc, length, slvr.rod_diam)
-            for length in slvr.rod_arr[:, 6]
-        ]
+    Creates a closure that encapsulates the specific evolver function with
+    its required parameters (friction coefficients, solver parameters, etc.).
 
-        def me_evolver_nfil_crosslink_closure(t, sol):
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
-            print("sol({}):".format(t), sol)
+    Args:
+        sol_init (np.ndarray): Initial solution array for the ODE system
+        slvr (MomentExpansionSolver): Solver instance containing parameters
 
-            return me_evolver_nfil_crosslink(sol, fric_coeff_arr, slvr.__dict__)
+    Returns:
+        callable: Evolver function with signature evolver(t, sol) -> dsol_dt
 
-        return me_evolver_nfil_crosslink_closure
+    Raises:
+        IOError: If ODE_type is not recognized
+        RuntimeError: If solution contains non-finite values during evolution
+    """
+    ode_type = slvr.ODE_type
 
-    if slvr.ODE_type == "zrl":
-        # Get drag coefficients
-        fric_coeff = calc_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+    # Multi-filament crosslink evolvers
+    if ode_type in ["n_fil_zrl_xl", "n_fil_finite_zrl_xl"]:
+        return _create_nfil_evolver(ode_type, slvr)
 
-        def evolver_zrl_closure(t, sol):
-            """!Define the function of an ODE solver with zero length
-            crosslinking proteins and moving rods.
+    # Two-filament zero rest length evolvers
+    elif ode_type in ["zrl", "zrl_bvg", "zrl_bound"]:
+        return _create_zrl_evolver(ode_type, slvr)
 
-            @param t: Time array
-            @param sol: Solution array
-            @return: Function to ODE zrl
+    # Stationary rod evolver
+    elif ode_type == "zrl_stat":
+        return _create_zrl_stat_evolver(sol_init, slvr)
 
-            """
-            # TODO Add verbose option
-            # sol_print_out(sol)
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
-            return evolver_zrl(sol, fric_coeff, slvr.__dict__)
+    # General second-order evolvers
+    elif ode_type in ["gen_2ord", "gen_orient_2ord"]:
+        return _create_gen_evolver(ode_type, slvr)
 
-        return evolver_zrl_closure
+    else:
+        raise IOError(f"{ode_type} is not a defined ODE equation for foxlink.")
 
-    if slvr.ODE_type == "zrl_bvg":
-        # Get drag coefficients
-        fric_coeff = calc_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
-        def evolver_zrl_bvg_closure(t, sol):
-            """!Define the function of an ODE solver with zero length
-            crosslinking proteins and moving rods.
+def _create_nfil_evolver(ode_type, slvr):
+    """
+    Create evolver for multi-filament crosslinking systems.
 
-            @param t: Time array
-            @param sol: Solution array
-            @return: Function to ODE zrl
+    Args:
+        ode_type (str): Type of ODE system ("n_fil_zrl_xl" or "n_fil_finite_zrl_xl")
+        slvr: Solver instance
 
-            """
-            # TODO Add verbose option
-            # sol_print_out(sol)
-            # print(t)
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
-            return evolver_zrl_bvg(sol, fric_coeff, slvr.__dict__)
+    Returns:
+        callable: Configured evolver function
+    """
+    # Calculate friction coefficients for each rod
+    fric_coeff_arr = [
+        calc_rod_drag_coeff(slvr.visc, length, slvr.rod_diam)
+        for length in slvr.rod_arr[:, 6]  # rod lengths are in column 6
+    ]
 
-        return evolver_zrl_bvg_closure
+    if ode_type == "n_fil_zrl_xl":
+        evolver_func = me_evolver_nfil_crosslink
+        name = "n-filament crosslink"
+    else:  # "n_fil_finite_zrl_xl"
+        evolver_func = me_evolver_nfil_finite_crosslink
+        name = "n-filament finite crosslink"
 
-    if slvr.ODE_type == "zrl_bound":
-        # Get drag coefficients
-        fric_coeff = calc_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+    def nfil_evolver_closure(t, sol):
+        """
+        Closure for multi-filament crosslinking evolution.
 
-        def evolver_zrl_bound_closure(t, sol):
-            """!Define the function of an ODE solver with zero length
-            crosslinking proteins and moving rods.
+        Args:
+            t (float): Current time
+            sol (np.ndarray): Current solution state
 
-            @param t: Time array
-            @param sol: Solution array
-            @return: Function to ODE zrl
+        Returns:
+            np.ndarray: Time derivatives of solution
 
-            """
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
+        Raises:
+            RuntimeError: If solution contains non-finite values
+        """
+        _validate_solution(sol, t, name)
+        return evolver_func(sol, fric_coeff_arr, slvr.__dict__)
 
+    return nfil_evolver_closure
+
+
+def _create_zrl_evolver(ode_type, slvr):
+    """
+    Create evolver for two-filament zero rest length systems.
+
+    Args:
+        ode_type (str): Type of ZRL evolver
+        slvr: Solver instance
+
+    Returns:
+        callable: Configured evolver function
+    """
+    # Calculate combined friction coefficient for two rods
+    fric_coeff = calc_rod_drag_coeff(
+        slvr.visc, slvr.L_i, slvr.rod_diam
+    ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+
+    # Map ODE type to evolver function and name
+    evolver_map = {
+        "zrl": (evolver_zrl, "zero rest length"),
+        "zrl_bvg": (evolver_zrl_bvg, "zero rest length BvG"),
+        "zrl_bound": (evolver_zrl_bound, "zero rest length bounded"),
+    }
+
+    evolver_func, name = evolver_map[ode_type]
+
+    def zrl_evolver_closure(t, sol):
+        """
+        Closure for zero rest length evolution.
+
+        Args:
+            t (float): Current time
+            sol (np.ndarray): Current solution state
+
+        Returns:
+            np.ndarray: Time derivatives of solution
+        """
+        _validate_solution(sol, t, name)
+
+        # Print solution for bounded case (debugging)
+        if ode_type == "zrl_bound":
             sol_print_out(sol)
-            return evolver_zrl_bound(sol, fric_coeff, slvr.__dict__)
 
-        return evolver_zrl_bound_closure
+        return evolver_func(sol, fric_coeff, slvr.__dict__)
 
-    if slvr.ODE_type == "zrl_stat":
-        # Compute geometric terms that will not change
-        scalar_geom, q_arr = prep_zrl_evolver(sol_init, slvr.__dict__)
+    return zrl_evolver_closure
 
-        def evolver_zrl_stat_closure(t, sol):
-            """!Define the function of an ODE solver with zero rest length
-            crosslinking protiens and stationary rods.
 
-            @param t: Time array
-            @param sol: Solution array
-            @return: Function to ODE zrl stat
+def _create_zrl_stat_evolver(sol_init, slvr):
+    """
+    Create evolver for stationary rod zero rest length system.
 
-            """
-            # TODO Add verbose option
-            # sol_print_out(sol)
-            mu_kl = get_zrl_moments(sol)
-            return evolver_zrl_stat(mu_kl, scalar_geom, q_arr, slvr.__dict__)
+    Args:
+        sol_init (np.ndarray): Initial solution for geometric calculations
+        slvr: Solver instance
 
-        return evolver_zrl_stat_closure
+    Returns:
+        callable: Configured evolver function
+    """
+    # Pre-compute geometric terms that don't change over time
+    scalar_geom, q_arr = prep_zrl_evolver(sol_init, slvr.__dict__)
 
-    if slvr.ODE_type == "gen_2ord":
-        fric_coeff = calc_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
+    def zrl_stat_evolver_closure(t, sol):
+        """
+        Closure for stationary zero rest length evolution.
 
-        def me_evolver_gen_2ord_closure(t, sol):
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
-            print("sol({}):".format(t), sol)
+        Args:
+            t (float): Current time
+            sol (np.ndarray): Current solution state (moment variables only)
 
-            sol[6:9] /= np.linalg.norm(sol[6:9])
-            sol[9:12] /= np.linalg.norm(sol[9:12])
-            return me_evolver_gen_2ord(sol, fric_coeff, slvr.__dict__)
+        Returns:
+            np.ndarray: Time derivatives of moments
+        """
+        # Extract moment variables from solution
+        mu_kl = get_zrl_moments(sol)
+        return evolver_zrl_stat(mu_kl, scalar_geom, q_arr, slvr.__dict__)
 
-        return me_evolver_gen_2ord_closure
+    return zrl_stat_evolver_closure
 
-    if slvr.ODE_type == "gen_orient_2ord":
-        fric_coeff = calc_rod_drag_coeff(
-            slvr.visc, slvr.L_i, slvr.rod_diam
-        ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
-        def me_evolver_gen_orient_2ord_closure(t, sol):
-            if not np.all(np.isfinite(sol)):
-                raise RuntimeError(
-                    "Infinity or NaN thrown in ODE solver solutions. Current solution",
-                    sol,
-                )
-            print("sol({}):".format(t), sol)
+def _create_gen_evolver(ode_type, slvr):
+    """
+    Create evolver for general second-order systems.
 
-            return me_evolver_gen_orient_2ord(sol, fric_coeff, slvr.__dict__)
+    Args:
+        ode_type (str): Type of general evolver
+        slvr: Solver instance
 
-        return me_evolver_gen_orient_2ord_closure
+    Returns:
+        callable: Configured evolver function
+    """
+    # Calculate combined friction coefficient
+    fric_coeff = calc_rod_drag_coeff(
+        slvr.visc, slvr.L_i, slvr.rod_diam
+    ) + calc_rod_drag_coeff(slvr.visc, slvr.L_j, slvr.rod_diam)
 
-    raise IOError("{} not a defined ODE equation for foxlink.")
+    if ode_type == "gen_2ord":
+        evolver_func = me_evolver_gen_2ord
+        name = "general 2nd order"
+        normalize_orientations = True
+    else:  # "gen_orient_2ord"
+        evolver_func = me_evolver_gen_orient_2ord
+        name = "general orientation 2nd order"
+        normalize_orientations = False
+
+    def gen_evolver_closure(t, sol):
+        """
+        Closure for general second-order evolution.
+
+        Args:
+            t (float): Current time
+            sol (np.ndarray): Current solution state
+
+        Returns:
+            np.ndarray: Time derivatives of solution
+        """
+        _validate_solution(sol, t, name)
+
+        # Normalize orientation vectors if required
+        if normalize_orientations:
+            sol = sol.copy()  # Don't modify input
+            sol[6:9] /= np.linalg.norm(sol[6:9])  # First rod orientation
+            sol[9:12] /= np.linalg.norm(sol[9:12])  # Second rod orientation
+
+        return evolver_func(sol, fric_coeff, slvr.__dict__)
+
+    return gen_evolver_closure
+
+
+def _validate_solution(sol, t, evolver_name, verbose=True):
+    """
+    Validate that solution contains only finite values.
+
+    Args:
+        sol (np.ndarray): Solution array to validate
+        t (float): Current time (for error reporting)
+        evolver_name (str): Name of evolver (for error reporting)
+
+    Raises:
+        RuntimeError: If solution contains non-finite values
+    """
+    if not np.all(np.isfinite(sol)):
+        raise RuntimeError(
+            f"Infinity or NaN found in {evolver_name} evolver at t={t}. "
+            f"Current solution: {sol}"
+        )
+
+    # Optional: Print solution for debugging
+    if verbose:
+        print(f"sol({t}): {sol}")
