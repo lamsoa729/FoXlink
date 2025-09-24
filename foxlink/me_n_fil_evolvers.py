@@ -24,7 +24,6 @@ from .me_zrl_xl_odes import (
     calc_zrl_xl_moment_derivs,
     calc_zrl_unbound_and_xl_moment_derivs,
 )
-from .profiler import profile_function
 
 
 def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
@@ -93,6 +92,11 @@ def me_evolver_nfil_crosslink(sol, fric_coeff_arr, params):
         raise RuntimeError(
             "Infinity or NaN thrown in ODE solver derivatives. Current derivatives",
             derivs,
+        )
+    # Check if derivatives are to small to make progress
+    if np.all(np.abs(derivs) < 1e-12):
+        raise RuntimeError(
+            "Derivatives too small to make progress. Current derivatives", derivs
         )
     return derivs
 

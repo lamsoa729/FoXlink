@@ -125,22 +125,27 @@ class NFilMomentExpansionSolver(MomentExpansionSolver):
         Returns:
             NonDimensionalizer: Object containing dimensionalization information
         """
-        # Define non-dimensionalization scales
-        # FIXME: Fix the length non-dimensionalization
+
+        # Extract and convert rod parameters
+        self.rod_arr = np.array(self._params["rods"], dtype=float)
+
         non_dim_dict = {
             "time": 1.0,
             "length": 1.0,  # Should be max(L1, L2) or characteristic length
             "energy": 1.0,
         }
+        # non_dim_dict = {
+        #     # "time": 1.0 / self._params["ko"],
+        #     "time": 1.0,
+        #     "length": max(self.rod_arr[:, 6]),
+        #     "energy": 1.0 / self._params["beta"],
+        # }
 
-        non_dimmer = NonDimensionalizer(**non_dim_dict)
-
-        # Extract and convert rod parameters
-        self.rod_arr = np.array(self._params["rods"], dtype=float)
+        self.non_dimmer = NonDimensionalizer(**non_dim_dict)
 
         # Non-dimensionalize rod positions and lengths
         position_length_cols = [0, 1, 2, 6]  # x, y, z, length
-        self.rod_arr[:, position_length_cols] = non_dimmer.non_dim_val(
+        self.rod_arr[:, position_length_cols] = self.non_dimmer.non_dim_val(
             self.rod_arr[:, position_length_cols], ["length"]
         )
 
@@ -150,37 +155,62 @@ class NFilMomentExpansionSolver(MomentExpansionSolver):
         self.rod_arr[:, orientation_cols] /= norms[:, np.newaxis]
 
         # Non-dimensionalize physical parameters
-        self._non_dimensionalize_physical_params(non_dimmer)
+        self._non_dimensionalize_physical_params()
 
-        return non_dimmer
+        return self.non_dimmer
 
-    def _non_dimensionalize_physical_params(self, non_dimmer):
+    def _non_dimensionalize_physical_params(self):
         """Non-dimensionalize physical parameters using the non-dimensionalizer."""
-        self.beta = non_dimmer.non_dim_val(self._params["beta"], ["energy"], [-1])
-        self.visc = non_dimmer.non_dim_val(
+        self.beta = self.non_dimmer.non_dim_val(self._params["beta"], ["energy"], [-1])
+        self.visc = self.non_dimmer.non_dim_val(
             self._params["viscosity"], ["energy", "time", "length"], [1, 1, -3]
         )
-        self.volume = non_dimmer.non_dim_val(
+        self.volume = self.non_dimmer.non_dim_val(
             float(self._params["volume"]), ["length"], [3]
         )
-        self.co = non_dimmer.non_dim_val(float(self._params["co"]), ["length"], [-2])
-        self.rod_diam = non_dimmer.non_dim_val(self._params["rod_diameter"], ["length"])
+        self.co = self.non_dimmer.non_dim_val(
+            float(self._params["co"]), ["length"], [-2]
+        )
+        self.rod_diam = self.non_dimmer.non_dim_val(
+            self._params["rod_diameter"], ["length"]
+        )
 
         # Time parameters
-        self.dt = non_dimmer.non_dim_val(self.dt, ["time"])
-        self.nt = non_dimmer.non_dim_val(self.nt, ["time"])
-        self.twrite = non_dimmer.non_dim_val(self.twrite, ["time"])
+        self.dt = self.non_dimmer.non_dim_val(self.dt, ["time"])
+        self.nt = self.non_dimmer.non_dim_val(self.nt, ["time"])
+        self.twrite = self.non_dimmer.non_dim_val(self.twrite, ["time"])
 
         # Rate constants
-        self.ko = non_dimmer.non_dim_val(self._params["ko"], ["time"], [-1])
-        self.ks = non_dimmer.non_dim_val(
+        self.ko = self.non_dimmer.non_dim_val(self._params["ko"], ["time"], [-1])
+        self.ks = self.non_dimmer.non_dim_val(
             self._params["ks"], ["energy", "length"], [1, -2]
         )
 
     def redimensionalize(self):
         """Convert results back to dimensional form."""
-        # TODO: Implement redimensionalization of results
-        pass
+        # Redimensionalize rod positions
+
+        position_length_cols = [0, 1, 2, 6]  # x, y, z, length
+        # Redimensionalize rod positions and lengths
+        rod_data = self.sol.y[: self.n_fils * 7].reshape(
+            self.n_fils, 7, len(self.t_eval)
+        )
+        rod_data[:, position_length_cols, :] = self.non_dimmer.dim_val(
+            rod_data[:, position_length_cols, :], ["length"]
+        )
+        self.sol.y[: self.n_fils * 7] = rod_data.reshape(
+            self.n_fils * 7, len(self.t_eval)
+        )
+
+        # Redimensionalize 1st crosslinker moments
+        moment_data = self.sol.y[self.n_fils * 7 :].reshape(-1, 4, len(self.t_eval))
+        moment_data[:, [1, 2], :] = self.non_dimmer.dim_val(
+            moment_data[:, [1, 2], :], ["length"]
+        )
+        moment_data[:, 3, :] = self.non_dimmer.dim_val(
+            moment_data[:, 3, :], ["length"], [2]
+        )
+        self.sol.y[self.n_fils * 7 :] = moment_data.reshape(-1, len(self.t_eval))
 
 
 class NFilFiniteMomentExpansionSolver(NFilMomentExpansionSolver):

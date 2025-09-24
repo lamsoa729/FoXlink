@@ -25,7 +25,6 @@ from .pde_analyzer import PDEAnalyzer
 from .me_analyzer import MEAnalyzer
 from .profiler import (
     profiler,
-    reset_profiler,
     PROFILING_ENABLED,
 )
 
@@ -196,6 +195,7 @@ class FoXlink(object):
         @return: void
 
         """
+        # Analaysi
         if self._opts.analysis:
             if self._opts.analysis == "ME":
                 analyzer = MEAnalyzer(self._opts.file, "overwrite")

@@ -17,6 +17,7 @@ from scipy.integrate import quad
 from .me_helpers import convert_sol_to_geom
 from .bivariate_gauss_helpers import fast_gauss_moment_kl
 from .profiler import profile_function
+from functools import lru_cache
 
 SQRT_PI = np.sqrt(np.pi)
 
@@ -207,16 +208,14 @@ def fast_zrl_src_integrand_l3(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
 # ==============================================================================
 # SOURCE TERM CALCULATIONS (This is likely your bottleneck!)
 # ==============================================================================
-
-
-@profile_function
-def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
+# Simple cache using Python's built-in LRU cache
+@lru_cache(maxsize=4096)  # Adjust maxsize as needed
+def _cached_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k, l):
     """
-    Calculate k-th, l-th moment of source term using semi-analytical integration.
+    Cached version of integral calculation with LRU eviction.
 
-    NOTE: This function uses scipy.integrate.quad which is likely your performance bottleneck!
+    Note: All parameters must be hashable for LRU cache to work.
     """
-    # Map l values to integrand functions
     integrand_map = {
         0: fast_zrl_src_integrand_l0,
         1: fast_zrl_src_integrand_l1,
@@ -224,24 +223,37 @@ def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
     }
 
     if l not in integrand_map:
-        raise RuntimeError(
-            f"{l}-order derivatives not implemented for fast source solver."
-        )
+        raise RuntimeError(f"{l}-order derivatives not implemented.")
 
     integrand = integrand_map[l]
     sigma = np.sqrt(2.0 / (ks * beta))
 
-    # THIS IS LIKELY YOUR BOTTLENECK - scipy.integrate.quad is slow!
-    start_quad = time.perf_counter()
-    q, e = quad(
+    result, error = quad(
         integrand, -0.5 * L_i, 0.5 * L_i, args=(L_j, rsqr, a_ij, a_ji, b, sigma, k)
     )
-    quad_time = time.perf_counter() - start_quad
+    return result
 
-    if quad_time > 0.001:  # Log slow integrations
-        print(f"[QUAD] L_i={L_i:.3f}, L_j={L_j:.3f}, k={k}, l={l}: {quad_time:.6f}s")
 
-    return q
+@profile_function
+def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
+    """
+    Public interface that rounds parameters for cache key stability.
+    """
+    # Round parameters to avoid floating-point precision issues in cache keys
+    cache_key = (
+        round(float(L_i), 6),
+        round(float(L_j), 6),
+        round(float(rsqr), 6),
+        round(float(a_ij), 6),
+        round(float(a_ji), 6),
+        round(float(b), 6),
+        round(float(ks), 8),
+        round(float(beta), 8),
+        int(k),
+        int(l),
+    )
+
+    return _cached_zrl_src_kl(*cache_key)
 
 
 # ==============================================================================
@@ -265,6 +277,9 @@ def prep_zrl_nfil_evolver(r_i, u_i, L_i, r_j, u_j, L_j, params):
     beta = params["beta"]
     c = params["co"] / params["volume"]
 
+    # Length scale of crosslinker
+    lx = np.sqrt(0.5 * ks * beta)
+
     # Geometric calculations (fast)
     r_ij = r_j - r_i
     rsqr = np.dot(r_ij, r_ij)
@@ -272,11 +287,17 @@ def prep_zrl_nfil_evolver(r_i, u_i, L_i, r_j, u_j, L_j, params):
     a_ji = -1.0 * np.dot(r_ij, u_j)
     b = np.dot(u_i, u_j)
 
-    # Source term calculations (potentially slow due to quad integration)
-    q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
-    q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
-    q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
-    q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
+    dist_lim = 0.5 * (L_i + L_j) + (5 * lx)
+    # Check if rods are out of range
+    if rsqr > (dist_lim**2):
+        q00, q10, q01, q11 = (0.0, 0.0, 0.0, 0.0)
+
+    else:
+        # Source term calculations (potentially slow due to quad integration)
+        q00 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0)
+        q10 = c * fast_zrl_src_kl(L_j, L_i, rsqr, a_ji, a_ij, b, ks, beta, k=0, l=1)
+        q01 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=1)
+        q11 = c * fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=1, l=1)
 
     return (rsqr, a_ij, a_ji, b), (q00, q10, q01, q11)
 

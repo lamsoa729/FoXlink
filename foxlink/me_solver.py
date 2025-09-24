@@ -151,6 +151,8 @@ class MomentExpansionSolver(Solver):
             self.sol_init,
             t_eval=self.t_eval,
             method=self.method,
+            max_step=0.1,
+            min_step=1e-6,
         )
         # min_step=self.dt, atol=1e-6)
         self.cpu_time = time.time() - t0
