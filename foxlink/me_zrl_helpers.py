@@ -209,8 +209,8 @@ def fast_zrl_src_integrand_l3(s_i, L_j, rsqr, a_ij, a_ji, b, sigma, k=0):
 # SOURCE TERM CALCULATIONS (This is likely your bottleneck!)
 # ==============================================================================
 # Simple cache using Python's built-in LRU cache
-@lru_cache(maxsize=4096)  # Adjust maxsize as needed
-def _cached_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k, l):
+# @lru_cache(maxsize=4096)  # Adjust maxsize as needed
+def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k, l):
     """
     Cached version of integral calculation with LRU eviction.
 
@@ -235,7 +235,7 @@ def _cached_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k, l):
 
 
 @profile_function
-def fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
+def _fast_zrl_src_kl(L_i, L_j, rsqr, a_ij, a_ji, b, ks, beta, k=0, l=0):
     """
     Public interface that rounds parameters for cache key stability.
     """
